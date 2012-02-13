@@ -1,0 +1,215 @@
+/*
+ *   Repast for High Performance Computing (Repast HPC)
+ *
+ *   Copyright (c) 2010 Argonne National Laboratory
+ *   All rights reserved.
+ *
+ *   Redistribution and use in source and binary forms, with
+ *   or without modification, are permitted provided that the following
+ *   conditions are met:
+ *
+ *     Redistributions of source code must retain the above copyright notice,
+ *     this list of conditions and the following disclaimer.
+ *
+ *     Redistributions in binary form must reproduce the above copyright notice,
+ *     this list of conditions and the following disclaimer in the documentation
+ *     and/or other materials provided with the distribution.
+ *
+ *     Neither the name of the Argonne National Laboratory nor the names of its
+ *     contributors may be used to endorse or promote products derived from
+ *     this software without specific prior written permission.
+ *
+ *   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *   ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ *   PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE TRUSTEES OR
+ *   CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ *   EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ *   PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ *   PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ *   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ *   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ *   EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ *  DistributionFactory.cpp
+ *
+ *  Created on: Oct 27, 2009
+ *      Author: nick
+ */
+
+#include "boost/random/mersenne_twister.hpp"
+#include <boost/numeric/conversion/bounds.hpp>
+#include <boost/limits.hpp>
+
+#include "initialize_random.h"
+#include "Random.h"
+#include "Utilities.h"
+
+#include <vector>
+
+using namespace std;
+
+namespace repast {
+
+const size_t DIST_TAG_LENGTH = 13;
+
+const string DBL_UNI_DIST = "double_uniform";
+const string INT_UNI_DIST = "int_uniform";
+const string TRIANGLE_DIST = "triangle";
+const string CAUCHY_DIST = "cauchy";
+const string EXPONENTIAL_DIST = "exponential";
+const string NORMAL_DIST = "normal";
+const string LOG_NORMAL_DIST = "lognormal";
+
+void initializeSeed(const Properties& props, boost::mpi::communicator* comm);
+
+void createDblUni(string& name, vector<string>& params) {
+	if (params.size() != 3)
+		throw invalid_argument("double_uniform distribution  '" + name + "' requires two parameters");
+	double from = strToDouble(trim(params[1]));
+	double to = strToDouble(trim(params[2]));
+	Random* random = Random::instance();
+	_RealUniformGenerator gen(random->engine(), boost::uniform_real<>(from, to));
+	NumberGenerator* ng = new DefaultNumberGenerator<_RealUniformGenerator> (gen);
+	random->putGenerator(name, ng);
+}
+
+void createIntUni(string& name, vector<string>& params) {
+	if (params.size() != 3)
+		throw invalid_argument("double_uniform distribution  '" + name + "' requires two parameters");
+	int from = strToInt(trim(params[1]));
+	int to = strToInt(trim(params[2]));
+
+	Random* random = Random::instance();
+	_IntUniformGenerator gen(random->engine(), boost::uniform_int<>(from, to));
+	NumberGenerator* ng = new DefaultNumberGenerator<_IntUniformGenerator> (gen);
+	random->putGenerator(name, ng);
+}
+
+void createTriangle(string& name, vector<string>& params) {
+	if (params.size() != 4)
+		throw invalid_argument("triangle distribution  '" + name + "' requires three parameters");
+	double lower = strToDouble(trim(params[1]));
+	double mostLikely = strToDouble(trim(params[2]));
+	double upper = strToDouble(trim(params[3]));
+
+	Random* random = Random::instance();
+	boost::triangle_distribution<> dist(lower, mostLikely, upper);
+	_TriangleGenerator gen(random->engine(), dist);
+	NumberGenerator* ng = new DefaultNumberGenerator<_TriangleGenerator> (gen);
+	random->putGenerator(name, ng);
+}
+
+void createCauchy(string& name, vector<string>& params) {
+	if (params.size() != 3)
+		throw invalid_argument("cauchy distribution  '" + name + "' requires two parameters");
+	double median = strToDouble(trim(params[1]));
+	double sigma = strToDouble(trim(params[2]));
+
+	Random* random = Random::instance();
+	boost::cauchy_distribution<> dist(median, sigma);
+	_CauchyGenerator gen(random->engine(), dist);
+	NumberGenerator* ng = new DefaultNumberGenerator<_CauchyGenerator> (gen);
+	random->putGenerator(name, ng);
+}
+
+void createExponential(string& name, vector<string>& params) {
+	if (params.size() != 2)
+		throw invalid_argument("exponential distribution  '" + name + "' requires one parameter");
+	double lambda = strToDouble(trim(params[1]));
+
+	Random* random = Random::instance();
+	boost::exponential_distribution<> dist(lambda);
+	_ExponentialGenerator gen(random->engine(), dist);
+	NumberGenerator* ng = new DefaultNumberGenerator<_ExponentialGenerator> (gen);
+	random->putGenerator(name, ng);
+}
+
+void createNormal(string& name, vector<string>& params) {
+	if (params.size() != 3)
+		throw invalid_argument("normal distribution  '" + name + "' requires two parameters");
+	double mean = strToDouble(trim(params[1]));
+	double sigma = strToDouble(trim(params[2]));
+
+	Random* random = Random::instance();
+	boost::normal_distribution<> dist(mean, sigma);
+	_NormalGenerator gen(random->engine(), dist);
+	NumberGenerator* ng = new DefaultNumberGenerator<_NormalGenerator> (gen);
+	random->putGenerator(name, ng);
+}
+
+void createLogNormal(string& name, vector<string>& params) {
+	if (params.size() != 3)
+		throw invalid_argument("log normal distribution  '" + name + "' requires two parameters");
+	double mean = strToDouble(trim(params[1]));
+	double sigma = strToDouble(trim(params[2]));
+
+	Random* random = Random::instance();
+	boost::lognormal_distribution<> dist(mean, sigma);
+	_LogNormalGenerator gen(random->engine(), dist);
+	NumberGenerator* ng = new DefaultNumberGenerator<_LogNormalGenerator> (gen);
+	random->putGenerator(name, ng);
+}
+
+void initializeRandom(const Properties& props, boost::mpi::communicator* comm) {
+	initializeSeed(props, comm);
+	for (Properties::key_iterator iter = props.keys_begin(); iter != props.keys_end(); iter++) {
+		string key = *iter;
+		// starts with distribution tag
+		if (key.find("distribution.", 0) == 0 && key.size() > DIST_TAG_LENGTH) {
+			string name = key.substr(13);
+			vector<string> params;
+			tokenize(props.getProperty(key), params, ",");
+			if (params.size() < 2)
+				throw invalid_argument("Distribution property  '" + name + "' requires at least two parameters");
+			const string type = params[0];
+			if (type == DBL_UNI_DIST)
+				createDblUni(name, params);
+			else if (type == INT_UNI_DIST)
+				createIntUni(name, params);
+			else if (type == TRIANGLE_DIST)
+				createTriangle(name, params);
+			else if (type == CAUCHY_DIST)
+				createCauchy(name, params);
+			else if (type == EXPONENTIAL_DIST)
+				createExponential(name, params);
+			else if (type == NORMAL_DIST)
+				createNormal(name, params);
+			else if (type == LOG_NORMAL_DIST)
+				createLogNormal(name, params);
+			else
+				throw invalid_argument("Unknown distribution type  '" + type + ".");
+		}
+	}
+}
+
+void initializeSeed(const Properties& props, boost::mpi::communicator* comm) {
+  // If a property with key = 'global.random.seed' is in the Properties class, it is used for all procs
+  std::string globalKey = "global.random.seed";
+  if(props.contains(globalKey)){
+    boost::uint32_t seed = strToUInt(props.getProperty(globalKey));
+    Random::initialize(seed);
+  }
+  else{
+    std::string key = "random.seed";
+    if(props.contains(key)){
+      boost::uint32_t seed = strToUInt(props.getProperty(key));
+      if(comm != 0){
+        boost::uint32_t mySeed = seed;
+        boost::mt19937 gen;
+        boost::uniform_real<> dist(0, boost::numeric::bounds<boost::uint32_t>::highest());
+        gen.seed(seed); // Uses the seed from the properties file
+        boost::variate_generator<boost::mt19937&, boost::uniform_real<> > localRNG(gen, dist);
+        int myRank = comm->rank();
+        for(int i = 0; i < comm->rank(); i++)  mySeed = localRNG(); // The assignment only matters on the last time through, but calling the generator is requisite.
+        Random::initialize(mySeed);
+      }
+      else{
+        Random::initialize(seed);
+      }
+    }
+  }
+}
+
+}

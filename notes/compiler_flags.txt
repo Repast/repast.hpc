@@ -1,0 +1,9 @@
+The following compiler flags may be used when building RSCPP from source:
+
+MS_LIBRARY: When set, functions that are not provided by Microsoft's version of C++
+(as opposed to the GNU libraries, which are considered the native code for RSCPP)
+are either ignored or substituted.
+
+OMIT_NETCDF: The 'NetCDF' output format is supported by default, but can optionally
+be omitted by defining this flag. When defined, all code related to NetCDF is ignored.
+

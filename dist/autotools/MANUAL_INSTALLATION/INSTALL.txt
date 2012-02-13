@@ -1,0 +1,71 @@
+Manual Installation of Repast HPC
+
+
+The normal installation process for Unix systems,
+
+" configure; make; make install " 
+
+can be difficult to use in the HPC environments where Repast HPC will commonly
+be deployed. The Makefile in this folder is a bare-bones way to build the Repast HPC libraries 
+and the executables for the included demos. When run it will create 
+a repast_hpc install directory that includes:
+
+include/
+   repast-hpc/
+      (All Repast HPC Header Files
+   relogo/
+      (All ReLogo Header Files)
+lib/
+  repast-hpc.a
+  relogo.a
+bin/
+  rumor_model.exe
+  zombie_model.exe
+
+To run this makefile, you must provide values for each of the variables in the
+list below. You can do this by adding values directly in in the Makefile, or by invoking 'make'
+from the command line with these variables specified, i.e.:
+
+   make -f Makefile_MANUAL CXX="gcc -g -O3" BOOST_INCLUDE=/home/Boost/Boost_1.48/include"
+
+Note that this makefile assumes that the mpi header and library files are already known to your
+compiler, and invoking the compiler will automatically find these required files. Most common
+mpi installations provide a compiler wrapper that does this automatically; refer to your mpi
+version's documentation.
+
+Variable Definitions:
+
+CXX - The command used to invoke your c++ compiler of choice. Include all associated flags
+     for optimization or debugging. 
+     Example: CXX="gcc -O3"
+
+CXXLD - The command used to invoke your linker of choice. Include all associated flags.
+     Example: CXXLD="gcc"
+
+BOOST_INCLUDE_DIR - The directory in which the Boost library header files are found
+     Example: BOOST_INCLUDE=/home/Boost/Boost_1.48/include
+
+BOOST_LIB_DIR - The directory in which the Boost compiled libraries are found
+     Example: BOOST_LIB_DIR=/home/Boost/Boost_1.48/lib
+
+BOOST_INFIX - Boost libraries can be named by a pattern, such as 
+     "libboost_serialization-gcc41-mt-d-1_48.a" and "libboost_mpi-gcc41-mt-d-1_48.a"
+     All values between the end of the specific library name (i.e. 'serialization') and 
+     the final dot can vary to specify the compiler, boost version, and other details.
+     Use this variable to specify the infix to be used that matches the libraries installed on your system
+     Example: BOOST_INFIX="-gcc41-mt-d-1_48"
+
+NETCDF_INCLUDE_DIR - The directory in which the NetCDF library header files are found
+     Example: NETCDF_INCLUDE_DIR=/home/users/jsmith/NetCDF/Version1/include
+
+NETCDF_LIB_DIR - The directory in which the NetCDF library files are found
+     Example: NETCDF_LIB_DIR=/home/users/jsmith/NetCDF/Version1/lib
+
+CURL_INCLUDE_DIR - The directory in which the Curl library header files are found
+     Example: CURL_INCLUDE_DIR=/home/users/jsmith/CURL/include
+
+CURL_LIB_DIR = The directory in which the Curl library file is found
+     Example: CURL_LIB_DIR=/home/users/jsmith/lib
+
+
+Note: For simplicity, this makefile does not calculate dependencies on header files or beyond.

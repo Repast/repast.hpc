@@ -1,0 +1,123 @@
+This document describes the requirements for the templates
+passed to various functions.
+
+Requesting Agents and Synching Agents with repast::
+
+template<typename T, typename Content, typename Provider, typename AgentCreator>
+void requestAgents(SharedContext<T>& context, AgentRequest& request, Provider& provider, AgentCreator& creator)
+
+Content -- the content or state of the agent. It must implement:
+
+	- repast::AgentId getId() const;
+	
+	where the AgentId is the id of the agent whose state
+	the Content represents.
+
+Provider -- A class that given an agent request can provide the Content of 
+the requeted agents. It must have the following method:
+
+	- provideContent(const AgentRequest&, std::vector<Content>&);
+	
+	The created Content should be added to the vector.
+
+AgentCreator -- A class that can create agents from the Content. It must have:
+
+	-- T* createAgent(const Content& content);
+	
+	where T is the agent type and content is the content of the agent
+	to create.
+
+
+template<typename Content, typename Provider, typename Receiver>
+void synchAgents(Provider& provider, Receiver& receiver)
+
+Content -- the content or state of the agent. It must implement:
+
+	- repast::AgentId getId() const;
+	
+	where the AgentId is the id of the agent whose state
+	the Content represents.
+
+Provider -- A class that given an agent request can provide the Content of 
+the requeted agents. It must have the following method:
+
+	- provideContent(const AgentRequest&, std::vector<Content>&);
+	
+	The created Content should be added to the vector.
+
+Updater -- A class that can update an existing agent's state from a
+Content struct / class. It must have:
+
+	- void updateAgent(const Content& content);
+	
+which updates the agent specified in the content id with
+the content.
+
+
+Creating Complimentary Edges with repast::
+
+template<typename Vertex, typename Edge, typename AgentContent, typename EdgeContent, typename EdgeManager, typename AgentAdder>
+void createComplementaryEdges(SharedNetwork<Vertex, Edge>* net, Context<Vertex>& context, 
+EdgeManager& edgeManager, AgentAdder& agentAdder)
+
+
+AgentContent is the same as Content above
+
+EdgeContent -- state info about an edge. Must have two public fields
+
+NodeContent sourceContent, targetContent;
+
+EdgeManager -- provides edge content and creates new edges from 
+received edge content. Must implement:
+
+void provideEdgeContent(const Edge* edge, std::vector<EdgeContent>&);
+repast::RepastEdge<Node>* createEdge(repast::Context<Node>& context, EdgeContent& edge);
+
+provideEdgeContent takes an Edge (template class), creates EdgeContent from it
+and puts the result in the vector. 
+
+createEdge should create and return an Edge (template class) using the
+edge content. The context parameter can be used to retreive source and 
+target nodes.
+
+AgentAdder -- sames as Receiver above when used to create new agents.
+
+Synchronizing Edge state (useful for custom edges):
+
+template<typename Vertex, typename Edge, typename EdgeContent, typename EdgeManager>
+void synchEdges(SharedNetwork<Vertex, Edge>* net, EdgeManager& edgeManager);
+
+EdgeManager -- provideEdgeContent as above and
+
+receiveEdgeContent(const EdgeContent&);
+
+which should find the edge represented by the edge content and
+update its state based on the state in content
+
+-- Synching agent status:
+
+The creator:
+
+T* createAgent(const AgentContent& content)
+
+creates an agent from the content
+
+The provider:
+
+provideContent(const repast::AgentRequest& request, std::vector<AgentContent>& out)
+
+provides content from the request and then puts it in out
+
+-- Synching grid/space buffers
+
+The creator:
+
+createAgents(std::vector<AgentContent>, std::vector<T*>);
+
+create agents from agent content and add to the vector
+
+The provider:
+
+provideContent(T*, std::vector<AgentContent>);
+
+provide content from agent, and put into out.

@@ -1,0 +1,14 @@
+random.seed = 1
+
+stop.at = 200
+distribution.uni_0_1 = double_uniform, 0, 1
+distribution.triangle = triangle, 2, 5, 10
+
+node.rumored.distribution = uni_0_1
+node.rumored.probability = .01
+node.count = 10000
+
+shared.nodes.n = 20
+ke.model.m = 10
+
+initial.nodes = 10

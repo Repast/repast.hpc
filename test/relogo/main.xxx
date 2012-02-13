@@ -1,0 +1,112 @@
+#include <iostream>
+#include <vector>
+#include <map>
+
+#include "relogo/Turtle.h"
+#include "relogo/Patch.h"
+#include "relogo/Observer.h"
+#include "rscpp/RepastProcess.h"
+#include "rscpp/Random.h"
+
+#include <boost/mpi.hpp>
+
+namespace mpi = boost::mpi;
+
+using namespace repast;
+using namespace repast::relogo;
+using namespace std;
+
+class MyTurtle: public Turtle {
+
+public:
+	MyTurtle(repast::AgentId id, Observer* obs) :
+		Turtle(id, obs) {
+	}
+	~MyTurtle() {
+	}
+
+	void stop() {
+		cout << "stop" << endl;
+	}
+};
+
+class Worker: public Turtle {
+
+private:
+	int _status;
+
+public:
+	Worker(repast::AgentId id, Observer* obs, int status) :
+		Turtle(id, obs), _status(status) {
+	}
+	~Worker() {
+	}
+
+	void status() {
+		cout << _status << endl;
+	}
+};
+
+class WorkerCreator {
+
+private:
+	repast::IntUniformGenerator _gen;
+
+public:
+	WorkerCreator() :
+		_gen(Random::instance()->createUniIntGenerator(4, 21)) {
+	}
+
+	Worker* operator()(AgentId id, Observer* obs) {
+		return new Worker(id, obs, (int) _gen.next());
+
+	}
+};
+
+
+class MyObserver: public Observer {
+
+public:
+	MyObserver() {}
+	virtual ~MyObserver() {}
+
+	virtual void go();
+	virtual void setup();
+};
+
+void MyObserver::setup() {
+	create<MyTurtle> (10);
+	create<Worker> (40, WorkerCreator());
+}
+
+void MyObserver::go() {
+	AgentSet<MyTurtle> turtles = get<MyTurtle>();
+	turtles.ask(&MyTurtle::stop);
+
+	AgentSet<Worker> workers;
+	get<Worker>(workers);
+	cout << workers.count() << endl;
+}
+
+class MyPatch : public Patch {
+public:
+	MyPatch(repast::AgentId id, Observer* obs) : Patch(id, obs) {
+	}
+	virtual ~MyPatch() {
+	}
+};
+
+int main(int argc, char **argv) {
+	mpi::environment env(argc, argv);
+	repast::RepastProcess::Instance("./config.props");
+
+	// world is from -50, -100 to 50, 100, is a grid and space torus, with buffer of two for both
+	WorldDefinition def(-50, -100, 50, 100, true, 2, 2);
+	WorldCreator* creator = WorldCreator::instance();
+	// 2 x 2 process configuration for grid + space distribution
+	MyObserver* obs = creator->createWorld<MyObserver, MyPatch>(def, vector<int>(2, 2));
+	obs->setup();
+	obs->go();
+
+	repast::RepastProcess::Instance()->Done();
+}

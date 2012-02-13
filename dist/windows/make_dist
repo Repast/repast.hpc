@@ -1,0 +1,22 @@
+#! /bin/sh
+
+echo "DID YOU RUN DOXYGEN TO CREATE THE API DOCS"
+
+rscpp_dir=../../src/repast_hpc
+relogo_dir=../../src/relogo
+
+rm -rf include
+mkdir include
+mkdir include/repast_hpc
+mkdir include/relogo
+
+cp $rscpp_dir/*.h ./include/repast_hpc/
+cp $relogo_dir/*.h ./include/relogo/
+
+rm -rf docs
+mkdir docs
+mkdir docs/api
+cp ../../docs/repast_hpc.pdf ./docs/repast_hpc_manual.pdf
+cp -r ../doxygen/html ./docs/api;
+
+echo "NEED TO ADD ZIP STATEMENTS"

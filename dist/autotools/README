@@ -1,0 +1,54 @@
+This is the README for Repast HPC 1.0.1 Final. 
+
+0. Installation of Repast HPC can done be using the standard ./configure
+script described in INSTALL or using the Makefile in the MANUAL_INSTALLATION
+directory. On standard Unix and MacOS ./congfigure is preferred, but
+on many HPC machines (e.g. Blue Gene) the custom Makefile may be easier.
+See MANUAL_INSTALLATION/INSTALL.TXT for more info on using the custom
+Makefile.
+
+Reagardless of which installation method is chosen, Repast HPC has
+the following prerequisites. 
+
+1. An MPI implementation. Repast HPC was developed using OpenMPI, but
+there are others to choose from. 
+
+http://openmpi.org
+http://www.mcs.anl.gov/mpi/mpich/ 
+
+2. The boost libraries must be installed. Most of the boost
+libraries are header only, but a few must be compiled. Of the compiled
+ones, Repast HPC requires:
+
+	- MPI
+	- Serialization (which is required by MPI)
+	- Filesystem
+	- System
+
+See the boost docs for how to compile these libraries.
+
+http://www.boost.org
+
+3. NetCDF C and C++ libraries
+
+http://www.unidata.ucar.edu/software/netcdf/
+
+Installation using ./configure etc. will create and
+install librepast_hpc* and librelogo in the appropriate
+directory, as well as copying the header files.
+
+The distribution contains a src directory which
+contains source for two simple sample models:
+zombies and rumor. As part of make, these will be
+compiled and put into an examples_bin directory where
+they can be run with:
+
+mpirun -np 4 ./zombie_model config.props model.props
+mpirun -np 6 ./rumor_model config.props model.props
+
+
+Once compiled, see the Repast HPC manual in 
+docs/repast_hpc_manual.pdf and the API documentation 
+in docs/api/html/index.html to get started with 
+writing your own Repast HPC simulations.
+
