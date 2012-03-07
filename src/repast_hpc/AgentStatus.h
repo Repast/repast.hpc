@@ -91,7 +91,7 @@ public:
 	 *
 	 * @return the status
 	 */
-	const Status getStatus() const {
+	Status getStatus() const {
 		return _status;
 	}
 

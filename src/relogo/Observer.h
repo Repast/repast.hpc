@@ -341,7 +341,7 @@ public:
 	 *
 	 * @return the process rank of this Observer.
 	 */
-	const int rank() const {
+	int rank() const {
 		return _rank;
 	}
 

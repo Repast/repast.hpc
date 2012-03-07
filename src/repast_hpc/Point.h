@@ -401,7 +401,7 @@ public:
 		return _extents[index];
 	}
 
-	const size_t dimensionCount() const {
+	size_t dimensionCount() const {
 		return _extents.dimensionCount();
 	}
 
