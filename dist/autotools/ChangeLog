@@ -3,8 +3,15 @@ Repast HPC Development- Change Log
 
 Begun 7 March 2012 (JTM)
 
+7 March 2012: RemoveMeaninglessConsts
 
+Modified AgentStatus.h, Point.h, and Observer.h to remove 'const' qualifiers
+on elemental return types. The Intel compiler issues a warning about this;
+a const qualifier on an elemental return type such as:
 
+const int foo();
+
+is actually meaningless. This also applies to enumerated types.
 
 ===================================================================================
                  Repast HPC Version 1.0.1 Final Release Notes
