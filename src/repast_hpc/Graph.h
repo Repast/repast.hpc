@@ -83,7 +83,7 @@ protected:
 	virtual bool addAgent(boost::shared_ptr<V> agent);
 	virtual void removeAgent(V* agent);
 
-	virtual void doAddEdge(E* edge);
+	virtual void doAddEdge(boost::shared_ptr<E> edge);
 
 public:
 
@@ -119,7 +119,7 @@ public:
 	 *
 	 * @return the added edge.
 	 */
-	virtual E* addEdge(V* source, V* target);
+	virtual boost::shared_ptr<E> addEdge(V* source, V* target);
 
 	/**
 	 * Adds an edge with the specified weight between source and target to this Graph.
@@ -130,7 +130,7 @@ public:
 	 *
 	 * @return the added edge.
 	 */
-	virtual E* addEdge(V* source, V* target, double weight);
+	virtual boost::shared_ptr<E> addEdge(V* source, V* target, double weight);
 
 	/**
 	 * Gets the edge between the source and target or 0
@@ -141,7 +141,7 @@ public:
 	 *
 	 * @return the found edge or 0.
 	 */
-	virtual E* findEdge(V* source, V* target);
+	virtual boost::shared_ptr<E> findEdge(V* source, V* target);
 
 	/**
 	 * Gets the sucessors of the specified vertex and puts them in
@@ -276,13 +276,12 @@ void Graph<V, E>::init(const Graph<V, E>& graph) {
 	for (VertexMapIterator iter = graph.vertices.begin(); iter != graph.vertices.end(); ++iter) {
 		Vertex<V, E>* vertex = iter->second;
 		Vertex<V, E>* newVert = vertices[iter->first];
-		std::vector<E*> edges;
+		std::vector<boost::shared_ptr<E> > edges;
 
 		vertex->edges(Vertex<V, E>::OUTGOING, edges);
-		for (typename std::vector<E*>::iterator iter = edges.begin(); iter != edges.end(); ++iter) {
+		for (typename std::vector<boost::shared_ptr<E> >::iterator iter = edges.begin(); iter != edges.end(); ++iter) {
 			// create new edge and add it
-			E* edge = *iter;
-			E* newEdge = new E(*edge);
+			boost::shared_ptr<E> newEdge(new E(**iter));
 			doAddEdge(newEdge);
 		}
 	}
@@ -299,86 +298,84 @@ Graph<V, E>& Graph<V, E>::operator=(const Graph<V, E>& graph) {
 }
 
 template<typename V, typename E>
-E* Graph<V, E>::addEdge(V* source, V* target) {
-	VertexMapIterator srcIter = vertices.find(source->getId());
-	VertexMapIterator targetIter = vertices.find(target->getId());
-	if (srcIter == vertices.end() || targetIter == vertices.end())
-		return NULL;
+boost::shared_ptr<E> Graph<V, E>::addEdge(V* source, V* target) {
+  boost::shared_ptr<E> ret;
 
-	E* edge = new E(srcIter->second->item(), targetIter->second->item());
+  const VertexMapIterator notFound = Graph<V, E>::vertices.end();
+
+	VertexMapIterator srcIter    = vertices.find(source->getId());
+	if (srcIter == notFound)    return ret;
+
+	VertexMapIterator targetIter = vertices.find(target->getId());
+	if (targetIter == notFound) return ret;
+
+	boost::shared_ptr<E> edge(new E(srcIter->second->item(), targetIter->second->item()));
 	doAddEdge(edge);
 	return edge;
 }
 
 template<typename V, typename E>
-E* Graph<V, E>::addEdge(V* source, V* target, double weight) {
-	VertexMapIterator srcIter = vertices.find(source->getId());
-	VertexMapIterator targetIter = vertices.find(target->getId());
-	if (srcIter == vertices.end() || targetIter == vertices.end())
-		return NULL;
+boost::shared_ptr<E> Graph<V, E>::addEdge(V* source, V* target, double weight) {
+  boost::shared_ptr<E> ret;
 
-	E* edge = new E(srcIter->second->item(), targetIter->second->item(), weight);
-	doAddEdge(edge);
-	return edge;
+  const VertexMapIterator notFound = Graph<V, E>::vertices.end();
+
+  VertexMapIterator srcIter    = vertices.find(source->getId());
+  if (srcIter == notFound)    return ret;
+
+  VertexMapIterator targetIter = vertices.find(target->getId());
+  if (targetIter == notFound) return ret;
+
+  boost::shared_ptr<E> edge(new E(srcIter->second->item(), targetIter->second->item(), weight));
+  doAddEdge(edge);
+  return edge;
 }
 
 template<typename V, typename E>
 void Graph<V, E>::successors(V* vertex, std::vector<V*>& out) {
 	VertexMapIterator iter = Graph<V, E>::vertices.find(vertex->getId());
-	if (iter != Graph<V, E>::vertices.end()) {
-		iter->second->successors(out);
-	}
+	if (iter != Graph<V, E>::vertices.end()) iter->second->successors(out);
 }
 
 template<typename V, typename E>
 void Graph<V, E>::predecessors(V* vertex, std::vector<V*>& out) {
 	VertexMapIterator iter = Graph<V, E>::vertices.find(vertex->getId());
-	if (iter != vertices.end()) {
-		iter->second->predecessors(out);
-	}
+	if (iter != vertices.end()) iter->second->predecessors(out);
 }
 
 template<typename V, typename E>
 void Graph<V, E>::adjacent(V* vertex, std::vector<V*>& out) {
 	VertexMapIterator iter = Graph<V, E>::vertices.find(vertex->getId());
-	if (iter != vertices.end()) {
-		iter->second->adjacent(out);
-	}
+	if (iter != vertices.end()) iter->second->adjacent(out);
 }
 
 template<typename V, typename E>
 int Graph<V, E>::inDegree(V* vertex) {
 	VertexMapIterator iter = Graph<V, E>::vertices.find(vertex->getId());
-	if (iter == vertices.end())
-		return 0;
-	return iter->second->inDegree();
-
+	return (iter != vertices.end() ? iter->second->inDegree() : 0);
 }
 
 template<typename V, typename E>
 int Graph<V, E>::outDegree(V* vertex) {
 	VertexMapIterator iter = Graph<V, E>::vertices.find(vertex->getId());
-	if (iter == vertices.end())
-		return 0;
-	return iter->second->outDegree();
+  return (iter != vertices.end() ? iter->second->outDegree() : 0);
 }
 
 template<typename V, typename E>
 void Graph<V, E>::removeEdge(const AgentId& sourceId, const AgentId& targetId) {
-	// find the Vertex obj for the source and target
-	// and remove the edge
-	VertexMapIterator iter = Graph<V, E>::vertices.find(sourceId);
-	if (iter != Graph<V, E>::vertices.end()) {
-		Vertex<V, E>* sVert = iter->second;
-		VertexMapIterator other = Graph<V, E>::vertices.find(targetId);
-		if (other != Graph<V, E>::vertices.end()) {
-			E* edge = 0;
-			// edge should be shared between the two
-			edge = sVert->removeEdge(other->second, Vertex<V, E>::OUTGOING);
-			other->second->removeEdge(sVert, Vertex<V, E>::INCOMING);
-			delete edge;
-		}
-	}
+  const VertexMapIterator vertexNotFound = Graph<V, E>::vertices.end();
+
+  VertexMapIterator iter = Graph<V, E>::vertices.find(sourceId);
+  if (iter == vertexNotFound) return;
+  Vertex<V, E>* sVert = iter->second;
+
+  iter = Graph<V, E>::vertices.find(targetId);
+  if (iter == vertexNotFound) return;
+  Vertex<V, E>* tVert = iter->second;
+
+  boost::shared_ptr<E> edgeNotFound;
+  if(sVert->removeEdge(tVert, Vertex<V, E>::OUTGOING) != edgeNotFound) edgeCount_--;
+  tVert->removeEdge(sVert, Vertex<V, E>::INCOMING);
 
 }
 
@@ -392,6 +389,7 @@ void Graph<V, E>::removeAgent(V* vertex) {
 	VertexMapIterator iter = Graph<V, E>::vertices.find(vertex->getId());
 	if (iter != vertices.end()) {
 		Vertex<V, E>* iVert = iter->second;
+	  edgeCount_ -= (isDirected ? (iVert->inDegree() + iVert->outDegree()) : iVert->inDegree());
 		delete iVert;
 		vertices.erase(iter);
 	}
@@ -399,42 +397,48 @@ void Graph<V, E>::removeAgent(V* vertex) {
 
 template<typename V, typename E>
 bool Graph<V, E>::addAgent(boost::shared_ptr<V> agent) {
-	VertexMapIterator iter = vertices.find(agent->getId());
-	if (iter != vertices.end())
-		return false;
+	if (vertices.find(agent->getId()) != vertices.end())	return false;
 
-	if (isDirected) {
-		vertices[agent->getId()] = new DirectedVertex<V, E> (agent);
-	} else {
-		vertices[agent->getId()] = new UndirectedVertex<V, E> (agent);
-	}
+	if(isDirected) vertices[agent->getId()] = new DirectedVertex<V, E> (agent);
+	else           vertices[agent->getId()] = new UndirectedVertex<V, E> (agent);
+
 	return true;
 }
 
 template<typename V, typename E>
-E* Graph<V, E>::findEdge(V* source, V* target) {
+boost::shared_ptr<E> Graph<V, E>::findEdge(V* source, V* target) {
+  boost::shared_ptr<E> ret;
+
+  const VertexMapIterator notFound = Graph<V, E>::vertices.end();
+
 	VertexMapIterator sIter = vertices.find(source->getId());
+	if (sIter == notFound) return ret;
+
 	VertexMapIterator tIter = vertices.find(target->getId());
-	if (sIter == vertices.end() || tIter == vertices.end())
-		return 0;
+	if (tIter == notFound) return ret;
+
 	return sIter->second->findEdge(tIter->second, Vertex<V, E>::OUTGOING);
 }
 
 template<typename V, typename E>
-void Graph<V, E>::doAddEdge(E* edge) {
+void Graph<V, E>::doAddEdge(boost::shared_ptr<E> edge) {
 	V* source = edge->source();
 	V* target = edge->target();
 
 	Vertex<V, E>* vSource = vertices[source->getId()];
 	Vertex<V, E>* vTarget = vertices[target->getId()];
 
-	//std::cout << "vSource " << vSource << std::endl;
-	//std::cout << "vTarget " << vTarget << std::endl;
+	// Must remove any extant edge
+  boost::shared_ptr<E> notFound;
+  if(vSource->removeEdge(vTarget, Vertex<V, E>::OUTGOING) != notFound) edgeCount_--;
+  vTarget->removeEdge(vSource, Vertex<V, E>::INCOMING);
+
 	vSource->addEdge(vTarget, edge, Vertex<V, E>::OUTGOING);
 	vTarget->addEdge(vSource, edge, Vertex<V, E>::INCOMING);
 
 	edgeCount_++;
 }
+
 }
 
 #endif /* GRAPH_H_ */

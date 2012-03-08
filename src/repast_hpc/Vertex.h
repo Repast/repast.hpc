@@ -87,7 +87,7 @@ public:
 	 * Typedef for the adjacency list map that contains the other Vertices that
 	 * this Vertex links to.
 	 */
-	typedef boost::unordered_map<Vertex<V, E>*, E*, HashVertex<V, E> > AdjListMap;
+	typedef boost::unordered_map<Vertex<V, E>*, boost::shared_ptr<E>, HashVertex<V, E> > AdjListMap;
 	typedef typename AdjListMap::iterator AdjListMapIterator;
 
 	/**
@@ -115,7 +115,7 @@ public:
 	 *
 	 * @return the removed edge if such an edge was found, otherwise 0.
 	 */
-	virtual E* removeEdge(Vertex* other, EdgeType type) = 0;
+	virtual boost::shared_ptr<E> removeEdge(Vertex* other, EdgeType type) = 0;
 
 	/**
 	 * Finds the edge of the specified type between this Vertex and the
@@ -126,7 +126,7 @@ public:
 	 *
 	 * @return the found edge, or 0.
 	 */
-	virtual E* findEdge(Vertex* other, EdgeType type) = 0;
+	virtual boost::shared_ptr<E> findEdge(Vertex* other, EdgeType type) = 0;
 
 	/**
 	 * Adds an edge of the specified type between this Vertex and the
@@ -136,7 +136,7 @@ public:
 	 * @param other the other end of the edge
 	 * @param type the type of edge to add
 	 */
-	virtual void addEdge(Vertex<V, E>* other, E* edge, EdgeType type) = 0;
+	virtual void addEdge(Vertex<V, E>* other, boost::shared_ptr<E> edge, EdgeType type) = 0;
 
 	/**
 	 * Gets the successors of this Vertex.
@@ -166,7 +166,7 @@ public:
 	 * @param type the type of edges to get
 	 * @param [out] where the edges will be put.
 	 */
-	virtual void edges(EdgeType type, std::vector<E*>& out) = 0;
+	virtual void edges(EdgeType type, std::vector<boost::shared_ptr<E> >& out) = 0;
 
 	/**
 	 * Gets the in degree of this Vertex.
@@ -194,7 +194,7 @@ public:
 protected:
 	friend struct NodeGetter<V, E> ;
 	boost::shared_ptr<V> ptr;
-	E* removeEdge(Vertex<V, E>* other, AdjListMap* adjMap);
+	boost::shared_ptr<E> removeEdge(Vertex<V, E>* other, AdjListMap* adjMap);
 	void getItems(AdjListMap *adjMap, std::vector<V*>& out);
 };
 
@@ -204,15 +204,14 @@ Vertex<V, E>::Vertex(boost::shared_ptr<V> item) :
 }
 
 template<typename V, typename E>
-E* Vertex<V, E>::removeEdge(Vertex<V, E>* other, AdjListMap* adjMap) {
-	AdjListMapIterator iter = adjMap->find(other);
-	iter = adjMap->find(other);
-	E* edge = 0;
-	if (iter != adjMap->end()) {
-		edge = iter->second;
-		adjMap->erase(iter);
-	}
-	return edge;
+boost::shared_ptr<E> Vertex<V, E>::removeEdge(Vertex<V, E>* other, AdjListMap* adjMap) {
+  AdjListMapIterator iter = adjMap->find(other);
+  boost::shared_ptr<E> ret;
+  if (iter != adjMap->end()) {
+    ret = iter->second;
+    adjMap->erase(iter);
+  }
+  return ret;
 }
 
 template<typename V, typename E>

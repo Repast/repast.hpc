@@ -253,7 +253,7 @@ public:
 	void writeProps(std::string fileName, std::string init_time, std::string run_time);
 
 	void provideContent(const repast::AgentRequest& request, std::vector<NodeContent>& out);
-	void provideEdgeContent(const repast::RepastEdge<Node>* edge, std::vector<EdgeContent>& edgeContent);
+	void provideEdgeContent(const boost::shared_ptr<repast::RepastEdge<Node> > edge, std::vector<EdgeContent>& edgeContent);
 	repast::RepastEdge<Node>* createEdge(repast::Context<Node>& context, EdgeContent& edge);
 	void updateAgent(const NodeContent& content);
 

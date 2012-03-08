@@ -150,18 +150,18 @@ private:
 	friend void createComplementaryEdges(SharedNetwork<Vertex, Edge>* net, Context<Vertex>& context,
 			EdgeManager& provider, AgentAdder& adder);
 	// key is the process that we need to export the edges to
-	std::map<int, std::vector<E*>*> edgesToExport;
+	std::map<int, std::vector<boost::shared_ptr<E> >*> edgesToExport;
 	// map that holds edges that this P has exported
 	// key is the process that we need to export the edges to
-	std::map<int, std::vector<E*>*> exportedEdges;
+	std::map<int, std::vector<boost::shared_ptr<E> >*> exportedEdges;
 
-	std::map<int, std::vector<E*>*> removedEdges;
+	std::map<int, std::vector<boost::shared_ptr<E> >*> removedEdges;
 
 	std::map<int, std::vector<ExportRequest> > exportRequests;
 	int rank;
 
 public:
-	typedef typename std::map<int, std::vector<E*>*>::iterator EdgeMapIterator;
+	typedef typename std::map<int, std::vector<boost::shared_ptr<E> >*>::iterator EdgeMapIterator;
 
 	EdgeExporter();
 	~EdgeExporter();
@@ -171,13 +171,13 @@ public:
 	/**
 	 * Whether or not this is exported the specified edge.
 	 */
-	void edgeRemoved(E* edge, std::map<int, std::vector<std::pair<AgentId, AgentId> > >& removeMap);
+	void edgeRemoved(boost::shared_ptr<E> edge, std::map<int, std::vector<std::pair<AgentId, AgentId> > >& removeMap);
 
 	/**
 	 * Tests if the edge needs to be exported and if so
 	 * adds it to the collection of edges to be exported.
 	 */
-	void addEdge(E* edge);
+	void addEdge(boost::shared_ptr<E> edge);
 
 	/**
 	 * Gathers the receivers into out. A receiver is
@@ -200,14 +200,14 @@ public:
 	/**
 	 * Gets the edges to export.
 	 */
-	std::map<int, std::vector<E*>*>& getEdgesToExport() {
+	std::map<int, std::vector<boost::shared_ptr<E> >*>& getEdgesToExport() {
 		return edgesToExport;
 	}
 
 	/**
 	 * Gets the edges this process is exporting.
 	 */
-	std::map<int, std::vector<E*>*>& getExportedEdges() {
+	std::map<int, std::vector<boost::shared_ptr<E> >*>& getExportedEdges() {
 		return exportedEdges;
 	}
 
@@ -223,10 +223,10 @@ EdgeExporter<E>::EdgeExporter() {
 }
 
 template<typename E>
-void EdgeExporter<E>::edgeRemoved(E* edge, std::map<int, std::vector<std::pair<AgentId, AgentId> > >& removeMap) {
+void EdgeExporter<E>::edgeRemoved(boost::shared_ptr<E> edge, std::map<int, std::vector<std::pair<AgentId, AgentId> > >& removeMap) {
 	for (EdgeMapIterator emIter = exportedEdges.begin(); emIter != exportedEdges.end(); ++emIter) {
-		std::vector<E*>* edges = emIter->second;
-		for (typename std::vector<E*>::iterator edgeIter = edges->begin(); edgeIter != edges->end();) {
+		std::vector<boost::shared_ptr<E> >* edges = emIter->second;
+		for (typename std::vector<boost::shared_ptr<E> >::iterator edgeIter = edges->begin(); edgeIter != edges->end();) {
 			if (*edgeIter == edge) {
 				std::map<int, std::vector<std::pair<AgentId, AgentId> > >::iterator iter =
 						removeMap.find(emIter->first);
@@ -251,15 +251,15 @@ void EdgeExporter<E>::cleanUp() {
 	// just delete the edge lists themselves. We don't delete the edges as they are
 	// part of the network itself.
 	for (EdgeMapIterator emIter = edgesToExport.begin(); emIter != edgesToExport.end(); ++emIter) {
-		std::vector<E*>* edges = emIter->second;
+		std::vector<boost::shared_ptr<E> >* edges = emIter->second;
 		int exportTo = emIter->first;
 		if (exportedEdges.find(exportTo) == exportedEdges.end()) {
-			std::vector<E*>* exportedVec = new std::vector<E*>();
+			std::vector<boost::shared_ptr<E> >* exportedVec = new std::vector<boost::shared_ptr<E> >();
 			exportedEdges[exportTo] = exportedVec;
 			exportedVec->insert(exportedVec->end(), edges->begin(), edges->end());
 
 		} else {
-			std::vector<E*>* exportedVec = exportedEdges[exportTo];
+			std::vector<boost::shared_ptr<E> >* exportedVec = exportedEdges[exportTo];
 			exportedVec->insert(exportedVec->end(), edges->begin(), edges->end());
 
 		}
@@ -294,14 +294,14 @@ EdgeExporter<E>::~EdgeExporter() {
 }
 
 template<typename E>
-void EdgeExporter<E>::addEdge(E* edge) {
+void EdgeExporter<E>::addEdge(boost::shared_ptr<E> edge) {
 	AgentId& sid = edge->source()->getId();
 	AgentId& tid = edge->target()->getId();
 
 	if (sid.currentRank() != rank) {
 		EdgeMapIterator iter = edgesToExport.find(sid.currentRank());
 		if (iter == edgesToExport.end()) {
-			std::vector<E*>* vec = new std::vector<E*>();
+			std::vector<boost::shared_ptr<E> >* vec = new std::vector<boost::shared_ptr<E> >();
 			vec->push_back(edge);
 			edgesToExport[sid.currentRank()] = vec;
 		} else {
@@ -312,7 +312,7 @@ void EdgeExporter<E>::addEdge(E* edge) {
 	if (tid.currentRank() != rank) {
 		EdgeMapIterator iter = edgesToExport.find(tid.currentRank());
 		if (iter == edgesToExport.end()) {
-			std::vector<E*>* vec = new std::vector<E*>();
+			std::vector<boost::shared_ptr<E> >* vec = new std::vector<boost::shared_ptr<E> >();
 			vec->push_back(edge);
 			edgesToExport[tid.currentRank()] = vec;
 		} else {
@@ -373,7 +373,7 @@ private:
 	friend void synchEdges(SharedNetwork<Vertex, Edge>*, EdgeManager&);
 
 	boost::unordered_set<AgentId, HashId> fAgents;
-	std::vector<E*> sharedEdges;
+	std::vector<boost::shared_ptr<E> > sharedEdges;
 	int rank, worldSize;
 	EdgeExporter<E> edgeExporter;
 	std::map<int, int> senders;
@@ -384,14 +384,14 @@ private:
 	//
 	void notifyExporters();
 	// by passes the export check for adding an edge
-	void graphAddEdge(E* edge);
+	void graphAddEdge(boost::shared_ptr<E> edge);
 
 protected:
 
 	virtual bool addAgent(boost::shared_ptr<V> agent);
 	virtual void removeAgent(V* agent);
 
-	virtual void doAddEdge(E* edge);
+	virtual void doAddEdge(boost::shared_ptr<E> edge);
 
 public:
 
@@ -432,7 +432,7 @@ public:
 	 *
 	 * @param edge the edge to add
 	 */
-	void addEdge(E* edge);
+	void addEdge(boost::shared_ptr<E> edge);
 
 	/**
 	 * Synchronizes any removed edges that are have been copied
@@ -483,7 +483,7 @@ bool SharedNetwork<V, E>::addAgent(boost::shared_ptr<V> agent) {
 
 template<typename V, typename E>
 void SharedNetwork<V, E>::removeEdge(V* source, V* target) {
-	E* edge = Graph<V, E>::findEdge(source, target);
+  boost::shared_ptr<E> edge = Graph<V, E>::findEdge(source, target);
 	edgeExporter.edgeRemoved(edge, removedEdges);
 	Graph<V, E>::removeEdge(source, target);
 
@@ -499,7 +499,7 @@ void SharedNetwork<V, E>::removeAgent(V* agent) {
 	typename Graph<V,E>::VertexMapIterator iter = Graph<V,E>::vertices.find(id);
 	if (iter != Graph<V,E>::vertices.end()) {
 		Vertex<V, E>* vertex = iter->second;
-		std::vector<E*> edges;
+		std::vector<boost::shared_ptr<E> > edges;
 		vertex->edges(Vertex<V,E>::OUTGOING, edges);
 
 		for (size_t i = 0, n = edges.size(); i < n; ++i) {
@@ -518,18 +518,18 @@ void SharedNetwork<V, E>::removeAgent(V* agent) {
 	Graph<V, E>::removeAgent(agent);
 }
 template<typename V, typename E>
-void SharedNetwork<V, E>::addEdge(E* edge) {
+void SharedNetwork<V, E>::addEdge(boost::shared_ptr<E> edge) {
 	SharedNetwork<V, E>::doAddEdge(edge);
 }
 
 template<typename V, typename E>
-void SharedNetwork<V, E>::doAddEdge(E* edge) {
+void SharedNetwork<V, E>::doAddEdge(boost::shared_ptr<E> edge) {
 	Graph<V, E>::doAddEdge(edge);
 	edgeExporter.addEdge(edge);
 }
 
 template<typename V, typename E>
-void SharedNetwork<V, E>::graphAddEdge(E* edge) {
+void SharedNetwork<V, E>::graphAddEdge(boost::shared_ptr<E> edge) {
 	Graph<V, E>::doAddEdge(edge);
 }
 
@@ -582,7 +582,7 @@ void SharedNetwork<V, E>::notifyExporters() {
  */
 template<typename E, typename EdgeContent, typename ProviderReceiver>
 void sendContent(EdgeExporter<E>& exporter, std::vector<boost::mpi::request>& requests, ProviderReceiver& provider, boost::ptr_vector<std::vector<EdgeContent> > &sendBuffer) {
-	std::map<int, std::vector<E*>*>& edgesToExport = exporter.getEdgesToExport();
+	std::map<int, std::vector<boost::shared_ptr<E> >*>& edgesToExport = exporter.getEdgesToExport();
 	boost::mpi::communicator* comm = RepastProcess::instance()->getCommunicator();
 
 	std::vector<EdgeContent>* edgeContent;
@@ -590,12 +590,12 @@ void sendContent(EdgeExporter<E>& exporter, std::vector<boost::mpi::request>& re
 	for (typename EdgeExporter<E>::EdgeMapIterator emIter = edgesToExport.begin(); emIter != edgesToExport.end(); ++emIter) {
 		// the process to send the edge to
 		int receiver = emIter->first;
-		std::vector<E*>* edges = emIter->second;
+		std::vector<boost::shared_ptr<E> >* edges = emIter->second;
 	  sendBuffer.push_back(edgeContent = new std::vector<EdgeContent>);
 		// check end points and add any local nodes to the AgentExporter
-		for (typename std::vector<E*>::iterator iter = edges->begin(); iter != edges->end(); ++iter) {
+		for (typename std::vector<boost::shared_ptr<E> >::iterator iter = edges->begin(); iter != edges->end(); ++iter) {
 
-			E* edge = *iter;
+		  boost::shared_ptr<E> edge = *iter;
 			AgentId srcId = edge->source()->getId();
 			AgentId targetId = edge->target()->getId();
 			if (srcId.currentRank() == comm->rank()) {
@@ -616,10 +616,8 @@ void sendContent(EdgeExporter<E>& exporter, std::vector<boost::mpi::request>& re
 				exporter.addAgentExportRequest(receiver, targetId);
 			}
 
-			//std::cout << "[" << RepastProcess::instance()->rank() << "] sending edge " << edge << " to " << receiver << std::endl;
 			provider.provideEdgeContent(edge, *edgeContent);
 		}
-		//std::cout << "[" << RepastProcess::instance()->rank() << "] sending " << edges->size() << " edges to " << receiver << std::endl;
 		requests.push_back(comm->isend(receiver, NET_EDGE_UPDATE, *edgeContent)); //*edges));
 	}
 }
@@ -733,7 +731,7 @@ void createComplementaryEdges(SharedNetwork<Vertex, Edge>* net, SharedContext<Ve
 				RepastProcess::instance()->addImportedAgent(targetId);
 			}
 
-			Edge* newEdge = edgeManager.createEdge(context, edge);
+			boost::shared_ptr<Edge> newEdge(edgeManager.createEdge(context, edge));
 			net->graphAddEdge(newEdge);
 		}
 
@@ -759,8 +757,8 @@ void SharedNetwork<V, E>::synchRemovedEdges() {
 	}
 
 	std::vector<std::pair<AgentId, AgentId> > empty;
-	std::map<int, std::vector<E*>*>& exports = edgeExporter.getExportedEdges();
-	for (typename std::map<int, std::vector<E*>*>::iterator iter = exports.begin(); iter != exports.end();) {
+	std::map<int, std::vector<boost::shared_ptr<E> >*>& exports = edgeExporter.getExportedEdges();
+	for (typename std::map<int, std::vector<boost::shared_ptr<E> >*>::iterator iter = exports.begin(); iter != exports.end();) {
 		int sendTo = iter->first;
 		std::map<int, std::vector<std::pair<AgentId, AgentId> > >::iterator removeIter = removedEdges.find(sendTo);
 		if (removeIter == removedEdges.end()) {

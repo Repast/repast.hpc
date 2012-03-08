@@ -70,24 +70,25 @@ public:
 	virtual ~DirectedVertex();
 
 	// doc inherited from Vertex
-	virtual E* removeEdge(Vertex<V,E>* other, EdgeType type);
+	virtual boost::shared_ptr<E> removeEdge(Vertex<V,E>* other, EdgeType type);
 
 	// doc inherited from Vertex
-	virtual E* findEdge(Vertex<V,E>* other, EdgeType type);
+	virtual boost::shared_ptr<E> findEdge(Vertex<V,E>* other, EdgeType type);
 
 	// doc inherited from Vertex
-	virtual void addEdge(Vertex<V,E>* other, E* edge, EdgeType type);
+	virtual void addEdge(Vertex<V,E>* other, boost::shared_ptr<E> edge, EdgeType type);
 
 	// doc inherited from Vertex
 	virtual void successors(std::vector<V*>& out);
 
 	// doc inherited from Vertex
 	virtual void predecessors(std::vector<V*>& out);
+
 	// doc inherited from Vertex
 	virtual void adjacent(std::vector<V*>& out);
 
 	// doc inherited from Vertex
-	virtual void edges(EdgeType type , std::vector<E*>& out);
+	virtual void edges(EdgeType type , std::vector<boost::shared_ptr<E> >& out);
 
 	// doc inherited from Vertex
 	int inDegree();
@@ -103,49 +104,35 @@ DirectedVertex<V,E>::DirectedVertex(boost::shared_ptr<V> item) : Vertex<V,E>(ite
 }
 
 template<typename V, typename E>
-DirectedVertex<V,E>::~DirectedVertex() {
-	for (AdjListMapIterator iter = incoming->begin(); iter != incoming->end(); ++iter) {
-		// delete the edge
-		delete iter->second;
-		iter->first->removeEdge(this, Vertex<V,E>::OUTGOING);
-	}
+DirectedVertex<V,E>::~DirectedVertex(){
+  AdjListMapIterator iter;
+
+  const AdjListMapIterator incomingEnd = incoming->end();
+	for (iter = incoming->begin(); iter != incomingEnd; ++iter)  iter->first->removeEdge(this, Vertex<V,E>::OUTGOING);
 	delete incoming;
 
-	if (outgoing != 0) {
-		for (AdjListMapIterator iter = outgoing->begin(); iter != outgoing->end(); ++iter) {
-			// delete the edge
-			delete iter->second;
-			iter->first->removeEdge(this, Vertex<V,E>::INCOMING);
-		}
-	}
+  const AdjListMapIterator outgoingEnd = outgoing->end();
+	for (iter = outgoing->begin(); iter != outgoingEnd; ++iter)  iter->first->removeEdge(this, Vertex<V,E>::INCOMING);
 	delete outgoing;
 }
 
 template<typename V, typename E>
-E* DirectedVertex<V,E>::removeEdge(Vertex<V,E>* other, EdgeType type) {
-	AdjListMap* adjMap = outgoing;
-	if (type == Vertex<V,E>::INCOMING) {
-		adjMap = incoming;
-	}
-	return Vertex<V,E>::removeEdge(other, adjMap);
+boost::shared_ptr<E> DirectedVertex<V,E>::removeEdge(Vertex<V,E>* other, EdgeType type) {
+	return Vertex<V,E>::removeEdge(other, (type == Vertex<V,E>::INCOMING ? incoming : outgoing));
 }
 
 template<typename V, typename E>
-E* DirectedVertex<V,E>::findEdge(Vertex<V,E>* other, EdgeType type) {
-	AdjListMap* adjMap = outgoing;
-	if (type == Vertex<V,E>::INCOMING) {
-		adjMap = incoming;
-	}
-
+boost::shared_ptr<E> DirectedVertex<V,E>::findEdge(Vertex<V,E>* other, EdgeType type) {
+	boost::shared_ptr<E> ret;
+	AdjListMap* adjMap = (type == Vertex<V,E>::INCOMING ? incoming : outgoing);
 	AdjListMapIterator iter = adjMap->find(other);
-	if (iter == adjMap->end()) return NULL;
-	return iter->second;
+	return (iter != adjMap->end() ? iter->second : ret);
 }
 
 template<typename V, typename E>
-void DirectedVertex<V,E>::addEdge(Vertex<V,E>* other, E* edge, EdgeType type) {
-	if (type == Vertex<V,E>::INCOMING) (*incoming)[other] = edge;
-	else (*outgoing)[other] = edge;
+void DirectedVertex<V,E>::addEdge(Vertex<V,E>* other, boost::shared_ptr<E> edge, EdgeType type) {
+	if   (type == Vertex<V,E>::INCOMING) (*incoming)[other] = edge;
+	else                                 (*outgoing)[other] = edge;
 }
 
 template<typename V, typename E>
@@ -175,7 +162,7 @@ int DirectedVertex<V,E>::outDegree() {
 }
 
 template<typename V, typename E>
-void DirectedVertex<V,E>::edges(EdgeType type, std::vector<E*>& out) {
+void DirectedVertex<V,E>::edges(EdgeType type, std::vector<boost::shared_ptr<E> >& out) {
 	AdjListMap* map = outgoing;
 	if (type == Vertex<V,E>::INCOMING) map = incoming;
 	for (AdjListMapIterator iter = map->begin(); iter != map->end(); ++iter) {

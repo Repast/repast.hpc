@@ -68,13 +68,13 @@ public:
 	virtual ~UndirectedVertex();
 
 	// doc inherited from Vertex.h
-	virtual E* removeEdge(Vertex<V,E>* other, EdgeType type);
+	virtual boost::shared_ptr<E> removeEdge(Vertex<V,E>* other, EdgeType type);
 
 	// doc inherited from Vertex.h
-	virtual E* findEdge(Vertex<V,E>* other, EdgeType type);
+	virtual boost::shared_ptr<E> findEdge(Vertex<V,E>* other, EdgeType type);
 
 	// doc inherited from Vertex.h
-	virtual void addEdge(Vertex<V,E>* other, E* edge, EdgeType type);
+	virtual void addEdge(Vertex<V,E>* other, boost::shared_ptr<E> edge, EdgeType type);
 
 	// doc inherited from Vertex.h
 	virtual void successors(std::vector<V*>& out);
@@ -86,7 +86,7 @@ public:
 	virtual void adjacent(std::vector<V*>& out);
 
 	// doc inherited from Vertex.h
-	virtual void edges(EdgeType type , std::vector<E*>& out);
+	virtual void edges(EdgeType type , std::vector<boost::shared_ptr<E> >& out);
 
 	// doc inherited from Vertex.h
 	int inDegree();
@@ -102,28 +102,26 @@ UndirectedVertex<V,E>::UndirectedVertex(boost::shared_ptr<V> item) : Vertex<V,E>
 
 template<typename V, typename E>
 UndirectedVertex<V,E>::~UndirectedVertex() {
-	for (AdjListMapIterator iter = adjMap->begin(); iter != adjMap->end(); ++iter) {
-		// delete the edge
-		delete iter->second;
-		iter->first->removeEdge(this, Vertex<V,E>::INCOMING);
-	}
+  AdjListMapIterator iter;
+  const AdjListMapIterator mapEnd = adjMap->end();
+	for (iter = adjMap->begin(); iter != mapEnd; ++iter) iter->first->removeEdge(this, Vertex<V,E>::INCOMING);
 	delete adjMap;
 }
 
 template<typename V, typename E>
-E* UndirectedVertex<V,E>::removeEdge(Vertex<V,E>* other, EdgeType type) {
+boost::shared_ptr<E> UndirectedVertex<V,E>::removeEdge(Vertex<V,E>* other, EdgeType type) {
 	return Vertex<V,E>::removeEdge(other, adjMap);
 }
 
 template<typename V, typename E>
-E* UndirectedVertex<V,E>::findEdge(Vertex<V,E>* other, EdgeType type) {
+boost::shared_ptr<E> UndirectedVertex<V,E>::findEdge(Vertex<V,E>* other, EdgeType type) {
+	boost::shared_ptr<E> ret;
 	AdjListMapIterator iter = adjMap->find(other);
-	if (iter == adjMap->end()) return NULL;
-	return iter->second;
+	return (iter != adjMap->end() ? iter->second : ret);
 }
 
 template<typename V, typename E>
-void UndirectedVertex<V,E>::addEdge(Vertex<V,E>* other, E* edge, EdgeType type) {
+void UndirectedVertex<V,E>::addEdge(Vertex<V,E>* other, boost::shared_ptr<E> edge, EdgeType type) {
 	(*adjMap)[other] = edge;
 }
 
@@ -153,7 +151,7 @@ int UndirectedVertex<V,E>::outDegree() {
 }
 
 template<typename V, typename E>
-void UndirectedVertex<V,E>::edges(EdgeType type , std::vector<E*>& out) {
+void UndirectedVertex<V,E>::edges(EdgeType type , std::vector<boost::shared_ptr<E> >& out) {
 	for (AdjListMapIterator iter = adjMap->begin(); iter != adjMap->end(); ++iter) {
 		out.push_back(iter->second);
 	}

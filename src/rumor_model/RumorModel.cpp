@@ -379,7 +379,7 @@ void RumorModel::provideContent(const AgentRequest& request, vector<NodeContent>
 	}
 }
 
-void RumorModel::provideEdgeContent(const repast::RepastEdge<Node>* edge, std::vector<EdgeContent>& edgeContent) {
+void RumorModel::provideEdgeContent(const boost::shared_ptr<repast::RepastEdge<Node> > edge, std::vector<EdgeContent>& edgeContent) {
 	Node* source = edge->source();
 	Node* target = edge->target();
 	NodeContent sContent = { source->getId().id(), source->getId().startingRank(), source->getId().agentType(),
