@@ -13,6 +13,87 @@ const int foo();
 
 is actually meaningless. This also applies to enumerated types.
 
+8 March 2012: MakeGlobalSeedDefault
+
+The implementation of random number seed initialization in release 1.0.1 was
+counterintuitive. This revision changes the way that the options of
+global.random.seed, random.seed, and the presence or absence of a communicator
+in the initializeRandom function call are translated into a random number
+seed. 
+
+The framework provides for two basic use cases: in one, all processes use the
+identical random number seed; in the other, a single seed is given and used
+by process 0, but each other process receives a different seed that is derived
+from the original.
+
+Crosscutting these two alternatives is the source of the seed: it can be
+specified explicitly or generated from system time.
+
+The two property values, global.random.seed and random.seed, can be in one
+of three states: absent/omitted, a numeric value, or 'AUTO'. 'AUTO' means
+automatically generated from system time. However, if the property is omitted,
+the default is also to generate the seed from system time. The result is that
+some combinations of the property values are redundant.
+
+The initializeRandom function can be called with or without a communicator. This
+plus the three possible states for the properties gives 18 combinations; however,
+a value for 'global.random.seed' always takes precedence over 'random.seed'.
+(Note that it is assumed that all processes are working from identical
+properties collections.)
+The effective combinations and their outcomes are:
+
+
+No Communicator:
+   global.random.seed = NUMERIC: All processes uses this seed
+   global.random.seed = AUTO: FAILS*- Communicator required
+
+   global.random.seed omitted:
+       random.seed = NUMERIC: All processes use this seed
+       random.seed = AUTO: All processes use system time (may vary)
+       random.seed = omitted: All processes use system time (may vary)
+
+Using Communicator:
+   global.random.seed = NUMERIC: Each process uses this seed**
+   global.random.seed = AUTO: A seed is generated from system time on
+                                 process 0 and broadcast to all other 
+                                 processes
+
+   global.random.seed = omitted:
+      random.seed = NUMERIC: This seed is used on process 0, and all
+                                 other processes use seeds that are
+                                 derived from this but different from it
+      random.seed = AUTO: A seed from system time is used on process 0,
+                                 and all other processes use seeds that
+                                 are derived from this but different from it
+      random.seed = omitted: A seed is generated from system time on
+                                 process 0, and all other processes use seeds
+                                 that are derived from this but different from
+                                 it
+
+* The failure in the case of global.random.seed = AUTO when no communicator is
+provided may seem counterintuitive; one might consider that in this case each
+process would simply use system time. But system time may not be the same
+on all processes, and the use of 'global.random.seed' implies that all processes
+should be identical.
+
+** Note that if global.random.seed = NUMERIC, no actual transmission across
+processes takes place, even if a communicator is provided. This is allowed
+by the assumption that all processes work from identical properties collections.
+
+Note that the effective default cases are:
+
+If no communicator is used, and no value is specified for global.random.seed 
+nor for random.seed, each process will use system time.
+
+If a communicator is used, and no value is specified for global.random.seed
+nor for random.seed, all processes will have different but reproducible
+random number generation streams.
+
+Finally, note that the properties file is now changed by the call to
+initializeRandom: if the actual property specification was 'AUTO', this
+is overwritten with actual value that was used. This is specific to
+each processor; records should be kept accordingly if runs are to be reproduced.
+
 ===================================================================================
                  Repast HPC Version 1.0.1 Final Release Notes
 

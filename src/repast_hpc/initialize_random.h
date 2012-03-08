@@ -45,13 +45,84 @@
 
 #include "Properties.h"
 
+#define GLOBAL_RANDOM_SEED_PROPERTY "global.random.seed"
+#define RANDOM_SEED_PROPERTY "random.seed"
+
 namespace repast {
 
 /**
  * Initializes the Random singleton with any properties (seed,
  * distributions) found in the properties object.
  */
-void initializeRandom(const Properties& props, boost::mpi::communicator* comm = 0);
+void initializeRandom(Properties& props, boost::mpi::communicator* comm = 0);
+
+/*
+ * Generates a random number seed to use to initialize the random singleton
+ *
+ * Usage:
+ *
+ * Two properties can be specified in the properties object: "global.random.seed"
+ * and "random.seed"
+ *
+ * If global.random.seed is used, it must include either a numeric value usable as a seed
+ * OR the string 'AUTO'. If the numeric value is specified, this value is used as the
+ * random number seed on all processes. If the 'AUTO' value is specified, a seed is generated
+ * from system time on process 0 and communicated to all processes, so that all processes
+ * use the same seed. Note that if 'AUTO is used, a communicator must be provided to this
+ * function or an error will be thrown.
+ *
+ * If no global.random.seed is present in the properties collection, each processor will have
+ * its own random number seed. The seed is determined by the value for random.seed
+ * in the properties object and the presence or absence of a communicator object passed to
+ * this function. The value of random.seed must be either a numeric value usable as a seed
+ * or the string 'AUTO'; if no value for random.seed is specified, behavior is identical
+ * to random.number=AUTO. If the 'AUTO' value is specified or the property is omitted, a seed is
+ * generated from the system time; note that each process may have a different value for the
+ * seed because the system time will not necessarily be synchronized (though it cannot also
+ * be guaranteed that each process will have a unique value, and the values will likely be close
+ * together and thus not be completely independent). If a communicator object is passed to
+ * the function, the seeds used on each process will be different, but will be derived from
+ * the seed on process 0.
+ *
+ * If either 'global.random.seed' or 'random.seed' is "AUTO" in the properties collection,
+ * it is re-set with the value used for the seed; if both are absent, a random.seed value is added.
+ * If the seeds are different on each process, the property value in each process's instance
+ * will reflect the seed that it used; for seeds created using a communicator, the seed on
+ * process '0' should be preferentially recorded because it can be used to recreate the
+ * whole simulation run.
+ *
+ * In summary:
+ *
+ * If 'global.random.seed' IS in the properties collection:
+ *
+ * global.random.seed=<numeric>:
+ *     All processes will use this value as the random number seed.
+ *
+ * global.random.seed=AUTO:
+ *     A seed based on system time will be generated on proc 0 and sent to all other processes;
+ *     a communicator must be passed to this function.
+ *
+ *
+ * If 'global.random.seed' is NOT in the properties collection:
+ *
+ * random.seed=AUTO (or omitted)      & No communicator passed:
+ *     All processes use local system time to create their random number seeds
+ *
+ * random.seed=<numeric>              & No communicator passed:
+ *     All processes use the value of random.seed (if all properties collections are the
+ *     same on all processes, the seed is effectively global).
+ *
+ * random.seed=AUTO (or omitted)      & Communicator passed:
+ *     System time on process 0 is used to create a seed that is broadcast to all other processes;
+ *     this value is then used by each process to derive different random seeds according to
+ *     rank, and these are then used to initialize the random number generation system.
+ *
+ * random.seed=<numeric>              & Communicator passed:
+ *     The random number seed in the properties collection will be used by each process to create
+ *     different random seeds according to rank; these are then used to initialize the random
+ *     number generation system.
+ */
+void initializeSeed(Properties& props, boost::mpi::communicator* comm);
 
 }
 

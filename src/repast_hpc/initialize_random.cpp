@@ -41,10 +41,13 @@
 #include "boost/random/mersenne_twister.hpp"
 #include <boost/numeric/conversion/bounds.hpp>
 #include <boost/limits.hpp>
+#include <boost/mpi.hpp>
 
 #include "initialize_random.h"
 #include "Random.h"
 #include "Utilities.h"
+
+#include "RepastProcess.h" // TESTING ONLY
 
 #include <vector>
 
@@ -152,7 +155,7 @@ void createLogNormal(string& name, vector<string>& params) {
 	random->putGenerator(name, ng);
 }
 
-void initializeRandom(const Properties& props, boost::mpi::communicator* comm) {
+void initializeRandom(Properties& props, boost::mpi::communicator* comm) {
 	initializeSeed(props, comm);
 	for (Properties::key_iterator iter = props.keys_begin(); iter != props.keys_end(); iter++) {
 		string key = *iter;
@@ -184,32 +187,44 @@ void initializeRandom(const Properties& props, boost::mpi::communicator* comm) {
 	}
 }
 
-void initializeSeed(const Properties& props, boost::mpi::communicator* comm) {
-  // If a property with key = 'global.random.seed' is in the Properties class, it is used for all procs
-  std::string globalKey = "global.random.seed";
-  if(props.contains(globalKey)){
-    boost::uint32_t seed = strToUInt(props.getProperty(globalKey));
-    Random::initialize(seed);
-  }
-  else{
-    std::string key = "random.seed";
-    if(props.contains(key)){
-      boost::uint32_t seed = strToUInt(props.getProperty(key));
-      if(comm != 0){
-        boost::uint32_t mySeed = seed;
-        boost::mt19937 gen;
-        boost::uniform_real<> dist(0, boost::numeric::bounds<boost::uint32_t>::highest());
-        gen.seed(seed); // Uses the seed from the properties file
-        boost::variate_generator<boost::mt19937&, boost::uniform_real<> > localRNG(gen, dist);
-        int myRank = comm->rank();
-        for(int i = 0; i < comm->rank(); i++)  mySeed = localRNG(); // The assignment only matters on the last time through, but calling the generator is requisite.
-        Random::initialize(mySeed);
+void initializeSeed(Properties& props, boost::mpi::communicator* comm) {
+  // Default value for seed is local proc's system time
+  boost::uint32_t seed = (boost::uint32_t)time(0);
+
+  if(props.contains(GLOBAL_RANDOM_SEED_PROPERTY)){
+    std::string propVal = props.getProperty(GLOBAL_RANDOM_SEED_PROPERTY);
+    if(propVal.compare("AUTO") == 0){
+      if(comm == 0)  throw std::invalid_argument("'AUTO' specified for global.random.seed, but initializeSeed(Properties&, boost::mpi::communicator* = 0) is called with no communicator pointer. Automatically generated random seed (from process 0) cannot be shared to all processes.");
+      boost::mpi::broadcast(*comm, seed, 0);
+      props.putProperty(GLOBAL_RANDOM_SEED_PROPERTY, seed);
+    }
+    else{
+      seed = strToUInt(propVal);
+    }
+   }
+   else{
+    // If no global seed, then each proc will use its own seed
+    if(props.contains(RANDOM_SEED_PROPERTY)){
+      std::string propVal = props.getProperty(RANDOM_SEED_PROPERTY);
+      if(propVal.compare("AUTO") == 0){
+        if(comm != 0) boost::mpi::broadcast(*comm, seed, 0);
+        props.putProperty(RANDOM_SEED_PROPERTY, seed);
       }
       else{
-        Random::initialize(seed);
+        seed = (boost::uint32_t)strToUInt(propVal);
       }
     }
+    if(comm != 0){
+      boost::mt19937 gen;
+      boost::uniform_real<> dist(0, boost::numeric::bounds<boost::uint32_t>::highest());
+      gen.seed(seed);
+      boost::variate_generator<boost::mt19937&, boost::uniform_real<> > localRNG(gen, dist);
+      for(int i = 0; i < comm->rank(); i++)  seed = localRNG(); // The assignment only matters on the last time through, but calling the generator is requisite.
+    }
+    props.putProperty(RANDOM_SEED_PROPERTY, seed);
   }
+  std::cout << " RANK " << RepastProcess::instance()->rank() << " USING SEED " << seed << std::endl;
+  Random::initialize(seed);
 }
 
 }
