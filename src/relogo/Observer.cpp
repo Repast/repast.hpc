@@ -262,7 +262,7 @@ void Observer::removeAgent(const AgentId& id) {
 	context.removeAgent(id);
 }
 
-RelogoLink* Observer::link(RelogoAgent* source, RelogoAgent* target, const std::string& networkName) {
+boost::shared_ptr<RelogoLink> Observer::link(RelogoAgent* source, RelogoAgent* target, const std::string& networkName) {
 	NetworkType* net = findNetwork(networkName);
 	return net->findEdge(source, target);
 }

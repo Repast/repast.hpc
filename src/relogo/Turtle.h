@@ -253,7 +253,7 @@ public:
 	 *
 	 * @tparam AgentType the type of object contained by the agentset
 	 * @tparam LinkCreator an function or functor with the following signature
-	 * RelogoLink* (Turtle* source, Turtle* target)
+	 * boost::shared_ptr<RelogoLink> (Turtle* source, Turtle* target)
 	 */
 	template<typename AgentType, typename LinkCreator>
 	void
@@ -276,7 +276,7 @@ public:
 	 * @param network the name of the network
 	 * @param linkCreator an object used to create the link
 	 * @tparam LinkCreator an function or functor with the following signature
-	 * RelogoLink* (Turtle* source, Turtle* target)
+	 * boost::shared_ptr<RelogoLink> (Turtle* source, Turtle* target)
 	 */
 	template<typename LinkCreator>
 	void createLinkToLC(Turtle* turtle, LinkCreator& linkCreator, const std::string& network = DEFAULT_DIR_NET);
@@ -291,7 +291,7 @@ public:
 	 * @return the link from the specified turtle to this one in the
 	 * specified network which defaults to the default directed network.
 	 */
-	RelogoLink* inLinkFrom(Turtle* turtle, const std::string& name = DEFAULT_DIR_NET);
+	boost::shared_ptr<RelogoLink> inLinkFrom(Turtle* turtle, const std::string& name = DEFAULT_DIR_NET);
 
 	/**
 	 * Gets the link from the this turtle to the specified turtle in the
@@ -303,7 +303,7 @@ public:
 	 * @return the link from the this turtle to the specified turtle in the
 	 * specified network which defaults to the default directed network.
 	 */
-	RelogoLink* outLinkTo(Turtle* turtle, const std::string& name = DEFAULT_DIR_NET);
+	boost::shared_ptr<RelogoLink> outLinkTo(Turtle* turtle, const std::string& name = DEFAULT_DIR_NET);
 
 	/**
 	 * Gets the link between this turtle and the specified on in the named
@@ -313,7 +313,7 @@ public:
 	 * @return the link between this turtle and the specified on in the named
 	 * undirected network.
 	 */
-	RelogoLink* linkWith(Turtle* turtle, const std::string& name = DEFAULT_UNDIR_NET);
+	boost::shared_ptr<RelogoLink> linkWith(Turtle* turtle, const std::string& name = DEFAULT_UNDIR_NET);
 
 	/**
 	 * Gets whether or not this turtle is linked to the specified turtle, in the

@@ -205,8 +205,8 @@ Vertex<V, E>::Vertex(boost::shared_ptr<V> item) :
 
 template<typename V, typename E>
 boost::shared_ptr<E> Vertex<V, E>::removeEdge(Vertex<V, E>* other, AdjListMap* adjMap) {
-  AdjListMapIterator iter = adjMap->find(other);
   boost::shared_ptr<E> ret;
+  AdjListMapIterator iter = adjMap->find(other);
   if (iter != adjMap->end()) {
     ret = iter->second;
     adjMap->erase(iter);

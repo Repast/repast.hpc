@@ -389,7 +389,7 @@ public:
 	 * @param target the target of the link
 	 * @param networkName the name of the network to find link in
 	 */
-	RelogoLink* link(RelogoAgent* source, RelogoAgent* target, const std::string& networkName);
+	boost::shared_ptr<RelogoLink> link(RelogoAgent* source, RelogoAgent* target, const std::string& networkName);
 
 	/**
 	 * Gets the network predecessors of the specified agent in the specified network and puts
@@ -815,7 +815,7 @@ void Observer::turtlesAt(int x, int y, AgentSet<AgentType>& set) {
 template<typename LinkCreator>
 void Observer::createLink(RelogoAgent* source, RelogoAgent* target, const std::string& name, LinkCreator& creator) {
 	NetworkType* net = findNetwork(name);
-	RelogoLink* link = creator(source, target);
+	boost::shared_ptr<RelogoLink> link(creator(source, target));
 	net->addEdge(link);
 }
 

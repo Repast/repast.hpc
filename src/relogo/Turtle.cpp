@@ -291,20 +291,20 @@ void Turtle::createLinkTo(Turtle* turtle, const std::string& network) {
 	_observer->createLink(this, turtle, network);
 }
 
-RelogoLink* Turtle::inLinkFrom(Turtle* turtle, const std::string& name) {
+boost::shared_ptr<RelogoLink> Turtle::inLinkFrom(Turtle* turtle, const std::string& name) {
 	return _observer->link(turtle, this, name);
 }
 
-RelogoLink* Turtle::outLinkTo(Turtle* turtle, const std::string& name) {
+boost::shared_ptr<RelogoLink> Turtle::outLinkTo(Turtle* turtle, const std::string& name) {
 	return _observer->link(this, turtle, name);
 }
 
-RelogoLink* Turtle::linkWith(Turtle* turtle, const std::string& name) {
+boost::shared_ptr<RelogoLink> Turtle::linkWith(Turtle* turtle, const std::string& name) {
 	return _observer->link(this, turtle, name);
 }
 
 bool Turtle::linkNeighborQ(Turtle* turtle, const std::string& name) {
-	RelogoLink* link = _observer->link(this, turtle, name);
+	boost::shared_ptr<RelogoLink> link(_observer->link(this, turtle, name));
 	if (link == 0)
 		return _observer->link(turtle, this, name) != 0;
 	return true;

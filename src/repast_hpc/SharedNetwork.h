@@ -811,7 +811,7 @@ void SharedNetwork<V, E>::synchRemovedEdges() {
 template<typename Vertex, typename Edge, typename EdgeContent, typename EdgeManager>
 void synchEdges(SharedNetwork<Vertex, Edge>* net, EdgeManager& edgeManager) {
 
-	std::map<int, std::vector<Edge*>*>& exports = net->edgeExporter.getExportedEdges();
+	std::map<int, std::vector<boost::shared_ptr<Edge> >* >& exports = net->edgeExporter.getExportedEdges();
 	boost::mpi::communicator* world = RepastProcess::instance()->getCommunicator();
 
 	std::vector<boost::mpi::request> requests;
@@ -832,9 +832,9 @@ void synchEdges(SharedNetwork<Vertex, Edge>* net, EdgeManager& edgeManager) {
 	for (typename EdgeExporter<Edge>::EdgeMapIterator emIter = exports.begin(); emIter != exports.end(); ++emIter) {
 		// the process to send the edge to
 		int receiver = emIter->first;
-		std::vector<Edge*>* edges = emIter->second;
+		std::vector<boost::shared_ptr<Edge> >* edges = emIter->second;
 		contentVector->push_back( edgeContent = new std::vector<EdgeContent>);
-		for (typename std::vector<Edge*>::iterator iter = edges->begin(); iter != edges->end(); ++iter) {
+		for (typename std::vector<boost::shared_ptr<Edge> >::iterator iter = edges->begin(); iter != edges->end(); ++iter) {
 			edgeManager.provideEdgeContent(*iter, *edgeContent);
 		}
 		requests.push_back(world->isend(receiver, NET_EDGE_SYNC, *edgeContent));
