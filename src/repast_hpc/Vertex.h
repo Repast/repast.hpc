@@ -196,6 +196,7 @@ protected:
 	boost::shared_ptr<V> ptr;
 	boost::shared_ptr<E> removeEdge(Vertex<V, E>* other, AdjListMap* adjMap);
 	void getItems(AdjListMap *adjMap, std::vector<V*>& out);
+	void edges(AdjListMap *adjMap, std::vector<boost::shared_ptr<E> >& out);
 };
 
 template<typename V, typename E>
@@ -216,9 +217,18 @@ boost::shared_ptr<E> Vertex<V, E>::removeEdge(Vertex<V, E>* other, AdjListMap* a
 
 template<typename V, typename E>
 void Vertex<V, E>::getItems(AdjListMap *adjMap, std::vector<V*>& out) {
-	for (AdjListMapIterator iter = adjMap->begin(); iter != adjMap->end(); ++iter) {
-		out.push_back(iter->first->item().get());
-	}
+  const AdjListMapIterator iterEnd = adjMap->end();
+  for (AdjListMapIterator iter = adjMap->begin(); iter != iterEnd; ++iter) {
+    out.push_back(iter->first->item().get());
+  }
+}
+
+template<typename V, typename E>
+void Vertex<V, E>::edges(AdjListMap *adjMap, std::vector<boost::shared_ptr<E> >& out){
+  const AdjListMapIterator mapEnd = adjMap->end();
+  for (AdjListMapIterator iter = adjMap->begin(); iter != mapEnd; ++iter) {
+    out.push_back(iter->second);
+  }
 }
 
 }

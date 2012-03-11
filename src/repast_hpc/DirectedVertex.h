@@ -105,14 +105,7 @@ DirectedVertex<V,E>::DirectedVertex(boost::shared_ptr<V> item) : Vertex<V,E>(ite
 
 template<typename V, typename E>
 DirectedVertex<V,E>::~DirectedVertex(){
-  AdjListMapIterator iter;
-
-  const AdjListMapIterator incomingEnd = incoming->end();
-	for (iter = incoming->begin(); iter != incomingEnd; ++iter)  iter->first->removeEdge(this, Vertex<V,E>::OUTGOING);
 	delete incoming;
-
-  const AdjListMapIterator outgoingEnd = outgoing->end();
-	for (iter = outgoing->begin(); iter != outgoingEnd; ++iter)  iter->first->removeEdge(this, Vertex<V,E>::INCOMING);
 	delete outgoing;
 }
 
@@ -163,11 +156,7 @@ int DirectedVertex<V,E>::outDegree() {
 
 template<typename V, typename E>
 void DirectedVertex<V,E>::edges(EdgeType type, std::vector<boost::shared_ptr<E> >& out) {
-	AdjListMap* map = outgoing;
-	if (type == Vertex<V,E>::INCOMING) map = incoming;
-	for (AdjListMapIterator iter = map->begin(); iter != map->end(); ++iter) {
-		out.push_back(iter->second);
-	}
+  Vertex<V, E>::edges((type == Vertex<V,E>::INCOMING ? incoming : outgoing), out);
 }
 
 }

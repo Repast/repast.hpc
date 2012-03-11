@@ -102,9 +102,6 @@ UndirectedVertex<V,E>::UndirectedVertex(boost::shared_ptr<V> item) : Vertex<V,E>
 
 template<typename V, typename E>
 UndirectedVertex<V,E>::~UndirectedVertex() {
-  AdjListMapIterator iter;
-  const AdjListMapIterator mapEnd = adjMap->end();
-	for (iter = adjMap->begin(); iter != mapEnd; ++iter) iter->first->removeEdge(this, Vertex<V,E>::INCOMING);
 	delete adjMap;
 }
 
@@ -152,9 +149,7 @@ int UndirectedVertex<V,E>::outDegree() {
 
 template<typename V, typename E>
 void UndirectedVertex<V,E>::edges(EdgeType type , std::vector<boost::shared_ptr<E> >& out) {
-	for (AdjListMapIterator iter = adjMap->begin(); iter != adjMap->end(); ++iter) {
-		out.push_back(iter->second);
-	}
+  Vertex<V, E>::edges(adjMap, out);
 }
 
 
