@@ -44,22 +44,25 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <list>
 #include <iostream>
+
 #include <boost/mpi/communicator.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/unordered_set.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/ptr_container/ptr_list.hpp>
+#include <boost/serialization/utility.hpp>
+#include <boost/serialization/map.hpp>
 
 #include "Schedule.h"
 #include "AgentId.h"
 #include "SharedContext.h"
 #include "AgentRequest.h"
 #include "AgentStatus.h"
-#include "AgentExporter.h"
-#include "AgentImporter.h"
 #include "mpi_constants.h"
 #include "SRManager.h"
+#include "AgentImporterExporter.h"
 
 // these are for the timings logging
 #include "Utilities.h"
@@ -67,11 +70,15 @@
 
 namespace repast {
 
+static std::string DEFAULT_SHARED_AGENT_SET_NAME = "DefaultSharedAgentSetName";
+
+
 // TODO move these to where they are used
 typedef std::vector<int>::iterator IntIter;
 typedef std::vector<int>::const_iterator ConstIntIter;
 typedef std::vector<repast::Agent*>::iterator AgentPIterator;
 typedef std::map<int, repast::AgentRequest>::iterator IntARIter;
+
 
 /**
  * Encapsulates the process in which repast is running and
@@ -85,18 +92,31 @@ private:
 	typedef boost::unordered_set<AgentId, HashId> MovedAgentSetType;
 
 	template<typename Content, typename Provider>
-	friend void _synchAgents(Provider& provider, int tag, std::vector<std::vector<Content>*>& contents);
+	friend void _synchAgents(Provider& provider, int tag, std::vector<std::vector<Content>*>& contents
+#ifdef SHARE_AGENTS_BY_SET
+      , std::string setName = DEFAULT_AGENT_REQUEST_SET
+#endif
+);
+
 
 	template<typename T, typename Content, typename Provider, typename Receiver>
-	friend void requestAgents(SharedContext<T>&, AgentRequest& req, Provider& provider, Receiver& receiver);
+	friend void requestAgents(SharedContext<T>&, AgentRequest& req, Provider& provider, Receiver& receiver
+#ifdef SHARE_AGENTS_BY_SET
+	    , std::string setName = DEFAULT_AGENT_REQUEST_SET, AGENT_IMPORTER_EXPORTER_TYPE setType = DEFAULT_ENUM_SYMBOL
+#endif
+);
 
 	static RepastProcess *_instance;
 	ScheduleRunner* runner;
 	boost::mpi::communicator* world;
 	boost::mpi::communicator myWorld; // In case one is not provided
 	int rank_, worldSize_;
-	AgentImporter importer;
-	AgentExporter exporter;
+
+#ifndef SHARE_AGENTS_BY_SET
+	AbstractImporterExporter* importer_exporter;
+#else
+	ImporterExporter_BY_SET* importer_exporter;
+#endif
 
 	// key is process and value are requests from importers
 	// that the key-process should now export to. Used when
@@ -106,11 +126,12 @@ private:
 	std::map<int, std::vector<AgentRequest>*> importers;
 	MovedAgentSetType movedAgents;
 
-	// updates exporters to account for any moved agents.
-	void updateExporters();
-
 	// called by request agents function to initiate the request
+#ifndef SHARE_AGENTS_BY_SET
 	void initiateAgentRequest(AgentRequest& requests);
+#else
+	void initiateAgentRequest(AgentRequest& requests, std::string setName, AGENT_IMPORTER_EXPORTER_TYPE setType);
+#endif
 
 protected:
 	RepastProcess(boost::mpi::communicator* comm = 0);
@@ -134,7 +155,7 @@ public:
 	 */
 	static RepastProcess* instance();
 
-	static boost::mpi::communicator* communicator();
+  static boost::mpi::communicator* communicator();
 
 	virtual ~RepastProcess();
 
@@ -179,6 +200,10 @@ public:
 	 */
 	void moveAgent(const AgentId& id, int process);
 
+
+	// FOR NEW IMPORTER_EXPORTER
+	void agentMoved(const AgentId& id, int process);
+	
 	/**
 	 * NON USER API.
 	 *
@@ -231,33 +256,37 @@ public:
 		return *runner;
 	}
 
-	boost::mpi::communicator* getCommunicator(){
-	  return world;
-	}
+  boost::mpi::communicator* getCommunicator(){
+    return world;
+  }
 
+#ifdef SHARE_AGENTS_BY_SET
+  void dropImporterExporterSet(std::string setName){
+    importer_exporter->dropSet(setName);
+  }
+#endif
 };
+
 
 template<typename T, typename Content, typename Provider, typename AgentCreator>
 void RepastProcess::syncAgentStatus(SharedContext<T>& context, Provider& provider, AgentCreator& creator) {
-	std::vector<boost::mpi::request> requests;
-	std::vector<std::vector<AgentStatus>* > statusUpdates;
-	importer.recvStatus(*world, requests, statusUpdates);
-	exporter.sendStatus(*world, requests);
 
-	boost::mpi::wait_all(requests.begin(), requests.end());
-	requests.clear();
-	exporter.clearStateMap();
+  std::vector<std::vector<AgentStatus>* > statusUpdates;
+  importer_exporter->exchangeAgentStatusUpdates(*world, statusUpdates);
 
 	for (size_t i = 0, n = statusUpdates.size(); i < n; i++) {
 		std::vector<AgentStatus>* vec = statusUpdates[i];
 		for (size_t j = 0, k = vec->size(); j < k; ++j) {
 			AgentStatus& status = (*vec)[j];
-			if (status.getStatus() == AgentStatus::MOVED) {
-				// tell importer that we no longer import 1 agent from the old rank
-				importer.decrementImportedAgentCount(status.getOldId().currentRank());
+			if (status.getStatus() == AgentStatus::REMOVED) {
+        importer_exporter->importedAgentIsRemoved(status.getOldId()); // Notify importer/exporter that this agent will not be imported anymore
+        context.importedAgentRemoved(status.getOldId());              // Remove from context; agent cannot exist on this process after removal from home process
+      }
+			else if (status.getStatus() == AgentStatus::MOVED) {
 				if (rank_ != status.getNewId().currentRank()) {
-					// tell importer we import one more agent from the new rank
-					importer.incrementImportedAgentCount(status.getNewId().currentRank());
+					// Notify importer that this agent will not be imported from the original
+				  // process, but will instead be imported from its new home
+					importer_exporter->importedAgentIsMoved(status.getOldId(), status.getNewId().currentRank());
 					// find it and update its id
 					T* agent = context.getAgent(status.getOldId());
 					if (agent == (void*) 0) {
@@ -266,18 +295,14 @@ void RepastProcess::syncAgentStatus(SharedContext<T>& context, Provider& provide
 					}
 					agent->getId().currentRank(status.getNewId().currentRank());
 				}
-			} else if (status.getStatus() == AgentStatus::REMOVED) {
-				// tell importer that we no longer import 1 agent from the old rank
-				importer.decrementImportedAgentCount(status.getOldId().currentRank());
-				// force removal from context
-				context.importedAgentRemoved(status.getOldId());
+				else{
+				  // Notify importer that the agent will not be imported anymore because this is its home process now
+				  importer_exporter->importedAgentIsNowLocal(status.getOldId());
+				}
 			}
 		}
 		delete vec;
 	}
-
-	// updates exporting processes to account for moved agents
-	updateExporters();
 
 	// send the moved agents to the process they moved to
 	// who does this have to send to
@@ -285,7 +310,6 @@ void RepastProcess::syncAgentStatus(SharedContext<T>& context, Provider& provide
 	std::map<int, AgentRequest> agentRequests;
 	for (MovedAgentSetType::iterator iter = movedAgents.begin(); iter != movedAgents.end(); ++iter) {
 		AgentId id = *iter;
-		//std::cout << "moving " << id << " from " << rank_ << " to " << id.currentRank() << std::endl;
 		int currentProc = id.currentRank();
 		psMovedTo.insert(currentProc);
 		IntARIter mapIter = agentRequests.find(currentProc);
@@ -299,6 +323,8 @@ void RepastProcess::syncAgentStatus(SharedContext<T>& context, Provider& provide
 				req.addRequest(id);
 		}
 	}
+
+	// Clear the moved agents data
 	movedAgents.clear();
 
 	std::vector<int> psToSendTo(psMovedTo.begin(), psMovedTo.end());
@@ -308,28 +334,42 @@ void RepastProcess::syncAgentStatus(SharedContext<T>& context, Provider& provide
 	SRManager manager(world);
 	manager.retrieveSources(psToSendTo, psToReceiveFrom, AGENT_MOVED_SENDERS);
 
-	std::vector<std::vector<Content>*> contents;
+
+	std::vector<boost::mpi::request> requests;
+
+	std::vector<std::pair<std::vector<Content>*, AgentExporterInfo*>* > contentsAndExporterInfo;
 
 	for (std::vector<int>::const_iterator iter = psToReceiveFrom.begin(); iter != psToReceiveFrom.end(); ++iter) {
 		int source = *iter;
-		std::vector<Content>* content = new std::vector<Content>();
-		requests.push_back(world->irecv(source, AGENT_MOVED_AGENT, *content));
-		contents.push_back(content);
+    std::pair<std::vector<Content>*, AgentExporterInfo*>* toRecv =
+        new std::pair<std::vector<Content>*, AgentExporterInfo*>;
+		requests.push_back(world->irecv(source, AGENT_MOVED_AGENT, *toRecv));
+		contentsAndExporterInfo.push_back(toRecv);
 	}
 
-	boost::ptr_vector<std::vector<Content> >* contentVectors = new boost::ptr_vector<std::vector<Content> >;
-	std::vector<Content>* content;
+	// Note: boost ptr_list takes care of memory cleanup:
+  boost::ptr_list<std::vector<Content> >                                 contentPtrList;       // To contain the vectors of content
+  boost::ptr_list<std::pair<std::vector<Content>*, AgentExporterInfo*> > pairPtrList;          // To contain the pairs of ptrs to vectors and agent export info
+
+  std::vector<Content>*                                                  content;
+  std::pair<std::vector<Content>*, AgentExporterInfo*>*                  toSend;
 
 	for (IntARIter iter = agentRequests.begin(); iter != agentRequests.end(); ++iter) {
-		const AgentRequest& req = iter->second;
-		contentVectors->push_back(content = new std::vector<Content> );
-		provider.provideContent(req, *content);
-		requests.push_back(world->isend(iter->first, AGENT_MOVED_AGENT, *content));
+    contentPtrList.push_back( content = new std::vector<Content> );
+		provider.provideContent(iter->second, *content);
+    AgentExporterInfo* agentImporterInfoPtr = importer_exporter->getAgentExportInfo(iter->first);
+    pairPtrList.push_back( toSend = new std::pair<std::vector<Content>*, AgentExporterInfo*>(content, agentImporterInfoPtr) );
+
+		requests.push_back(world->isend(iter->first, AGENT_MOVED_AGENT, toSend));
 	}
 
-	boost::mpi::wait_all(requests.begin(), requests.end());
-	delete contentVectors;
 
+	boost::mpi::wait_all(requests.begin(), requests.end());
+
+	// Clear all sent data
+	importer_exporter->clearAgentExportInfo();
+	
+  // Remove the agents that are moving to other processes
 	for (IntARIter iter = agentRequests.begin(); iter != agentRequests.end(); ++iter) {
 		const AgentRequest& req = iter->second;
 		const std::vector<AgentId>& ids = req.requestedAgents();
@@ -339,25 +379,30 @@ void RepastProcess::syncAgentStatus(SharedContext<T>& context, Provider& provide
 		}
 	}
 
-	for (int i = 0, n = contents.size(); i < n; i++) {
-		std::vector<Content>* content = contents[i];
-		for (typename std::vector<Content>::const_iterator iter = content->begin(); iter != content->end(); ++iter) {
-			T* out = creator.createAgent(*iter);
-			out->getId().currentRank(rank_);
-			if (!context.addAgent(out)) {
-				// already contained the agent as an imported agent so update the existing
-				// agent's id;
-				T* agent = context.getAgent(out->getId());
-				agent->getId().currentRank(rank_);
-				//std::cout << rank_ << " : agent already added " << out->getId() << std::endl;
-				delete out;
-			} else {
-				context.incrementProjRefCount(out->getId());
-			}
-			AgentId id = out->getId();
-		}
-		delete content;
+	// Insert the newly received agents that moved to this process and update exporters
+	typename std::vector<std::pair<std::vector<Content>*, AgentExporterInfo*> * >::iterator pairIter = contentsAndExporterInfo.begin();
+	while(pairIter != contentsAndExporterInfo.end()){
+	  // First do all the contents
+	  typename std::vector<Content>::iterator contentIter = (*((*pairIter)->first)).begin();
+	  while(contentIter != (*((*pairIter)->first)).end()){
+      T* out = creator.createAgent(*contentIter);
+      out->getId().currentRank(rank_);
+      if (!context.addAgent(out)) {
+        // Already contained the agent as an imported agent so update the existing agent's id
+        T* agent = context.getAgent(out->getId());
+        agent->getId().currentRank(rank_);
+        delete out;
+      } else {
+        context.incrementProjRefCount(out->getId());
+      }
+	    contentIter++;
+	  }
+	  // Next do the exporter update
+	  importer_exporter->incorporateAgentExporterInfo(*((*pairIter)->second));
+    // And go to the next proc's data
+	  pairIter++;
 	}
+
 }
 
 /**
@@ -377,17 +422,28 @@ void RepastProcess::syncAgentStatus(SharedContext<T>& context, Provider& provide
  * the Content, implementing void updateAgent(const Content&).
  */
 template<typename Content, typename Provider, typename Updater>
-void syncAgents(Provider& provider, Updater& updater) {
+void syncAgents(Provider& provider, Updater& updater
+#ifdef SHARE_AGENTS_BY_SET
+   , std::string setName = REQUEST_AGENTS_ALL
+#endif
+) {
 	std::vector<std::vector<Content>*> contents;
+
+#ifndef SHARE_AGENTS_BY_SET
 	_synchAgents<Content> (provider, AGENT_SYNC_STATE_TAG, contents);
+#else
+	_synchAgents<Content> (provider, AGENT_SYNC_STATE_TAG, contents, setName);
+#endif
+
 	for (int i = 0, n = contents.size(); i < n; i++) {
-		std::vector<Content>* content = contents[i];
-		for (typename std::vector<Content>::const_iterator iter = content->begin(); iter != content->end(); ++iter) {
-			updater.updateAgent(*iter);
-		}
-		delete content;
+	  std::vector<Content>* content = contents[i];
+	  for (typename std::vector<Content>::const_iterator iter = content->begin(); iter != content->end(); ++iter) {
+      updater.updateAgent(*iter);
+    }
+		delete contents[i];
 	}
 }
+
 
 /**
  * NON USER API.
@@ -397,35 +453,52 @@ void syncAgents(Provider& provider, Updater& updater) {
  *
  */
 template<typename Content, typename Provider>
-void _synchAgents(Provider& provider, int tag, std::vector<std::vector<Content>*>& contents) {
+void _synchAgents(Provider& provider, int tag, std::vector<std::vector<Content>*>& contents
+#ifdef SHARE_AGENTS_BY_SET
+   , std::string setName = REQUEST_AGENTS_ALL
+#endif
+){
 
 	RepastProcess* rp = RepastProcess::instance();
-	// set of processes exporting to this
-	std::map<int, int>& exporters = rp->importer.exportingSources;
-	// map processes that this exports to
-	std::map<int, AgentRequest>& importers = rp->exporter.exportedMap;
 	boost::mpi::communicator* world = rp->getCommunicator();
 	std::vector<boost::mpi::request> requests;
-	for (std::map<int, int>::const_iterator iter = exporters.begin(); iter != exporters.end(); ++iter) {
-		int source = iter->first;
+
+  // set of processes exporting to this
+#ifndef SHARE_AGENTS_BY_SET
+	const std::set<int>& exporters = rp->importer_exporter->getExportingProcesses();
+#else
+	const std::set<int>& exporters = rp->importer_exporter->getExportingProcesses(setName);
+#endif
+
+	for (std::set<int>::const_iterator iter = exporters.begin(); iter != exporters.end(); ++iter) {
+		int source = *iter;
 		std::vector<Content>* content = new std::vector<Content>();
 		requests.push_back(world->irecv(source, tag, *content));
 		contents.push_back(content);
 	}
-	boost::ptr_vector<std::vector<Content> >* contentVectors = new boost::ptr_vector<std::vector<Content> >;
+
+  // map processes that this exports to
+#ifndef SHARE_AGENTS_BY_SET
+  const std::map<int, AgentRequest>& agentsToExport = rp->importer_exporter->getAgentsToExport();
+#else
+  const std::map<int, AgentRequest>& agentsToExport = rp->importer_exporter->getAgentsToExport(setName);
+#endif
+
+  boost::ptr_list<std::vector<Content> > ptrList;
+
   std::vector<Content>* content;
-  for (std::map<int, AgentRequest>::const_iterator iter = importers.begin(); iter != importers.end(); ++iter) {
-		const AgentRequest& req = iter->second;
-    contentVectors->push_back(content = new std::vector<Content> );
-  	provider.provideContent(req, *content);
+	for (std::map<int, AgentRequest>::const_iterator iter = agentsToExport.begin(); iter != agentsToExport.end(); ++iter) {
+		ptrList.push_back( content = new std::vector<Content> );
+		provider.provideContent(iter->second, *content);
 		requests.push_back(world->isend(iter->first, tag, *content));
 	}
+
 	boost::mpi::wait_all(requests.begin(), requests.end());
-	delete contentVectors;
+
 }
 
 /**
- * Requests agents from one process to others. Copies of the requested agents
+ * Requests agents from one process to others. Copies of the requested agents'
  * Content are retrieved from their respective processes, created using
  * the AgentCreator and added to the specified context.
  *
@@ -446,14 +519,25 @@ void _synchAgents(Provider& provider, int tag, std::vector<std::vector<Content>*
  *
  */
 template<typename T, typename Content, typename Provider, typename AgentCreator>
-void requestAgents(SharedContext<T>& context, AgentRequest& request, Provider& provider, AgentCreator& creator) {
-	// this starts the request -- with 0 commmunicating to
-	// each process who to receive from and who to send to.
-	// Once it is complete the exporters and importers should
-	// be set up
+void requestAgents(SharedContext<T>& context, AgentRequest& request, Provider& provider, AgentCreator& creator
+#ifdef SHARE_AGENTS_BY_SET
+    , std::string setName = DEFAULT_AGENT_REQUEST_SET, AGENT_IMPORTER_EXPORTER_TYPE setType = DEFAULT_ENUM_SYMBOL
+#endif
+){
+
+  std::vector<std::vector<Content>*> contents;
+
+#ifndef SHARE_AGENTS_BY_SET
   RepastProcess::instance()->initiateAgentRequest(request);
-	std::vector<std::vector<Content>*> contents;
-	_synchAgents<Content> (provider, AGENT_TAG, contents);
+  _synchAgents<Content> (provider, AGENT_TAG, contents);
+#else
+  RepastProcess::instance()->initiateAgentRequest(request, setName, setType);
+	_synchAgents<Content> (provider, AGENT_TAG, contents, setName);
+#endif
+
+	// Add the agents to the context (Note: information for previously shared agents
+	// may also be sent; if so the 'addAgent' will fail silently; the agent's information
+	// will NOT be updated)
 	for (int i = 0, n = contents.size(); i < n; i++) {
 		std::vector<Content>* content = contents[i];
 		for (typename std::vector<Content>::const_iterator iter = content->begin(); iter != content->end(); ++iter) {
