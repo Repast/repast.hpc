@@ -127,6 +127,38 @@ irrelevant to the Repast HPC code.
 Earlier released version failed to delete the instance of the rumor model object
 from the heap, leading to a potential memory leak. 
 
+12 March 2012: Refactor 'RelogoAgent' to avoid hiding 'heading' function
+
+Refactor RelogoAgent; omit 'heading()' because patches don't have headings.
+    
+A proposed alternative to eliminate the 'virtual override' error that
+was occurring on the Intel compiler. The function:
+    
+     RelogoAgent::heading(){ return 0; }
+    
+is, clearly, meaningless. RelogoAgent is a parent class for AbstractRelogoAgent,
+which is parent to both Patch and Turtle classes. Patches do not have
+headings, so the heading() function could be pushed down the hierarchy
+to the 'Turtle' class. This not only makes sense, but would eliminate the
+error that the Intel compiler was giving (in which the Turtle's version
+of the function was hiding the parent class's).
+    
+The obstacle was the 'hatch' method of the Observer class. The Observer class
+is aware of RelogoAgent, but not of Turtle. The 'hatch' method must make
+a copy of the object being hatched. In the original implementation, this
+included a call to heading() (which did exist for RelogoAgent), and also
+a call to heading(float) (which does not exist for RelogoAgent). The presumption
+is that only Turtles are actually hatched.
+    
+The solution proposed here is to replace the explicit calls to heading() and
+heading(float) in the Observer::hatch method with a single call to a new method:
+    
+    virtual void RelogoAgent::hatchCopy(){}
+    
+This does nothing at the RelogoAgent level, but can be extended in child classes
+as needed. The Turtle class is modified to include this, and it currently sets
+only the heading, but custom child classes could omit this or do more.
+
 ===================================================================================
                  Repast HPC Version 1.0.1 Final Release Notes
 
