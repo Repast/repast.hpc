@@ -45,6 +45,7 @@
 #include "Random.h"
 #include "ValueLayer.h"
 #include "Projection.h"
+#include "RepastErrors.h"
 
 #include <boost/unordered_map.hpp>
 #include <boost/smart_ptr.hpp>
@@ -1185,7 +1186,7 @@ Context<T>::~Context() {
 template<typename T>
 void Context<T>::addProjection(Projection<T>* projection) {
 	if (find(projections.begin(), projections.end(), projection) != projections.end())
-		throw std::invalid_argument("Projection '" + projection->name() + "' is already contained in the context");
+      throw Repast_Error_9(projection->name()); // Projection with specified name already in context
 
 	for (const_iterator iter = begin(); iter != end(); ++iter) {
 		projection->addAgent(*iter);

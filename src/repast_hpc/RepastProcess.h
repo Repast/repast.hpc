@@ -60,6 +60,7 @@
 #include "AgentImporter.h"
 #include "mpi_constants.h"
 #include "SRManager.h"
+#include "RepastErrors.h"
 
 // these are for the timings logging
 #include "Utilities.h"
@@ -260,10 +261,8 @@ void RepastProcess::syncAgentStatus(SharedContext<T>& context, Provider& provide
 					importer.incrementImportedAgentCount(status.getNewId().currentRank());
 					// find it and update its id
 					T* agent = context.getAgent(status.getOldId());
-					if (agent == (void*) 0) {
-						throw std::domain_error(
-								"Trying to update the id of a moved agent when that agent does not exist on this process");
-					}
+					if (agent == (void*) 0)	throw Repast_Error_32<AgentId>(status.getOldId()); // Agent not found
+
 					agent->getId().currentRank(status.getNewId().currentRank());
 				}
 			} else if (status.getStatus() == AgentStatus::REMOVED) {

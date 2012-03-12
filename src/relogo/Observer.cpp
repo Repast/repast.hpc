@@ -48,6 +48,7 @@
 #include "repast_hpc/Point.h"
 #include "utility.h"
 #include "creators.h"
+#include "RelogoErrors.h"
 
 using namespace std;
 
@@ -222,11 +223,11 @@ Observer::NetworkType* Observer::findNetwork(const std::string& name) {
 	NetworkType* net = static_cast<NetworkType*> (context.getProjection(name));
 	if (net == 0) {
 		if (name == DEFAULT_DIR_NET)
-			throw std::invalid_argument("The default directed network must be created before using it");
+			throw ReLogo_Error_1(name); // The default directed network must be created before using it
 		else if (name == DEFAULT_UNDIR_NET)
-			throw std::invalid_argument("The default undirected network must be create before using it");
+			throw ReLogo_Error_2(name); // The default undirected network must be create before using it
 		else
-			throw std::invalid_argument("Network '" + name + "' must be created before it can be used");
+			throw ReLogo_Error_3(name); // Network must be created before it can be used
 	}
 	return net;
 }

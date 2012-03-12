@@ -57,6 +57,7 @@
 #include "logger.h"
 #include "Utilities.h"
 #include "SRManager.h"
+#include "RepastErrors.h"
 
 
 namespace repast {
@@ -461,8 +462,7 @@ void SharedNetwork<V, E>::addSender(int rank) {
 template<typename V, typename E>
 void SharedNetwork<V, E>::removeSender(int rank) {
 	std::map<int, int>::iterator iter = senders.find(rank);
-	if (iter == senders.end())
-		throw std::invalid_argument("cannot remove non-existent sender");
+	if (iter == senders.end()) throw Repast_Error_30(rank); // Cannot remove non-existent sender
 
 	int val = iter->second;
 	if (val == 1)

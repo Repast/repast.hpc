@@ -39,6 +39,7 @@
  */
 
 #include "Utilities.h"
+#include "RepastErrors.h"
 
 #include <sstream>
 #include <stdexcept>
@@ -88,7 +89,7 @@ boost::uint32_t strToUInt(const string& val) {
 	if (stream >> i)
 		return i;
 	else
-		throw invalid_argument("Expecting int but received '" + val + "'");
+		throw Repast_Error_44(val); // Value is not convertible to unsigned integer
 }
 
 int strToInt(const string& val) {
@@ -97,7 +98,7 @@ int strToInt(const string& val) {
 	if (stream >> i)
 		return i;
 	else
-		throw invalid_argument("Expecting int but received '" + val + "'");
+		throw Repast_Error_45(val); // Value is not convertible to integer
 }
 
 double strToDouble(const string& val) {
@@ -106,7 +107,7 @@ double strToDouble(const string& val) {
 	if (stream >> i)
 		return i;
 	else
-		throw invalid_argument("Expecting double but received '" + val + "'");
+		throw Repast_Error_46(val); // Value is not convertible to double
 }
 
 }

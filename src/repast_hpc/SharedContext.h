@@ -42,6 +42,7 @@
 #define SHAREDCONEXT_HPP_
 
 #include "Context.h"
+#include "RepastErrors.h"
 
 #include <boost/mpi.hpp>
 #include <exception>
@@ -806,18 +807,15 @@ void SharedContext<T>::incrementProjRefCount(const AgentId& id) {
 
 template<typename T>
 void SharedContext<T>::decrementProjRefCount(const AgentId& id) {
-	if (id.currentRank() != _rank) {
-		RefMap::iterator iter = projRefMap.find(id);
-		if (iter == projRefMap.end()) {
-			throw std::invalid_argument("Id is not in the projection reference map");
-		} else {
-			int count = --(iter->second);
-			if (count == 0)
-				projRefMap.erase(iter);
-			else
-				projRefMap[id] = count;
-		}
-	}
+	if (id.currentRank() == _rank) return;
+
+	RefMap::iterator iter = projRefMap.find(id);
+	if (iter == projRefMap.end())	throw Repast_Error_31<AgentId>(id); // Id is not in the projection reference map
+
+	int count = --(iter->second);
+	if   (count == 0)	projRefMap.erase(iter);
+	else              projRefMap[id] = count;
+
 }
 
 // Local Agents Only

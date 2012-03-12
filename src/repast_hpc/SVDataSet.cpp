@@ -49,6 +49,7 @@
 #include "SVDataSet.h"
 #include "RepastProcess.h"
 #include "io.h"
+#include "RepastErrors.h"
 
 namespace fs = boost::filesystem;
 
@@ -132,8 +133,7 @@ void SVDataSet::init() {
 }
 
 void SVDataSet::record() {
-	if (!open)
-		throw std::domain_error("Data cannot be recorded to a closed DataSet.");
+	if (!open) throw Repast_Error_28(); // Data set not open
 	if (rank == 0) {
 		ticks.push_back(_schedule->getCurrentTick());
 	}
@@ -143,8 +143,7 @@ void SVDataSet::record() {
 }
 
 void SVDataSet::write() {
-	if (!open)
-		throw std::domain_error("Data cannot be written to a closed DataSet.");
+	if (!open) throw Repast_Error_29();
 	for (size_t i = 0; i < dataSources.size(); i++) {
 		SVDataSource * ds = dataSources[i];
 		Variable* var = 0;

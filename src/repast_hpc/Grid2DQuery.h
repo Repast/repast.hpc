@@ -41,6 +41,8 @@
 #ifndef GRID2DQUERY_H_
 #define GRID2DQUERY_H_
 
+#include "RepastErrors.h"
+
 namespace repast {
 
 /**
@@ -79,7 +81,8 @@ template<typename T>
 Grid2DQuery<T>::Grid2DQuery(const Grid<T, int>* grid) :
 	_grid(grid) {
 	if (grid->dimensions().dimensionCount() != 2)
-		throw std::invalid_argument("Grid2DQuery only accepts 2D grids");
+      throw Repast_Error_10(grid->dimensions().dimensionCount()); // Grid2DQuery only accepts 2D grids
+
 	GridDimensions dimensions = grid->dimensions();
 
 	for (size_t i = 0; i < 2; i++) {

@@ -45,6 +45,7 @@
 
 #include "Properties.h"
 #include "io.h"
+#include "RepastErrors.h"
 
 #include "boost/serialization/map.hpp"
 #include "boost/mpi/collectives.hpp"
@@ -106,12 +107,12 @@ void Properties::readFile(const std::string& file, boost::mpi::communicator* com
       fileInStream.read(PROPFILEBUFFER, maxPropFileSize);
       // Check if fail:
       if(fileInStream.gcount() >= (maxPropFileSize - 2)){
-        throw invalid_argument("Properties file '" + file + "' exceeds maximum allowed size and was read incompletely. A larger file size can usually be specified when calling the Properties constructor.");
+        throw Repast_Error_52(maxPropFileSize, fileInStream.gcount(), file); // Properties file exceeds maximum allowed size
       }
       PROPFILEBUFFER[fileInStream.gcount()] = '\0'; // Add a null terminator
       fileInStream.close();
     } else {
-      throw invalid_argument("Properties file '" + file + "' not found.");
+      throw Repast_Error_53(file); // Properties file not found
     }
   }
   if(comm != 0){                                                               // If a communicator was passed, proc 0 broadcasts to all other procs
@@ -129,11 +130,11 @@ void Properties::readFile(const std::string& file, boost::mpi::communicator* com
     if (line.length() > 0 && line[0] != '#') {
       size_t pos = line.find_first_of("=");
       if (pos == string::npos)
-        throw invalid_argument("Missing '=' in properties file " + file + "'");
+        throw Repast_Error_54(line, file); // Missing '=' in properties file
       string key = line.substr(0, pos);
       repast::str_trim(key);
       if (key.length() == 0)
-        throw invalid_argument("Missing key value in properties file " + file + "'");
+        throw Repast_Error_55(line, file); // Missing key value in properties file
       string value = "";
       if (line.length() > pos) {
         // this makes sure we only try to get value if it exists
@@ -141,7 +142,7 @@ void Properties::readFile(const std::string& file, boost::mpi::communicator* com
       }
       repast::str_trim(value);
       if (value.length() == 0)
-        throw invalid_argument("Missing key value in properties file " + file + "'");
+        throw Repast_Error_56(line, file); // Missing key value in properties file
       map[key] = value;
     }
   }

@@ -39,6 +39,7 @@
  */
 
 #include "GridComponents.h"
+#include "RepastErrors.h"
 
 #include <algorithm>
 #include <cmath>
@@ -50,7 +51,7 @@ namespace repast {
 // strict borders implementation
 void Borders::boundsCheck(const vector<int>& pt) const {
 	if (!_dimensions.contains(pt))
-		throw std::out_of_range("Point is out of dimension range");
+		throw Repast_Error_12<GridDimensions>(pt, _dimensions); // Point is out of dimension range
 }
 
 void Borders::boundsCheck(const vector<double>& pt) const {
@@ -76,7 +77,7 @@ void Borders::transform(const std::vector<int>& in, std::vector<int>& out) const
 
 void StrictBorders::translate(const std::vector<double>& oldPos, std::vector<double>& newPos, const std::vector<double>& displacement) const {
 	if (displacement.size() != oldPos.size() || displacement.size() != newPos.size())
-		throw std::invalid_argument("Position and displacement vectors must be of the same size");
+		throw Repast_Error_13(oldPos, newPos, displacement); // Position and displacement vectors must be of the same size
 
 	for (int i = 0, n = displacement.size(); i < n; ++i) {
 		newPos[i] = displacement[i] + oldPos[i];
@@ -87,7 +88,7 @@ void StrictBorders::translate(const std::vector<double>& oldPos, std::vector<dou
 void StrictBorders::translate(const std::vector<int>& oldPos, std::vector<int>& newPos,
 		const std::vector<int>& displacement) const {
 	if (displacement.size() != oldPos.size() || displacement.size() != newPos.size())
-		throw std::invalid_argument("Position and displacement vectors must be of the same size");
+	  throw Repast_Error_14(oldPos, newPos, displacement); // Position and displacement vectors must be of the same size
 
 	for (int i = 0, n = displacement.size(); i < n; ++i) {
 		newPos[i] = displacement[i] + oldPos[i];
@@ -166,7 +167,7 @@ void WrapAroundBorders::translate(const std::vector<double>& oldPos, std::vector
 		double>& displacement) const {
 
 	if (displacement.size() != oldPos.size() || displacement.size() != newPos.size())
-		throw std::invalid_argument("Position and displacement vectors must be of the same size");
+		throw Repast_Error_15(oldPos, newPos, displacement); // Position and displacement vectors must be of the same size
 
 	for (int i = 0, n = displacement.size(); i < n; ++i) {
 		newPos[i] = displacement[i] + oldPos[i];
@@ -179,7 +180,7 @@ void WrapAroundBorders::translate(const std::vector<int>& oldPos, std::vector<in
 		const std::vector<int>& displacement) const {
 
 	if (displacement.size() != oldPos.size() || displacement.size() != newPos.size())
-		throw std::invalid_argument("Position and displacement vectors must be of the same size");
+	  throw Repast_Error_16(oldPos, newPos, displacement); // Position and displacement vectors must be of the same size
 
 	for (int i = 0, n = displacement.size(); i < n; ++i) {
 		newPos[i] = displacement[i] + oldPos[i];
@@ -201,7 +202,7 @@ void StickyBorders::init(const GridDimensions& dimensions) {
 void StickyBorders::translate(const std::vector<double>& oldPos, std::vector<double>& newPos,
 		const std::vector<double>& displacement) const {
 	if (displacement.size() != oldPos.size() || displacement.size() != newPos.size())
-		throw std::invalid_argument("Position and displacement vectors must be of the same size");
+	  throw Repast_Error_17(oldPos, newPos, displacement); // Position and displacement vectors must be of the same size
 
 	for (int i = 0, n = displacement.size(); i < n; ++i) {
 		newPos[i] = calcCoord<double>(displacement[i] + oldPos[i], i);
@@ -212,7 +213,7 @@ void StickyBorders::translate(const std::vector<int>& oldPos, std::vector<int>& 
 		const std::vector<int>& displacement) const {
 	//std::cout << displacement.size() << ", " << oldPos.size() << "," << newPos.size() << std::endl;
 	if (displacement.size() != oldPos.size() || displacement.size() != newPos.size())
-			throw std::invalid_argument("Position and displacement vectors must be of the same size");
+	  throw Repast_Error_18(oldPos, newPos, displacement); // Position and displacement vectors must be of the same size
 
 		for (int i = 0, n = displacement.size(); i < n; ++i) {
 			newPos[i] = calcCoord<int>(displacement[i] + oldPos[i], i);

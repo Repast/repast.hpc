@@ -54,6 +54,7 @@
 #include "logger.h"
 #include "SRManager.h"
 #include "GridMovePackets.h"
+#include "RepastErrors.h"
 
 namespace repast {
 
@@ -399,9 +400,9 @@ SharedBaseGrid<T, GPTransformer, Adder, GPType>::SharedBaseGrid(std::string name
   size_t dimCount = gridDims.dimensionCount();
 
   if (dimCount > 2)
-		throw std::invalid_argument("Number of grid dimensions must be 1 or 2.");
+		throw Repast_Error_49<GridDimensions>(dimCount, gridDims); // Number of grid dimensions must be 1 or 2
 	if (processDims.size() != gridDims.dimensionCount())
-		throw std::invalid_argument("Number of process dimensions must be equal to number of grid dimensions.");
+		throw Repast_Error_50<GridDimensions>(dimCount, gridDims, processDims.size()); // Number of grid dimensions must be equal to number of process dimensions
 
 	std::vector<int> extents;
 	for (size_t i = 0; i < dimCount; i++) {
@@ -413,8 +414,7 @@ SharedBaseGrid<T, GPTransformer, Adder, GPType>::SharedBaseGrid(std::string name
 		               "    dimension      = " << dimCount << "\n" <<
 		               "    extent         = " << extent << "\n" <<
 		               "    processCount   = " << pCount << std::endl;
-			throw std::invalid_argument(
-					"Number of processes in a given dimension must divide evenly into the extent of that dimension");
+			throw Repast_Error_51(dimCount, extent, pCount);// Number of processes must divide evenly into the extent in a given dimension
 		}
 		extents.push_back((int) tmp);
 	}

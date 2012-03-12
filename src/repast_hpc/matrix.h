@@ -46,6 +46,7 @@
 #include <map>
 
 #include "Point.h"
+#include "RepastErrors.h"
 
 namespace repast {
 
@@ -128,10 +129,10 @@ Matrix<T>::~Matrix() {
 template<typename T>
 void Matrix<T>::boundsCheck(const Point<int>& index) {
 	if (index.dimensionCount() != dCount)
-		throw std::out_of_range("Number of index dimensions != number of matrix dimensions");
+		throw Repast_Error_47<Point<int> >(dCount, index.dimensionCount(), index); // Number of index dimensions != number of matrix dimensions
 	for (int i = 0; i < dCount; i++) {
 		if (index.getCoordinate(i) < 0 || index.getCoordinate(i) >= _size.getCoordinate(i))
-			throw std::out_of_range("Matrix Bounds Check: index is out of range");
+			throw Repast_Error_48<Point<int> >(i, index.getCoordinate(i), index, _size.getCoordinate(i)); // Matrix Bounds Check: index is out of range
 	}
 }
 

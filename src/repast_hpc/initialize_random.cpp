@@ -69,7 +69,7 @@ void initializeSeed(const Properties& props, boost::mpi::communicator* comm);
 
 void createDblUni(string& name, vector<string>& params) {
 	if (params.size() != 3)
-		throw invalid_argument("double_uniform distribution  '" + name + "' requires two parameters");
+		throw Repast_Error_19(name, params); // Wrong number of parameters
 	double from = strToDouble(trim(params[1]));
 	double to = strToDouble(trim(params[2]));
 	Random* random = Random::instance();
@@ -80,7 +80,7 @@ void createDblUni(string& name, vector<string>& params) {
 
 void createIntUni(string& name, vector<string>& params) {
 	if (params.size() != 3)
-		throw invalid_argument("double_uniform distribution  '" + name + "' requires two parameters");
+	  throw Repast_Error_20(name, params); // Wrong number of parameters
 	int from = strToInt(trim(params[1]));
 	int to = strToInt(trim(params[2]));
 
@@ -92,7 +92,7 @@ void createIntUni(string& name, vector<string>& params) {
 
 void createTriangle(string& name, vector<string>& params) {
 	if (params.size() != 4)
-		throw invalid_argument("triangle distribution  '" + name + "' requires three parameters");
+	  throw Repast_Error_21(name, params); // Wrong number of parameters
 	double lower = strToDouble(trim(params[1]));
 	double mostLikely = strToDouble(trim(params[2]));
 	double upper = strToDouble(trim(params[3]));
@@ -106,7 +106,7 @@ void createTriangle(string& name, vector<string>& params) {
 
 void createCauchy(string& name, vector<string>& params) {
 	if (params.size() != 3)
-		throw invalid_argument("cauchy distribution  '" + name + "' requires two parameters");
+	  throw Repast_Error_22(name, params); // Wrong number of parameters
 	double median = strToDouble(trim(params[1]));
 	double sigma = strToDouble(trim(params[2]));
 
@@ -119,7 +119,7 @@ void createCauchy(string& name, vector<string>& params) {
 
 void createExponential(string& name, vector<string>& params) {
 	if (params.size() != 2)
-		throw invalid_argument("exponential distribution  '" + name + "' requires one parameter");
+	  throw Repast_Error_23(name, params); // Wrong number of parameters
 	double lambda = strToDouble(trim(params[1]));
 
 	Random* random = Random::instance();
@@ -131,7 +131,7 @@ void createExponential(string& name, vector<string>& params) {
 
 void createNormal(string& name, vector<string>& params) {
 	if (params.size() != 3)
-		throw invalid_argument("normal distribution  '" + name + "' requires two parameters");
+	  throw Repast_Error_24(name, params); // Wrong number of parameters
 	double mean = strToDouble(trim(params[1]));
 	double sigma = strToDouble(trim(params[2]));
 
@@ -144,7 +144,7 @@ void createNormal(string& name, vector<string>& params) {
 
 void createLogNormal(string& name, vector<string>& params) {
 	if (params.size() != 3)
-		throw invalid_argument("log normal distribution  '" + name + "' requires two parameters");
+	  throw Repast_Error_25(name, params); // Wrong number of parameters
 	double mean = strToDouble(trim(params[1]));
 	double sigma = strToDouble(trim(params[2]));
 
@@ -164,8 +164,8 @@ void initializeRandom(Properties& props, boost::mpi::communicator* comm) {
 			string name = key.substr(13);
 			vector<string> params;
 			tokenize(props.getProperty(key), params, ",");
-			if (params.size() < 2)
-				throw invalid_argument("Distribution property  '" + name + "' requires at least two parameters");
+			if (params.size() < 1)
+			  throw Repast_Error_26(name, params); // Wrong number of parameters
 			const string type = params[0];
 			if (type == DBL_UNI_DIST)
 				createDblUni(name, params);
@@ -182,7 +182,7 @@ void initializeRandom(Properties& props, boost::mpi::communicator* comm) {
 			else if (type == LOG_NORMAL_DIST)
 				createLogNormal(name, params);
 			else
-				throw invalid_argument("Unknown distribution type  '" + type + ".");
+			  throw Repast_Error_27(name, params); // Unrecognized type name
 		}
 	}
 }

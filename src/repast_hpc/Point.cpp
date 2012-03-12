@@ -39,6 +39,7 @@
  */
 
 #include "Point.h"
+#include "RepastErrors.h"
 
 #include <stdexcept>
 #include <iostream>
@@ -61,13 +62,13 @@ GridDimensions::GridDimensions(Point<int> extent) :
 GridDimensions::GridDimensions(Point<int> origin, Point<int> dimensions) :
 	_extents(dimensions), _origin(origin) {
 	if (_extents.dimensionCount() != _origin.dimensionCount()) {
-		throw invalid_argument("Origin dimension count != dimensions dimension count");
+		throw Repast_Error_36<Point<int> >(origin, dimensions, _origin.dimensionCount(), _extents.dimensionCount()); // Origin dimension count != dimensions dimension count
 	}
 }
 
 bool GridDimensions::contains(const std::vector<int>& pt) const {
 	if (pt.size() != _origin.dimensionCount()) {
-		throw invalid_argument("Point dimension count != dimensions' dimension count");
+		throw Repast_Error_37(pt, _origin.dimensionCount()); // Point dimension count != dimensions' dimension count
 	}
 
 	for (size_t i = 0; i < pt.size(); i++) {
@@ -91,7 +92,7 @@ bool GridDimensions::contains(const Point<double>& pt) const {
 bool GridDimensions::contains(const std::vector<double>& pt) const {
 
 	if (pt.size() != _origin.dimensionCount()) {
-		throw invalid_argument("Point dimension count != dimensions' dimension count");
+	  throw Repast_Error_38(pt, _origin.dimensionCount()); // Point dimension count != dimensions' dimension count
 	}
 
 	for (size_t i = 0; i < pt.size(); i++) {
