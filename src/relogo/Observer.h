@@ -721,7 +721,7 @@ AgentType* Observer::hatch(RelogoAgent* parent, FactoryFunctor agentCreator) {
 	}
 
 	AgentType* agent = agentCreator(repast::AgentId(id, _rank, agentTypeId), this);
-	agent->heading(parent->heading());
+	agent->hatchCopy(parent);
 	context.addAgent(agent);
 	agent->setxy(parent->xCor(), parent->yCor());
 	typeMap[info] = std::make_pair(agentTypeId, id + 1);

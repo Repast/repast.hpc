@@ -71,6 +71,12 @@ public:
 	virtual ~Turtle() {
 	}
 
+	// Doc from RelogoAgent.h
+	virtual void hatchCopy(RelogoAgent* parent){
+	  Turtle* parentTurtle = (Turtle*)parent;
+	  _heading = parentTurtle->heading();
+	}
+
 	/**
 	 * Sets the x coordinate of the Turtle's location. If the
 	 * location is outside of the world bounds this will throw an exception.

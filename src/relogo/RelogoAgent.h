@@ -112,14 +112,11 @@ public:
 		return _location;
 	}
 
-	/**
-	 * Gets the heading of this RelogoAgent.
-	 *
-	 * @return the heading of this RelogoAgent.
-	 */
-	virtual float heading() {
-		return 0;
-	}
+  /**
+   * If this ReLogo agent is 'hatched', makes an appropriate
+   * copy, setting instance variables as appropriate.
+   */
+	virtual void hatchCopy(){}
 
 	/**
 	 * Gets the x coordinate of the agent's location.
