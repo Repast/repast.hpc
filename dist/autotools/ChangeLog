@@ -94,6 +94,39 @@ initializeRandom: if the actual property specification was 'AUTO', this
 is overwritten with actual value that was used. This is specific to
 each processor; records should be kept accordingly if runs are to be reproduced.
 
+(Revised 12 March 2012: debug code deleted)
+
+12 March 2012: Shared Pointer Edges
+
+This feature addresses a known memory leak in code related to networks. 
+The leak occurs when an edge is added to a network that already contains
+an edge linking the same two vertices, and no other pointer to the original
+edge exists other than that stored by the network.
+
+Vertices store pointers to edges. When a new edge is added that duplicates
+an existing edge, pointer to the original edge is dropped.
+
+Technically this is not necessarily a RepastHPC memory leak: it is possible
+that the user has maintained a separate pointer. However, this is unlikely,
+and the semantics of the Repast HPC code provide no indication that the
+user should do so. (An example can be found in our own demo code: the
+Rumor model exhibited this leak.)
+
+Several solutions are possible. For example, adding a duplicate edge could be
+trapped as an error. Alternatively, adding a duplicate edge could be
+interpreted within the semantics of a simulation as adding the two edges
+together (for example, weight + weight). Or the graph could be allowed to
+have multiple edges between the same two vertices- a 'multigraph'. But
+the cleanest solution for now is to replace the pointers used with
+instances of boost:shared_ptr. These automatically track when they are
+'orphaned'; the user may or may not maintain separate pointers, but this is
+irrelevant to the Repast HPC code.
+
+12 March 2012: Added 'delete rumorModel' to Rumor Model run code.
+
+Earlier released version failed to delete the instance of the rumor model object
+from the heap, leading to a potential memory leak. 
+
 ===================================================================================
                  Repast HPC Version 1.0.1 Final Release Notes
 
