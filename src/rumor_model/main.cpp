@@ -104,6 +104,8 @@ void runRumorModel(std::string propsFile, int argc , char** argv) {
 
 	if (world.rank() == 0)
 	  rumorModel->writeProps("RumorModelRuns.csv", init_time, run_time);
+	
+	delete rumorModel;
 }
 
 int main(int argc, char **argv) {
