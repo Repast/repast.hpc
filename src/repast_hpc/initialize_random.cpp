@@ -223,7 +223,6 @@ void initializeSeed(Properties& props, boost::mpi::communicator* comm) {
     }
     props.putProperty(RANDOM_SEED_PROPERTY, seed);
   }
-  std::cout << " RANK " << RepastProcess::instance()->rank() << " USING SEED " << seed << std::endl;
   Random::initialize(seed);
 }
 
