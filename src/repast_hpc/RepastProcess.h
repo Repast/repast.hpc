@@ -354,7 +354,6 @@ void RepastProcess::syncAgentStatus(SharedContext<T>& context, Provider& provide
 			} else {
 				context.incrementProjRefCount(out->getId());
 			}
-			AgentId id = out->getId();
 		}
 		delete content;
 	}

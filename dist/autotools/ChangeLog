@@ -159,6 +159,43 @@ This does nothing at the RelogoAgent level, but can be extended in child classes
 as needed. The Turtle class is modified to include this, and it currently sets
 only the heading, but custom child classes could omit this or do more.
 
+13 March 2012: Sync Agent Status dangling pointer
+
+The RepastProcess::syncAgentStatus function contained the following curious
+line:
+
+for (int i = 0, n = contents.size(); i < n; i++) {
+  std::vector<Content>* content = contents[i];
+  for (typename std::vector<Content>::const_iterator iter = content->begin(); iter != content->end(); ++iter) {
+    T* out = creator.createAgent(*iter);
+    out->getId().currentRank(rank_);
+    if (!context.addAgent(out)) {
+      // already contained the agent as an imported agent so update the existing
+      // agent's id;
+      T* agent = context.getAgent(out->getId());
+      agent->getId().currentRank(rank_);
+      //std::cout << rank_ << " : agent already added " << out->getId() << std::endl;
+      delete out;
+    } else {
+      context.incrementProjRefCount(out->getId());
+    }
+    AgentId id = out->getId();
+  }
+  delete content;
+}
+
+The line "AgentId id = out->getId();" is both curious and spurious: the variable it
+creates falls out of scope immediately, and the getId() method does not change the instance
+on which it is called. Removing this line should have no effect, and testing supports this.
+
+However, removing the line should prevent undefined behavior: in the case where the first
+branch of the conditional is taken, 'out' should be deleted. Calling out->getId() is, in
+fact, undefined. In most implementations it should be harmless: the values that are used to
+create the AgentId are, perhaps, changed from what they were before, but no runtime error
+should result. Nevertheless, there is a possibility that a crash could occur.
+
+To prevent this, the line is removed.
+
 ===================================================================================
                  Repast HPC Version 1.0.1 Final Release Notes
 
