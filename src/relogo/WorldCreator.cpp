@@ -43,25 +43,25 @@
 namespace repast {
 namespace relogo {
 
-repast::Projection<RelogoAgent>*  WorldCreator::createGrid(const WorldDefinition& def, const std::vector<int>& pConfiguration) const {
+repast::Projection<RelogoAgent>*  WorldCreator::createDiscreteSpace(const WorldDefinition& def, const std::vector<int>& pConfiguration) const {
 	repast::Projection<RelogoAgent>* proj = 0;
   boost::mpi::communicator world;
 	if (def.isWrapped()) {
-		proj = new ToroidalGrid(GRID_NAME, def.dimensions(), pConfiguration, def.buffer(), comm);
+		proj = new ToroidalDiscreteSpace(GRID_NAME, def.dimensions(), pConfiguration, def.buffer(), comm);
 	} else {
-		proj = new Grid(GRID_NAME, def.dimensions(), pConfiguration, def.buffer(), comm);
+		proj = new BoundedDiscreteSpace(GRID_NAME, def.dimensions(), pConfiguration, def.buffer(), comm);
 	}
 	return proj;
 
 }
 
-repast::Projection<RelogoAgent>*  WorldCreator::createSpace(const WorldDefinition& def, const std::vector<int>& pConfiguration) const {
+repast::Projection<RelogoAgent>*  WorldCreator::createContinuousSpace(const WorldDefinition& def, const std::vector<int>& pConfiguration) const {
 	repast::Projection<RelogoAgent>* proj = 0;
 	boost::mpi::communicator world;
 	if (def.isWrapped()) {
-		proj = new ToroidalSpace(SPACE_NAME, def.dimensions(), pConfiguration, def.buffer(), comm);
+		proj = new ToroidalContinuousSpace(SPACE_NAME, def.dimensions(), pConfiguration, def.buffer(), comm);
 	} else {
-		proj = new ContinuousSpace(SPACE_NAME, def.dimensions(), pConfiguration, def.buffer(), comm);
+		proj = new BoundedContinuousSpace(SPACE_NAME, def.dimensions(), pConfiguration, def.buffer(), comm);
 	}
 	return proj;
 }

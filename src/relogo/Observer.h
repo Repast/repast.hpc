@@ -50,8 +50,8 @@
 
 #include "AgentSet.h"
 #include "RelogoAgent.h"
-#include "RelogoGridAdder.h"
-#include "RelogoSpaceAdder.h"
+#include "RelogoDiscreteSpaceAdder.h"
+#include "RelogoContinuousSpaceAdder.h"
 #include "WorldDefinition.h"
 #include "creators.h"
 #include "relogo.h"
@@ -918,28 +918,28 @@ template<typename AgentContent, typename Provider, typename AgentsCreator>
 void Observer::synchronizeBuffers(Provider& provider, AgentsCreator& creator) {
 	RelogoGridType* aGrid = const_cast<RelogoGridType*> (grid());
 	if (aGrid->isPeriodic()) {
-		((ToroidalGrid*) aGrid)->initSynchBuffer(context);
+		((relogo::ToroidalDiscreteSpace*) aGrid)->initSynchBuffer(context);
 	} else {
-		((relogo::Grid*) aGrid)->initSynchBuffer(context);
+		((relogo::BoundedDiscreteSpace*) aGrid)->initSynchBuffer(context);
 	}
 
 	RelogoSpaceType* aSpace = const_cast<RelogoSpaceType*> (space());
 	if (aSpace->isPeriodic()) {
-		((ToroidalSpace*) aSpace)->initSynchBuffer(context);
+		((relogo::ToroidalContinuousSpace*) aSpace)->initSynchBuffer(context);
 	} else {
-		((relogo::ContinuousSpace*) aSpace)->initSynchBuffer(context);
+		((relogo::BoundedContinuousSpace*) aSpace)->initSynchBuffer(context);
 	}
 
 	if (aGrid->isPeriodic()) {
-		((ToroidalGrid*) aGrid)->synchBuffer<AgentContent> (context, provider, creator);
+		((relogo::ToroidalDiscreteSpace*) aGrid)->synchBuffer<AgentContent> (context, provider, creator);
 	} else {
-		((relogo::Grid*) aGrid)->synchBuffer<AgentContent> (context, provider, creator);
+		((relogo::BoundedDiscreteSpace*) aGrid)->synchBuffer<AgentContent> (context, provider, creator);
 	}
 
 	if (aSpace->isPeriodic()) {
-		((ToroidalSpace*) aSpace)->synchBuffer<AgentContent> (context, provider, creator);
+		((relogo::ToroidalContinuousSpace*) aSpace)->synchBuffer<AgentContent> (context, provider, creator);
 	} else {
-		((relogo::ContinuousSpace*) aSpace)->synchBuffer<AgentContent> (context, provider, creator);
+		((relogo::BoundedContinuousSpace*) aSpace)->synchBuffer<AgentContent> (context, provider, creator);
 	}
 }
 
