@@ -47,7 +47,7 @@
 #include "AgentStatus.h"
 #include "mpi_constants.h"
 
-#define SHARE_AGENTS_BY_SET
+//#define SHARE_AGENTS_BY_SET
 
 // If you wish to allow a single cancellation to be used
 // to cancel all of an agent's requests, define this

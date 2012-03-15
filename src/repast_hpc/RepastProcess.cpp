@@ -115,15 +115,17 @@ void RepastProcess::addImportedAgent(AgentId id) {
 
 void RepastProcess::agentRemoved(const AgentId& id) {
 	movedAgents.erase(id);
-//	exporter.agentRemoved(id);
 	importer_exporter->agentRemoved(id);
 }
 
 
 void RepastProcess::moveAgent(const AgentId& id, int process) {
-	MovedAgentSetType::const_iterator iter = movedAgents.find(id);
+  AgentId newId(id);
+  newId.currentRank(process);
+  MovedAgentSetType::const_iterator iter = movedAgents.find(newId);
 	if (iter == movedAgents.end()){
 	  importer_exporter->agentMoved(id, process);
+	  movedAgents.insert(newId);
 	}
   else {
 		AgentId other = *iter;
