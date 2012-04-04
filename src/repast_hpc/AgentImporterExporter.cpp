@@ -43,6 +43,8 @@
 
 #include "boost/serialization/set.hpp"
 
+#include "boost/mpi.hpp" // debug only
+
 using namespace repast;
 
 /* AgentExporterData */
@@ -147,6 +149,7 @@ void AgentExporterData::clear(){
     delete iter->second;
     iter++;
   }
+  data.clear();
 }
 
 void AgentExporterData::removeAllDataForAgent(AgentId& id){
@@ -239,6 +242,21 @@ void Importer_COUNT::importedAgentIsMoved(const AgentId& id, int newProcess){
   incrementCount(newProcess);
 }
 
+std::string Importer_COUNT::getReport(){
+  std::stringstream ss;
+  ss << "Importer_COUNT: Map Size = " << sources.size() << ":  \n";
+  if(sources.size() > 0){
+    ss << "   ";
+    std::map<int, int>::iterator it          = sources.begin();
+    const std::map<int, int>::iterator itEnd = sources.end();
+    while(it != itEnd){
+      ss << "[ Source Proc: " << it->first << " | " << it->second << "] ";
+      it++;
+    }
+    ss << std::endl;
+  }
+  return ss.str();
+}
 
 #endif
 
@@ -294,7 +312,6 @@ void Importer_LIST::checkRecord(std::list<AgentId>* record, int rank){
 
 
 void Importer_LIST::registerOutgoingRequests(AgentRequest &req){
-
   // First, loop through the requested Agent IDs
   std::vector<AgentId>::iterator reqAgentIdIterator = req.requestedAgents_.begin();
   while(reqAgentIdIterator != req.requestedAgents_.end()){
@@ -312,13 +329,13 @@ void Importer_LIST::registerOutgoingRequests(AgentRequest &req){
 
   // Then loop through the cancellations
   std::vector<AgentId>::iterator cancelledIdIterator = req.cancellations_.begin();
+
   while(cancelledIdIterator != req.cancellations_.end()){
     AgentId &id = *cancelledIdIterator;
 
 #ifdef ALLOW_FULL_AGENT_REQUEST_CANCELLATION
     bool isFullCancel = checkForFullCancellation(id);
 #endif
-
     int idRank = id.currentRank();
 
     // Retrieve the current list for this source rank
@@ -333,9 +350,11 @@ void Importer_LIST::registerOutgoingRequests(AgentRequest &req){
       // If there is no entry for this ID, just delete the cancellation
       if(firstInstance == record->end()) cancelledIdIterator = req.cancellations_.erase(cancelledIdIterator);
       else{
+
 #ifdef ALLOW_FULL_AGENT_REQUEST_CANCELLATION
         if(!isFullCancel){
 #endif
+
         // See if there is a second entry in the record
         std::list<AgentId>::iterator secondFind = firstInstance;
         secondFind++;
@@ -344,13 +363,13 @@ void Importer_LIST::registerOutgoingRequests(AgentRequest &req){
         // If so, need to delete one but should not pass on the cancellation
         if(secondFind != record->end()){
           record->erase(secondFind);    // We know there are at least two, so no possibility that size->0
-          cancelledIdIterator++;
+          cancelledIdIterator = req.cancellations_.erase(cancelledIdIterator);
         }
         else{
-          // If there is only one entry in the record, delete it and pass along
+          // If there is only one entry in the record, delete it AND pass along
           // the cancellation
           removeID(firstInstance, record, idRank);
-          cancelledIdIterator = req.cancellations_.erase(cancelledIdIterator);
+          cancelledIdIterator++;
         }
 
 #ifdef ALLOW_FULL_AGENT_REQUEST_CANCELLATION
@@ -379,6 +398,29 @@ void Importer_LIST::importedAgentIsMoved(const AgentId& id, int newProcess){
     std::list<AgentId>* record = getRecord(newProcess);
     for(int i = 0; i < c; i++) record->push_back(newId);
   }
+}
+
+
+std::string Importer_LIST::getReport(){
+  std::stringstream ss;
+  ss << "Importer_LIST: Map Size = " << sources.size() << ":  \n";
+  if(sources.size() > 0){
+    ss << "   ";
+    std::map<int, std::list<AgentId>* >::iterator it          = sources.begin();
+    const std::map<int, std::list<AgentId>* >::iterator itEnd = sources.end();
+    while(it != itEnd){
+      ss << "[ Source Proc: " << it->first << " | ";
+      std::list<AgentId>::iterator listIt = it->second->begin();
+      const std::list<AgentId>::iterator listItEnd = it->second->end();
+      while(listIt != listItEnd){
+        ss << *listIt << " ";
+        listIt++;
+      }
+      ss << "]" << std::endl;
+      it++;
+    }
+  }
+  return ss.str();
 }
 
 #endif
@@ -466,6 +508,28 @@ void Importer_SET::importedAgentIsMoved(const AgentId& id, int newProcess){
       record->insert(newId);
     }
   }
+}
+
+std::string Importer_SET::getReport(){
+  std::stringstream ss;
+  ss << "Importer_SET: Map Size = " << sources.size() << ":  \n";
+  if(sources.size() > 0){
+    ss << "   ";
+    std::map<int, std::set<AgentId>* >::iterator it          = sources.begin();
+    const std::map<int, std::set<AgentId>* >::iterator itEnd = sources.end();
+    while(it != itEnd){
+      ss << "[ Source Proc: " << it->first << " | ";
+      std::set<AgentId>::iterator setIt = it->second->begin();
+      const std::set<AgentId>::iterator setItEnd = it->second->end();
+      while(setIt != setItEnd){
+        ss << *setIt << " ";
+        setIt++;
+      }
+      ss << "]" << std::endl;
+      it++;
+    }
+  }
+  return ss.str();
 }
 
 #endif
@@ -617,6 +681,28 @@ void Importer_MAP_int::importedAgentIsMoved(const AgentId& id, int newProcess){
   }
 }
 
+std::string Importer_MAP_int::getReport(){
+  std::stringstream ss;
+  ss << "Importer_MAP_int: Map Size = " << sources.size() << ":  \n";
+  if(sources.size() > 0){
+    ss << "   ";
+    std::map<int, std::map<AgentId, int>* >::iterator it          = sources.begin();
+    const std::map<int, std::map<AgentId, int>* >::iterator itEnd = sources.end();
+    while(it != itEnd){
+      ss << "[ Source Proc: " << it->first << " | ";
+      std::map<AgentId, int>::iterator mapIt = it->second->begin();
+      const std::map<AgentId, int>::iterator mapItEnd = it->second->end();
+      while(mapIt != mapItEnd){
+        ss << mapIt->first << " = " << mapIt->second << ", ";
+        mapIt++;
+      }
+      ss << " ]" << std::endl;
+      it++;
+    }
+  }
+  return ss.str();
+}
+
 #endif
 
 
@@ -668,6 +754,7 @@ void AbstractExporter::agentRemoved(const AgentId& id){
     if(numberRemoved > 0){
       (*outgoingStatusChanges)[requestIter->first].insert(status);
       if(req->requestCountRequested() == 0){
+        processesExportedTo.erase(requestIter->first);
         std::map<int, AgentRequest>::iterator temp = requestIter;
         requestIter++;
         exportedMap.erase(temp);
@@ -694,6 +781,7 @@ void AbstractExporter::agentMoved(const AgentId& id, int process){
       outgoingAgentExporterInformation->addData(id, process, requestIter->first, numberRemoved);
       (*outgoingStatusChanges)[requestIter->first].insert(status);
       if(req->requestCountRequested() == 0){
+        processesExportedTo.erase(requestIter->first);
         std::map<int, AgentRequest>::iterator temp = requestIter;
         requestIter++;
         exportedMap.erase(temp);
@@ -707,6 +795,7 @@ void AbstractExporter::agentMoved(const AgentId& id, int process){
 void AbstractExporter::incorporateAgentExporterInfo(std::map<int, AgentRequest*> info){
   std::map<int, AgentRequest*>::iterator infoIter = info.begin();
   while(infoIter != info.end()){
+    processesExportedTo.insert(infoIter->first);
     exportedMap[infoIter->first].addAll(*(infoIter->second));
     infoIter++;
   }
@@ -760,6 +849,7 @@ void Exporter_LIST::registerIncomingRequests(std::vector<AgentRequest>& requests
     if (iter == exportedMap.end()) {
       AgentRequest request(requestingProc, -1);
       exportedMap[requestingProc] = request;
+      processesExportedTo.insert(requestingProc);
       iter = exportedMap.find(requestingProc);
     }
 
@@ -772,12 +862,26 @@ void Exporter_LIST::registerIncomingRequests(std::vector<AgentRequest>& requests
     }
 
     // The mapped request may now be empty
-    if(iter->second.requestCountRequested() == 0) exportedMap.erase(requestingProc);
+    if(iter->second.requestCountRequested() == 0){
+      exportedMap.erase(requestingProc);
+      processesExportedTo.erase(requestingProc);
+    }
 
     reqIter++;
   }
 }
 
+std::string Exporter_LIST::getReport(){
+  std::stringstream ss;
+  ss << "Exporter_LIST: Sending to " << exportedMap.size() << " (" << processesExportedTo.size() << ") procs:" << std::endl;
+  std::map<int, AgentRequest>::iterator it = exportedMap.begin();
+  const std::map<int, AgentRequest>::iterator itEnd = exportedMap.end();
+  while(it != itEnd){
+    ss << "   " << it->first << " -> " << it->second << std::endl;
+    it++;
+  }
+  return ss.str();
+}
 
 #endif
 
@@ -805,6 +909,7 @@ void Exporter_SET::registerIncomingRequests(std::vector<AgentRequest>& requests)
     if (iter == exportedMap.end()) {
       AgentRequest request(requestingProc, -1);
       exportedMap[requestingProc] = request;
+      processesExportedTo.insert(requestingProc);
       iter = exportedMap.find(requestingProc);
     }
 
@@ -822,10 +927,25 @@ void Exporter_SET::registerIncomingRequests(std::vector<AgentRequest>& requests)
     }
 
     // The mapped request may now be empty
-    if(iter->second.requestCountRequested() == 0) exportedMap.erase(requestingProc);
+    if(iter->second.requestCountRequested() == 0){
+      exportedMap.erase(requestingProc);
+      processesExportedTo.erase(requestingProc);
+    }
 
     reqIter++;
   }
+}
+
+std::string Exporter_SET::getReport(){
+  std::stringstream ss;
+  ss << "Exporter_SET: Sending to " << exportedMap.size() << " procs:" << std::endl;
+  std::map<int, AgentRequest>::iterator it = exportedMap.begin();
+  const std::map<int, AgentRequest>::iterator itEnd = exportedMap.end();
+  while(it != itEnd){
+    ss << "   " << it->first << " -> " << it->second << std::endl;
+    it++;
+  }
+  return ss.str();
 }
 
 #endif
@@ -849,6 +969,7 @@ void AbstractImporterExporter::exchangeAgentStatusUpdates(boost::mpi::communicat
 
   // Create the appropriate receives...
   const std::set<int>& toReceiveFrom = getExportingProcesses();
+
   for (std::set<int>::const_iterator iter = toReceiveFrom.begin(); iter != toReceiveFrom.end(); ++iter) {
     int exportingProcess = *iter;
     std::vector<AgentStatus>* vec = new std::vector<AgentStatus> ();
@@ -902,6 +1023,8 @@ ImporterExporter_COUNT_LIST::ImporterExporter_COUNT_LIST(AbstractExporter::Statu
 #endif
 
 ImporterExporter_COUNT_LIST::~ImporterExporter_COUNT_LIST(){}
+
+std::string ImporterExporter_COUNT_LIST::version(){ return "COUNT_LIST"; }
 #endif
 
 #ifndef OMIT_IMPORTER_EXPORTER_COUNT_SET
@@ -915,6 +1038,7 @@ ImporterExporter_COUNT_SET::ImporterExporter_COUNT_SET(AbstractExporter::StatusM
 
 ImporterExporter_COUNT_SET::~ImporterExporter_COUNT_SET(){}
 
+std::string ImporterExporter_COUNT_SET::version(){ return "COUNT_SET"; }
 #endif
 
 #ifndef OMIT_IMPORTER_EXPORTER_LIST
@@ -927,6 +1051,8 @@ ImporterExporter_LIST::ImporterExporter_LIST(AbstractExporter::StatusMap* outgoi
 #endif
 
 ImporterExporter_LIST::~ImporterExporter_LIST(){}
+
+std::string ImporterExporter_LIST::version(){ return "LIST"; }
 #endif
 
 #ifndef OMIT_IMPORTER_EXPORTER_SET
@@ -939,6 +1065,8 @@ ImporterExporter_SET::ImporterExporter_SET(AbstractExporter::StatusMap* outgoing
 #endif
 
 ImporterExporter_SET::~ImporterExporter_SET(){}
+
+std::string ImporterExporter_SET::version(){ return "SET"; }
 #endif
 
 #ifndef OMIT_IMPORTER_EXPORTER_MAP_int
@@ -951,6 +1079,8 @@ ImporterExporter_MAP_int::ImporterExporter_MAP_int(AbstractExporter::StatusMap* 
 #endif
 
 ImporterExporter_MAP_int::~ImporterExporter_MAP_int(){}
+
+std::string ImporterExporter_MAP_int::version(){ return "MAP(int)"; }
 #endif
 
 
@@ -963,7 +1093,8 @@ ImporterExporter_MAP_int::~ImporterExporter_MAP_int(){}
 
 #ifdef SHARE_AGENTS_BY_SET
 
-ImporterExporter_BY_SET::ImporterExporter_BY_SET():AbstractImporterExporter(NULL,NULL){
+ImporterExporter_BY_SET::ImporterExporter_BY_SET():AbstractImporterExporter(NULL,NULL),
+    exportingProcessesIsDirty(true), processesExportedToIsDirty(true), exportedMapIsDirty(true){
   outgoingStatusChanges             = new AbstractExporter::StatusMap;
   outgoingAgentExporterInformation  = new AgentExporterData;
 }
@@ -1017,53 +1148,62 @@ AbstractImporterExporter* ImporterExporter_BY_SET::getSet(std::string setName,
 }
 
 
-void ImporterExporter_BY_SET::rebuildExportingProcesses(){
-  exportingProcesses.clear();
-  std::map<std::string, AbstractImporterExporter*>::iterator ieIter = importersExportersMap.begin();
-  while(ieIter != importersExportersMap.end()){
-    AbstractImporterExporter* ie = ieIter->second;
-    const std::set<int>& toAdd = ie->getExportingProcesses();
-    exportingProcesses.insert(toAdd.begin(), toAdd.end());
-    ieIter++;
+void ImporterExporter_BY_SET::rebuildExportingProcesses(bool forceRebuild){
+  if(exportingProcessesIsDirty || forceRebuild){
+    exportingProcesses.clear();
+    std::map<std::string, AbstractImporterExporter*>::iterator ieIter = importersExportersMap.begin();
+    while(ieIter != importersExportersMap.end()){
+      AbstractImporterExporter* ie = ieIter->second;
+      const std::set<int>& toAdd = ie->getExportingProcesses();
+      exportingProcesses.insert(toAdd.begin(), toAdd.end());
+      ieIter++;
+    }
+    exportingProcessesIsDirty = false;
   }
 }
 
-void ImporterExporter_BY_SET::rebuildProcessesExportedTo(){
-  processesExportedTo.clear();
-  std::map<std::string, AbstractImporterExporter*>::iterator ieIter = importersExportersMap.begin();
-  while(ieIter != importersExportersMap.end()){
-    AbstractImporterExporter* ie = ieIter->second;
-    const std::set<int>& toAdd = ie->getProcessesExportedTo();
-    processesExportedTo.insert(toAdd.begin(), toAdd.end());
-    ieIter++;
+void ImporterExporter_BY_SET::rebuildProcessesExportedTo(bool forceRebuild){
+  if(processesExportedToIsDirty || forceRebuild){
+    processesExportedTo.clear();
+    std::map<std::string, AbstractImporterExporter*>::iterator ieIter = importersExportersMap.begin();
+    while(ieIter != importersExportersMap.end()){
+      AbstractImporterExporter* ie = ieIter->second;
+      const std::set<int>& toAdd = ie->getProcessesExportedTo();
+      processesExportedTo.insert(toAdd.begin(), toAdd.end());
+      ieIter++;
+    }
+    processesExportedToIsDirty = false;
   }
 }
 
-void ImporterExporter_BY_SET::rebuildExportedMap(){
-  exportedMap.clear();
-  std::map<int, std::set<AgentId> > idsByProc;
-  std::map<std::string, AbstractImporterExporter*>::iterator ie = importersExportersMap.begin();
-  // Collect the agents to be exported in a set first; this will eliminate duplicates
-  while(ie != importersExportersMap.end()){
-    std::map<int, AgentRequest> reqs = ie->second->getAgentsToExport();
-    std::map<int, AgentRequest>::iterator procIter = reqs.begin();
-    while(procIter != reqs.end()){
-      std::set<AgentId>& set = idsByProc[procIter->first];
-      AgentRequest& r = procIter->second;
-      set.insert(r.requestedAgents().begin(), r.requestedAgents().end());
-      procIter++;
+void ImporterExporter_BY_SET::rebuildExportedMap(bool forceRebuild){
+  if(exportedMapIsDirty || forceRebuild){
+    exportedMap.clear();
+    std::map<int, std::set<AgentId> > idsByProc;
+    std::map<std::string, AbstractImporterExporter*>::iterator ie = importersExportersMap.begin();
+    // Collect the agents to be exported in a set first; this will eliminate duplicates
+    while(ie != importersExportersMap.end()){
+      std::map<int, AgentRequest> reqs = ie->second->getAgentsToExport();
+      std::map<int, AgentRequest>::iterator procIter = reqs.begin();
+      while(procIter != reqs.end()){
+        std::set<AgentId>& set = idsByProc[procIter->first];
+        AgentRequest& r = procIter->second;
+        set.insert(r.requestedAgents().begin(), r.requestedAgents().end());
+        procIter++;
+      }
+      ie++;
     }
-    ie++;
-  }
-  std::map<int, std::set<AgentId> >::iterator setIter = idsByProc.begin();
-  while(setIter != idsByProc.end()){
-    AgentRequest& req = exportedMap[setIter->first];
-    std::set<AgentId>::iterator idListIter = setIter->second.begin();
-    while(idListIter != setIter->second.end()){
-      req.addRequest(*idListIter);
-      idListIter++;
+    std::map<int, std::set<AgentId> >::iterator setIter = idsByProc.begin();
+    while(setIter != idsByProc.end()){
+      AgentRequest& req = exportedMap[setIter->first];
+      std::set<AgentId>::iterator idListIter = setIter->second.begin();
+      while(idListIter != setIter->second.end()){
+        req.addRequest(*idListIter);
+        idListIter++;
+      }
+      setIter++;
     }
-    setIter++;
+    exportedMapIsDirty = false;
   }
 }
 
@@ -1074,7 +1214,10 @@ const std::set<int>& ImporterExporter_BY_SET::getExportingProcesses(){
 
 const std::set<int>& ImporterExporter_BY_SET::getExportingProcesses(std::string setName){
   if(setName != REQUEST_AGENTS_ALL) return getSet(setName)->getExportingProcesses();
-  else                              return exportingProcesses;
+  else{
+    rebuildExportingProcesses();
+    return exportingProcesses;
+  }
 }
 
 
@@ -1085,7 +1228,9 @@ void ImporterExporter_BY_SET::registerOutgoingRequests(AgentRequest& request){
 void ImporterExporter_BY_SET::registerOutgoingRequests(AgentRequest& request,
     std::string setName, AGENT_IMPORTER_EXPORTER_TYPE setType){
   getSet(setName, setType)->registerOutgoingRequests(request);
-  rebuildExportingProcesses();
+  processesExportedToIsDirty = true; // May not need all of these
+  exportingProcessesIsDirty  = true;
+  exportedMapIsDirty         = true;
 }
 
 
@@ -1095,6 +1240,9 @@ void ImporterExporter_BY_SET::importedAgentIsRemoved(const AgentId& id){
     mapIter->second->importedAgentIsRemoved(id);
     mapIter++;
   }
+  processesExportedToIsDirty = true; // May not need all of these
+  exportingProcessesIsDirty  = true;
+  exportedMapIsDirty         = true;
 }
 
 void ImporterExporter_BY_SET::importedAgentIsMoved(const AgentId& id, int newProcess){
@@ -1103,8 +1251,14 @@ void ImporterExporter_BY_SET::importedAgentIsMoved(const AgentId& id, int newPro
     mapIter->second->importedAgentIsMoved(id, newProcess);
     mapIter++;
   }
+  processesExportedToIsDirty = true; // May not need all of these
+  exportingProcessesIsDirty  = true;
+  exportedMapIsDirty         = true;
 }
 
+void ImporterExporter_BY_SET::importedAgentIsNowLocal(const AgentId& id){
+  importedAgentIsRemoved(id);
+}
 
 
 
@@ -1114,7 +1268,10 @@ const std::set<int>& ImporterExporter_BY_SET::getProcessesExportedTo(){
 
 const std::set<int>& ImporterExporter_BY_SET::getProcessesExportedTo(std::string setName){
   if(setName != REQUEST_AGENTS_ALL) return getSet(setName)->getProcessesExportedTo();
-  else                              return processesExportedTo;
+  else{
+    rebuildProcessesExportedTo();
+    return processesExportedTo;
+  }
 }
 
 
@@ -1124,7 +1281,9 @@ void ImporterExporter_BY_SET::registerIncomingRequests(std::vector<AgentRequest>
 
 void ImporterExporter_BY_SET::registerIncomingRequests(std::vector<AgentRequest>& requests, std::string setName){
   getSet(setName)->registerIncomingRequests(requests);
-  rebuildProcessesExportedTo();
+  processesExportedToIsDirty = true; // May not need all of these
+  exportingProcessesIsDirty  = true;
+  exportedMapIsDirty         = true;
 }
 
 void ImporterExporter_BY_SET::agentRemoved(const AgentId& id){
@@ -1134,6 +1293,9 @@ void ImporterExporter_BY_SET::agentRemoved(const AgentId& id){
     mapIter->second->agentRemoved(id);
     mapIter++;
   }
+  processesExportedToIsDirty = true; // May not need all of these
+  exportingProcessesIsDirty  = true;
+  exportedMapIsDirty         = true;
 }
 
 void ImporterExporter_BY_SET::agentMoved(const AgentId& id, int process){
@@ -1143,6 +1305,9 @@ void ImporterExporter_BY_SET::agentMoved(const AgentId& id, int process){
     mapIter->second->agentMoved(id, process);
     mapIter++;
   }
+  processesExportedToIsDirty = true; // May not need all of these
+  exportingProcessesIsDirty  = true;
+  exportedMapIsDirty         = true;
 }
 
 void ImporterExporter_BY_SET::incorporateAgentExporterInfo(std::map<int, AgentRequest* > info){
@@ -1155,6 +1320,9 @@ void ImporterExporter_BY_SET::incorporateAgentExporterInfo(std::map<std::string,
     getSet(setIter->first)->incorporateAgentExporterInfo(*(setIter->second)); // In theory this could create a new set, but really only extant sets should be passed
     setIter++;
   }
+  processesExportedToIsDirty = true; // May not need all of these
+  exportingProcessesIsDirty  = true;
+  exportedMapIsDirty         = true;
 }
 
 void ImporterExporter_BY_SET::clearStatusMap(){
@@ -1182,6 +1350,18 @@ const std::map<int, AgentRequest>& ImporterExporter_BY_SET::getAgentsToExport(st
   }
 }
 
-
+std::string ImporterExporter_BY_SET::version(){ return "BY SET: "
+#if DEFAULT_IMPORTER_EXPORTER == 1
+    "COUNT_LIST"
+#elif DEFAULT_IMPORTER_EXPORTER == 2
+    "COUNT_SET"
+#elif DEFAULT_IMPORTER_EXPORTER == 3
+    "LIST"
+#elif DEFAULT_IMPORTER_EXPORTER == 4
+    "SET"
+#elif DEFAULT_IMPORTER_EXPORTER == 5
+    "MAP(int)"
+#endif
+    ; }
 
 #endif

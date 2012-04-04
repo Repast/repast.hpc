@@ -47,10 +47,32 @@
 #include "AgentStatus.h"
 #include "mpi_constants.h"
 
+/*
+ * If you wish to select the default
+ * kind of Importer/Exporter, use one
+ * of the valid values here (default
+ * if not specified is 1):
+ *
+ *  1 = COUNT_LIST
+ *  2 = COUNT_SET
+ *  3 = LIST
+ *  4 = SET
+ *  5 = MAP(int)
+ */
+//#define DEFAULT_IMPORTER_EXPORTER 5
+
+/*
+ * If defined, allow multiple importer/exporter
+ * instances managing distinct sets of agents
+ */
 //#define SHARE_AGENTS_BY_SET
 
-// If you wish to allow a single cancellation to be used
-// to cancel all of an agent's requests, define this
+/*
+ * If you wish to allow a single cancellation to be used
+ * to cancel all of an agent's requests (for semantics
+ * where multiple cancellations would ordinarily be
+ * required), define this flag
+ */
 //#define ALLOW_FULL_AGENT_REQUEST_CANCELLATION
 
 
@@ -120,7 +142,7 @@
 #endif
 
 #if DEFAULT_IMPORTER_EXPORTER == 5
-  #define DEFAULT_IMPORTER_EXPORTER_CLASS ImporterExporter_Map_int
+  #define DEFAULT_IMPORTER_EXPORTER_CLASS ImporterExporter_MAP_int
   #define DEFAULT_ENUM_SYMBOL MAP_int
   #undef OMIT_IMPORTER_EXPORTER_MAP_int
 #endif
@@ -315,6 +337,11 @@ public:
    */
   inline void importedAgentIsNowLocal(const AgentId& id){ importedAgentIsRemoved(id); }
 
+  /**
+   * Get a printable indication of the data in this object
+   */
+   virtual std::string getReport() = 0;
+
  };
 
 
@@ -335,6 +362,7 @@ public:
   virtual void importedAgentIsRemoved(const AgentId& id);
   virtual void importedAgentIsMoved(const AgentId& id, int newProcess);
 
+  virtual std::string getReport();
 };
 #endif
 
@@ -374,6 +402,7 @@ public:
   virtual void importedAgentIsRemoved(const AgentId& id);
   virtual void importedAgentIsMoved(const AgentId& id, int newProcess);
 
+  virtual std::string getReport();
 };
 #endif
 
@@ -408,6 +437,7 @@ public:
   virtual void importedAgentIsRemoved(const AgentId& id);
   virtual void importedAgentIsMoved(const AgentId& id, int newProcess);
 
+  virtual std::string getReport();
 };
 #endif
 
@@ -452,6 +482,7 @@ public:
   virtual void importedAgentIsRemoved(const AgentId& id);
   virtual void importedAgentIsMoved(const AgentId& id, int newProcess);
 
+  virtual std::string getReport();
 };
 #endif
 
@@ -487,7 +518,6 @@ public:
 private:
   StatusMap*                  outgoingStatusChangesDeletePtr;
   AgentExporterData*          outgoingAgentExporterInformationDeletePtr;
-
 
 protected:
   StatusMap*                  outgoingStatusChanges;
@@ -580,6 +610,12 @@ public:
 public:
   AbstractExporter(StatusMap* outgoingStatusMap, AgentExporterData* outgoingAgentExporterInfo);
 #endif
+
+  /**
+   * Gets a printable report of the state of this object
+   */
+  virtual std::string getReport() = 0;
+
 };
 
 
@@ -600,6 +636,8 @@ public:
 public:
   Exporter_LIST(StatusMap* outgoingStatusMap, AgentExporterData* outgoingAgentExporterInfo);
 #endif
+
+  virtual std::string getReport();
 };
 #endif
 
@@ -617,6 +655,8 @@ public:
 public:
   Exporter_SET(StatusMap* outgoingStatusMap, AgentExporterData* outgoingAgentExporterInfo);
 #endif
+
+  virtual std::string getReport();
 };
 #endif
 
@@ -638,7 +678,7 @@ public:
   virtual       void           importedAgentIsRemoved(const AgentId& id){                                 importer->importedAgentIsRemoved(id);            }
   virtual       void           importedAgentIsMoved(const AgentId& id, int newProcess){                   importer->importedAgentIsMoved(id, newProcess);  }
 
-  inline void importedAgentIsNowLocal(const AgentId& id){                                                 importer->importedAgentIsNowLocal(id);           }
+  virtual       void           importedAgentIsNowLocal(const AgentId& id){                                importer->importedAgentIsNowLocal(id);           }
 
   virtual const AbstractExporter::StatusMap* getOutgoingStatusChanges();
 
@@ -659,6 +699,16 @@ public:
    */
   virtual void exchangeAgentStatusUpdates(boost::mpi::communicator world, std::vector<std::vector<AgentStatus>* >& statusUpdates);
 
+  /**
+   * Returns the version of this AbstractImporterExporter
+   */
+  virtual std::string version() = 0;
+
+  /**
+   * Gets a printable report of the state of this object
+   */
+  virtual std::string getReport(){ return importer->getReport() + exporter->getReport(); }
+
 };
 
 /* Normal variants, with semantics defined by which importer/exporter combination is used */
@@ -674,6 +724,7 @@ public:
 
   virtual ~ImporterExporter_COUNT_LIST();
 
+  virtual std::string version();
 };
 #endif
 
@@ -687,6 +738,8 @@ public:
 #endif
 
   virtual ~ImporterExporter_COUNT_SET();
+
+  virtual std::string version();
 };
 #endif
 
@@ -700,6 +753,8 @@ public:
 #endif
 
   virtual ~ImporterExporter_LIST();
+
+  virtual std::string version();
 };
 #endif
 
@@ -713,6 +768,8 @@ public:
 #endif
 
   virtual ~ImporterExporter_SET();
+
+  virtual std::string version();
 };
 #endif
 
@@ -726,6 +783,8 @@ public:
 #endif
 
   virtual ~ImporterExporter_MAP_int();
+
+  virtual std::string version();
 };
 #endif
 
@@ -741,18 +800,21 @@ private:
   AgentExporterData*                                outgoingAgentExporterInformation;
   std::map<std::string, AbstractImporterExporter*>  importersExportersMap;
   std::set<int>                                     exportingProcesses;
+  bool                                              exportingProcessesIsDirty;
   std::set<int>                                     processesExportedTo;
+  bool                                              processesExportedToIsDirty;
   std::map<int, AgentRequest>                       exportedMap;
+  bool                                              exportedMapIsDirty;
 
   AbstractImporterExporter* getSet(std::string setname,
       AGENT_IMPORTER_EXPORTER_TYPE setType = DEFAULT_ENUM_SYMBOL);
 
 
-  inline void rebuildExportingProcesses();
+  inline void rebuildExportingProcesses(bool forceRebuild = false);
 
-  inline void rebuildProcessesExportedTo();
+  inline void rebuildProcessesExportedTo(bool forceRebuild = false);
 
-  inline void rebuildExportedMap();
+  inline void rebuildExportedMap(bool forceRebuild = false);
 
 public:
   ImporterExporter_BY_SET();
@@ -773,6 +835,8 @@ public:
   virtual void importedAgentIsRemoved(const AgentId& id);
 
   virtual void importedAgentIsMoved(const AgentId& id, int newProcess);
+
+  virtual void importedAgentIsNowLocal(const AgentId& id);
 
 
   /* Exporter-related functions */
@@ -801,11 +865,22 @@ public:
   virtual const std::map<int, AgentRequest>& getAgentsToExport();
           const std::map<int, AgentRequest>& getAgentsToExport(std::string setName);
 
+  virtual std::string version();
 
   void dropSet(std::string setName){
     importersExportersMap.erase(setName); // Fails silently if the specified set is not present
   }
 
+  virtual std::string getReport(){
+    std::stringstream ss;
+    std::map<std::string, AbstractImporterExporter*>::iterator it    = importersExportersMap.begin();
+    std::map<std::string, AbstractImporterExporter*>::iterator itEnd = importersExportersMap.end();
+    while(it != itEnd){
+      ss << it->first << "\n" << it->second->getReport();
+      it++;
+    }
+    return ss.str();
+  }
 
 };
 #endif

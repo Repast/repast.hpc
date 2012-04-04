@@ -46,8 +46,8 @@ using namespace std;
 
 namespace repast {
 
-AgentId::AgentId(int id, int startProc, int agentType) : id_(id), startProc_(startProc),
-	agentType_(agentType), currentProc_(startProc) {
+AgentId::AgentId(int id, int startProc, int agentType, int currentProc) : id_(id), startProc_(startProc),
+	agentType_(agentType), currentProc_( (currentProc == -1 ? startProc : currentProc) ) {
 	hash = 17;
 	hash = 31 * hash + boost::hash_value(id_);
 	hash = 31 * hash + boost::hash_value(startProc_);

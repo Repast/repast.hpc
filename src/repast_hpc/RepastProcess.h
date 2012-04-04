@@ -262,6 +262,10 @@ public:
     importer_exporter->dropSet(setName);
   }
 #endif
+
+  std::string ImporterExporterVersion(){ return "" + importer_exporter->version(); }
+
+  std::string ImporterExporterReport(){ return importer_exporter->getReport(); }
 };
 
 
@@ -460,6 +464,7 @@ void _synchAgents(Provider& provider, int tag, std::vector<std::vector<Content>*
 #else
 	const std::set<int>& exporters = rp->importer_exporter->getExportingProcesses(setName);
 #endif
+
 	for (std::set<int>::const_iterator iter = exporters.begin(); iter != exporters.end(); ++iter) {
 		int source = *iter;
 		std::vector<Content>* content = new std::vector<Content>();
