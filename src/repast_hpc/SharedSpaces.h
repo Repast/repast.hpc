@@ -32,53 +32,52 @@
  *   EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- *  RelogoSharedSpace.h
+ *  SharedSpaces.h
  *
- *  Created on: Sep 7, 2010
+ *  Created on: Jul 20, 2010
  *      Author: nick
  */
 
-#ifndef RELOGOSHAREDSPACE_H_
-#define RELOGOSHAREDSPACE_H_
+#ifndef SHAREDSPACES_H_
+#define SHAREDSPACES_H_
 
-#include <boost/mpi/communicator.hpp>
-
-#include "repast_hpc/SharedSpace.h"
+#include "SharedDiscreteSpace.h"
+#include "SharedContinuousSpace.h"
 
 namespace repast {
-namespace relogo {
 
-/**
- * Repast SharedSpace specialized for Relogo. This overrides synchMoveTo.
- */
-template<typename GPTransformer, typename Adder>
-class RelogoSharedSpace: public repast::SharedSpace<RelogoAgent, GPTransformer, Adder> {
+template<typename T>
+struct SharedSpaces {
 
-protected:
-	void synchMoveTo(const repast::AgentId& id, const repast::Point<double>& pt);
+	/**
+	 * Discrete grid space with periodic (toroidal) borders. Any added
+	 * agents are not given a location, but are in "grid limbo" until
+	 * moved via a grid move call.
+	 */
+	typedef SharedDiscreteSpace<T, WrapAroundBorders, SimpleAdder<T> > SharedWrappedDiscreteSpace;
 
-public:
-	virtual ~RelogoSharedSpace() {
-	}
-	RelogoSharedSpace(std::string name, repast::GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* world);
+	/**
+	 * Discrete grid space with strict borders. Any added
+	 * agents are not given a location, but are in "grid limbo" until
+	 * moved via a grid move call.
+	 */
+	typedef SharedDiscreteSpace<T, StrictBorders, SimpleAdder<T> > SharedStrictDiscreteSpace;
+
+	/**
+	 * Continuous space with periodic (toroidal) borders. Any added
+	 * agents are not given a location, but are in "grid limbo" until
+	 * moved via a grid move call.
+	 */
+	typedef SharedContinuousSpace<T, WrapAroundBorders, SimpleAdder<T> > SharedWrappedContinuousSpace;
+
+	/**
+	 * Continuous space with strict borders. Any added
+	 * agents are not given a location, but are in "grid limbo" until
+	 * moved via a grid move call.
+	 */
+	typedef SharedContinuousSpace<T, StrictBorders, SimpleAdder<T> > SharedStrictContinuousSpace;
 };
 
-template<typename GPTransformer, typename Adder>
-RelogoSharedSpace<GPTransformer, Adder>::RelogoSharedSpace(std::string name, repast::GridDimensions gridDims,
-		std::vector<int> processDims, int buffer, boost::mpi::communicator* world) :
-	repast::SharedSpace<RelogoAgent, GPTransformer, Adder>(name, gridDims, processDims, buffer, world) {
 }
 
-template<typename GPTransformer, typename Adder>
-void RelogoSharedSpace<GPTransformer, Adder>::synchMoveTo(const repast::AgentId& id, const repast::Point<double>& pt) {
-	RelogoAgent* agent = repast::SharedBaseGrid<RelogoAgent, GPTransformer, Adder, double>::GridBaseType::get(id);
-	if (agent != 0) {
-		agent->_location = pt;
-		repast::SharedBaseGrid<RelogoAgent, GPTransformer, Adder, double>::GridBaseType::moveTo(id, pt.coords());
-	}
-}
-
-}
-}
-
-#endif /* RELOGOSHAREDSPACE_H_ */
+#endif /* SHAREDSPACE_H_ */

@@ -32,29 +32,29 @@
  *   EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- *  RelogoSpaceAdder.cpp
+ *  RelogoContinuousSpaceAdder.cpp
  *
  *  Created on: Aug 5, 2010
  *      Author: nick
  */
 
-#include "RelogoSpaceAdder.h"
+#include "RelogoContinuousSpaceAdder.h"
 
 namespace repast {
 namespace relogo {
 
-RelogoSpaceAdder::RelogoSpaceAdder() :
+RelogoContinuousSpaceAdder::RelogoContinuousSpaceAdder() :
 	_grid(0), center(0.0, 0.0) {
 }
 
-void RelogoSpaceAdder::init(GridDimensions dimensions, RelogoSpaceType* grid) {
+void RelogoContinuousSpaceAdder::init(GridDimensions dimensions, RelogoSpaceType* grid) {
 	double x = dimensions.origin(0) + dimensions.extents(0) / 2.0;
 	double y = dimensions.origin(1) + dimensions.extents(1) / 2.0;
 	center = Point<double> (x, y);
 	_grid = grid;
 }
 
-bool RelogoSpaceAdder::add(boost::shared_ptr<RelogoAgent> agent) {
+bool RelogoContinuousSpaceAdder::add(boost::shared_ptr<RelogoAgent> agent) {
 	agent->_location = center;
 	return _grid->moveTo(agent->getId(), center);
 }

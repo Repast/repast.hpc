@@ -41,20 +41,20 @@
 #ifndef GRID_TYPES_H_
 #define GRID_TYPES_H_
 
-#include "RelogoSharedGrid.h"
-#include "RelogoSharedSpace.h"
+#include "RelogoSharedDiscreteSpace.h"
+#include "RelogoSharedContinuousSpace.h"
 
 namespace repast {
 namespace relogo {
 
-class RelogoGridAdder;
-class RelogoSpaceAdder;
+class RelogoDiscreteSpaceAdder;
+class RelogoContinuousSpaceAdder;
 
-typedef RelogoSharedGrid<WrapAroundBorders, RelogoGridAdder> ToroidalGrid;
-typedef RelogoSharedGrid<StickyBorders, RelogoGridAdder> Grid;
+typedef RelogoSharedDiscreteSpace<WrapAroundBorders, RelogoDiscreteSpaceAdder> ToroidalDiscreteSpace;
+typedef RelogoSharedDiscreteSpace<StickyBorders, RelogoDiscreteSpaceAdder> BoundedDiscreteSpace;
 
-typedef RelogoSharedSpace<WrapAroundBorders, RelogoSpaceAdder> ToroidalSpace;
-typedef RelogoSharedSpace<StickyBorders, RelogoSpaceAdder> ContinuousSpace;
+typedef RelogoSharedContinuousSpace<WrapAroundBorders, RelogoContinuousSpaceAdder> ToroidalContinuousSpace;
+typedef RelogoSharedContinuousSpace<StickyBorders, RelogoContinuousSpaceAdder> BoundedContinuousSpace;
 
 
 typedef repast::Grid<RelogoAgent, int> RelogoGridType;

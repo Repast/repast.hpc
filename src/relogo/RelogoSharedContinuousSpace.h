@@ -32,39 +32,53 @@
  *   EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- *  RelogoSharedGrid.h
+ *  RelogoSharedContinuousSpace.h
  *
  *  Created on: Sep 7, 2010
  *      Author: nick
  */
 
-#ifndef RELOGOSHAREDGRID_H_
-#define RELOGOSHAREDGRID_H_
+#ifndef RELOGOSHAREDCONTINUOUSSPACE_H_
+#define RELOGOSHAREDCONTINUOUSSPACE_H_
 
 #include <boost/mpi/communicator.hpp>
 
-#include "repast_hpc/SharedSpace.h"
+#include "repast_hpc/SharedContinuousSpace.h"
 
 namespace repast {
 namespace relogo {
 
-template <typename GPTransformer, typename Adder>
-class RelogoSharedGrid : public repast::SharedGrid<RelogoAgent, GPTransformer, Adder> {
+/**
+ * Repast SharedSpace specialized for Relogo. This overrides synchMoveTo.
+ */
+template<typename GPTransformer, typename Adder>
+class RelogoSharedContinuousSpace: public repast::SharedContinuousSpace<RelogoAgent, GPTransformer, Adder> {
+
+protected:
+	void synchMoveTo(const repast::AgentId& id, const repast::Point<double>& pt);
 
 public:
-	virtual ~RelogoSharedGrid() {}
-	RelogoSharedGrid(std::string name, repast::GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* world);
+	virtual ~RelogoSharedContinuousSpace() {
+	}
+	RelogoSharedContinuousSpace(std::string name, repast::GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* world);
 };
 
-template <typename GPTransformer, typename Adder>
-RelogoSharedGrid<GPTransformer, Adder>::RelogoSharedGrid(std::string name, repast::GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* world) :
-repast::SharedGrid<RelogoAgent, GPTransformer, Adder>(name, gridDims, processDims, buffer, world) {}
+template<typename GPTransformer, typename Adder>
+RelogoSharedContinuousSpace<GPTransformer, Adder>::RelogoSharedContinuousSpace(std::string name, repast::GridDimensions gridDims,
+		std::vector<int> processDims, int buffer, boost::mpi::communicator* world) :
+	repast::SharedContinuousSpace<RelogoAgent, GPTransformer, Adder>(name, gridDims, processDims, buffer, world) {
+}
 
-
-
+template<typename GPTransformer, typename Adder>
+void RelogoSharedContinuousSpace<GPTransformer, Adder>::synchMoveTo(const repast::AgentId& id, const repast::Point<double>& pt) {
+	RelogoAgent* agent = repast::SharedBaseGrid<RelogoAgent, GPTransformer, Adder, double>::GridBaseType::get(id);
+	if (agent != 0) {
+		agent->_location = pt;
+		repast::SharedBaseGrid<RelogoAgent, GPTransformer, Adder, double>::GridBaseType::moveTo(id, pt.coords());
+	}
+}
 
 }
 }
 
-
-#endif /* RELOGOSHAREDGRID_H_ */
+#endif /* RELOGOSHAREDCONTINUOUSSPACE_H_ */

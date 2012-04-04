@@ -32,14 +32,14 @@
  *   EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- *  SharedGrid.h
+ *  SharedBaseGrid.h
  *
  *  Created on: Sep 10, 2009
  *      Author: nick
  */
 
-#ifndef SHAREDGRID_H_
-#define SHAREDGRID_H_
+#ifndef SHAREDBASEGRID_H_
+#define SHAREDBASEGRID_H_
 
 #include <cmath>
 #include <mpi.h>
@@ -549,4 +549,4 @@ SharedBaseGrid<T, GPTransformer, Adder, GPType>::~SharedBaseGrid() {
 
 }
 
-#endif /* SHAREDGRID_H_ */
+#endif /* SHAREDBASEGRID_H_ */

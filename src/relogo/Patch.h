@@ -42,7 +42,7 @@
 #define PATCH_H_
 
 #include "AbstractRelogoAgent.h"
-#include "RelogoGridAdder.h"
+#include "RelogoDiscreteSpaceAdder.h"
 #include "AgentSet.h"
 #include "repast_hpc/Moore2DGridQuery.h"
 #include "repast_hpc/VN2DGridQuery.h"

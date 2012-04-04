@@ -40,8 +40,8 @@
 
 #include "WorldDefinition.h"
 
-#include "RelogoGridAdder.h"
-#include "RelogoSpaceAdder.h"
+#include "RelogoDiscreteSpaceAdder.h"
+#include "RelogoContinuousSpaceAdder.h"
 #include "RelogoLink.h"
 #include "relogo.h"
 

@@ -48,11 +48,11 @@ namespace repast {
 namespace relogo {
 
 class Observer;
-class RelogoSpaceAdder;
+class RelogoContinuousSpaceAdder;
 class WorldCreator;
 
 template<typename GPTransformer, typename Adder>
-class RelogoSharedSpace;
+class RelogoSharedContinuousSpace;
 
 /**
  * Base agent for Relogo.
@@ -60,11 +60,11 @@ class RelogoSharedSpace;
 class RelogoAgent: public repast::Agent {
 
 protected:
-	friend class RelogoSpaceAdder;
+	friend class RelogoContinuousSpaceAdder;
 	friend class WorldCreator;
 
 	template<typename GPTransformer, typename Adder>
-	friend class RelogoSharedSpace;
+	friend class RelogoSharedContinuousSpace;
 
 	Observer* _observer;
 	Point<double> _location;

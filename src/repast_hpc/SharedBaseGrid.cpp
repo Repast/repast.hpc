@@ -38,7 +38,7 @@
  *      Author: nick
  */
 
-#include "SharedGrid.h"
+#include "SharedBaseGrid.h"
 
 #include <vector>
 #include <boost/mpi.hpp>

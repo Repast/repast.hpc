@@ -32,14 +32,14 @@
  *   EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- *  Grid.h
+ *  Spaces.h
  *
  *  Created on: Jul 19, 2010
  *      Author: nick
  */
 
-#ifndef FOO_H_
-#define FOO_H_
+#ifndef SPACES_H_
+#define SPACES_H_
 
 #include "BaseGrid.h"
 #include "GridComponents.h"
@@ -48,22 +48,23 @@
 
 namespace repast {
 
-// typedefs for standard grid types
+// Some useful typedefs for standard grid types:
+
 template<typename T>
-struct Space {
+struct Spaces {
 
-	typedef BaseGrid<T, SingleOccupancy<T, int> , StrictBorders, SimpleAdder<T> , int> SingleStrictGrid;
-	typedef BaseGrid<T, SingleOccupancy<T, int> , WrapAroundBorders, SimpleAdder<T> , int> SingleWrappedGrid;
-	typedef BaseGrid<T, MultipleOccupancy<T, int> , StrictBorders, SimpleAdder<T> , int> MultipleStrictGrid;
-	typedef BaseGrid<T, MultipleOccupancy<T, int> , WrapAroundBorders, SimpleAdder<T> , int> MultipleWrappedGrid;
+	typedef BaseGrid<T, SingleOccupancy  <T, int>,    StrictBorders,     SimpleAdder<T> , int>    SingleStrictDiscreteSpace;
+	typedef BaseGrid<T, SingleOccupancy  <T, int>,    WrapAroundBorders, SimpleAdder<T> , int>    SingleWrappedDiscreteSpace;
+	typedef BaseGrid<T, MultipleOccupancy<T, int>,    StrictBorders,     SimpleAdder<T> , int>    MultipleStrictDiscreteSpace;
+	typedef BaseGrid<T, MultipleOccupancy<T, int>,    WrapAroundBorders, SimpleAdder<T> , int>    MultipleWrappedDiscreteSpace;
 
-	typedef BaseGrid<T, SingleOccupancy<T, double> , StrictBorders, SimpleAdder<T> , double> SingleStrictSpace;
-	typedef BaseGrid<T, SingleOccupancy<T, double> , WrapAroundBorders, SimpleAdder<T> , double> SingleWrappedSpace;
-	typedef BaseGrid<T, MultipleOccupancy<T, double> , StrictBorders, SimpleAdder<T> , double> MultipleStrictSpace;
-	typedef BaseGrid<T, MultipleOccupancy<T, double> , WrapAroundBorders, SimpleAdder<T> , double> MultipleWrappedSpace;
+	typedef BaseGrid<T, SingleOccupancy  <T, double>, StrictBorders,     SimpleAdder<T> , double> SingleStrictContinuousSpace;
+	typedef BaseGrid<T, SingleOccupancy  <T, double>, WrapAroundBorders, SimpleAdder<T> , double> SingleWrappedContinuousSpace;
+	typedef BaseGrid<T, MultipleOccupancy<T, double>, StrictBorders,     SimpleAdder<T> , double> MultipleStrictContinuousSpace;
+	typedef BaseGrid<T, MultipleOccupancy<T, double>, WrapAroundBorders, SimpleAdder<T> , double> MultipleWrappedContinuousSpace;
 
 };
 
 }
 
-#endif /* GRID_H_ */
+#endif /* SPACES_H_ */

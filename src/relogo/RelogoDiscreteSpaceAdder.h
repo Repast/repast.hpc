@@ -32,40 +32,38 @@
  *   EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- *  RelogoSpaceAdder.h
+ *  RelogoDiscreteSpaceAdder.h
  *
  *  Created on: Aug 5, 2010
  *      Author: nick
  */
 
-#ifndef RELOGOSPACEADDER_H_
-#define RELOGOSPACEADDER_H_
+#ifndef RELOGODISCRETESPACEADDER_H_
+#define RELOGODISCRETESPACEADDER_H_
 
 #include "RelogoAgent.h"
 #include "grid_types.h"
 
 namespace repast {
-
 namespace relogo {
 
 /**
- * An "Adder" for adding RelogoAgents to RelogoSpaces.
+ * Adds RelogoAgents to RelogoDiscreteSpaces.
  */
-class RelogoSpaceAdder {
+class RelogoDiscreteSpaceAdder {
 
 private:
-	RelogoSpaceType* _grid;
-	Point<double> center;
+	RelogoGridType* _grid;
+	Point<int> center;
 
 public:
-	RelogoSpaceAdder();
-	void init(GridDimensions dimensions, RelogoSpaceType* grid);
+	RelogoDiscreteSpaceAdder();
+	void init(GridDimensions dimensions, RelogoGridType* grid);
 	bool add(boost::shared_ptr<RelogoAgent> agent);
 };
 
-
 }
 
 }
 
-#endif /* RELOGOSPACEADDER_H_ */
+#endif /* RELOGOGRIDADDER_H_ */

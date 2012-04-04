@@ -32,39 +32,39 @@
  *   EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- *  WorldCreator.cpp
+ *  RelogoSharedDiscreteSpace.h
  *
- *  Created on: Aug 5, 2010
+ *  Created on: Sep 7, 2010
  *      Author: nick
  */
-#include "WorldCreator.h"
+
+#ifndef RELOGOSHAREDDISCRETESPACE_H_
+#define RELOGOSHAREDDISCRETESPACE_H_
+
 #include <boost/mpi/communicator.hpp>
+
+#include "repast_hpc/SharedDiscreteSpace.h"
 
 namespace repast {
 namespace relogo {
 
-repast::Projection<RelogoAgent>*  WorldCreator::createDiscreteSpace(const WorldDefinition& def, const std::vector<int>& pConfiguration) const {
-	repast::Projection<RelogoAgent>* proj = 0;
-  boost::mpi::communicator world;
-	if (def.isWrapped()) {
-		proj = new ToroidalDiscreteSpace(GRID_NAME, def.dimensions(), pConfiguration, def.buffer(), comm);
-	} else {
-		proj = new BoundedDiscreteSpace(GRID_NAME, def.dimensions(), pConfiguration, def.buffer(), comm);
-	}
-	return proj;
+template <typename GPTransformer, typename Adder>
+class RelogoSharedDiscreteSpace : public repast::SharedDiscreteSpace<RelogoAgent, GPTransformer, Adder> {
 
-}
+public:
+	virtual ~RelogoSharedDiscreteSpace() {}
+	RelogoSharedDiscreteSpace(std::string name, repast::GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* world);
+};
 
-repast::Projection<RelogoAgent>*  WorldCreator::createContinuousSpace(const WorldDefinition& def, const std::vector<int>& pConfiguration) const {
-	repast::Projection<RelogoAgent>* proj = 0;
-	boost::mpi::communicator world;
-	if (def.isWrapped()) {
-		proj = new ToroidalContinuousSpace(SPACE_NAME, def.dimensions(), pConfiguration, def.buffer(), comm);
-	} else {
-		proj = new BoundedContinuousSpace(SPACE_NAME, def.dimensions(), pConfiguration, def.buffer(), comm);
-	}
-	return proj;
-}
+template <typename GPTransformer, typename Adder>
+RelogoSharedDiscreteSpace<GPTransformer, Adder>::RelogoSharedDiscreteSpace(std::string name, repast::GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* world) :
+repast::SharedDiscreteSpace<RelogoAgent, GPTransformer, Adder>(name, gridDims, processDims, buffer, world) {}
+
+
+
 
 }
 }
+
+
+#endif /* RELOGOSHAREDGRIDSPACE_H_ */

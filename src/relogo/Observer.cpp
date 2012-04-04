@@ -302,32 +302,32 @@ Patch* Observer::patchAtOffset(Point<double> location, double heading, double di
 void Observer::synchronizeTurtleCrossPMovement() {
 	RelogoGridType* aGrid = const_cast<RelogoGridType*> (grid());
 	if (aGrid->isPeriodic()) {
-		((ToroidalGrid*) aGrid)->synchMove();
+		((relogo::ToroidalDiscreteSpace*) aGrid)->synchMove();
 	} else {
-		((relogo::Grid*) aGrid)->synchMove();
+		((relogo::BoundedDiscreteSpace*) aGrid)->synchMove();
 	}
 
 	RelogoSpaceType* aSpace = const_cast<RelogoSpaceType*> (space());
 	if (aSpace->isPeriodic()) {
-		((ToroidalSpace*) aSpace)->synchMove();
+		((relogo::ToroidalContinuousSpace*) aSpace)->synchMove();
 	} else {
-		((relogo::ContinuousSpace*) aSpace)->synchMove();
+		((relogo::BoundedContinuousSpace*) aSpace)->synchMove();
 	}
 }
 
 void Observer::initSynchronize() {
 	RelogoGridType* aGrid = const_cast<RelogoGridType*> (grid());
 	if (aGrid->isPeriodic()) {
-		((ToroidalGrid*) aGrid)->initSynchBuffer(context);
+		((relogo::ToroidalDiscreteSpace*) aGrid)->initSynchBuffer(context);
 	} else {
-		((relogo::Grid*) aGrid)->initSynchBuffer(context);
+		((relogo::BoundedDiscreteSpace*) aGrid)->initSynchBuffer(context);
 	}
 
 	RelogoSpaceType* aSpace = const_cast<RelogoSpaceType*> (space());
 	if (aSpace->isPeriodic()) {
-		((ToroidalSpace*) aSpace)->initSynchBuffer(context);
+		((relogo::ToroidalContinuousSpace*) aSpace)->initSynchBuffer(context);
 	} else {
-		((relogo::ContinuousSpace*) aSpace)->initSynchBuffer(context);
+		((relogo::BoundedContinuousSpace*) aSpace)->initSynchBuffer(context);
 	}
 }
 

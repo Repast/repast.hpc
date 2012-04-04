@@ -45,11 +45,11 @@
 
 #include <boost/mpi/communicator.hpp>
 
-#include "repast_hpc/SharedSpace.h"
+#include "repast_hpc/SharedSpaces.h"
 
 #include "WorldDefinition.h"
-#include "RelogoGridAdder.h"
-#include "RelogoSpaceAdder.h"
+#include "RelogoDiscreteSpaceAdder.h"
+#include "RelogoContinuousSpaceAdder.h"
 #include "creators.h"
 #include "relogo.h"
 #include "grid_types.h"
@@ -101,8 +101,8 @@ public:
 
 private:
 
-	repast::Projection<RelogoAgent>*  createGrid(const WorldDefinition&, const std::vector<int>&) const;
-	repast::Projection<RelogoAgent>*  createSpace(const WorldDefinition&, const std::vector<int>&) const;
+	repast::Projection<RelogoAgent>*  createDiscreteSpace(const WorldDefinition&, const std::vector<int>&) const;
+	repast::Projection<RelogoAgent>*  createContinuousSpace(const WorldDefinition&, const std::vector<int>&) const;
 };
 
 template<typename ObsType, typename PatchType>
@@ -116,8 +116,8 @@ ObsType* WorldCreator::createWorld(const WorldDefinition& worldDef, const std::v
 		PatchCreator& pCreator) {
 	ObsType* observer = new ObsType();
 
-	observer->context.addProjection(createGrid(worldDef, pConfig));
-	observer->context.addProjection(createSpace(worldDef, pConfig));
+	observer->context.addProjection(createDiscreteSpace(worldDef, pConfig));
+	observer->context.addProjection(createContinuousSpace(worldDef, pConfig));
 
 	RelogoGridType* grid = static_cast<RelogoGridType*> (observer->context.getProjection(GRID_NAME));
 	RelogoSpaceType* space = static_cast<RelogoSpaceType*> (observer->context.getProjection(SPACE_NAME));
