@@ -194,7 +194,7 @@ void initializeSeed(Properties& props, boost::mpi::communicator* comm) {
   if(props.contains(GLOBAL_RANDOM_SEED_PROPERTY)){
     std::string propVal = props.getProperty(GLOBAL_RANDOM_SEED_PROPERTY);
     if(propVal.compare("AUTO") == 0){
-      if(comm == 0)  throw std::invalid_argument("'AUTO' specified for global.random.seed, but initializeSeed(Properties&, boost::mpi::communicator* = 0) is called with no communicator pointer. Automatically generated random seed (from process 0) cannot be shared to all processes.");
+      if(comm == 0)  throw Repast_Error_57(); // Needs communicator to share global seed
       boost::mpi::broadcast(*comm, seed, 0);
       props.putProperty(GLOBAL_RANDOM_SEED_PROPERTY, seed);
     }

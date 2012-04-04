@@ -863,6 +863,17 @@ public:
       RESOLUTION    "Modify the incorrect line in the properties file."
 END_ERR
 
+/* Error 57 */
+class Repast_Error_57: public std::invalid_argument{
+public:
+  Repast_Error_57(): INVALID_ARG(ERROR_NUMBER 56)
+      THROWN_BY     "initializeSeed(Properties& props, boost::mpi::communicator* comm)"
+      REASON        "No communicator provided for use with global 'AUTO' seed."
+      EXPLANATION   "'AUTO' specified for global.random.seed, but initializeSeed(Properties&, boost::mpi::communicator* = 0) is called with no communicator pointer. Automatically generated random seed (from process 0) cannot be shared to all processes."
+      CAUSE         "Properties file cannot use AUTO for global.random.seed with this code"
+      RESOLUTION    "Modify the incorrect line in the properties file, or alter the code to provide a communicator for initializeSeed"
+END_ERR
+
 /* TEMPLATE
 class Repast_Error_: public std::invalid_argument{
 public:
