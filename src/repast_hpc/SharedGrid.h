@@ -410,10 +410,6 @@ SharedBaseGrid<T, GPTransformer, Adder, GPType>::SharedBaseGrid(std::string name
 		double pCount = processDims[i];
 		double tmp = extent / pCount;
 		if (floor(tmp) != tmp){
-		  std::cout << "RANK: " << rank << " PROBLEM WITH NUMBER OF PROCESSES AND DIMENSIONS SPECIFIED.\n" <<
-		               "    dimension      = " << dimCount << "\n" <<
-		               "    extent         = " << extent << "\n" <<
-		               "    processCount   = " << pCount << std::endl;
 			throw Repast_Error_51(dimCount, extent, pCount);// Number of processes must divide evenly into the extent in a given dimension
 		}
 		extents.push_back((int) tmp);
