@@ -50,6 +50,8 @@
 #include <boost/serialization/access.hpp>
 #include <boost/functional/hash.hpp>
 
+#include "RepastErrors.h"
+
 namespace repast {
 
 /**
@@ -333,8 +335,8 @@ bool operator!=(const Point<T> &one, const Point<T> &two) {
 
 template<typename T>
 void Point<T>::add(const Point<T> &pt) {
-	if (pt.dimensionCount() != dimensionCount())
-		throw std::invalid_argument("GridPoints do not have same number of dimensions.");
+	if (pt.dimensionCount() != dimensionCount()) throw Repast_Error_35<Point<T> >(*this, pt); // Points do not have same number of dimensions
+
 	for (size_t i = 0; i < point.size(); i++) {
 		point[i] += pt.getCoordinate(i);
 	}

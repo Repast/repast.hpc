@@ -55,7 +55,7 @@
 
 #include "logger.h"
 #include "io.h"
-
+#include "RepastErrors.h"
 
 
 namespace fs = boost::filesystem;
@@ -135,12 +135,12 @@ ConfigLexer::ConfigLexer(const string& file_name, boost::mpi::communicator* comm
       fileInStream.read(CONFIGFILEBUFFER, maxConfigFileSize);
       // Check if fail:
       if(fileInStream.gcount() >= (maxConfigFileSize - 1)){
-        throw invalid_argument("Configuration file '" + file_name + "' exceeds maximum allowed size and was read incompletely. A larger file size can usually be specified when calling the Repast Process init method.");
+        throw repast::Repast_Error_41(maxConfigFileSize, fileInStream.gcount(), file_name); // Config file exceeds maximum allowed size
       }
       CONFIGFILEBUFFER[fileInStream.gcount()] = '\0'; // Add a null terminator
       fileInStream.close();
     } else {
-      throw invalid_argument("Config file '" + file_name + "' not found.");
+      throw repast::Repast_Error_42(file_name); // Config file not found
     }
   }
   if(comm != 0){                                                               // If a communicator was passed, proc 0 broadcasts to all other procs
@@ -156,7 +156,7 @@ ConfigLexer::ConfigLexer(const string& file_name, boost::mpi::communicator* comm
 		string err = "Error opening config file '" + file_name + "'";
 		if (in != NULL)
 			delete in;
-		throw invalid_argument(err.c_str());
+		throw repast::Repast_Error_43(file_name); // Unknown error
 	}
 }
 

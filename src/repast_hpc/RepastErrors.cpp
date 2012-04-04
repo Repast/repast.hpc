@@ -32,67 +32,31 @@
  *   EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- *  Grid2DQuery.h
+ *  RepastErrors.cpp
  *
- *  Created on: Aug 12, 2010
- *      Author: nick
+ *  Created on: Feb 21, 2012
+ *      Author: JTM
  */
 
-#ifndef GRID2DQUERY_H_
-#define GRID2DQUERY_H_
-
+#include "RepastProcess.h"
 #include "RepastErrors.h"
 
 namespace repast {
 
-/**
- * Base class for neighborhood queries on discrete Grids.
- *
- * @tparam T the type of object in the Grid.
- */
-template<typename T>
-class Grid2DQuery {
-
-protected:
-	const Grid<T, int>* _grid;
-	int minMax[2][2];
-
-public:
-
-	/**
-	 * Creates Grid2DQuery that will query the specified Grid.
-	 */
-	Grid2DQuery(const Grid<T, int>* grid);
-	virtual ~Grid2DQuery() {}
-
-	/**
-	 * Queries the Grid for the neighbors surrounding the center point within a specified range. What
-	 * constitutes the neighborhood is determines by subclass implementors.
-	 *
-	 * @param center the center of the neighborhood
-	 * @param range the range of the neighborhood out from the center
-	 * @param includeCenter whether or not to include any agents at the center
-	 * @param [out] the neighboring agents will be returned in this vector
-	 */
-	virtual void query(const Point<int>& center, int range, bool includeCenter, std::vector<T*>& out) const = 0;
-};
-
-template<typename T>
-Grid2DQuery<T>::Grid2DQuery(const Grid<T, int>* grid) :
-	_grid(grid) {
-	if (grid->dimensions().dimensionCount() != 2)
-      throw Repast_Error_10(grid->dimensions().dimensionCount()); // Grid2DQuery only accepts 2D grids
-
-	GridDimensions dimensions = grid->dimensions();
-
-	for (size_t i = 0; i < 2; i++) {
-		int origin = dimensions.origin(i);
-		minMax[i][0] = origin;
-		// max is EXCLUSIVE
-		minMax[i][1] = (dimensions.extents(i) + dimensions.origin(i));
-	}
+std::string err_msg(int idNum, std::string thrown_by, std::string reason, std::string explanation, std::string cause, std::string resolution){
+  std::stringstream ss;
+  ss << "REPAST_ERROR_" << idNum << "\n"
+     << "   Thrown By:     " << thrown_by << "\n"
+     << "   On Rank:       " << repast::RepastProcess::instance()->rank() << "\n"
+     << "   Reason:        " << reason << "\n"
+     << "   Explanation:   " << explanation << "\n"
+     << "   Known Causes:  " << cause << "\n"
+     << "   Resolution:    " << resolution << "\n";
+  return ss.str();
 }
 
-}
 
-#endif /* GRID2DQUERY_H_ */
+
+
+
+}

@@ -84,8 +84,7 @@ RepastProcess* RepastProcess::init(string propsfile, boost::mpi::communicator* c
 }
 
 RepastProcess* RepastProcess::instance() {
-	if (_instance == 0)
-		throw domain_error("RepastProcess must be initialized before calling instance");
+	if (_instance == 0)	throw Repast_Error_39(); // RepastProcess must be initialized before calling instance
 	return _instance;
 }
 
@@ -182,7 +181,7 @@ void RepastProcess::moveAgent(const AgentId& id, int process) {
 		AgentId other = *iter;
 		if (other.currentRank() != process) {
 			std::cout << rank_ << " : " << other << ", " << id << " trying to move to " << process << std::endl;
-			throw std::domain_error("Cannot move agent to two different processes during the same iteration");
+			throw Repast_Error_40<AgentId>(id, rank_, other.currentRank(), process); // Cannot move agent to two different processes during the same iteration
 		}
 	}
 }

@@ -39,6 +39,7 @@
  */
 
 #include "SVDataSetBuilder.h"
+#include "RepastErrors.h"
 
 namespace repast {
 
@@ -48,13 +49,13 @@ SVDataSetBuilder::SVDataSetBuilder(const std::string& file, const std::string& s
 }
 
 SVDataSetBuilder& SVDataSetBuilder::addDataSource(SVDataSource* source) {
-	if (returned) throw std::domain_error("DataSetBuilder has returned an initialized dataset, data sources can no longer be added");
+	if (returned) throw Repast_Error_33(); // Data sources can no longer be added after builder dataset constructed
 	dataSet->dataSources.push_back(source);
 	return *this;
 }
 
 SVDataSet* SVDataSetBuilder::createDataSet() {
-	if (returned) throw std::domain_error("DataSetBuilder can only create a single dataset.");
+	if (returned) throw Repast_Error_34(); // DataSetBuilder can only create a single dataset
 	dataSet->init();
 	returned = true;
 	return dataSet;

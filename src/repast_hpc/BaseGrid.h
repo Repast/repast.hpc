@@ -53,6 +53,7 @@
 
 #include "Grid.h"
 #include "spatial_math.h"
+#include "RepastErrors.h"
 
 namespace repast {
 
@@ -349,9 +350,9 @@ bool BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::moveTo(const Agent
 		const std::vector<GPType>& newLocation) {
 	LocationMapIter iter = agentToLocation.find(id);
 	if (iter == agentToLocation.end())
-		throw std::invalid_argument("Agent has not yet been introduced to this space ('" + Projection<T>::name() + ")");
+		throw Repast_Error_2<AgentId>(id, Projection<T>::name()); // Agent has not yet been introduced to this space/is not present
 	if (newLocation.size() < dimensions_.dimensionCount())
-		throw std::invalid_argument("Number of new location dimensions must match space dimensions");
+		throw Repast_Error_3(newLocation.size(), dimensions_.dimensionCount()); // Destination not fully specified
 
 	std::vector<GPType> transformedCoords(newLocation.size(), 0);
 	gpTransformer.transform(newLocation, transformedCoords);
@@ -381,7 +382,7 @@ template<typename T, typename CellAccessor, typename GPTransformer, typename Add
 std::pair<bool, Point<GPType> > BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::moveByVector(const T* agent,
 		double distance, const std::vector<double>& anglesInRadians) {
 	if (anglesInRadians.size() != dimensions_.dimensionCount())
-		throw std::invalid_argument("In moveByVector, number of angles must equal number of grid/space dimensions");
+		throw Repast_Error_4(anglesInRadians.size(), dimensions_.dimensionCount()); // Number of angles must equal dimensions
 
 	std::vector<GPType> pt = calculateDisplacement<GPType> (dimensions_.dimensionCount(), 0, distance, anglesInRadians);
 	return moveByDisplacement(agent, pt);
@@ -391,13 +392,11 @@ template<typename T, typename CellAccessor, typename GPTransformer, typename Add
 std::pair<bool, Point<GPType> > BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::moveByDisplacement(
 		const T* agent, const std::vector<GPType>& displacement) {
 	if (displacement.size() != dimensions_.dimensionCount())
-		throw std::invalid_argument(
-				"In moveByDisplacement, displacement vector must equal number of grid/space dimensions");
+		  throw Repast_Error_5(displacement.size(), dimensions_.dimensionCount()); // displacement vector must equal number of grid/space dimensions
 
 	LocationMapIter iter = agentToLocation.find(agent->getId());
 	if (iter == agentToLocation.end())
-		throw std::invalid_argument("Agent has not yet been introduced to this grid / space ('" + Projection<T>::name()
-				+ ")");
+      throw Repast_Error_6<AgentId>(agent->getId(), Projection<T>::name()); // Agent has not in this grid / space
 
 	GridPointHolder<T, GPType>* gpHolder = iter->second;
 	std::vector<GPType> newPos(displacement.size(), 0);
@@ -448,9 +447,8 @@ double BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::getDistance(cons
 template<typename T, typename CellAccessor, typename GPTransformer, typename Adder, typename GPType>
 double BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::getDistanceSq(const Point<GPType>& pt1, const Point<
 		GPType>& pt2) const {
-	if (pt1.dimensionCount() != pt2.dimensionCount()) {
-		throw std::invalid_argument("Points do not have same number of dimensions");
-	}
+	if (pt1.dimensionCount() != pt2.dimensionCount())
+      throw Repast_Error_7(pt1.dimensionCount(), pt2.dimensionCount()); // Points do not have same number of dimensions
 
 	double sum = 0;
 	for (int i = 0, n = pt1.dimensionCount(); i < n; i++) {
@@ -471,9 +469,8 @@ double BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::getDistanceSq(co
 template<typename T, typename CellAccessor, typename GPTransformer, typename Adder, typename GPType>
 void BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::getDisplacement(const Point<GPType>& pt1, const Point<
 		GPType>& pt2, std::vector<GPType>& out) const {
-	if (pt1.dimensionCount() != pt2.dimensionCount()) {
-		throw std::invalid_argument("Points do not have same number of dimensions");
-	}
+	if (pt1.dimensionCount() != pt2.dimensionCount())
+      throw Repast_Error_8(pt1.dimensionCount(), pt2.dimensionCount()); // Points do not have same number of dimensions
 
 	for (int i = 0, n = pt1.dimensionCount(); i < n; i++) {
 //		GPType diff = pt1.getCoordinate(i) - pt2.getCoordinate(i);  // Original, up to release 1.0b

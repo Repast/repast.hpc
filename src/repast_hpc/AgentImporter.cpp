@@ -38,6 +38,7 @@
  *      Author: nick
  */
 
+#include "RepastErrors.h"
 #include "AgentImporter.h"
 #include "mpi_constants.h"
 
@@ -69,7 +70,7 @@ void AgentImporter::incrementImportedAgentCount(int exportingRank) {
 void AgentImporter::decrementImportedAgentCount(int exportingRank) {
 	map<int, int>::iterator iter = exportingSources.find(exportingRank);
 	if (iter == exportingSources.end()) {
-		throw domain_error("Cannot decrement the agent count for a non-exporting rank");
+		throw Repast_Error_1(exportingRank); // domain_error: Cannot decrement the agent count for a non-exporting rank"
 	} else {
 		int val = iter->second - 1;
 		if (val == 0) {
