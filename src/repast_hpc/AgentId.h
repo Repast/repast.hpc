@@ -80,14 +80,14 @@ public:
 	}
 
 	/**
-	 * Creates an AgentId.The combination of the
+	 * Creates an AgentId. The combination of the
 	 * three parameters should uniquely identify the agent.
 	 *
 	 * @param id the agent's id
 	 * @param startProc the rank of the agent's starting process
 	 * @param agentType the agent's type (user defined)
 	 */
-	AgentId(int id, int startProc, int agentType);
+	AgentId(int id, int startProc, int agentType, int currentProc = -1);
 
 	virtual ~AgentId();
 
