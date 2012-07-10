@@ -44,10 +44,6 @@
 #include "Utilities.h"
 #include "io.h"
 
-// Needed for Boost 1_46 and later due 
-// to changes in the Boost file system API
-#define BOOST_FILESYSTEM_VERSION 2
-
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
 
@@ -65,11 +61,11 @@ NCDataSet::NCDataSet(std::string file, const Schedule& schedule) :
 		fs::path filepath(file);
 		if (!fs::exists(filepath.parent_path())) 	fs::create_directories(filepath.parent_path());
     int i = 1;
-    std::string stem = filepath.stem();
+    std::string stem = filepath.stem().string();
     while(fs::exists(filepath)){    // This will increment i until it hits a unique name
       i++;
       std::stringstream ss;
-      ss << stem << "_" << i << filepath.extension();
+      ss << stem << "_" << i << filepath.extension().string();
       fs::path newName(filepath.parent_path() / ss.str());
       filepath = newName;
     }
