@@ -359,7 +359,7 @@ public:
 	ValueType& get(const Point<double>& pt);
 
 	/**
-	 * Sets the value at the specifeid point.
+	 * Sets the value at the specified point.
 	 *
 	 * @param value the value
 	 * @param pt the point where the value should be stored
