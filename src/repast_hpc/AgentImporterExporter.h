@@ -65,7 +65,7 @@
  * If defined, allow multiple importer/exporter
  * instances managing distinct sets of agents
  */
-//#define SHARE_AGENTS_BY_SET
+#define SHARE_AGENTS_BY_SET
 
 /*
  * If you wish to allow a single cancellation to be used
@@ -79,7 +79,7 @@
 /* Preprocessor configuration */
 
 #ifndef DEFAULT_IMPORTER_EXPORTER
-  #define DEFAULT_IMPORTER_EXPORTER 1
+  #define DEFAULT_IMPORTER_EXPORTER 4
 #endif
 
 #if DEFAULT_IMPORTER_EXPORTER < 1 || DEFAULT_IMPORTER_EXPORTER > 5
@@ -333,7 +333,7 @@ public:
   virtual void importedAgentIsMoved(const AgentId& id, int newProcess) = 0;
 
   /**
-   * Some semantic sugar; operationally this is the same as 'importedAgentIsMoved'
+   * Some semantic sugar; operationally this is the same as 'importedAgentIsRemoved'
    */
   inline void importedAgentIsNowLocal(const AgentId& id){ importedAgentIsRemoved(id); }
 
@@ -341,6 +341,12 @@ public:
    * Get a printable indication of the data in this object
    */
    virtual std::string getReport() = 0;
+
+   virtual void getSetOfAgentsBeingImported(std::set<AgentId>& set) = 0;
+
+   virtual void clear(){
+     exportingProcesses.clear();
+   }
 
  };
 
@@ -363,6 +369,7 @@ public:
   virtual void importedAgentIsMoved(const AgentId& id, int newProcess);
 
   virtual std::string getReport();
+  virtual void getSetOfAgentsBeingImported(std::set<AgentId>& set);
 };
 #endif
 
@@ -403,6 +410,12 @@ public:
   virtual void importedAgentIsMoved(const AgentId& id, int newProcess);
 
   virtual std::string getReport();
+  virtual void getSetOfAgentsBeingImported(std::set<AgentId>& set);
+
+  virtual void clear(){
+    AbstractImporter::clear();
+    sources.clear();
+  }
 };
 #endif
 
@@ -438,6 +451,11 @@ public:
   virtual void importedAgentIsMoved(const AgentId& id, int newProcess);
 
   virtual std::string getReport();
+  virtual void getSetOfAgentsBeingImported(std::set<AgentId>& set);
+  virtual void clear(){
+    AbstractImporter::clear();
+    sources.clear();
+  }
 };
 #endif
 
@@ -483,6 +501,12 @@ public:
   virtual void importedAgentIsMoved(const AgentId& id, int newProcess);
 
   virtual std::string getReport();
+  virtual void getSetOfAgentsBeingImported(std::set<AgentId>& set);
+
+  virtual void clear(){
+    AbstractImporter::clear();
+    sources.clear();
+  }
 };
 #endif
 
@@ -616,6 +640,13 @@ public:
    */
   virtual std::string getReport() = 0;
 
+  virtual void clear(){
+    outgoingStatusChanges->clear();
+    outgoingAgentExporterInformation->clear();
+
+    processesExportedTo.clear();
+    exportedMap.clear();
+  }
 };
 
 
@@ -680,6 +711,8 @@ public:
 
   virtual       void           importedAgentIsNowLocal(const AgentId& id){                                importer->importedAgentIsNowLocal(id);           }
 
+  virtual       void           getSetOfAgentsBeingImported(std::set<AgentId>& set){                       importer->getSetOfAgentsBeingImported(set);      }
+
   virtual const AbstractExporter::StatusMap* getOutgoingStatusChanges();
 
   virtual const std::set<int>& getProcessesExportedTo(){                                           return exporter->getProcessesExportedTo();              }
@@ -709,6 +742,15 @@ public:
    */
   virtual std::string getReport(){ return importer->getReport() + exporter->getReport(); }
 
+  virtual void clear(){
+    importer->clear();
+    exporter->clear();
+  }
+
+  virtual void clearExporter(){
+    exporter->clear();
+  }
+
 };
 
 /* Normal variants, with semantics defined by which importer/exporter combination is used */
@@ -725,6 +767,7 @@ public:
   virtual ~ImporterExporter_COUNT_LIST();
 
   virtual std::string version();
+
 };
 #endif
 
@@ -881,6 +924,38 @@ public:
     }
     return ss.str();
   }
+
+  virtual void getSetOfAgentsBeingImported(std::set<AgentId>& set);
+  void getSetOfAgentsBeingImported(std::set<AgentId>& set, std::string excludeSet);
+
+  virtual void clear(){
+    std::map<std::string, AbstractImporterExporter*>::iterator it    = importersExportersMap.begin();
+    std::map<std::string, AbstractImporterExporter*>::iterator itEnd = importersExportersMap.end();
+    while(it != itEnd){
+      it->second->clear();
+      it++;
+    }
+  }
+
+  void clear(std::string setName){
+    std::map<std::string, AbstractImporterExporter*>::iterator it = importersExportersMap.find(setName);
+    if(it != importersExportersMap.end()) it->second->clear();
+  }
+
+  virtual void clearExporter(){
+    std::map<std::string, AbstractImporterExporter*>::iterator it    = importersExportersMap.begin();
+    std::map<std::string, AbstractImporterExporter*>::iterator itEnd = importersExportersMap.end();
+    while(it != itEnd){
+      it->second->clearExporter();
+      it++;
+    }
+  }
+
+  void clearExporter(std::string setName){
+    std::map<std::string, AbstractImporterExporter*>::iterator it = importersExportersMap.find(setName);
+    if(it != importersExportersMap.end()) it->second->clearExporter();
+  }
+
 
 };
 #endif
