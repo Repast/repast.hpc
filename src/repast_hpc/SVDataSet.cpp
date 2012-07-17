@@ -68,7 +68,6 @@ SVDataSet::SVDataSet(const std::string& file, const std::string& separator, cons
     }
 		out.open(filepath.string().c_str());
 	}
-
 }
 
 SVDataSet::~SVDataSet() {
