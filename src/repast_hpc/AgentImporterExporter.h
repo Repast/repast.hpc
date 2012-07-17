@@ -347,8 +347,7 @@ public:
    virtual void clear(){
      exportingProcesses.clear();
    }
-
- };
+};
 
 
 #if !defined OMIT_IMPORTER_EXPORTER_COUNT_LIST || \
