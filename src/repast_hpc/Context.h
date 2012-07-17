@@ -41,11 +41,8 @@
 #ifndef CONTEXT_H_
 #define CONTEXT_H_
 
-#include "AgentId.h"
-#include "Random.h"
-#include "ValueLayer.h"
-#include "Projection.h"
-#include "RepastErrors.h"
+#include <vector>
+#include <set>
 
 #include <boost/unordered_map.hpp>
 #include <boost/smart_ptr.hpp>
@@ -53,9 +50,12 @@
 #include <boost/iterator/filter_iterator.hpp>
 #include <boost/function.hpp>
 
-#include <vector>
-#include <set>
-
+#include "AgentId.h"
+#include "AgentRequest.h"
+#include "Random.h"
+#include "ValueLayer.h"
+#include "Projection.h"
+#include "RepastErrors.h"
 
 namespace repast {
 
