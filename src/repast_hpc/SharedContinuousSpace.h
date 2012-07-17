@@ -99,8 +99,6 @@ public:
 	template<typename AgentContent, typename Provider, typename AgentsCreator>
 	void synchBuffer(SharedContext<T>& context, Provider& provider, AgentsCreator& creator);
 
-	void printLocations();
-
 };
 
 template<typename T, typename GPTransformer, typename Adder>
@@ -203,15 +201,6 @@ void SharedContinuousSpace<T, GPTransformer, Adder>::synchBuffer(SharedContext<T
 				synchMoveTo(id, contents._pt);
 			}
 		}
-	}
-}
-
-template<typename T, typename GPTransformer, typename Adder>
-void SharedContinuousSpace<T, GPTransformer, Adder>::printLocations() {
-	for (typename SharedBaseGridType::GridBaseType::LocationMapConstIter iter =
-			SharedBaseGridType::GridBaseType::locationsBegin(); iter
-			!= SharedBaseGridType::GridBaseType::locationsEnd(); ++iter) {
-		GridPointHolder<T, double> *gp = iter->second;
 	}
 }
 
