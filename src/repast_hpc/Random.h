@@ -274,6 +274,429 @@ public:
 
 ptrdiff_t uni_random(ptrdiff_t i);
 
+/**
+ * Given an iterator's start and end, returns the count of the number
+ * of elements.
+ *
+ * @param iteratorStart
+ * @param iteratorEnd
+ *
+ * @return number of steps from start to end; count of elements
+ * in iterator
+ */
+template<typename I>
+int countOf(I iteratorStart, I iteratorEnd){
+  I iterator = iteratorStart;
+  int c = 0;
+  while(iterator != iteratorEnd){ iterator++; c++; }
+  return c;
 }
 
+/**
+ * Shuffles the order of a vector of elements.
+ * Note that there can be alternative algorithms
+ * for this that trade memory and performance
+ * in different ways. This proceeds through the
+ * entire list, and at each position randomly
+ * chooses one of the other elements and swaps them.
+ *
+ * The result should be mathematically random-
+ * that is, every possible combination should have an equal
+ * chance of being the final result.
+ *
+ *
+ * @param elementList the list to be shuffled
+ */
+template<typename T>
+void shuffleList(std::vector<T*>& elementList){
+  if(elementList.size() <= 1) return;
+  IntUniformGenerator rnd = Random::instance()->createUniIntGenerator(0, elementList.size() - 1);
+  T* swap;
+  for(size_t i = 0, sz = elementList.size(); i < sz; i++){
+    int other = rnd.next();
+    swap = elementList[i];
+    elementList[i] = elementList[other];
+    elementList[other] = swap;
+  }
+
+  // OR
+    // see: http://en.wikipedia.org/wiki/Fisher-Yates_shuffle#The_modern_algorithm
+
+  //    DoubleUniformGenerator rnd = Random::instance()->createUniDoubleGenerator(0, 1);
+  //    T* swap;
+  //    for(int pos = elementList.size() - 1; pos > 0; pos--){
+  //        int range = pos + 1;
+  //        int other = (int)(rnd.next() * (range));
+  //        swap = elementList[pos];
+  //        elementList[pos] = elementList[other];
+  //        elementList[other] = swap;
+  //    }
+}
+
+/**
+ * Given a set, returns the elements in that set in shuffled
+ * order. Acts by assigning all elements in the given set
+ * to the vector, then calling shuffleList on that vector.
+ *
+ * @param elementSet collection of elements to be shuffled
+ * @param [out] elementList the list, shuffled
+ */
+template<typename T>
+void shuffleSet(std::set<T*>& elementSet, std::vector<T*>& elementList){
+  elementList.assign(elementSet.begin(), elementSet.end());
+  shuffleList(elementList);
+
+  //    // Or- probably faster... ??
+  //
+  //    elementList.reserve(elementSet.size());
+  //    typename std::set<T*>::iterator setIterator = elementSet.begin();
+  //    DoubleUniformGenerator rnd = Random::instance()->createUniDoubleGenerator(0,1);
+  //    for(int i = 0; i < elementSet.size(); i++){
+  //        int j = (int)(rnd.next() * (i + 1));
+  //        elementList.push_back(elementList[j]);
+  //        elementList[j] = *setIterator;
+  //        setIterator++;
+  //    }
+}
+
+/**
+ * Given an iterator and a number of elements,
+ * creates a data structure that allows efficient access
+ * to those elements. Is only valid as long as the iterator
+ * is valid.
+ *
+ * The basic implementation creates a vector of ordered
+ * pairs linking an integer and an iterator pointing
+ * to an element in the original iteration set. To find
+ * the nth element, the algorithm searches backwards through the
+ * list of 'landmarks', finds the highest landmark lower than
+ * n, chooses the iterator associated with that landmark,
+ * and steps forward until n is reached, adding new landmarks
+ * if appropriate. So given landmarks:
+ *
+ * 0    - pointer to element 0
+ * 100  - pointer to element 100
+ * 200  - pointer to element 200
+ *
+ * if the request for element 438 is given, the algorithm will
+ * search backward and find landmark 200; it will
+ * then step forward, adding landmarks for 300 and 400, until element 438
+ * is reached and returned.
+ *
+ * Assuming that requests are evenly distributed, optimum interval for
+ * landmarks is the square root of the size of the list, and performance
+ * for the algorithm will be in log(size) time.
+ *
+ * Note that other implementations are possible- for example, checking
+ * if enough memory would allow a completely indexed list. A long-term
+ * possibility is allowing the user to specify (for example, specify that
+ * the algorithm with lowest memory cost be used even though memory
+ * is initially available, perhaps because other routines will be filling
+ * that memory while this object is in use).
+ */
+template<typename I>
+class RandomAccess{
+private:
+  I it;
+  I begin;
+
+  int interval;
+  int maxLandmark;
+  std::vector<std::pair<int, I > > landmarks;
+
+public:
+
+  /**
+   * Constructs a RandomAccess instance for this iterator
+   *
+   * @param beginning
+   * @param size
+   */
+  RandomAccess(I beginning, int size) :
+    interval((int)(sqrt((double)size))), maxLandmark(0)  {
+        begin = beginning;
+        landmarks.push_back(std::pair<int, I >(0, beginning));
+  }
+
+  /**
+   * Gets the element at the specified index
+   *
+   * @param index
+   */
+  I get(int index){
+    bool place = (index > (maxLandmark + interval));
+    typename std::vector<std::pair<int, I > >::iterator lm = landmarks.end();
+    while((--lm)->first > index);
+    int c = lm->first;
+    it    = lm->second;
+    if(place){
+      while(c != index){
+        c++;
+        it++;
+        if(c % interval == 0){
+          landmarks.push_back(std::pair<int, I >(c, it));
+          maxLandmark = c;
+        }
+      }
+    }
+    else{
+      while(c != index){
+        c++;
+        it++;
+      }
+    }
+    return it;
+  }
+
+};
+
+
+/**
+ * Gets N elements selected randomly from the elements that are indexed by the iterator passed.
+ * Selection is 'without replacement'; no element will appear in the result set twice.
+ * The elements are placed in a set; order is not randomized.
+ *
+ * If the 'selectedElements' set is not empty initially, the elements chosen will be added
+ * to it with duplication prevented- in other words, the elements initially in the
+ * set will not be selected from the population and added to the set by this routine.
+ *
+ * If it is not possible to select all of the agents requested
+ * because the number requested exceeds the number of unique agents that can be added
+ * to the result set, then all of the agents from the iterator will be added to the set.
+ *
+ * If the optional 'remove' parameter is set to true, the elements in the
+ * original 'selectedElements' set will be removed before the set is
+ * returned.
+ *
+ * @param iteratorStart the start of the iterated list of elements from which
+ * selection will be made
+ * @param size the size of the source population- i.e., the number of elements
+ * in the list pointed to by iteratorStart
+ * @param count number of elements to be selected
+ * @param [out] selectedElements collection into which selected elements
+ * are placed. If not empty, elements in initial set are excluded from
+ * selection.
+ * @param remove if true, the elements in the original set will be removed from
+ * the set returned.
+ *
+ * @tparam T the type of the elements to be selected (i.e. the agent type)
+ * @tparam I the type of the iterator to be used to pass through the population
+ * to be sampled
+ */
+template<typename T, typename I>
+void selectNElementsAtRandom(I iterator, int size, unsigned int count, std::set<T*>&selectedElements, bool remove = false){
+  // When 'selectedElements' is large in comparison to size, or 'count' is
+  // large in comparison to size, or both, a potential problem arises; this is both
+  // a performance issue and a potential error (infinite loop). The number
+  // of valid selections remaining in the original population will be
+  // the size of the population minus the number of members of the original
+  // population already in the set of 'selectedElements'. There is a performance
+  // problem that can arise if the number of valid selections approaches
+  // zero, and an infinite loop arises if that number reaches zero. However, a
+  // complication is that we do not assume that all members in
+  // 'selectedElements' are drawn from the same population that 'iterator' describes.
+
+  // At a general level, the solution to this is that when the number of valid
+  // selections is expected to become small, the algorithm will switch to
+  // selecting the elements that will _not_ be added to the final set, rather
+  // than those that will.
+
+  // However, the more immediate issue is determining whether the problem
+  // will arise at all, and a key question is how many members of 'selectedElements'
+  // are drawn from the population. This, however, is costly to check, so
+  // it should only be checked if it seems possible to lead to a problem.
+
+  // A ceiling; the actual value may be lower
+  int maxAlreadySelected = selectedElements.size();
+
+  // We are not certain _any_ elements in the selectedElements set are from this population
+  int knownSelectedElementsFromPop = 0;
+
+  // This is a floor; there are at least this many available, but possibly more
+  int minAvailable = size - maxAlreadySelected;
+
+  // If you are requesting more than might be available, you must determine
+  // the actual number available.
+  if(count > minAvailable){
+    if(maxAlreadySelected > 0){
+      I tempIt = iterator;
+      for(int i = 0; i < size; i++){
+        T* ptr = (&**tempIt);
+        typename std::set<T*>::iterator found = selectedElements.find(ptr);
+        if(found != selectedElements.end()) knownSelectedElementsFromPop++;
+        tempIt++;
+      }
+      maxAlreadySelected = knownSelectedElementsFromPop;
+      minAvailable = size - maxAlreadySelected;
+    }
+  }
+  // If removing the original elements, will need a copy of them
+  typename std::vector<T*> tempToRemove;
+  if(remove){
+    tempToRemove.assign(selectedElements.begin(), selectedElements.end());
+  }
+
+  // There is no way to satisfy the request; copy all and return
+  if(count > minAvailable){
+    I it = iterator;
+    for(int i = 0; i < size; i++){
+      selectedElements.insert(&**it);
+      it++;
+    }
+  }
+  else{
+    RandomAccess<I> ra(iterator, size);
+    IntUniformGenerator rnd = Random::instance()->createUniIntGenerator(0, size - 1);
+    T* ptr;
+
+    // If the count of elements is very high in proportion to the population, faster to
+    // choose agents that will _not_ be in the final set and then switch...
+    // First the normal case, in which the number of agents is low
+    if(count <= ((double)minAvailable)*0.6){ // Tests suggest that 2/3 is probably too high, so adjusted to .6; TODO optimize or analytically solve
+      for (unsigned int i = 0; i < count; i++)
+                do {  ptr = &**ra.get(rnd.next()); } while(!(selectedElements.insert(ptr).second));
+    }
+    else{ // Now the other case
+      std::set<T*> elementsThatWillNotBeAdded;
+
+      if(selectedElements.size() > 0){
+        if(selectedElements.size() == knownSelectedElementsFromPop){ // Maybe we already checked and they ALL belong
+          elementsThatWillNotBeAdded.insert(selectedElements.begin(), selectedElements.end());
+        }
+        else{
+          I tempIt = iterator;
+          for(int i = 0; i < size; i++){
+            ptr = (&**tempIt);
+            if(selectedElements.find(ptr) != selectedElements.end()) elementsThatWillNotBeAdded.insert(ptr);
+            tempIt++;
+          }
+        }
+      }
+      // Note: duplicate element will not be inserted; failure will leave size of elementsThatWillNotBeAdded unchanged.
+      while((size - elementsThatWillNotBeAdded.size()) > count) elementsThatWillNotBeAdded.insert(&**ra.get(rnd.next()));
+
+      // Once the set of elements that will not be added is complete, cycle through the iterator and add
+      // all of those elements that are not in elementsThatWillNotBeAdded
+      I toAdd = iterator;
+      typename std::set<T*>::iterator notFound = elementsThatWillNotBeAdded.end();
+      for(int i = 0; i < size; i++){
+        ptr = &**toAdd;
+        if(elementsThatWillNotBeAdded.find(ptr) == notFound) selectedElements.insert(ptr);
+        toAdd++;
+      }
+    }
+  }
+  // Before returning, remove the elements from the set, if the user requested
+  if(remove){
+    typename std::vector<T*>::iterator toRemove = tempToRemove.begin();
+    while(toRemove != tempToRemove.end()){
+      selectedElements.erase(*toRemove);
+      toRemove++;
+    }
+  }
+}
+
+
+/**
+ * Gets N elements selected randomly from the elements that are indexed by the iterator passed.
+ *
+ * Acts by calculating the size of the population covered by the iterator given using
+ * countOf(iteratorStart, iteratorEnd) and invoking
+ * selectNElementsAtRandom(I iterator, int size, int count, std::set<T*>&selectedElements, bool remove).
+ *
+ * @param iteratorStart the start of the iterated list of elements from which
+ * selection will be made
+ * @param iteratorEnd the end of the iterated list of elements from which
+ * selection will be made
+ * @param count number of elements to be selected
+ * @param [out] selectedElements collection into which selected elements
+ * are placed. If not empty, elements in initial set are excluded from
+ * selection.
+ * @param remove if true, the elements in the original set will be removed from
+ * the set returned.
+ *
+ * @tparam T the type of the elements to be selected (i.e. the agent type)
+ * @tparam I the type of the iterator to be used to pass through the population
+ * to be sampled
+ */
+template<typename T, typename I>
+void selectNElementsAtRandom(I iteratorStart, I iteratorEnd, int count, std::set<T*>&selectedElements, bool remove = false){
+  selectNElementsAtRandom(iteratorStart, countOf(iteratorStart, iteratorEnd), count, selectedElements, remove);
+}
+
+/**
+ * Randomly selects elements from the iterator (equivalent
+ * to a call to selectNElementsAtRandom), but before returning them
+ * places them into the specified vector and
+ * randomly shuffles them.
+ *
+ * @param iteratorStart the start of the list of elements from which
+ * selection will be made
+ * @param size the count of the source population from which selection
+ * will be made (i.e. the end of the iterated list)
+ * @param count the number of elements to be selected. If this
+ * exceeds the number of valid, unique selections available in the
+ * source population then all valid, unique elements in the source population
+ * will be returned
+ * @param [out] selectedElements collection into which selected elements
+ * are placed. If not empty, elements in initial set are excluded from
+ * selection.
+ * @param remove Optional; if included, specifies whether the elements
+ * given in the 'selectedElements' set should appear in the final, sorted set.
+ * If true, the elements in this set are not selected
+ * from the population and are removed from the results before the final
+ * set is returned; if false, the elements in the set are
+ * not selected from the population but are included in the result set before
+ * it is shuffled and returned.
+ *
+ * @tparam T the type of the elements to be selected (i.e. the agent type)
+ * @tparam I the type of the iterator to be used to pass through the population
+ * to be sampled
+ */
+template<typename T, typename I>
+void selectNElementsInRandomOrder(I iterator, int size, int count, std::vector<T*>& selectedElements, bool remove = false){
+  // Transfer all elements from the vector to a set
+  std::set<T*> selectedElementSet;
+  selectedElementSet.insert(selectedElements.begin(), selectedElements.end());
+  selectedElements.clear();
+  selectNElementsAtRandom(iterator, size, count, selectedElementSet, remove);
+  shuffleSet(selectedElementSet, selectedElements);
+}
+
+/**
+ * Randomly selects elements from the iterator (equivalent
+ * to a call to selectNElementsAtRandom), but before returning them
+ * places them into the specified vector and
+ * randomly shuffles them.
+ *
+ * @param iteratorStart the start of the list of elements from which
+ * selection will be made
+ * @param iteratorEnd the end of the list of elements from which selection
+ * will be made
+ * @param count the number of elements to be selected. If this
+ * exceeds the number of valid, unique selections available in the
+ * source population then all valid, unique elements in the source population
+ * will be returned
+ * @param [out] selectedElements collection into which selected elements
+ * are placed. If not empty, elements in initial set are excluded from
+ * selection.
+ * @param remove Optional; if included, specifies whether the elements
+ * given in the 'selectedElements' set should appear in the final, sorted set.
+ * If true, the elements in this set are not selected
+ * from the population and are removed from the results before the final
+ * set is returned; if false, the elements in the set are
+ * not selected from the population but are included in the result set before
+ * it is shuffled and returned.
+ *
+ * @tparam T the type of the elements to be selected (i.e. the agent type)
+ * @tparam I the type of the iterator to be used to pass through the population
+ * to be sampled
+ */
+template<typename T, typename I>
+void selectNElementsInRandomOrder(I iteratorStart, I iteratorEnd, int count, std::vector<T*>& selectedElements, bool remove = false){
+  selectNElementsInRandomOrder(iteratorStart, countOf(iteratorStart, iteratorEnd), count, selectedElements, remove);
+}
+
+
+}
 #endif /* RANDOM_H_ */
