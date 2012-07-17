@@ -441,7 +441,7 @@ public:
 	 * set is returned (default is false)
 	 * @param popSize size of the population from which the sample will be drawn
 	 */
-    void selectAgents(std::set<T*>& selectedAgents, int type, bool remove = false, int popSize = -1);
+  void selectAgents(std::set<T*>& selectedAgents, int type, bool remove = false, int popSize = -1);
 
 	/**
 	 * Gets a randomly ordered vector of pointers to all agents in this context
