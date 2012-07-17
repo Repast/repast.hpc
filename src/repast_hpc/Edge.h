@@ -153,6 +153,11 @@ public:
 	double weight() const {
 		return _weight;
 	}
+
+  void weight(double wt){
+    _weight = wt;
+  }
+
 };
 
 template<typename V>
