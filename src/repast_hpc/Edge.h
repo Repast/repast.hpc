@@ -71,8 +71,8 @@ private:
 public:
 
 	// no arg constructor for serialization
-	RepastEdge() : _source(0), _target(0), _weight(1) {	}
-	~RepastEdge(){ }
+  RepastEdge() : _source(0), _target(0), _weight(1){ }
+  ~RepastEdge(){ }
 
 	/**
 	 * Creates a RepastEdge with the specified source and target and a default
