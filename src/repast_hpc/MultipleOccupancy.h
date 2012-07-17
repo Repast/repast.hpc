@@ -143,7 +143,7 @@ T* MultipleOccupancy<T, GPType>::get(const Point<GPType>& location) const {
 
 template<typename T, typename GPType>
 void MultipleOccupancy<T, GPType>::getAll(const Point<GPType>& location, std::vector<T*>& out) const {
-	ValueType* ptrs = doGet(location);
+  ValueType* ptrs = doGet(location);
 	if (ptrs != NULL) {
 		int index = out.size();
 		out.resize(out.size() + ptrs->size(), 0);
