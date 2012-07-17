@@ -375,7 +375,7 @@ public:
 	 * @param remove if true, remove any elements originally in the set before the
 	 * set is returned (default is false)
 	 */
-	void selectAgents(std::set<T*>& selectedAgents, bool remove = false);
+  void selectAgents(std::set<T*>& selectedAgents, bool remove = false);
 
 	/**
 	 * Gets a randomly ordered vector of pointers to all agents in this context.
@@ -387,7 +387,7 @@ public:
 	 * @param remove if true, remove any elements originally in the set before the
 	 * set is returned (default is false)
 	 */
-	void selectAgents(std::vector<T*>& selectedAgents, bool remove = false);
+  void selectAgents(std::vector<T*>& selectedAgents, bool remove = false);
 
 	/**
 	 * Gets a set of pointers to a specified number of randomly selected agents.
@@ -404,7 +404,7 @@ public:
 	 * @param remove if true, remove any elements originally in the set before the
 	 * set is returned (default is false)
 	 */
-	void selectAgents(int count, std::set<T*>& selectedAgents, bool remove = false);
+  void selectAgents(int count, std::set<T*>& selectedAgents, bool remove = false);
 
 	/**
 	 * Gets a randomly ordered vector of pointers to a specified number of randomly selected agents.
@@ -421,7 +421,7 @@ public:
 	 * @param remove if true, remove any elements originally in the set before the
 	 * set is returned (default is false)
 	 */
-	void selectAgents(int count, std::vector<T*>& selectedAgents, bool remove = false);
+  void selectAgents(int count, std::vector<T*>& selectedAgents, bool remove = false);
 	
 	/**
 	 * Gets a set of pointers to all agents in this context
