@@ -162,28 +162,23 @@ public:
 
 template<typename V>
 RepastEdge<V>::RepastEdge(boost::shared_ptr<V> source, boost::shared_ptr<V> target) :
-	_weight(1), _source(source.get()), _target(target.get()) {
-}
+	_source(source.get()), _target(target.get()), _weight(1) { }
 
 template<typename V>
 RepastEdge<V>::RepastEdge(V* source, V* target) :
-	_weight(1), _source(source), _target(target) {
-}
+	_source(source), _target(target), _weight(1) { }
 
 template<typename V>
 RepastEdge<V>::RepastEdge(V* source, V* target, double weight) :
-	_weight(weight), _source(source), _target(target) {
-}
+	_source(source), _target(target), _weight(1) { }
 
 template<typename V>
 RepastEdge<V>::RepastEdge(boost::shared_ptr<V> source, boost::shared_ptr<V> target, double weight) :
-	_weight(weight), _source(source.get()), _target(target.get()) {
-}
+	_source(source.get()), _target(target.get()), _weight(weight) { }
 
 template<typename V>
 RepastEdge<V>::RepastEdge(const RepastEdge& edge) :
-	_weight(edge._weight), _source(edge._source), _target(edge._target) {
-}
+	_source(edge._source), _target(edge._target), _weight(edge._weight) { }
 
 template<typename V>
 std::ostream& operator<<(std::ostream& os, const RepastEdge<V>& edge) {
