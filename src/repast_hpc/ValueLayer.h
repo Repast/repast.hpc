@@ -367,6 +367,8 @@ public:
 	 */
 	void set(const ValueType& value, const Point<double>& pt);
 };
+
+
 template<typename ValueType, typename Borders>
 ContinuousValueLayer<ValueType, Borders>::ContinuousValueLayer(const ContinuousValueLayer<ValueType, Borders>& other) :
 	ValueLayer<ValueType, double> (other._name, other._dimensions), values(other.values), _defaultValue(
