@@ -258,6 +258,10 @@ std::string Importer_COUNT::getReport(){
   return ss.str();
 }
 
+void Importer_COUNT::getSetOfAgentsBeingImported(std::set<AgentId>& set){
+  // Not implemented for 'count'
+}
+
 #endif
 
 
@@ -423,6 +427,17 @@ std::string Importer_LIST::getReport(){
   return ss.str();
 }
 
+void Importer_LIST::getSetOfAgentsBeingImported(std::set<AgentId>& set){
+  if(sources.size() > 0){
+    std::map<int, std::list<AgentId>* >::iterator it          = sources.begin();
+    const std::map<int, std::list<AgentId>* >::iterator itEnd = sources.end();
+    while(it != itEnd){
+      set.insert(it->second->begin(), it->second->end());
+      it++;
+    }
+  }
+}
+
 #endif
 
 
@@ -530,6 +545,17 @@ std::string Importer_SET::getReport(){
     }
   }
   return ss.str();
+}
+
+void Importer_SET::getSetOfAgentsBeingImported(std::set<AgentId>& set){
+  if(sources.size() > 0){
+    std::map<int, std::set<AgentId>* >::iterator it          = sources.begin();
+    const std::map<int, std::set<AgentId>* >::iterator itEnd = sources.end();
+    while(it != itEnd){
+      set.insert(it->second->begin(), it->second->end());
+      it++;
+    }
+  }
 }
 
 #endif
@@ -701,6 +727,22 @@ std::string Importer_MAP_int::getReport(){
     }
   }
   return ss.str();
+}
+
+void Importer_MAP_int::getSetOfAgentsBeingImported(std::set<AgentId>& set){
+  if(sources.size() > 0){
+    std::map<int, std::map<AgentId, int>* >::iterator it          = sources.begin();
+    const std::map<int, std::map<AgentId, int>* >::iterator itEnd = sources.end();
+    while(it != itEnd){
+      std::map<AgentId, int>::iterator mapIt = it->second->begin();
+      const std::map<AgentId, int>::iterator mapItEnd = it->second->end();
+      while(mapIt != mapItEnd){
+        set.insert(mapIt->first);
+        mapIt++;
+      }
+      it++;
+    }
+  }
 }
 
 #endif
@@ -1337,7 +1379,6 @@ void ImporterExporter_BY_SET::clearAgentExportInfo(){
   outgoingAgentExporterInformation->clear();
 }
 
-
 const std::map<int, AgentRequest>& ImporterExporter_BY_SET::getAgentsToExport(){
   return getAgentsToExport(REQUEST_AGENTS_ALL);
 }
@@ -1347,6 +1388,24 @@ const std::map<int, AgentRequest>& ImporterExporter_BY_SET::getAgentsToExport(st
   else{
     rebuildExportedMap();
     return exportedMap;
+  }
+}
+
+
+
+void ImporterExporter_BY_SET::getSetOfAgentsBeingImported(std::set<AgentId>& set){
+  std::map<std::string, AbstractImporterExporter*>::iterator mapIter = importersExportersMap.begin();
+  while(mapIter != importersExportersMap.end()){
+    mapIter->second->getSetOfAgentsBeingImported(set);
+    mapIter++;
+  }
+}
+
+void ImporterExporter_BY_SET::getSetOfAgentsBeingImported(std::set<AgentId>& set, std::string excludeSet){
+  std::map<std::string, AbstractImporterExporter*>::iterator mapIter = importersExportersMap.begin();
+  while(mapIter != importersExportersMap.end()){
+    if(mapIter->first.compare(excludeSet) != 0)    mapIter->second->getSetOfAgentsBeingImported(set);
+    mapIter++;
   }
 }
 
