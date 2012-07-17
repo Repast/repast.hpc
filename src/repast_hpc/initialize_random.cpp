@@ -221,7 +221,9 @@ void initializeSeed(Properties& props, boost::mpi::communicator* comm) {
       boost::variate_generator<boost::mt19937&, boost::uniform_real<> > localRNG(gen, dist);
       for(int i = 0; i < comm->rank(); i++)  seed = localRNG(); // The assignment only matters on the last time through, but calling the generator is requisite.
     }
-    props.putProperty(RANDOM_SEED_PROPERTY, seed);
+    stringstream ss;
+    ss << std::fixed << seed;
+    props.putProperty(RANDOM_SEED_PROPERTY, ss.str());
   }
   Random::initialize(seed);
 }
