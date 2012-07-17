@@ -170,7 +170,7 @@ RepastEdge<V>::RepastEdge(V* source, V* target) :
 
 template<typename V>
 RepastEdge<V>::RepastEdge(V* source, V* target, double weight) :
-	_source(source), _target(target), _weight(1) { }
+	_source(source), _target(target), _weight(weight) { }
 
 template<typename V>
 RepastEdge<V>::RepastEdge(boost::shared_ptr<V> source, boost::shared_ptr<V> target, double weight) :
