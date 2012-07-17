@@ -156,7 +156,7 @@ public:
 	/**
 	 * Gets the extents of this ValueLayer.
 	 *
-	 * @return the extends of this ValueLayer.
+	 * @return the extents of this ValueLayer.
 	 */
 	const Point<int> shape() const {
 		return _dimensions.extents();
