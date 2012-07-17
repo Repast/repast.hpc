@@ -340,13 +340,13 @@ public:
   /**
    * Get a printable indication of the data in this object
    */
-   virtual std::string getReport() = 0;
+  virtual std::string getReport() = 0;
 
-   virtual void getSetOfAgentsBeingImported(std::set<AgentId>& set) = 0;
+  virtual void getSetOfAgentsBeingImported(std::set<AgentId>& set) = 0;
 
-   virtual void clear(){
-     exportingProcesses.clear();
-   }
+  virtual void clear(){
+    exportingProcesses.clear();
+  }
 };
 
 
