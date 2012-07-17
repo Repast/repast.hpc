@@ -779,9 +779,8 @@ Projection<T>* Context<T>::getProjection(const std::string& name) {
 
 template<typename T>
 T* Context<T>::getAgent(const AgentId& id) {
-	AgentMapIterator iter = agents.find(id);
-	if (iter == agents.end())
-		return 0;
+  AgentMapIterator iter = agents.find(id);
+  if (iter == agents.end())  return 0;
 	return iter->second.get();
 }
 
