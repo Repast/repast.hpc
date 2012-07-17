@@ -41,6 +41,11 @@
 #ifndef RANDOM_H_
 #define RANDOM_H_
 
+#include <vector>
+#include <set>
+#include <map>
+#include <string>
+
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/uniform_int.hpp>
 #include <boost/random/uniform_real.hpp>
@@ -53,8 +58,6 @@
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/cstdint.hpp>
 
-#include <map>
-#include <string>
 
 namespace repast {
 
