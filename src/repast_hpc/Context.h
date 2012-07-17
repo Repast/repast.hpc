@@ -461,7 +461,7 @@ public:
 	 * set is returned (default is false)
 	 * @param popSize size of the population from which the sample will be drawn
 	 */
-	void selectAgents(std::vector<T*>& selectedAgents, int type, bool remove = false, int popSize = -1);
+  void selectAgents(std::vector<T*>& selectedAgents, int type, bool remove = false, int popSize = -1);
 
 	/**
 	 * Gets a set of pointers to a specified number of randomly selected agents
@@ -486,7 +486,7 @@ public:
 	 * set is returned (default is false)
 	 * @param popSize size of the population from which the sample will be drawn
 	 */
-	void selectAgents(int count, std::set<T*>& selectedAgents, int type, bool remove = false, int popSize = -1);
+  void selectAgents(int count, std::set<T*>& selectedAgents, int type, bool remove = false, int popSize = -1);
 
 	/**
 	 * Gets a randomly ordered vector of pointers to a specified number of randomly selected agents
@@ -511,7 +511,7 @@ public:
 	 * set is returned (default is false)
 	 * @param popSize size of the population from which the sample will be drawn
 	 */
-	void selectAgents(int count, std::vector<T*>& selectedAgents, int type, bool remove = false, int popSize = -1);
+  void selectAgents(int count, std::vector<T*>& selectedAgents, int type, bool remove = false, int popSize = -1);
 	
 	/**
 	 * Gets a set of pointers to all agents in this context matching a user-defined filter.
