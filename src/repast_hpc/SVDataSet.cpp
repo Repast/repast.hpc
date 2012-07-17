@@ -69,23 +69,6 @@ SVDataSet::SVDataSet(const std::string& file, const std::string& separator, cons
 		out.open(filepath.string().c_str());
 	}
 
-
-//	std::string filename = file;
-//  rank = RepastProcess::instance()->rank();
-//  if (rank == 0) {
-//    fs::path filepath(file);
-//    if (!fs::exists(filepath.parent_path()))  fs::create_directories(filepath.parent_path());
-//    int i = 1;
-//    while(fs::exists(filepath)){    // This will increment i until it hits a unique name
-//      i++;
-//      std::stringstream ss;
-//      ss << filepath.stem() << "_" << i << filepath.extension();
-//      fs::path newName(filepath.parent_path() / ss.str());
-//      filepath = newName;
-//    }
-//    filename = filepath.string();
-//  }
-//  file_ = filename;
 }
 
 SVDataSet::~SVDataSet() {
