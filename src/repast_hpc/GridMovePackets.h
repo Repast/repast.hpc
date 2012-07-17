@@ -108,8 +108,6 @@ void GridMovePackets<PtType>::removePacketFor(const AgentId& id) {
 		std::vector<GridMovePacket<PtType> >* vec = iter->second;
 		for (typename PacketVecType::iterator vecIter = vec->begin(); vecIter != vec->end(); ++vecIter) {
 			if ((*vecIter)._id == id) {
-				//std::cout << "removing packet for " << id << std::endl;
-				//throw std::domain_error("foo");
 				vec->erase(vecIter);
 				found = true;
 				break;
@@ -128,7 +126,6 @@ void GridMovePackets<PtType>::addPacket(const GridMovePacket<PtType>& packet) {
 		std::vector<GridMovePacket<PtType> >* vec = new std::vector<GridMovePacket<PtType> > ();
 		vec->push_back(packet);
 		packets[rank] = vec;
-		//std::cout << "adding packet for " << packet._id << std::endl;
 	} else {
 		iter->second->push_back(packet);
 	}
