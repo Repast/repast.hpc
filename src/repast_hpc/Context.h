@@ -70,7 +70,6 @@ struct SecondElement: public std::unary_function<typename boost::unordered_map<A
 };
 
 
-
 /**
  * Collection of agents of type T with set semantics. Object identity and equality
  * is determined by their AgentId.
