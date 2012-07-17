@@ -1392,7 +1392,6 @@ const std::map<int, AgentRequest>& ImporterExporter_BY_SET::getAgentsToExport(st
 }
 
 
-
 void ImporterExporter_BY_SET::getSetOfAgentsBeingImported(std::set<AgentId>& set){
   std::map<std::string, AbstractImporterExporter*>::iterator mapIter = importersExportersMap.begin();
   while(mapIter != importersExportersMap.end()){
