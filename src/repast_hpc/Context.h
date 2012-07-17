@@ -534,8 +534,8 @@ public:
 	 *
 	 * @tparam filterStruct the type of the filter to be applied to the agents
 	 */
-    template<typename filterStruct>
-    void selectAgents(std::set<T*>& selectedAgents, filterStruct& filter, bool remove = false, int popSize = -1);
+  template<typename filterStruct>
+  void selectAgents(std::set<T*>& selectedAgents, filterStruct& filter, bool remove = false, int popSize = -1);
 
 	/**
 	 * Gets a randomly ordered vector of pointers to all agents in this context
@@ -558,8 +558,8 @@ public:
 	 *
 	 * @tparam filterStruct the type of the filter to be applied to the agents
 	 */
-	template<typename filterStruct>
-    void selectAgents(std::vector<T*>& selectedAgents, filterStruct& filter, bool remove = false, int popSize = -1);
+  template<typename filterStruct>
+  void selectAgents(std::vector<T*>& selectedAgents, filterStruct& filter, bool remove = false, int popSize = -1);
 
 	/**
 	 * Gets a set of pointers to a specified number of randomly selected agents
@@ -587,8 +587,8 @@ public:
 	 *
 	 * @tparam filterStruct the type of the filter to be applied to the agents
 	 */
-	template<typename filterStruct>
-    void selectAgents(int count, std::set<T*>& selectedAgents, filterStruct& filter, bool remove = false, int popSize = -1);
+  template<typename filterStruct>
+  void selectAgents(int count, std::set<T*>& selectedAgents, filterStruct& filter, bool remove = false, int popSize = -1);
 
 	/**
 	 * Gets a randomly ordered vector of pointers to a specified number of randomly selected agents
@@ -616,8 +616,8 @@ public:
 	 *
 	 * @tparam filterStruct the type of the filter to be applied to the agents
 	 */
-	template<typename filterStruct>
-    void selectAgents(int count, std::vector<T*>& selectedAgents, filterStruct& filter, bool remove = false, int popSize = -1);
+  template<typename filterStruct>
+  void selectAgents(int count, std::vector<T*>& selectedAgents, filterStruct& filter, bool remove = false, int popSize = -1);
 	
 	/**
 	 * Gets a set of pointers to all agents in this context
@@ -641,8 +641,8 @@ public:
 	 *
 	 * @tparam filterStruct the type of the filter to be applied to the agents
 	 */
-    template<typename filterStruct>
-    void selectAgents(std::set<T*>& selectedAgents, int type, filterStruct& filter, bool remove = false, int popSize = -1);
+  template<typename filterStruct>
+  void selectAgents(std::set<T*>& selectedAgents, int type, filterStruct& filter, bool remove = false, int popSize = -1);
 
 	/**
 	 * Gets a randomly ordered vector of pointers to all agents in this context
@@ -666,8 +666,8 @@ public:
 	 *
 	 * @tparam filterStruct the type of the filter to be applied to the agents
 	 */
-	template<typename filterStruct>
-    void selectAgents(std::vector<T*>& selectedAgents, int type, filterStruct& filter, bool remove = false, int popSize = -1);
+  template<typename filterStruct>
+  void selectAgents(std::vector<T*>& selectedAgents, int type, filterStruct& filter, bool remove = false, int popSize = -1);
 
 	/**
 	 * Gets a set of pointers to a specified number of randomly selected agents
@@ -696,8 +696,8 @@ public:
 	 *
 	 * @tparam filterStruct the type of the filter to be applied to the agents
 	 */
-	template<typename filterStruct>
-    void selectAgents(int count, std::set<T*>& selectedAgents, int type, filterStruct& filter, bool remove = false, int popSize = -1);
+  template<typename filterStruct>
+  void selectAgents(int count, std::set<T*>& selectedAgents, int type, filterStruct& filter, bool remove = false, int popSize = -1);
 
 	/**
 	 * Gets a randomly ordered vector of pointers to a specified number of randomly selected agents
@@ -726,8 +726,8 @@ public:
 	 *
 	 * @tparam filterStruct the type of the filter to be applied to the agents
 	 */
-	template<typename filterStruct>
-    void selectAgents(int count, std::vector<T*>& selectedAgents, int type, filterStruct& filter, bool remove = false, int popSize = -1);
+  template<typename filterStruct>
+  void selectAgents(int count, std::vector<T*>& selectedAgents, int type, filterStruct& filter, bool remove = false, int popSize = -1);
 	
 
 };
