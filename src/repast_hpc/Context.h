@@ -279,8 +279,8 @@ public:
 	 * @return an iterator positioned at the beginning of the list of
 	 * agents meeting the filter's criteria
 	 */
-	template<typename filterStruct>
-	boost::filter_iterator<filterStruct, typename Context<T>::const_iterator> filteredBegin(const filterStruct& fStruct);
+  template<typename filterStruct>
+  boost::filter_iterator<filterStruct, typename Context<T>::const_iterator> filteredBegin(const filterStruct& fStruct);
 	
 	/**
 	 * Creates a filtered iterator over the set of agents
@@ -305,8 +305,8 @@ public:
 	 * @return an iterator positioned at one past the end of the list of
 	 * agents meeting the filter's criteria
 	 */
-    template<typename filterStruct>
-    boost::filter_iterator<filterStruct, typename Context<T>::const_iterator> filteredEnd(const filterStruct& fStruct);
+  template<typename filterStruct>
+  boost::filter_iterator<filterStruct, typename Context<T>::const_iterator> filteredEnd(const filterStruct& fStruct);
 	
 	
 	/**
@@ -334,8 +334,8 @@ public:
 	 * @return an iterator positioned at the beginning of the list of
 	 * agents meeting the filter's criteria
 	 */
-    template<typename filterStruct>
-    boost::filter_iterator<filterStruct, typename Context<T>::const_bytype_iterator> byTypeFilteredBegin(const int type, const filterStruct& fStruct);
+  template<typename filterStruct>
+  boost::filter_iterator<filterStruct, typename Context<T>::const_bytype_iterator> byTypeFilteredBegin(const int type, const filterStruct& fStruct);
 	
 	/**
 	 * Creates a filtered iterator over the set of agents
@@ -362,8 +362,8 @@ public:
 	 * @return an iterator positioned at one past the end of the list of
 	 * agents meeting the filter's criteria
 	 */
-    template<typename filterStruct>
-    boost::filter_iterator<filterStruct, typename Context<T>::const_bytype_iterator> byTypeFilteredEnd(const int type, const filterStruct& fStruct);
+  template<typename filterStruct>
+  boost::filter_iterator<filterStruct, typename Context<T>::const_bytype_iterator> byTypeFilteredEnd(const int type, const filterStruct& fStruct);
 	
 	/**
 	 * Gets a set of pointers to all agents in this context.
