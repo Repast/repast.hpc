@@ -173,6 +173,7 @@ void Properties::writeToSVFile(std::string fileName, std::vector<std::string> &k
   std::ofstream outFile;
 
   outFile.open(fileName.c_str(), std::ios::app);
+
   if(writeHeader){
     std::vector<std::string>::iterator keys      = keysToWrite.begin();
     std::vector<std::string>::iterator keysEnd   = keysToWrite.end();
@@ -188,7 +189,7 @@ void Properties::writeToSVFile(std::string fileName, std::vector<std::string> &k
   std::vector<std::string>::iterator keysEnd   = keysToWrite.end();
   int i = 1;
   while(keys != keysEnd){
-    outFile << getProperty(*keys) << (i != keysToWrite.size() ? separator : "");
+    outFile << std::fixed << getProperty(*keys) << (i != keysToWrite.size() ? separator : "");
     keys++;
     i++;
   }
