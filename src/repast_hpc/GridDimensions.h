@@ -58,7 +58,7 @@ private:
 
 public:
 	GridDimensions();
-	explicit GridDimensions(Point<int> extent);
+	explicit GridDimensions(Point<double> extent);
 
 	/**
 	 * Creates a GridDimensions with the specified origin and extent.
