@@ -112,19 +112,14 @@ CellContents<AgentContent, GPType>::CellContents(Point<GPType> pt) :
 class Neighbor {
 
 private:
-	int _rank;
+	int            _rank;
 	GridDimensions _bounds;
 
 public:
 	Neighbor(int rank, GridDimensions bounds);
 
-	int rank() const {
-		return _rank;
-	}
-
-	GridDimensions bounds() const {
-		return _bounds;
-	}
+  int            rank() const {     return _rank;   }
+  GridDimensions bounds() const {   return _bounds; }
 
 };
 
@@ -137,8 +132,10 @@ public:
  */
 class Neighbors {
 
+  friend std::ostream& operator<<(std::ostream& os, const Neighbors& nghs);
+
 private:
-	friend std::ostream& operator<<(std::ostream& os, const Neighbors& nghs);
+
 	std::vector<Neighbor*> nghs;
 
 public:
@@ -185,6 +182,7 @@ public:
 };
 
 std::ostream& operator<<(std::ostream& os, const Neighbors& nghs);
+
 
 /**
  * NON USER API.
@@ -255,27 +253,43 @@ GridBufferSyncher<T, GPType>::~GridBufferSyncher() {
 	}
 }
 
+
+
 class CartTopology {
 
 private:
   boost::mpi::communicator* commM;
-	MPI_Comm topology_comm;
-	GridDimensions bounds;
-	void swapXY(std::vector<int>& vec);
-	bool _periodic;
+	MPI_Comm         topologyComm;
+	GridDimensions   globalBounds;
+	bool             _periodic;
 	std::vector<int> _procsPerDim;
 
-	int getRank(std::vector<int>& loc, int rowAdj, int colAdj);
+	template <typename T>
+	void swapXY(std::vector<T>& vec);
+
+	int  getRank(std::vector<int>& loc, int rowAdj, int colAdj);
 	void createNeighbor(Neighbors& nghs, int rank, Neighbors::Location location);
 
 public:
 	// x major
-	CartTopology(std::vector<int> procsPerDim, std::vector<int> origin, std::vector<int> extents, bool periodic, boost::mpi::communicator* world);
+	CartTopology(std::vector<int> processesPerDim, std::vector<double> origin, std::vector<double> extents, bool spaceIsPeriodic, boost::mpi::communicator* world);
 
-	void getCoordinates(int rank, std::vector<int>& coords);
+  /**
+   * Gets the coordinates in the MPI Cartesian Communicator
+   * for the specified rank
+   */
+  void getCoordinates(int rank, std::vector<int>& coords);
 
-	GridDimensions getDimensions(int rank);
+  /**
+   * Gets the GridDimensions boundaries for the specified
+   * rank
+   */
+  GridDimensions getDimensions(int rank);
 
+  /**
+   * Gets the GridDimensions boundaries for the specified
+   * MPI coordinates
+   */
 	GridDimensions getDimensions(std::vector<int>& pCoordinates);
 
 	void createNeighbors(Neighbors& nghs);
@@ -428,40 +442,40 @@ SharedBaseGrid<T, GPTransformer, Adder, GPType>::SharedBaseGrid(std::string name
 
 template<typename T, typename GPTransformer, typename Adder, typename GPType>
 GridDimensions SharedBaseGrid<T, GPTransformer, Adder, GPType>::createSendBufferBounds(Neighbors::Location location) {
-	Point<int> localOrigin = localBounds.origin();
-	Point<int> localExtent = localBounds.extents();
+	Point<double> localOrigin = localBounds.origin();
+	Point<double> localExtent = localBounds.extents();
 
 	switch (location) {
-	int xStart, yStart;
+	double xStart, yStart;
 case Neighbors::E:
 	xStart = localOrigin.getX() + localExtent.getX() - _buffer;
-	return GridDimensions(Point<int> (xStart, localOrigin.getY()), Point<int> (_buffer, localExtent.getY()));
+	return GridDimensions(Point<double> (xStart, localOrigin.getY()), Point<double> (_buffer, localExtent.getY()));
 
 case Neighbors::W:
-	return GridDimensions(localOrigin, Point<int> (_buffer, localExtent.getY()));
+	return GridDimensions(localOrigin, Point<double> (_buffer, localExtent.getY()));
 
 case Neighbors::N:
-	return GridDimensions(localOrigin, Point<int> (localExtent.getX(), _buffer));
+	return GridDimensions(localOrigin, Point<double> (localExtent.getX(), _buffer));
 
 case Neighbors::S:
 	yStart = localOrigin.getY() + localExtent.getY() - _buffer;
-	return GridDimensions(Point<int> (localOrigin.getX(), yStart), Point<int> (localExtent.getX(), _buffer));
+	return GridDimensions(Point<double> (localOrigin.getX(), yStart), Point<double> (localExtent.getX(), _buffer));
 
 case Neighbors::NE:
 	xStart = localOrigin.getX() + localExtent.getX() - _buffer;
-	return GridDimensions(Point<int> (xStart, localOrigin.getY()), Point<int> (_buffer, _buffer));
+	return GridDimensions(Point<double> (xStart, localOrigin.getY()), Point<double> (_buffer, _buffer));
 
 case Neighbors::NW:
-	return GridDimensions(Point<int> (localOrigin.getX(), localOrigin.getY()), Point<int> (_buffer, _buffer));
+	return GridDimensions(Point<double> (localOrigin.getX(), localOrigin.getY()), Point<double> (_buffer, _buffer));
 
 case Neighbors::SE:
 	xStart = localOrigin.getX() + localExtent.getX() - _buffer;
 	yStart = localOrigin.getY() + localExtent.getY() - _buffer;
-	return GridDimensions(Point<int> (xStart, yStart), Point<int> (_buffer, _buffer));
+	return GridDimensions(Point<double> (xStart, yStart), Point<double> (_buffer, _buffer));
 
 case Neighbors::SW:
 	yStart = localOrigin.getY() + localExtent.getY() - _buffer;
-	return GridDimensions(Point<int> (localOrigin.getX(), yStart), Point<int> (_buffer, _buffer));
+	return GridDimensions(Point<double> (localOrigin.getX(), yStart), Point<double> (_buffer, _buffer));
 	}
 
 	return GridDimensions();
@@ -469,6 +483,7 @@ case Neighbors::SW:
 
 template<typename T, typename GPTransformer, typename Adder, typename GPType>
 void SharedBaseGrid<T, GPTransformer, Adder, GPType>::initSynchBuffer(SharedContext<T>& context) {
+
 	// removing from the context should be enough to delete the
 	// pointer correctly because the context uses shared pointers
 	for (std::vector<AgentId>::iterator iter = buffered.begin(); iter != buffered.end(); ++iter) {
@@ -478,6 +493,7 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::initSynchBuffer(SharedCont
 		context.removeAgent(*iter);
 	}
 	buffered.clear();
+
 }
 
 template<typename T, typename GPTransformer, typename Adder, typename GPType>
@@ -511,6 +527,7 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::synchMove() {
 		delete packets;
 	}
 }
+
 
 template<typename T, typename GPTransformer, typename Adder, typename GPType>
 bool SharedBaseGrid<T, GPTransformer, Adder, GPType>::moveTo(const AgentId& id, const Point<GPType>& newLocation) {

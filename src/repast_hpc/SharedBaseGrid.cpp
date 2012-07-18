@@ -61,9 +61,9 @@ CartTopology::CartTopology(vector<int> procsPerDim, vector<int> origin, vector<i
 	swapXY(extents);
 	swapXY(_procsPerDim);
 
-	MPI_Cart_create(*commM, _numDims, &procsPerDim[0], periods, 0, &topology_comm);
+	MPI_Cart_create(*commM, _numDims, &procsPerDim[0], periods, 0, &topologyComm);
 	delete[] periods;
-	bounds = GridDimensions(origin, extents);
+	globalBounds = GridDimensions(origin, extents);
 }
 
 void CartTopology::swapXY(vector<int>& vec) {
@@ -75,8 +75,8 @@ void CartTopology::swapXY(vector<int>& vec) {
 }
 
 void CartTopology::getCoordinates(int rank, std::vector<int>& coords) {
-	coords.assign(bounds.dimensionCount(), 0);
-	MPI_Cart_coords(topology_comm, rank, bounds.dimensionCount(), &coords[0]);
+	coords.assign(globalBounds.dimensionCount(), 0);
+	MPI_Cart_coords(topologyComm, rank, globalBounds.dimensionCount(), &coords[0]);
 }
 
 GridDimensions CartTopology::getDimensions(int rank) {
@@ -87,8 +87,8 @@ GridDimensions CartTopology::getDimensions(int rank) {
 
 GridDimensions CartTopology::getDimensions(vector<int>& pCoordinates) {
 
-	vector<int> extents = bounds.extents().coords();
-	vector<int> bOrigin = bounds.origin().coords();
+	vector<int> extents = globalBounds.extents().coords();
+	vector<int> bOrigin = globalBounds.origin().coords();
 	vector<int> origins;
 	for (size_t i = 0; i < pCoordinates.size(); i++) {
 		origins.push_back(bOrigin[i] + extents[i] * pCoordinates[i]);
@@ -110,16 +110,16 @@ int CartTopology::getRank(vector<int>& loc, int rowAdj, int colAdj) {
 			return MPI_PROC_NULL;
 	}
 	int rank;
-	MPI_Cart_rank(topology_comm, coord, &rank);
+	MPI_Cart_rank(topologyComm, coord, &rank);
 	return rank;
 }
 
 void CartTopology::createNeighbors(Neighbors& nghs) {
 	int eRank, wRank, nRank, sRank;
 	//comm.Shift(1, 1, wRank, eRank);
-	MPI_Cart_shift(topology_comm, 1, 1, &wRank, &eRank);
+	MPI_Cart_shift(topologyComm, 1, 1, &wRank, &eRank);
 	//comm.Shift(0, -1, sRank, nRank);
-	MPI_Cart_shift(topology_comm, 0, -1, &sRank, &nRank);
+	MPI_Cart_shift(topologyComm, 0, -1, &sRank, &nRank);
 
 	createNeighbor(nghs, eRank, Neighbors::E);
 	createNeighbor(nghs, wRank, Neighbors::W);
