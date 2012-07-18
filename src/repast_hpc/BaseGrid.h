@@ -280,8 +280,8 @@ public:
 
 template<typename T, typename CellAccessor, typename GPTransformer, typename Adder, typename GPType>
 BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::BaseGrid(std::string name, GridDimensions dimensions) :
-	Grid<T, GPType> (name), dimensions_(dimensions), size_(0) {
-	gpTransformer.init(dimensions);
+	Grid<T, GPType> (name), gpTransformer(dimensions), dimensions_(dimensions), size_(0) {
+//	gpTransformer.init(dimensions);
 	adder.init(dimensions, this);
 }
 
@@ -351,13 +351,14 @@ bool BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::moveTo(const Agent
 	LocationMapIter iter = agentToLocation.find(id);
 	if (iter == agentToLocation.end())
 		throw Repast_Error_2<AgentId>(id, Projection<T>::name()); // Agent has not yet been introduced to this space/is not present
+
 	if (newLocation.size() < dimensions_.dimensionCount())
 		throw Repast_Error_3(newLocation.size(), dimensions_.dimensionCount()); // Destination not fully specified
 
 	std::vector<GPType> transformedCoords(newLocation.size(), 0);
 	gpTransformer.transform(newLocation, transformedCoords);
-	if (iter->second->point.coords() == transformedCoords)
-		return true;
+
+	if (iter->second->point.coords() == transformedCoords)  return true;
 	return doMove(transformedCoords, iter->second);
 }
 

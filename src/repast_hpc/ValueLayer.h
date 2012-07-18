@@ -255,9 +255,8 @@ void DiscreteValueLayer<ValueType, Borders>::create(bool dense, Matrix<ValueType
 
 template<typename ValueType, typename Borders>
 DiscreteValueLayer<ValueType, Borders>::DiscreteValueLayer(const DiscreteValueLayer<ValueType, Borders>& other) :
-	ValueLayer<ValueType, int> (other.name(), other.dimensions()), _dense(other._dense) {
+	ValueLayer<ValueType, int> (other.name(), other.dimensions()), _dense(other._dense), borders(other.dimensions()) {
 	create(_dense, other.matrix);
-	borders.init(ValueLayer<ValueType, int>::_dimensions);
 }
 
 template<typename ValueType, typename Borders>
@@ -269,7 +268,7 @@ DiscreteValueLayer<ValueType, Borders>& DiscreteValueLayer<ValueType, Borders>::
 		ValueLayer<ValueType, int>::_dimensions = rhs.dimensions();
 		_dense = rhs._dense;
 		create(_dense, rhs.matrix);
-		borders.init(ValueLayer<ValueType, int>::_dimensions);
+		borders = Borders(ValueLayer<ValueType, int>::_dimensions);
 	}
 	return *this;
 }
@@ -288,7 +287,7 @@ DiscreteValueLayer<ValueType, Borders>::DiscreteValueLayer(const std::string& na
 	} else {
 		matrix = new SparseMatrix<ValueType> (dimensions.extents(), defaultValue);
 	}
-	borders.init(ValueLayer<ValueType, int>::_dimensions);
+	borders = Borders(ValueLayer<ValueType, int>::_dimensions);
 }
 
 template<typename ValueType, typename Borders>
@@ -373,9 +372,7 @@ public:
 template<typename ValueType, typename Borders>
 ContinuousValueLayer<ValueType, Borders>::ContinuousValueLayer(const ContinuousValueLayer<ValueType, Borders>& other) :
 	ValueLayer<ValueType, double> (other._name, other._dimensions), values(other.values), _defaultValue(
-			other._defaultValue) {
-
-	borders.init(ValueLayer<ValueType, double>::_dimensions);
+			other._defaultValue), borders(other._dimensions) {
 }
 
 template<typename ValueType, typename Borders>
@@ -388,7 +385,7 @@ ContinuousValueLayer<ValueType, Borders>& ContinuousValueLayer<ValueType, Border
 		ValueLayer<ValueType, double>::_name = rhs.name();
 		ValueLayer<ValueType, double>::_dimensions = rhs.dimensions();
 		_defaultValue = rhs._defaultValue;
-		borders.init(ValueLayer<ValueType, double>::_dimensions);
+		borders = Borders(ValueLayer<ValueType, int>::_dimensions);
 	}
 	return *this;
 }
@@ -396,9 +393,7 @@ ContinuousValueLayer<ValueType, Borders>& ContinuousValueLayer<ValueType, Border
 template<typename ValueType, typename Borders>
 ContinuousValueLayer<ValueType, Borders>::ContinuousValueLayer(const std::string& name,
 		const GridDimensions& dimensions, const ValueType& defaultValue) :
-	ValueLayer<ValueType, double> (name, dimensions), _defaultValue(defaultValue) {
-
-	borders.init(ValueLayer<ValueType, double>::_dimensions);
+	ValueLayer<ValueType, double> (name, dimensions), _defaultValue(defaultValue), borders(ValueLayer<ValueType, double>::_dimensions) {
 }
 
 template<typename ValueType, typename Borders>
