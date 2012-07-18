@@ -259,10 +259,10 @@ class CartTopology {
 
 private:
   boost::mpi::communicator* commM;
-	MPI_Comm         topologyComm;
-	GridDimensions   globalBounds;
-	bool             _periodic;
-	std::vector<int> _procsPerDim;
+	MPI_Comm           topologyComm;
+	GridDimensions     globalBounds;
+	bool               _periodic;
+	std::vector<int>   _procsPerDim;
 
 	template <typename T>
 	void swapXY(std::vector<T>& vec);
