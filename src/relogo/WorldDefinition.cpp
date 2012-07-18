@@ -42,7 +42,6 @@
 
 #include "RelogoDiscreteSpaceAdder.h"
 #include "RelogoContinuousSpaceAdder.h"
-#include "RelogoLink.h"
 #include "relogo.h"
 
 #include <iostream>
@@ -59,15 +58,15 @@ WorldDefinition::WorldDefinition(int minX, int minY, int maxX, int maxY, bool wr
 WorldDefinition::~WorldDefinition() {
 }
 
-void WorldDefinition::defineNetwork(std::string name, bool directed) {
-	repast::SharedNetwork<RelogoAgent, RelogoLink>* net =
-			new repast::SharedNetwork<RelogoAgent, RelogoLink>(name, directed);
+void WorldDefinition::defineNetwork(std::string name, bool directed, RelogoLinkContentManager* rlcm) {
+	repast::SharedNetwork<RelogoAgent, RelogoLink, RelogoLinkContent, RelogoLinkContentManager>* net =
+			new repast::SharedNetwork<RelogoAgent, RelogoLink, RelogoLinkContent, RelogoLinkContentManager>(name, directed, rlcm);
 	networks.push_back(net);
 }
 
-void WorldDefinition::defineNetwork(bool directed) {
+void WorldDefinition::defineNetwork(bool directed, RelogoLinkContentManager* rlcm) {
 	std::string name = directed ? DEFAULT_DIR_NET : DEFAULT_UNDIR_NET;
-	defineNetwork(name, directed);
+	defineNetwork(name, directed, rlcm);
 }
 
 }

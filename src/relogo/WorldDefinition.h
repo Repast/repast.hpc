@@ -43,6 +43,7 @@
 
 #include <vector>
 #include "RelogoAgent.h"
+#include "RelogoLink.h"
 
 #include "repast_hpc/SharedNetwork.h"
 
@@ -58,6 +59,13 @@ class RelogoSpaceAdder;
  * Defines a Relogo world.
  */
 class WorldDefinition {
+
+private:
+
+  GridDimensions                        _dims;
+  bool                                  _wrapped;
+  int                                   _buffer;
+  std::vector<Projection<RelogoAgent>*> networks;
 
 public:
 
@@ -183,14 +191,6 @@ public:
 		return _buffer;
 	}
 
-
-private:
-
-	GridDimensions _dims;
-	bool _wrapped;
-	int _buffer;
-
-	std::vector<Projection<RelogoAgent>*> networks;
 
 };
 
