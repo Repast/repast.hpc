@@ -77,27 +77,25 @@ GridDimensions CartTopology::getDimensions(int rank) {
 }
 
 GridDimensions CartTopology::getDimensions(vector<int>& pCoordinates) {
-
-	vector<int> extents = globalBounds.extents().coords();
-	vector<int> bOrigin = globalBounds.origin().coords();
-	vector<int> origins;
-	for (size_t i = 0; i < pCoordinates.size(); i++) {
-		origins.push_back(bOrigin[i] + extents[i] * pCoordinates[i]);
-	}
+  vector<double> origins, extents;
+  for (size_t i = 0; i < pCoordinates.size(); i++) {
+    double lower = globalBounds.origin(i) + ((double)pCoordinates[i] / (double)procsPerDim[i]) * globalBounds.extents(i);
+    double upper = globalBounds.origin(i) + (((double)pCoordinates[i] + 1 )/ (double)procsPerDim[i]) * globalBounds.extents(i);
+    origins.push_back(lower);
+    extents.push_back(upper - lower);
+  }
 
 	swapXY(origins);
-	vector<int> swappedExtents(extents.begin(), extents.end());
-	swapXY(swappedExtents);
-	GridDimensions dimensions = GridDimensions(Point<int> (origins), Point<int> (swappedExtents));
-	return dimensions;
+	swapXY(extents);
+	return GridDimensions(Point<double> (origins), Point<double> (extents));
 }
 
 int CartTopology::getRank(vector<int>& loc, int rowAdj, int colAdj) {
 	int* coord = new int[2];
 	coord[0] = loc[0] + rowAdj;
 	coord[1] = loc[1] + colAdj;
-	if (!_periodic) {
-		if (coord[0] < 0 || coord[0] > _procsPerDim[0] - 1 || coord[1] < 0 || coord[1] > _procsPerDim[1] - 1)
+	if (!periodic) {
+		if (coord[0] < 0 || coord[0] > procsPerDim[0] - 1 || coord[1] < 0 || coord[1] > procsPerDim[1] - 1)
 			return MPI_PROC_NULL;
 	}
 	int rank;
@@ -106,10 +104,8 @@ int CartTopology::getRank(vector<int>& loc, int rowAdj, int colAdj) {
 }
 
 void CartTopology::createNeighbors(Neighbors& nghs) {
-	int eRank, wRank, nRank, sRank;
-	//comm.Shift(1, 1, wRank, eRank);
-	MPI_Cart_shift(topologyComm, 1, 1, &wRank, &eRank);
-	//comm.Shift(0, -1, sRank, nRank);
+  int eRank, wRank, nRank, sRank;
+  MPI_Cart_shift(topologyComm, 1,  1, &wRank, &eRank);
 	MPI_Cart_shift(topologyComm, 0, -1, &sRank, &nRank);
 
 	createNeighbor(nghs, eRank, Neighbors::E);
