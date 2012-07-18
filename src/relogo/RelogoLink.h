@@ -112,13 +112,13 @@ public:
 };
 
 
+
 class RelogoLinkContent: public RepastEdgeContent<RelogoAgent>{
 public:
   RelogoLinkContent(){}
   RelogoLinkContent(RelogoLink* link): RepastEdgeContent<RelogoAgent>(link){}
 
 };
-
 
 
 class RelogoLinkContentManager {
