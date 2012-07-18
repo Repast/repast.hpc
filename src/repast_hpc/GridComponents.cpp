@@ -43,181 +43,153 @@
 
 #include <algorithm>
 #include <cmath>
+#include <iomanip>
 
 using namespace std;
 
 namespace repast {
 
-// strict borders implementation
+// Borders (parent class for border implementations with fixed boundaries
+Borders::Borders(GridDimensions d): _dimensions(d){ }
+
 void Borders::boundsCheck(const vector<int>& pt) const {
-	if (!_dimensions.contains(pt))
-		throw Repast_Error_12<GridDimensions>(pt, _dimensions); // Point is out of dimension range
+	if (!_dimensions.contains(pt)) throw Repast_Error_12<GridDimensions>(pt, _dimensions); // Point is out of dimension range
 }
 
 void Borders::boundsCheck(const vector<double>& pt) const {
-	if (!_dimensions.contains(pt))
-		throw std::out_of_range("Point is out of dimension range");
+	if (!_dimensions.contains(pt)) throw std::out_of_range("Point is out of dimension range"); // !
 }
 
 void Borders::transform(const std::vector<double>& in, std::vector<double>& out) const {
 	boundsCheck(in);
-	if (out.size() != in.size()) {
-		out.insert(out.begin(), in.size(), 0);
-	}
+	if (out.size() != in.size()) out.insert(out.begin(), in.size(), 0);
 	std::copy(in.begin(), in.end(), out.begin());
 }
 
 void Borders::transform(const std::vector<int>& in, std::vector<int>& out) const {
 	boundsCheck(in);
-	if (out.size() != in.size()) {
-		out.insert(out.begin(), in.size(), 0);
-	}
+	if (out.size() != in.size()) out.insert(out.begin(), in.size(), 0);
 	std::copy(in.begin(), in.end(), out.begin());
 }
 
+
+// Strict Borders (translations outside the borders throw error
+StrictBorders::StrictBorders(GridDimensions d): Borders(d) { }
+
 void StrictBorders::translate(const std::vector<double>& oldPos, std::vector<double>& newPos, const std::vector<double>& displacement) const {
 	if (displacement.size() != oldPos.size() || displacement.size() != newPos.size())
-		throw Repast_Error_13(oldPos, newPos, displacement); // Position and displacement vectors must be of the same size
+      throw Repast_Error_13(oldPos, newPos, displacement); // Position and displacement vectors must be of the same size
 
-	for (int i = 0, n = displacement.size(); i < n; ++i) {
-		newPos[i] = displacement[i] + oldPos[i];
-	}
+	for (int i = 0, n = displacement.size(); i < n; ++i) newPos[i] = oldPos[i] + displacement[i];
+
 	boundsCheck(newPos);
 }
 
 void StrictBorders::translate(const std::vector<int>& oldPos, std::vector<int>& newPos,
 		const std::vector<int>& displacement) const {
 	if (displacement.size() != oldPos.size() || displacement.size() != newPos.size())
-	  throw Repast_Error_14(oldPos, newPos, displacement); // Position and displacement vectors must be of the same size
+      throw Repast_Error_14(oldPos, newPos, displacement); // Position and displacement vectors must be of the same size
 
-	for (int i = 0, n = displacement.size(); i < n; ++i) {
-		newPos[i] = displacement[i] + oldPos[i];
-	}
+	for (int i = 0, n = displacement.size(); i < n; ++i) newPos[i] = oldPos[i] + displacement[i];
+
 	boundsCheck(newPos);
 }
 
-void WrapAroundBorders::init(const GridDimensions& dimensions) {
-	_dimensions = dimensions;
-	for (size_t i = 0; i < dimensions.dimensionCount(); i++) {
-		int origin = dimensions.origin(i);
-		mins.push_back(origin);
-		maxs.push_back((dimensions.extents(i) + dimensions.origin(i)) - 1);
-	}
-}
 
-void WrapAroundBorders::transform(const std::vector<int>& in, std::vector<int>& out) const {
-	if (out.size() < in.size()) {
-		out.insert(out.begin(), in.size(), 0);
-	}
 
-	for (size_t i = 0, n = in.size(); i < n; i++) {
-		//std::cout << "mins[i]: " << mins[i] << std::endl;
-		int coord = in[i];
-		if (coord < mins[i] || coord > maxs[i]) {
-			//std::cout << "coord: " << coord << std::endl;
-			int shiftedLocation = coord - _dimensions.origin(i);
-			//std::cout << "sl: " << shiftedLocation << std::endl;
-			int value = (int)(fmod((double)shiftedLocation, (double)_dimensions.extents(i)));
-			//std::cout << mod << ", " << (int)mod << std::endl;
-			//int value = shiftedLocation % _dimensions.extents(i);
-			//std::cout << "value: " << value << std::endl;
-			if (value < 0)
-				value = _dimensions.extents(i) + value;
-			//std::cout << "value: " << value << std::endl;
-			out[i] = value + _dimensions.origin(i);
-			//std::cout << "out[i]: " << out[i] << std::endl;
-		} else {
-			out[i] = coord;
-		}
-	}
-}
+// Sticky Borders: Translations outside the border are fixed to the border
 
-void WrapAroundBorders::transform(const std::vector<double>& in, std::vector<double>& out) const {
-	if (out.size() < in.size()) {
-		out.insert(out.begin(), in.size(), 0);
-	}
-
-	for (size_t i = 0, n = in.size(); i < n; i++) {
-		//std::cout << "maxs[i]: " << maxs[i] << std::endl;
-		double coord = in[i];
-		if (coord < mins[i] || coord > maxs[i]) {
-			//std::cout << "coord: " << coord << std::endl;
-			double shiftedLocation = coord - _dimensions.origin(i);
-			//std::cout << "sl: " << shiftedLocation << std::endl;
-			double value = fmod(shiftedLocation, _dimensions.extents(i));
-			//std::cout << "value: " << value << std::endl;
-			if (value < 0)
-				value = _dimensions.extents(i) + value;
-			//std::cout << "value: " << value << std::endl;
-
-			value += _dimensions.origin(i);
-			// check if wraps completely, if not then clamp so
-			// within bounds
-			if (value < mins[i]) value = mins[i];
-			else if (value > maxs[i]) value = maxs[i];
-			out[i] = value;
-			//std::cout << "out[i]: " << out[i] << std::endl;
-		} else {
-			out[i] = coord;
-		}
-	}
-}
-
-void WrapAroundBorders::translate(const std::vector<double>& oldPos, std::vector<double>& newPos, const std::vector<
-		double>& displacement) const {
-
-	if (displacement.size() != oldPos.size() || displacement.size() != newPos.size())
-		throw Repast_Error_15(oldPos, newPos, displacement); // Position and displacement vectors must be of the same size
-
-	for (int i = 0, n = displacement.size(); i < n; ++i) {
-		newPos[i] = displacement[i] + oldPos[i];
-	}
-	transform(newPos, newPos);
-
-}
-
-void WrapAroundBorders::translate(const std::vector<int>& oldPos, std::vector<int>& newPos,
-		const std::vector<int>& displacement) const {
-
-	if (displacement.size() != oldPos.size() || displacement.size() != newPos.size())
-	  throw Repast_Error_16(oldPos, newPos, displacement); // Position and displacement vectors must be of the same size
-
-	for (int i = 0, n = displacement.size(); i < n; ++i) {
-		newPos[i] = displacement[i] + oldPos[i];
-	}
-	transform(newPos, newPos);
-
-}
-
-void StickyBorders::init(const GridDimensions& dimensions) {
-	_dimensions = dimensions;
-	for (size_t i = 0; i < dimensions.dimensionCount(); i++) {
-		int origin = dimensions.origin(i);
-		mins.push_back(origin);
-		maxs.push_back((dimensions.extents(i) + dimensions.origin(i)) - 1);
-	}
+StickyBorders::StickyBorders(GridDimensions d): Borders(d) {
+  for (size_t i = 0, n = _dimensions.dimensionCount(); i < n; ++i) {
+    mins.push_back(_dimensions.origin(i));
+    maxs.push_back(_dimensions.origin(i) + _dimensions.extents(i)); // Originally - 1
+  }
 }
 
 
 void StickyBorders::translate(const std::vector<double>& oldPos, std::vector<double>& newPos,
-		const std::vector<double>& displacement) const {
-	if (displacement.size() != oldPos.size() || displacement.size() != newPos.size())
-	  throw Repast_Error_17(oldPos, newPos, displacement); // Position and displacement vectors must be of the same size
+    const std::vector<double>& displacement) const {
+  if (displacement.size() != oldPos.size() || displacement.size() != newPos.size())
+      throw Repast_Error_17(oldPos, newPos, displacement); // Position and displacement vectors must be of the same size
 
-	for (int i = 0, n = displacement.size(); i < n; ++i) {
-		newPos[i] = calcCoord<double>(displacement[i] + oldPos[i], i);
-	}
+  for (size_t i = 0, n = displacement.size(); i < n; ++i) newPos[i] = calcCoord<double>(oldPos[i] + displacement[i], i);
+
 }
 
 void StickyBorders::translate(const std::vector<int>& oldPos, std::vector<int>& newPos,
-		const std::vector<int>& displacement) const {
-	//std::cout << displacement.size() << ", " << oldPos.size() << "," << newPos.size() << std::endl;
-	if (displacement.size() != oldPos.size() || displacement.size() != newPos.size())
-	  throw Repast_Error_18(oldPos, newPos, displacement); // Position and displacement vectors must be of the same size
+    const std::vector<int>& displacement) const {
+  if (displacement.size() != oldPos.size() || displacement.size() != newPos.size())
+      throw Repast_Error_18(oldPos, newPos, displacement); // Position and displacement vectors must be of the same size
 
-		for (int i = 0, n = displacement.size(); i < n; ++i) {
-			newPos[i] = calcCoord<int>(displacement[i] + oldPos[i], i);
-		}
+  for (size_t i = 0, n = displacement.size(); i < n; ++i) newPos[i] = calcCoord<int>(oldPos[i] + displacement[i], i);
+
+}
+
+
+// Wrap-around Borders
+
+WrapAroundBorders::WrapAroundBorders(GridDimensions dimensions): _dimensions(dimensions) {
+  for (size_t i = 0; i < dimensions.dimensionCount(); ++i) {
+    mins.push_back(dimensions.origin(i));
+    maxs.push_back(dimensions.origin(i) + dimensions.extents(i)); // Originally - 1
+  }
+}
+
+void WrapAroundBorders::transform(const std::vector<int>& in, std::vector<int>& out) const {
+	if (out.size() < in.size())	out.insert(out.begin(), in.size(), 0);
+
+  for (size_t i = 0, n = in.size(); i < n; ++i){
+    int coord = in[i];
+    if(coord >= mins[i] && coord < maxs[i])
+      out[i] = coord;
+    else
+      out[i] = fmod((double)(coord-_dimensions.origin(i)), (double)_dimensions.extents(i))  +
+               (coord < _dimensions.origin(i) ? _dimensions.extents(i) : 0) +
+               _dimensions.origin(i);
+  }
+}
+
+void WrapAroundBorders::transform(const std::vector<double>& in, std::vector<double>& out) const {
+	if (out.size() < in.size()) out.insert(out.begin(), in.size(), 0);
+
+  for (size_t i = 0, n = in.size(); i < n; ++i){
+    double coord = in[i];
+    if(coord >= mins[i] && coord < maxs[i])
+      out[i] = coord;
+    else
+      out[i] = fmod((coord-_dimensions.origin(i)), _dimensions.extents(i))  +
+               (coord < _dimensions.origin(i) ? _dimensions.extents(i) : 0) +
+               _dimensions.origin(i);
+  }
+
+}
+
+void WrapAroundBorders::translate(const std::vector<double>& oldPos, std::vector<double>& newPos, const std::vector<
+    double>& displacement) const {
+
+  if (displacement.size() != oldPos.size() || displacement.size() != newPos.size())
+      throw Repast_Error_15(oldPos, newPos, displacement); // Position and displacement vectors must be of the same size
+
+  for (int i = 0, n = displacement.size(); i < n; ++i) newPos[i] = oldPos[i] + displacement[i];
+
+  if(newPos[1] == 100) std::cout << " A HUNDRED! A" << std::endl;
+
+  transform(newPos, newPos);
+
+  if(newPos[1] == 100) std::cout << " A HUNDRED! B" << std::endl;
+}
+
+void WrapAroundBorders::translate(const std::vector<int>& oldPos, std::vector<int>& newPos,
+    const std::vector<int>& displacement) const {
+
+  if (displacement.size() != oldPos.size() || displacement.size() != newPos.size())
+      throw Repast_Error_16(oldPos, newPos, displacement); // Position and displacement vectors must be of the same size
+
+  for (int i = 0, n = displacement.size(); i < n; ++i) newPos[i] = oldPos[i] + displacement[i];
+
+  if(newPos[1] == 100) std::cout << " A HUNDRED! C" << std::endl;
+  transform(newPos, newPos);
+  if(newPos[1] == 100) std::cout << " A HUNDRED! D" << std::endl;
 }
 
 }

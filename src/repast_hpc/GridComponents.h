@@ -53,17 +53,16 @@ namespace repast {
 class Borders {
 
 protected:
-	GridDimensions _dimensions;
+	const GridDimensions _dimensions;
+
 	void boundsCheck(const std::vector<int>& pt) const;
 	void boundsCheck(const std::vector<double>& pt) const;
 
 public:
+	Borders(GridDimensions d);
+
 	void transform(const std::vector<int>& in, std::vector<int>& out) const;
 	void transform(const std::vector<double>& in, std::vector<double>& out) const;
-
-	virtual void init(const GridDimensions& dimensions) {
-		_dimensions = dimensions;
-	}
 
 	bool isPeriodic() const {
 		return false;
@@ -77,6 +76,7 @@ public:
 class StrictBorders : public Borders {
 
 public:
+  StrictBorders(GridDimensions d);
 
 	void translate(const std::vector<double>& oldPos, std::vector<double>& newPos, const std::vector<double>& displacement) const;
 	void translate(const std::vector<int>& oldPos, std::vector<int>& newPos, const std::vector<int>& displacement) const;
@@ -98,7 +98,7 @@ private:
 
 public:
 
-	virtual void init(const GridDimensions& dimensions);
+	StickyBorders(GridDimensions d);
 	void translate(const std::vector<double>& oldPos, std::vector<double>& newPos, const std::vector<double>& displacement) const;
 	void translate(const std::vector<int>& oldPos, std::vector<int>& newPos, const std::vector<int>& displacement) const;
 };
@@ -123,6 +123,8 @@ private:
 	std::vector<int> mins, maxs;
 
 public:
+
+	WrapAroundBorders(GridDimensions dimensions);
 
 	void transform(const std::vector<int>& in, std::vector<int>& out) const;
 	void transform(const std::vector<double>& in, std::vector<double>& out) const;
