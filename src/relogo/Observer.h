@@ -797,7 +797,7 @@ PatchType* Observer::patchAt(int x, int y) {
 
 template<typename TurtleType>
 void Observer::turtlesOn(const RelogoAgent* agent, AgentSet<TurtleType>& out) {
-	int typeId = getTypeId<TurtleType> ();
+  int typeId = getTypeId<TurtleType> ();
 	if (typeId != NO_TYPE_ID) {
 		std::vector<RelogoAgent*> in;
 		grid()->getObjectsAt(Point<int> (agent->pxCor(), agent->pyCor()), in);
@@ -873,6 +873,7 @@ void Observer::synchronizeBuffers(Provider& provider, AgentsCreator& creator) {
 		((relogo::BoundedContinuousSpace*) aSpace)->synchBuffer<AgentContent> (context, provider, creator);
 	}
 }
+
 
 template<typename AgentType>
 AgentType* Observer::who(const AgentId& id) {
