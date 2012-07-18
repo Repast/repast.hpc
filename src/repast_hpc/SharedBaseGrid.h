@@ -259,10 +259,10 @@ class CartTopology {
 
 private:
   boost::mpi::communicator* commM;
-	MPI_Comm           topologyComm;
-	GridDimensions     globalBounds;
-	bool               _periodic;
-	std::vector<int>   _procsPerDim;
+  MPI_Comm           topologyComm;
+  GridDimensions     globalBounds;
+  bool               _periodic;
+  std::vector<int>   _procsPerDim;
 
 	template <typename T>
 	void swapXY(std::vector<T>& vec);
@@ -290,11 +290,24 @@ public:
    * Gets the GridDimensions boundaries for the specified
    * MPI coordinates
    */
-	GridDimensions getDimensions(std::vector<int>& pCoordinates);
+  GridDimensions getDimensions(std::vector<int>& pCoordinates);
 
 	void createNeighbors(Neighbors& nghs);
 
 };
+
+template <typename T>
+void CartTopology::swapXY(std::vector<T>& vec) {
+  if (vec.size() > 1) {
+    T tmp = vec[0];
+    vec[0] = vec[1];
+    vec[1] = tmp;
+  }
+}
+
+
+
+
 
 /**
  * Grid / Space implementation specialized for the distributed context.

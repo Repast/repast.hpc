@@ -66,14 +66,6 @@ CartTopology::CartTopology(vector<int> procsPerDim, vector<int> origin, vector<i
 	globalBounds = GridDimensions(origin, extents);
 }
 
-void CartTopology::swapXY(vector<int>& vec) {
-	if (vec.size() > 1) {
-		int tmp = vec[0];
-		vec[0] = vec[1];
-		vec[1] = tmp;
-	}
-}
-
 void CartTopology::getCoordinates(int rank, std::vector<int>& coords) {
 	coords.assign(globalBounds.dimensionCount(), 0);
 	MPI_Cart_coords(topologyComm, rank, globalBounds.dimensionCount(), &coords[0]);
