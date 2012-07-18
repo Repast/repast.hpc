@@ -807,7 +807,7 @@ void Observer::turtlesOn(const RelogoAgent* agent, AgentSet<TurtleType>& out) {
 
 template<typename TurtleType>
 void Observer::turtlesOn(AgentSet<RelogoAgent>& agentSet, AgentSet<TurtleType>& out) {
-	int typeId = getTypeId<TurtleType> ();
+  int typeId = getTypeId<TurtleType> ();
 	if (typeId != NO_TYPE_ID) {
 		std::vector<RelogoAgent*> in;
 		for (AgentSet<RelogoAgent>::const_as_iterator iter = agentSet.begin(); iter != agentSet.end(); ++iter) {
