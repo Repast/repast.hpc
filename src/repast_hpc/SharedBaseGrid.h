@@ -349,7 +349,6 @@ protected:
 
 public:
 
-
 	// overriding moveTo that takes newLocation hides the moveTo in the
 	// Grid base class that takes a Point. This using directive
 	// makes the Point arg moveTo available.
@@ -394,7 +393,7 @@ public:
 	 * Synchronizes the movement of agents off on one grid and onto another.
 	 * If there is any chance that an agent has moved off the local
 	 * dimensions of this SharedGrid and into those managed by another
-	 * then this much be called.
+	 * then this must be called.
 	 */
 	void synchMove();
 
@@ -412,8 +411,10 @@ public:
 	// doc inherited from BaseGrid.h
 	virtual bool moveTo(const AgentId& id, const Point<GPType>& pt);
 
-	// doc inherited from Projection.h
 	virtual void removeAgent(T* agent);
+
+	// doc inherited from Projection.h
+
 };
 
 template<typename T, typename GPTransformer, typename Adder, typename GPType>
@@ -426,9 +427,9 @@ SharedBaseGrid<T, GPTransformer, Adder, GPType>::SharedBaseGrid(std::string name
   size_t dimCount = gridDims.dimensionCount();
 
   if (dimCount > 2)
-		throw Repast_Error_49<GridDimensions>(dimCount, gridDims); // Number of grid dimensions must be 1 or 2
+      throw Repast_Error_49<GridDimensions>(dimCount, gridDims); // Number of grid dimensions must be 1 or 2
 	if (processDims.size() != gridDims.dimensionCount())
-		throw Repast_Error_50<GridDimensions>(dimCount, gridDims, processDims.size()); // Number of grid dimensions must be equal to number of process dimensions
+      throw Repast_Error_50<GridDimensions>(dimCount, gridDims, processDims.size()); // Number of grid dimensions must be equal to number of process dimensions
 
 	std::vector<int> extents;
 	for (size_t i = 0; i < dimCount; i++) {
