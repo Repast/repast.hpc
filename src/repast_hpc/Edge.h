@@ -41,6 +41,9 @@
 #ifndef EDGE_H_
 #define EDGE_H_
 
+#include "AgentId.h"
+#include "Context.h"
+
 #include <boost/serialization/access.hpp>
 
 namespace repast {
@@ -56,17 +59,6 @@ class RepastEdge {
 private:
 	double _weight;
 	V* _source, *_target;
-
-	friend class boost::serialization::access;
-
-	template<class Archive>
-	void serialize(Archive& ar, const unsigned int version) {
-		//std::cout << "serializing edge: " << this << std::endl;
-
-		ar & _weight;
-		ar & _source;
-		ar & _target;
-	}
 
 public:
 
@@ -185,6 +177,63 @@ std::ostream& operator<<(std::ostream& os, const RepastEdge<V>& edge) {
 	os << (*edge.source()) << " -- " << (*edge.target());
 	return os;
 }
+
+
+
+/**
+ * Serializable; also, does not include agent content,
+ * only agent IDs
+ *
+ * @tparam V type for vertices; must provide AgentID
+ */
+template<typename V>
+struct RepastEdgeContent {
+
+  friend class boost::serialization::access;
+
+  template<class Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+    ar & weight;
+    ar & source;
+    ar & target;
+  }
+
+  AgentId source;
+  AgentId target;
+  double weight;
+
+  RepastEdgeContent(){} // For serialization
+
+  RepastEdgeContent(RepastEdge<V>* edge):
+      source(edge->source()->getId()),
+      target(edge->target()->getId()),
+      weight(edge->weight()){}
+
+};
+
+
+/**
+ * Class for creating RepastEdges from RepastEdgeContent,
+ * and vice versa
+ *
+ * @tparam V type for vertices; must provide AgentID
+ */
+template<typename V>
+class RepastEdgeContentManager {
+
+public:
+  RepastEdgeContentManager(){}
+  virtual ~RepastEdgeContentManager(){}
+
+  RepastEdge<V>* createEdge(RepastEdgeContent<V>& content, Context<V>* context){
+    return new RepastEdge<V>(context->getAgent(content.source), context->getAgent(content.target), content.weight);
+  }
+
+  RepastEdgeContent<V>* provideContent(RepastEdge<V>* edge){
+    return new RepastEdgeContent<V>(edge);
+  }
+
+};
 
 }
 
