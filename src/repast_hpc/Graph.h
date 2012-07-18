@@ -64,9 +64,11 @@ namespace repast {
  * @tparam V the type agents in the graph. This type should extend repast::Agent
  * @tparam E the edge type of the graph. This type should extend
  * repast::RepastEdge.
- *
+ * @tparam Ec class of serializable Edge Content
+ * @tparam EcM Class that is capable of transforming an Edge into Edge Content and
+ * vice versa
  */
-template<typename V, typename E>
+template<typename V, typename E, typename Ec, typename EcM>
 class Graph: public Projection<V> {
 
 protected:
@@ -76,6 +78,8 @@ protected:
 	int edgeCount_;
 	bool isDirected;
 	VertexMap vertices;
+
+	EcM* edgeContentManager;
 
 	void cleanUp();
 	void init(const Graph& graph);
@@ -99,14 +103,14 @@ public:
 	 * @param name the name of the graph
 	 * @param directed whether or not the created Graph is directed
 	 */
-	Graph(std::string name, bool directed) :
-		Projection<V> (name), edgeCount_(0), isDirected(directed) {
-	}
+  Graph(std::string name, bool directed, EcM* edgeContentMgr) :
+    Projection<V> (name), edgeCount_(0), isDirected(directed), edgeContentManager(edgeContentMgr), keepsAgents(true), sendsSecondaryAgents(true) {
+  }
 
 	/**
 	 * Copy constructor for the graph.
 	 */
-	Graph(const Graph<V, E>& graph);
+	Graph(const Graph<V, E, Ec, EcM>& graph);
 	virtual ~Graph();
 
 	// assignment
@@ -237,30 +241,34 @@ public:
 	vertex_iterator verticesEnd() {
 		return vertex_iterator(vertices.end());
 	}
+
+	void showEdges();
+
 };
 
-template<typename V, typename E>
-Graph<V, E>::~Graph() {
+template<typename V, typename E, typename Ec, typename EcM>
+Graph<V, E, Ec, EcM>::~Graph() {
 	cleanUp();
 }
 
-template<typename V, typename E>
-void Graph<V, E>::cleanUp() {
+template<typename V, typename E, typename Ec, typename EcM>
+Graph<V, E, Ec, EcM>::cleanUp() {
 	for (VertexMapIterator iter = vertices.begin(); iter != vertices.end(); ++iter) {
 		delete iter->second;
 	}
 	vertices.clear();
 }
 
-template<typename V, typename E>
-Graph<V, E>::Graph(const Graph<V, E>& graph) {
+template<typename V, typename E, typename Ec, typename EcM>
+Graph<V, E, Ec, EcM>::Graph(const Graph<V, E, Ec, EcM>& graph) {
 	init(graph);
 }
 
-template<typename V, typename E>
-void Graph<V, E>::init(const Graph<V, E>& graph) {
-	edgeCount_ = graph.edgeCount_;
-	isDirected = graph.isDirected;
+template<typename V, typename E, typename Ec, typename EcM>
+void Graph<V, E, Ec, EcM>::init(const Graph<V, E, Ec, EcM>& graph) {
+  edgeCount_         = graph.edgeCount_;
+  isDirected         = graph.isDirected;
+  edgeContentManager = graph.edgeContentManager;
 
 	// create new vertices from the old ones
 	for (VertexMapIterator iter = graph.vertices.begin(); iter != graph.vertices.end(); ++iter) {
@@ -288,8 +296,8 @@ void Graph<V, E>::init(const Graph<V, E>& graph) {
 	}
 }
 
-template<typename V, typename E>
-Graph<V, E>& Graph<V, E>::operator=(const Graph<V, E>& graph) {
+template<typename V, typename E, typename Ec, typename EcM>
+Graph<V, E, Ec, EcM>& Graph<V, E, Ec, EcM>::operator=(const Graph<V, E, Ec, EcM>& graph) {
 	if (this != &graph) {
 		cleanUp();
 		init(graph);
@@ -298,11 +306,11 @@ Graph<V, E>& Graph<V, E>::operator=(const Graph<V, E>& graph) {
 	return *this;
 }
 
-template<typename V, typename E>
-boost::shared_ptr<E> Graph<V, E>::addEdge(V* source, V* target) {
+template<typename V, typename E, typename Ec, typename EcM>
+boost::shared_ptr<E> Graph<V, E, Ec, EcM>::addEdge(V* source, V* target) {
   boost::shared_ptr<E> ret;
 
-  const VertexMapIterator notFound = Graph<V, E>::vertices.end();
+  const VertexMapIterator notFound = Graph<V, E, Ec, EcM>::vertices.end();
 
 	VertexMapIterator srcIter    = vertices.find(source->getId());
 	if (srcIter == notFound)    return ret;
@@ -315,11 +323,11 @@ boost::shared_ptr<E> Graph<V, E>::addEdge(V* source, V* target) {
 	return edge;
 }
 
-template<typename V, typename E>
-boost::shared_ptr<E> Graph<V, E>::addEdge(V* source, V* target, double weight) {
+template<typename V, typename E, typename Ec, typename EcM>
+boost::shared_ptr<E> Graph<V, E, Ec, EcM>::addEdge(V* source, V* target, double weight) {
   boost::shared_ptr<E> ret;
 
-  const VertexMapIterator notFound = Graph<V, E>::vertices.end();
+  const VertexMapIterator notFound = Graph<V, E, Ec, EcM>::vertices.end();
 
   VertexMapIterator srcIter    = vertices.find(source->getId());
   if (srcIter == notFound)    return ret;
@@ -332,45 +340,45 @@ boost::shared_ptr<E> Graph<V, E>::addEdge(V* source, V* target, double weight) {
   return edge;
 }
 
-template<typename V, typename E>
-void Graph<V, E>::successors(V* vertex, std::vector<V*>& out) {
-	VertexMapIterator iter = Graph<V, E>::vertices.find(vertex->getId());
-	if (iter != Graph<V, E>::vertices.end()) iter->second->successors(out);
+template<typename V, typename E, typename Ec, typename EcM>
+void Graph<V, E, Ec, EcM>::successors(V* vertex, std::vector<V*>& out) {
+  VertexMapIterator iter = Graph<V, E, Ec, EcM>::vertices.find(vertex->getId());
+  if (iter != Graph<V, E, Ec, EcM>::vertices.end()) iter->second->successors(out);
 }
 
-template<typename V, typename E>
-void Graph<V, E>::predecessors(V* vertex, std::vector<V*>& out) {
-	VertexMapIterator iter = Graph<V, E>::vertices.find(vertex->getId());
-	if (iter != vertices.end()) iter->second->predecessors(out);
+template<typename V, typename E, typename Ec, typename EcM>
+void Graph<V, E, Ec, EcM>::predecessors(V* vertex, std::vector<V*>& out) {
+  VertexMapIterator iter = Graph<V, E, Ec, EcM>::vertices.find(vertex->getId());
+  if (iter != vertices.end()) iter->second->predecessors(out);
 }
 
-template<typename V, typename E>
-void Graph<V, E>::adjacent(V* vertex, std::vector<V*>& out) {
-	VertexMapIterator iter = Graph<V, E>::vertices.find(vertex->getId());
-	if (iter != vertices.end()) iter->second->adjacent(out);
+template<typename V, typename E, typename Ec, typename EcM>
+void Graph<V, E, Ec, EcM>::adjacent(V* vertex, std::vector<V*>& out) {
+  VertexMapIterator iter = Graph<V, E, Ec, EcM>::vertices.find(vertex->getId());
+  if (iter != vertices.end()) iter->second->adjacent(out);
 }
 
-template<typename V, typename E>
-int Graph<V, E>::inDegree(V* vertex) {
-	VertexMapIterator iter = Graph<V, E>::vertices.find(vertex->getId());
-	return (iter != vertices.end() ? iter->second->inDegree() : 0);
+template<typename V, typename E, typename Ec, typename EcM>
+int Graph<V, E, Ec, EcM>::inDegree(V* vertex) {
+  VertexMapIterator iter = Graph<V, E, Ec, EcM>::vertices.find(vertex->getId());
+  return (iter != vertices.end() ? iter->second->inDegree() : 0);
 }
 
-template<typename V, typename E>
-int Graph<V, E>::outDegree(V* vertex) {
-	VertexMapIterator iter = Graph<V, E>::vertices.find(vertex->getId());
+template<typename V, typename E, typename Ec, typename EcM>
+int Graph<V, E, Ec, EcM>::outDegree(V* vertex) {
+  VertexMapIterator iter = Graph<V, E, Ec, EcM>::vertices.find(vertex->getId());
   return (iter != vertices.end() ? iter->second->outDegree() : 0);
 }
 
-template<typename V, typename E>
-void Graph<V, E>::removeEdge(const AgentId& sourceId, const AgentId& targetId) {
-  const VertexMapIterator vertexNotFound = Graph<V, E>::vertices.end();
+template<typename V, typename E, typename Ec, typename EcM>
+void Graph<V, E, Ec, EcM>::removeEdge(const AgentId& sourceId, const AgentId& targetId) {
+  const VertexMapIterator vertexNotFound = Graph<V, E, Ec, EcM>::vertices.end();
 
-  VertexMapIterator iter = Graph<V, E>::vertices.find(sourceId);
+  VertexMapIterator iter = Graph<V, E, Ec, EcM>::vertices.find(sourceId);
   if (iter == vertexNotFound) return;
   Vertex<V, E>* sVert = iter->second;
 
-  iter = Graph<V, E>::vertices.find(targetId);
+  iter = Graph<V, E, Ec, EcM>::vertices.find(targetId);
   if (iter == vertexNotFound) return;
   Vertex<V, E>* tVert = iter->second;
 
@@ -380,49 +388,56 @@ void Graph<V, E>::removeEdge(const AgentId& sourceId, const AgentId& targetId) {
 
 }
 
-template<typename V, typename E>
-void Graph<V, E>::removeEdge(V* source, V* target) {
-	removeEdge(source->getId(), target->getId());
+template<typename V, typename E, typename Ec, typename EcM>
+void Graph<V, E, Ec, EcM>::removeEdge(V* source, V* target) {
+  removeEdge(source->getId(), target->getId());
 }
 
-template<typename V, typename E>
-void Graph<V, E>::removeAgent(V* vertex) {
-	VertexMapIterator iter = Graph<V, E>::vertices.find(vertex->getId());
-	if (iter != vertices.end()) {
-		Vertex<V, E>* iVert = iter->second;
-	  edgeCount_ -= (isDirected ? (iVert->inDegree() + iVert->outDegree()) : iVert->inDegree());
-		delete iVert;
-		vertices.erase(iter);
-	}
+template<typename V, typename E, typename Ec, typename EcM>
+void Graph<V, E, Ec, EcM>::removeAgent(V* vertex) {
+  VertexMapIterator iter = Graph<V, E, Ec, EcM>::vertices.find(vertex->getId());
+  if (iter != vertices.end()) {
+    Vertex<V, E>* iVert = iter->second;
+    std::vector<V*> adjacentVertices;
+    iVert->adjacent(adjacentVertices);
+    for(typename std::vector<V*>::iterator adjIter = adjacentVertices.begin(), adjIterEnd = adjacentVertices.end(); adjIter != adjIterEnd; ++adjIter){
+      removeEdge(vertex->getId(), (*adjIter)->getId());
+      removeEdge((*adjIter)->getId(), vertex->getId());
+    }
+
+    delete iVert;
+    vertices.erase(iter);
+  }
 }
 
-template<typename V, typename E>
-bool Graph<V, E>::addAgent(boost::shared_ptr<V> agent) {
-	if (vertices.find(agent->getId()) != vertices.end())	return false;
+template<typename V, typename E, typename Ec, typename EcM>
+bool Graph<V, E, Ec, EcM>::addAgent(boost::shared_ptr<V> agent) {
+  if(!Projection<V>::agentCanBeAdded(agent)) return false;
+  if (vertices.find(agent->getId()) != vertices.end())  return false;
 
-	if(isDirected) vertices[agent->getId()] = new DirectedVertex<V, E> (agent);
-	else           vertices[agent->getId()] = new UndirectedVertex<V, E> (agent);
+  if(isDirected) vertices[agent->getId()] = new DirectedVertex<V, E> (agent);
+  else           vertices[agent->getId()] = new UndirectedVertex<V, E> (agent);
 
-	return true;
+  return true;
 }
 
-template<typename V, typename E>
-boost::shared_ptr<E> Graph<V, E>::findEdge(V* source, V* target) {
+template<typename V, typename E, typename Ec, typename EcM>
+boost::shared_ptr<E> Graph<V, E, Ec, EcM>::findEdge(V* source, V* target) {
   boost::shared_ptr<E> ret;
 
-  const VertexMapIterator notFound = Graph<V, E>::vertices.end();
+  const VertexMapIterator notFound = Graph<V, E, Ec, EcM>::vertices.end();
 
-	VertexMapIterator sIter = vertices.find(source->getId());
-	if (sIter == notFound) return ret;
+  VertexMapIterator sIter = vertices.find(source->getId());
+  if (sIter == notFound) return ret;
 
-	VertexMapIterator tIter = vertices.find(target->getId());
-	if (tIter == notFound) return ret;
+  VertexMapIterator tIter = vertices.find(target->getId());
+  if (tIter == notFound) return ret;
 
-	return sIter->second->findEdge(tIter->second, Vertex<V, E>::OUTGOING);
+  return sIter->second->findEdge(tIter->second, Vertex<V, E>::OUTGOING);
 }
 
-template<typename V, typename E>
-void Graph<V, E>::doAddEdge(boost::shared_ptr<E> edge) {
+template<typename V, typename E, typename Ec, typename EcM>
+void Graph<V, E, Ec, EcM>::doAddEdge(boost::shared_ptr<E> edge) {
 	V* source = edge->source();
 	V* target = edge->target();
 
@@ -438,6 +453,22 @@ void Graph<V, E>::doAddEdge(boost::shared_ptr<E> edge) {
 	vTarget->addEdge(vSource, edge, Vertex<V, E>::INCOMING);
 
 	edgeCount_++;
+}
+
+template<typename V, typename E, typename Ec, typename EcM>
+void Graph<V, E, Ec, EcM>::showEdges(){
+  int vcount = 1;
+  std::set<boost::shared_ptr<E> > edgeSet;
+  for(typename VertexMap::iterator iter = vertices.begin(), iterEnd = vertices.end(); iter != iterEnd; ++iter){
+    std::vector<boost::shared_ptr<E> > edges;
+    (*iter).second->edges(repast::Vertex<V, E>::INCOMING, edges);
+    (*iter).second->edges(repast::Vertex<V, E>::OUTGOING, edges);
+    int ecount = 1;
+    for(typename std::vector<boost::shared_ptr<E> >::iterator EI = edges.begin(), EIEnd = edges.end(); EI != EIEnd; ++EI) edgeSet.insert(*EI);
+  }
+  for(typename std::set<boost::shared_ptr<E> >::iterator ei = edgeSet.begin(), eiEnd = edgeSet.end(); ei != eiEnd; ++ei){
+    std::cout << "SOURCE: " << (*ei)->source()->getId() << " TARGET: " << (*ei)->target()->getId() << std::endl;
+  }
 }
 
 }
