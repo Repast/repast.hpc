@@ -52,7 +52,6 @@
 #include "logger.h"
 #include "SRManager.h"
 #include "Utilities.h"
-#include "RequestManager.h"
 
 using namespace std;
 namespace mpi = boost::mpi;
