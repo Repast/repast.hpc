@@ -359,7 +359,6 @@ bool operator<(const Point<T>& one, const Point<T>& two) {
 	return std::lexicographical_compare(one.begin(), one.end(), two.begin(), two.end());
 }
 
-
 }
 
 #endif /* POINT_H_ */
