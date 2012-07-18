@@ -729,8 +729,8 @@ void SharedNetwork<V, E, Ec, EcM>::removeAgent(V* agent) {
 		fAgents.erase(id);
 	}
 
-	typename Graph<V,E>::VertexMapIterator iter = Graph<V,E>::vertices.find(id);
-	if (iter != Graph<V,E>::vertices.end()) {
+	typename Graph<V, E, Ec, EcM>::VertexMapIterator iter = Graph<V, E, Ec, EcM>::vertices.find(id);
+	if (iter != Graph<V, E, Ec, EcM>::vertices.end()) {
 		Vertex<V, E>* vertex = iter->second;
 		std::vector<boost::shared_ptr<E> > edges;
 		vertex->edges(Vertex<V,E>::OUTGOING, edges);
@@ -739,7 +739,7 @@ void SharedNetwork<V, E, Ec, EcM>::removeAgent(V* agent) {
 			edgeExporter.edgeRemoved(edges[i], removedEdges);
 		}
 
-		if (Graph<V,E, Ec, EcM>::isDirected) {
+		if (Graph<V, E, Ec, EcM>::isDirected) {
 			edges.clear();
 			vertex->edges(Vertex<V, E>::INCOMING, edges);
 			for (size_t i = 0, n = edges.size(); i < n; ++i) {
@@ -758,7 +758,7 @@ void SharedNetwork<V, E, Ec, EcM>::addEdge(boost::shared_ptr<E> edge) {
 template<typename V, typename E, typename Ec, typename EcM>
 void SharedNetwork<V, E, Ec, EcM>::doAddEdge(boost::shared_ptr<E> edge) {
   Graph<V, E, Ec, EcM>::doAddEdge(edge);
-	edgeExporter.addEdge(edge);
+  edgeExporter.addEdge(edge);
 }
 
 template<typename V, typename E, typename Ec, typename EcM>
