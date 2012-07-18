@@ -67,6 +67,7 @@ private:
   int                                   _buffer;
   std::vector<Projection<RelogoAgent>*> networks;
 
+
 public:
 
 	/**
@@ -97,7 +98,7 @@ public:
 	 * @param name the name of the network
 	 * @param directed if true, the network will be directed, otherwise it will be undirected
 	 */
-	void defineNetwork(std::string name, bool directed);
+	void defineNetwork(std::string name, bool directed, RelogoLinkContentManager* rlcm);
 
 	/**
 	 * Defines the default network and whether or
@@ -107,7 +108,7 @@ public:
 	 *
 	 * @param directed if true, the network will be directed, otherwise it will be undirected
 	 */
-	void defineNetwork(bool directed);
+	void defineNetwork(bool directed, RelogoLinkContentManager* rlcm);
 
 	/**
 	 * Gets the start of an iterator over the network Projections
