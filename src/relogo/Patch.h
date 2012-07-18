@@ -143,7 +143,7 @@ AgentSet<PatchType> Patch::neighbors4() {
 
 template<typename PatchType>
 void Patch::neighbors(AgentSet<PatchType>& out) {
-	std::vector<RelogoAgent*> vec;
+  std::vector<RelogoAgent*> vec;
 	const RelogoGridType* grid = _observer->grid();
 	Moore2DGridQuery<RelogoAgent> query(grid);
 	query.query(Point<int> (pxCor(), pyCor()), 1, false, vec);
