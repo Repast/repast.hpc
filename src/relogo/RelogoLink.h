@@ -41,10 +41,13 @@
 #ifndef RELOGOEDGE_H_
 #define RELOGOEDGE_H_
 
-#include "RelogoAgent.h"
+
 
 #include "repast_hpc/Edge.h"
 #include "repast_hpc/AgentId.h"
+
+#include "RelogoAgent.h"
+
 
 namespace repast {
 namespace relogo {
@@ -106,6 +109,39 @@ public:
 	RelogoLink(const RelogoLink& edge);
 
 	virtual ~RelogoLink();
+};
+
+
+class RelogoLinkContent: public RepastEdgeContent<RelogoAgent>{
+public:
+  RelogoLinkContent(){}
+  RelogoLinkContent(RelogoLink* link): RepastEdgeContent<RelogoAgent>(link){}
+
+};
+
+
+
+class RelogoLinkContentManager {
+
+public:
+  RelogoLinkContentManager(){}
+  virtual ~RelogoLinkContentManager(){}
+
+//  RelogoLink* createEdge(RelogoLinkContent& content, repast::Context<RelogoAgent>* context){
+//    return new RelogoLink(context->getAgent(content.source), context->getAgent(content.target), content.weight);
+//  }
+
+  boost::shared_ptr<RelogoLink> createEdge(repast::Context<RelogoAgent>& context, RelogoLinkContent& edge){
+    boost::shared_ptr<RelogoLink> ret(new RelogoLink(context.getAgent(edge.source), context.getAgent(edge.target)));
+    return ret;
+  }
+
+
+  RelogoLinkContent provideEdgeContent(RelogoLink& edge){
+    RelogoLinkContent content = RelogoLinkContent(&edge);
+    return content;
+  }
+
 };
 
 }

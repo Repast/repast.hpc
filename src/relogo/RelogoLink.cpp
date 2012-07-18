@@ -37,8 +37,11 @@
  *  Created on: Aug 5, 2010
  *      Author: nick
  */
+#include <boost/serialization/export.hpp>
 
 #include "RelogoLink.h"
+
+
 
 namespace repast {
 
@@ -60,3 +63,4 @@ RelogoLink::~RelogoLink() {}
 }
 
 }
+
