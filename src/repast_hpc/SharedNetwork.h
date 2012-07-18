@@ -146,12 +146,12 @@ class EdgeExporter {
 	typedef typename std::map<int, std::vector<ExportRequest> >::iterator ExportRequestMapIter;
 
 private:
-  //  template<typename Vertex, typename Edge, typename EdgeContent, typename AgentContent, typename EdgeManager,
-  //      typename AgentAdder>
-  //  friend void createComplementaryEdges(SharedNetwork<Vertex, Edge, EdgeContent, EdgeManager>* net, Context<Vertex>& context,
-  //      EdgeManager& provider, AgentAdder& adder);
+//  template<typename Vertex, typename Edge, typename EdgeContent, typename AgentContent, typename EdgeManager,
+//      typename AgentAdder>
+//  friend void createComplementaryEdges(SharedNetwork<Vertex, Edge, EdgeContent, EdgeManager>* net, Context<Vertex>& context,
+//      EdgeManager& provider, AgentAdder& adder);
 
-	template<typename Vertex, typename Edge, typename AgentContent, typename EdgeContent, typename EdgeManager, typename AgentCreator>
+  template<typename Vertex, typename Edge, typename AgentContent, typename EdgeContent, typename EdgeManager, typename AgentCreator>
   friend void createComplementaryEdges(SharedNetwork<Vertex, Edge, EdgeContent, EdgeManager>* net, SharedContext<Vertex>& context,
       EdgeManager& edgeManager, AgentCreator& creator);
 	// key is the process that we need to export the edges to
