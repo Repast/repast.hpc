@@ -630,7 +630,7 @@ void createComplementaryEdges(SharedNetwork<Vertex, Edge, EdgeContent, EdgeManag
  * void receiveEdgeContent(const EdgeContent& content);
  */
 template<typename Vertex, typename Edge, typename EdgeContent, typename EdgeManager>
-void synchEdges(SharedNetwork<Vertex, Edge>* net, EdgeManager& edgeManager) {
+void synchEdges(SharedNetwork<Vertex, Edge, EdgeContent, EdgeManager>* net, EdgeManager& edgeManager) {
 
   std::map<int, std::vector<boost::shared_ptr<Edge> >* >& exports = net->edgeExporter.getExportedEdges();
   boost::mpi::communicator* world = RepastProcess::instance()->getCommunicator();
@@ -656,7 +656,7 @@ void synchEdges(SharedNetwork<Vertex, Edge>* net, EdgeManager& edgeManager) {
     std::vector<boost::shared_ptr<Edge> >* edges = emIter->second;
     contentVector->push_back( edgeContent = new std::vector<EdgeContent>);
     for (typename std::vector<boost::shared_ptr<Edge> >::iterator iter = edges->begin(); iter != edges->end(); ++iter) {
-      edgeManager.provideEdgeContent(*iter, *edgeContent);
+      edgeContent->push_back(edgeManager.provideEdgeContent(**iter));
     }
     requests.push_back(world->isend(receiver, NET_EDGE_SYNC, *edgeContent));
   }
