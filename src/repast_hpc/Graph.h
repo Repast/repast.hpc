@@ -412,7 +412,6 @@ void Graph<V, E, Ec, EcM>::removeAgent(V* vertex) {
 
 template<typename V, typename E, typename Ec, typename EcM>
 bool Graph<V, E, Ec, EcM>::addAgent(boost::shared_ptr<V> agent) {
-  if(!Projection<V>::agentCanBeAdded(agent)) return false;
   if (vertices.find(agent->getId()) != vertices.end()) return false;
 
   if(isDirected) vertices[agent->getId()] = new DirectedVertex<V, E> (agent);
