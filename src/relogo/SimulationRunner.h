@@ -51,6 +51,7 @@
 #include "repast_hpc/Properties.h"
 #include "repast_hpc/RepastProcess.h"
 
+#include "RelogoLink.h"
 #include "WorldCreator.h"
 #include "WorldDefinition.h"
 
@@ -116,6 +117,7 @@ void SimulationRunner::run(Properties& props) {
 	bool worldIsWrapped = true;
 	if(props.contains("non.toroidal")) worldIsWrapped = false;
 
+  RelogoLinkContentManager rlcm;
 
 	WorldDefinition def(minX, minY, maxX, maxY, worldIsWrapped, buffer);
 
@@ -125,8 +127,8 @@ void SimulationRunner::run(Properties& props) {
 	  std::vector<std::string> directedNetworks;
 	  split(directedNetworks, netList, boost::is_any_of(" ,"), boost::token_compress_on);
 	  for(unsigned int i = 0; i < directedNetworks.size(); i++){
-	    if(directedNetworks[i].compare("default") == 0) def.defineNetwork(true);
-	    else                                	          def.defineNetwork(directedNetworks[i], true);
+	    if(directedNetworks[i].compare("default") == 0) def.defineNetwork(true, &rlcm);
+	    else                                	          def.defineNetwork(directedNetworks[i], true, &rlcm);
 	  }
 	}
 
@@ -135,8 +137,8 @@ void SimulationRunner::run(Properties& props) {
     std::vector<std::string> undirectedNetworks;
     split(undirectedNetworks, netList, boost::is_any_of(" ,"), boost::token_compress_on);
     for(unsigned int i = 0; i < undirectedNetworks.size(); i++){
-      if(undirectedNetworks[i].compare("default") == 0) def.defineNetwork(false);
-      else                                              def.defineNetwork(undirectedNetworks[i], false);
+      if(undirectedNetworks[i].compare("default") == 0) def.defineNetwork(false, &rlcm);
+      else                                              def.defineNetwork(undirectedNetworks[i], false, &rlcm);
     }
   }
 
