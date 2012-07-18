@@ -47,21 +47,20 @@ using namespace std;
 
 namespace repast {
 
-CartTopology::CartTopology(vector<int> procsPerDim, vector<int> origin, vector<int> extents, bool periodic, boost::mpi::communicator* world) :
-	_periodic(periodic), _procsPerDim(procsPerDim), commM(world) {
-	int _numDims = procsPerDim.size();
-	int* periods = new int[_numDims];
-	for (int i = 0; i < _numDims; i++) {
-		periods[i] = periodic ? 1 : 0;
-	}
+CartTopology::CartTopology(vector<int> processesPerDim, vector<double> origin, vector<double> extents, bool spaceIsPeriodic, boost::mpi::communicator* world) :
+  periodic(spaceIsPeriodic), procsPerDim(processesPerDim) {
+  int numDims = procsPerDim.size();
+  int* periods = new int[numDims];
+  int periodicFlag = periodic ? 1 : 0;
+  for (int i = 0; i < numDims; i++) periods[i] = periodicFlag;
 
 	// swap xy so row major
+	swapXY(processesPerDim);
 	swapXY(procsPerDim);
 	swapXY(origin);
 	swapXY(extents);
-	swapXY(_procsPerDim);
 
-	MPI_Cart_create(*commM, _numDims, &procsPerDim[0], periods, 0, &topologyComm);
+	MPI_Cart_create(*world, numDims, &processesPerDim[0], periods, 0, &topologyComm);
 	delete[] periods;
 	globalBounds = GridDimensions(origin, extents);
 }
