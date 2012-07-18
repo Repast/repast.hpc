@@ -54,7 +54,7 @@ class GridDimensions {
 private:
 	friend bool operator==(const GridDimensions &one, const GridDimensions &two);
 	friend std::ostream& operator<<(std::ostream& os, const GridDimensions& dimensions);
-	Point<int> _extents, _origin;
+	Point<double> _extents, _origin;
 
 public:
 	GridDimensions();
@@ -63,7 +63,7 @@ public:
 	/**
 	 * Creates a GridDimensions with the specified origin and extent.
 	 */
-	GridDimensions(Point<int> origin, Point<int> extent);
+	GridDimensions(Point<double> origin, Point<double> extent);
 
 	bool contains(const Point<int>& pt) const;
 	bool contains(const std::vector<int>& pt) const;
@@ -74,22 +74,22 @@ public:
 	/**
 	 * Gets the origin.
 	 */
-	const Point<int>& origin() const {
+	const Point<double>& origin() const {
 		return _origin;
 	}
 
 	/**
 	 * Gets the extents along each dimension.
 	 */
-	const Point<int>& extents() const {
+	const Point<double>& extents() const {
 		return _extents;
 	}
 
-	const int& origin(int index) const {
+	const double& origin(int index) const {
 		return _origin[index];
 	}
 
-	const int& extents(int index) const {
+	const double& extents(int index) const {
 		return _extents[index];
 	}
 

@@ -54,25 +54,25 @@ GridDimensions::GridDimensions() :
 	_extents(0), _origin(0) {
 }
 
-GridDimensions::GridDimensions(Point<int> extent) :
-	_extents(extent), _origin(Point<int>(vector<int>(extent.dimensionCount(), 0))) {
+GridDimensions::GridDimensions(Point<double> extent) :
+	_extents(extent), _origin(Point<double>(vector<double>(extent.dimensionCount(), 0))) {
 }
 
-GridDimensions::GridDimensions(Point<int> origin, Point<int> dimensions) :
+GridDimensions::GridDimensions(Point<double> origin, Point<double> dimensions) :
 	_extents(dimensions), _origin(origin) {
 	if (_extents.dimensionCount() != _origin.dimensionCount()) {
-		throw Repast_Error_36<Point<int> >(origin, dimensions, _origin.dimensionCount(), _extents.dimensionCount()); // Origin dimension count != dimensions dimension count
+		throw Repast_Error_36<Point<double> >(origin, dimensions, _origin.dimensionCount(), _extents.dimensionCount()); // Origin dimension count != dimensions dimension count
 	}
 }
 
 bool GridDimensions::contains(const std::vector<int>& pt) const {
-	if (pt.size() != _origin.dimensionCount()) {
-		throw Repast_Error_37(pt, _origin.dimensionCount()); // Point dimension count != dimensions' dimension count
-	}
+	if (pt.size() != _origin.dimensionCount())
+      throw Repast_Error_37(pt, _origin.dimensionCount()); // Point dimension count != dimensions' dimension count
+
 
 	for (size_t i = 0; i < pt.size(); i++) {
-		int start = _origin.getCoordinate(i);
-		int end = start + _extents.getCoordinate(i);
+		double start = _origin.getCoordinate(i);
+		double end = start + _extents.getCoordinate(i);
 		int pVal = pt[i];
 		if (pVal < start || pVal >= end)
 			return false;
@@ -94,8 +94,8 @@ bool GridDimensions::contains(const std::vector<double>& pt) const {
 	}
 
 	for (size_t i = 0; i < pt.size(); i++) {
-		int start = _origin.getCoordinate(i);
-		int end = start + _extents.getCoordinate(i);
+		double start = _origin.getCoordinate(i);
+		double end = start + _extents.getCoordinate(i);
 		double pVal = pt[i];
 		if (pVal < start || pVal >= end)
 			return false;
