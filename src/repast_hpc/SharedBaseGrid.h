@@ -431,19 +431,8 @@ SharedBaseGrid<T, GPTransformer, Adder, GPType>::SharedBaseGrid(std::string name
 	if (processDims.size() != gridDims.dimensionCount())
       throw Repast_Error_50<GridDimensions>(dimCount, gridDims, processDims.size()); // Number of grid dimensions must be equal to number of process dimensions
 
-	std::vector<int> extents;
-	for (size_t i = 0; i < dimCount; i++) {
-		int extent = gridDims.extents(i);
-		double pCount = processDims[i];
-		double tmp = extent / pCount;
-		if (floor(tmp) != tmp){
-			throw Repast_Error_51(dimCount, extent, pCount);// Number of processes must divide evenly into the extent in a given dimension
-		}
-		extents.push_back((int) tmp);
-	}
-
 	bool periodic = GridBaseType::gpTransformer.isPeriodic();
-	CartTopology topology(processDims, gridDims.origin().coords(), extents, periodic, comm);
+	CartTopology topology(processDims, gridDims.origin().coords(), gridDims.extents().coords(), periodic, comm);
 
 	std::vector<int> coords;
 	topology.getCoordinates(rank, coords);
@@ -452,6 +441,10 @@ SharedBaseGrid<T, GPTransformer, Adder, GPType>::SharedBaseGrid(std::string name
 
 	topology.createNeighbors(nghs);
 }
+
+template<typename T, typename GPTransformer, typename Adder, typename GPType>
+SharedBaseGrid<T, GPTransformer, Adder, GPType>::~SharedBaseGrid() { }
+
 
 template<typename T, typename GPTransformer, typename Adder, typename GPType>
 GridDimensions SharedBaseGrid<T, GPTransformer, Adder, GPType>::createSendBufferBounds(Neighbors::Location location) {
@@ -571,10 +564,6 @@ bool SharedBaseGrid<T, GPTransformer, Adder, GPType>::moveTo(const AgentId& id, 
 template<typename T, typename GPTransformer, typename Adder, typename GPType>
 void SharedBaseGrid<T, GPTransformer, Adder, GPType>::removeAgent(T* agent) {
 	GridBaseType::removeAgent(agent);
-}
-
-template<typename T, typename GPTransformer, typename Adder, typename GPType>
-SharedBaseGrid<T, GPTransformer, Adder, GPType>::~SharedBaseGrid() {
 }
 
 }
