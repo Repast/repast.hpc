@@ -32,13 +32,14 @@
  *   EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- *  Point.cpp
+ *  GridDimensions.cpp
  *
- *  Created on: Apr 1, 2010
+ *  Created on: Jun 20, 2012
  *      Author: nick
  */
 
 #include "Point.h"
+#include "GridDimensions.h"
 #include "RepastErrors.h"
 
 #include <stdexcept>
@@ -48,8 +49,6 @@
 using namespace std;
 
 namespace repast {
-
-// GridDimensions implemementation
 
 GridDimensions::GridDimensions() :
 	_extents(0), _origin(0) {
@@ -90,7 +89,6 @@ bool GridDimensions::contains(const Point<double>& pt) const {
 }
 
 bool GridDimensions::contains(const std::vector<double>& pt) const {
-
 	if (pt.size() != _origin.dimensionCount()) {
 	  throw Repast_Error_38(pt, _origin.dimensionCount()); // Point dimension count != dimensions' dimension count
 	}
