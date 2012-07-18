@@ -51,7 +51,7 @@ namespace repast {
 namespace relogo {
 
 WorldDefinition::WorldDefinition(int minX, int minY, int maxX, int maxY, bool wrapped, int buffer) :
-	_dims(GridDimensions(Point<int> (minX, minY), Point<int> (maxX - minX + 1, maxY - minY + 1))), _wrapped(wrapped),
+	_dims(GridDimensions(Point<double> ((double)minX, (double)minY), Point<double> ((double)(maxX - minX + 1) , (double)(maxY - minY + 1)))), _wrapped(wrapped),
 			_buffer(buffer)  {
 }
 
