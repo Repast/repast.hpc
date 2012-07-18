@@ -597,7 +597,7 @@ public:
 	void initSynchronize();
 
 protected:
-	typedef SharedNetwork<RelogoAgent, RelogoLink> NetworkType;
+	typedef SharedNetwork<RelogoAgent, RelogoLink, RepastEdgeContent<RelogoAgent>, RepastEdgeContentManager<RelogoAgent> > NetworkType;
 
 	Observer();
 	Properties _props;
@@ -715,7 +715,7 @@ AgentSet<Agent> Observer::get() {
 
 template<typename AgentType>
 void Observer::get(AgentSet<AgentType>& agentSet) {
-	int typeId = getTypeId<AgentType> ();
+  int typeId = getTypeId<AgentType> ();
 	if (typeId != NO_TYPE_ID) {
 		for (SharedContext<RelogoAgent>::const_local_iterator iter = context.localBegin(); iter != context.localEnd(); ++iter) {
 			AgentId id = iter->get()->getId();
