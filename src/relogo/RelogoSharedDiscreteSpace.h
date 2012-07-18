@@ -61,8 +61,6 @@ RelogoSharedDiscreteSpace<GPTransformer, Adder>::RelogoSharedDiscreteSpace(std::
 repast::SharedDiscreteSpace<RelogoAgent, GPTransformer, Adder>(name, gridDims, processDims, buffer, world) {}
 
 
-
-
 }
 }
 
