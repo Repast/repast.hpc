@@ -399,6 +399,8 @@ RepastEdge<Node>* RumorModel::createEdge(repast::Context<Node>& context, EdgeCon
 
 void RumorModel::synchAgents() {
 	repast::syncAgents<NodeContent>(*this, *this);
+  NodeAdder na(this);
+  repast::RepastProcess::instance()->syncAgentStatus<Node, NodeContent, RumorModel, NodeAdder>(nodes, *this, na);
 }
 
 void RumorModel::spreadRumor() {
