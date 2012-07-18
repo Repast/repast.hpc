@@ -69,7 +69,7 @@ public:
  * "Growing scale-free network with small world behavior" in
  * Phys. Rev. E 65.
  */
-template<typename V, typename E>
+template<typename V, typename E, typename Ec, typename EcM>
 class KEBuilder {
 
 private:
@@ -84,16 +84,16 @@ public:
 	 * the M value.
 	 * @param graph the graph to build the network
 	 */
-	void build(repast::Properties& props, repast::Graph<V, E>* graph);
+	void build(repast::Properties& props, repast::Graph<V, E, Ec, EcM>* graph);
 };
 
-template<typename V, typename E>
-const std::string KEBuilder<V, E>::M = "ke.model.m";
+template<typename V, typename E, typename Ec, typename EcM>
+const std::string KEBuilder<V, E, Ec, EcM>::M = "ke.model.m";
 
-template<typename V, typename E>
-void KEBuilder<V, E>::build(repast::Properties& props, repast::Graph<V, E>* graph) {
+template<typename V, typename E, typename Ec, typename EcM>
+void KEBuilder<V, E, Ec, EcM>::build(repast::Properties& props, repast::Graph<V, E, Ec, EcM>* graph) {
 	int m = strToInt(props.getProperty(M));
-	typename repast::Graph<V, E>::vertex_iterator iter;
+	typename repast::Graph<V, E, Ec, EcM>::vertex_iterator iter;
 	int k = 0;
 	// advance iter m - 1 number of elements.
 	for (iter = graph->verticesBegin(); k < m; ++k, ++iter);
