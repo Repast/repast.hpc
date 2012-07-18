@@ -34,7 +34,7 @@
  *
  *  GridDimensions.cpp
  *
- *  Created on: Jun 20, 2012
+ *  Created on: 20 Jun, 2012
  *      Author: nick
  */
 
