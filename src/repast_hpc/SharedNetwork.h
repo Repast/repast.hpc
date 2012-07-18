@@ -862,8 +862,6 @@ void SharedNetwork<V, E, Ec, EcM>::synchRemovedEdges() {
   removedEdges.clear();
 }
 
-
-
 }
 
 #endif /* SHAREDNETWORK_H_ */
