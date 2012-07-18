@@ -257,7 +257,6 @@ public:
 	repast::RepastEdge<Node>* createEdge(repast::Context<Node>& context, EdgeContent& edge);
 	void updateAgent(const NodeContent& content);
 
-
 };
 
 class NodeAdder {
