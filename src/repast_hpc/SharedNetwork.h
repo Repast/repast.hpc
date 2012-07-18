@@ -126,7 +126,7 @@ public:
 /*
  * Forward declaration for EdgeExporter.
  */
-template<typename V, typename E>
+template<typename V, typename E, typename Ec, typename EcM>
 class SharedNetwork;
 
 /**
@@ -146,10 +146,14 @@ class EdgeExporter {
 	typedef typename std::map<int, std::vector<ExportRequest> >::iterator ExportRequestMapIter;
 
 private:
-	template<typename Vertex, typename Edge, typename EdgeContent, typename AgentContent, typename EdgeManager,
-			typename AgentAdder>
-	friend void createComplementaryEdges(SharedNetwork<Vertex, Edge>* net, Context<Vertex>& context,
-			EdgeManager& provider, AgentAdder& adder);
+  //  template<typename Vertex, typename Edge, typename EdgeContent, typename AgentContent, typename EdgeManager,
+  //      typename AgentAdder>
+  //  friend void createComplementaryEdges(SharedNetwork<Vertex, Edge, EdgeContent, EdgeManager>* net, Context<Vertex>& context,
+  //      EdgeManager& provider, AgentAdder& adder);
+
+	template<typename Vertex, typename Edge, typename AgentContent, typename EdgeContent, typename EdgeManager, typename AgentCreator>
+  friend void createComplementaryEdges(SharedNetwork<Vertex, Edge, EdgeContent, EdgeManager>* net, SharedContext<Vertex>& context,
+      EdgeManager& edgeManager, AgentCreator& creator);
 	// key is the process that we need to export the edges to
 	std::map<int, std::vector<boost::shared_ptr<E> >*> edgesToExport;
 	// map that holds edges that this P has exported
@@ -361,17 +365,21 @@ void EdgeExporter<E>::sendExportRequests(boost::mpi::communicator& comm, std::ve
  * that takes a source and target of type V and extends RepastEdge. RepastEdge
  * can also be used.
  */
-template<typename V, typename E>
-class SharedNetwork: public Graph<V, E> {
+template<typename V, typename E, typename Ec, typename EcM>
+class SharedNetwork: public Graph<V, E, Ec, EcM> {
 private:
 
-	template<typename Vertex, typename Edge, typename EdgeContent, typename AgentContent, typename EdgeManager,
-			typename AgentAdder>
-	friend void createComplementaryEdges(SharedNetwork<Vertex, Edge>* net, SharedContext<Vertex>& context,
-			EdgeManager& edgeManager, AgentAdder&);
+  //  template<typename Vertex, typename Edge, typename EdgeContent, typename AgentContent, typename EdgeManager,
+  //      typename AgentAdder>
+  //  friend void createComplementaryEdges(SharedNetwork<Vertex, Edge, EdgeContent, EdgeManager>* net, SharedContext<Vertex>& context,
+  //      EdgeManager& edgeManager, AgentAdder&);
 
-	template<typename Vertex, typename Edge, typename EdgeContent, typename EdgeManager>
-	friend void synchEdges(SharedNetwork<Vertex, Edge>*, EdgeManager&);
+  template<typename Vertex, typename Edge, typename AgentContent, typename EdgeContent, typename EdgeManager, typename AgentCreator>
+  friend void createComplementaryEdges(SharedNetwork<Vertex, Edge, EdgeContent, EdgeManager>* net, SharedContext<Vertex>& context,
+      EdgeManager& edgeManager, AgentCreator& creator);
+
+  template<typename Vertex, typename Edge, typename EdgeContent, typename EdgeManager>
+  friend void synchEdges(SharedNetwork<Vertex, Edge, EdgeContent, EdgeManager>*, EdgeManager&);
 
 	boost::unordered_set<AgentId, HashId> fAgents;
 	std::vector<boost::shared_ptr<E> > sharedEdges;
@@ -396,8 +404,8 @@ protected:
 
 public:
 
-	using Graph<V, E>::addEdge;
-	using Graph<V, E>::removeEdge;
+	using Graph<V, E, Ec, EcM>::addEdge;
+	using Graph<V, E, Ec, EcM>::removeEdge;
 
 	/**
 	 * Creates a SharedNetwork with the specified name and
@@ -406,7 +414,7 @@ public:
 	 * @param the network name
 	 * @param directed if true the network will be directed, otherwise not.
 	 */
-	SharedNetwork(std::string name, bool directed);
+	SharedNetwork(std::string name, bool directed, EcM* edgeContentMgr);
 	virtual ~SharedNetwork() {
 	}
 
@@ -442,15 +450,180 @@ public:
 	void synchRemovedEdges();
 };
 
-template<typename V, typename E>
-SharedNetwork<V, E>::SharedNetwork(std::string name, bool directed) :
-	Graph<V, E> (name, directed) {
+/**
+ * NON USER API
+ */
+template<typename E, typename EdgeContent, typename ProviderReceiver>
+void sendContent(EdgeExporter<E>& exporter, std::vector<boost::mpi::request>& requests, ProviderReceiver& provider, boost::ptr_vector<std::vector<EdgeContent> > &sendBuffer) {
+  std::map<int, std::vector<boost::shared_ptr<E> >*>& edgesToExport = exporter.getEdgesToExport();
+  boost::mpi::communicator* comm = RepastProcess::instance()->getCommunicator();
+
+  std::vector<EdgeContent>* edgeContent;
+
+  for (typename EdgeExporter<E>::EdgeMapIterator emIter = edgesToExport.begin(); emIter != edgesToExport.end(); ++emIter) {
+    // the process to send the edge to
+    int receiver = emIter->first;
+    std::vector<boost::shared_ptr<E> >* edges = emIter->second;
+    sendBuffer.push_back(edgeContent = new std::vector<EdgeContent>);
+    // check end points and add any local nodes to the AgentExporter
+    for (typename std::vector<boost::shared_ptr<E> >::iterator iter = edges->begin(); iter != edges->end(); ++iter) {
+
+      boost::shared_ptr<E> edge = *iter;
+      AgentId srcId = edge->source()->getId();
+      AgentId targetId = edge->target()->getId();
+      if (srcId.currentRank() == comm->rank()) {
+        RepastProcess::instance()->addExportedAgent(receiver, srcId);
+      } else if (srcId.currentRank() != receiver) {
+        // sending node that's foreign to both this P and the receiver
+        // so need to tell the P where the node resides to export it to
+        // the receiver.
+        exporter.addAgentExportRequest(receiver, srcId);
+      }
+
+      if (targetId.currentRank() == comm->rank()) {
+        RepastProcess::instance()->addExportedAgent(receiver, targetId);
+      } else if (targetId.currentRank() != receiver) {
+        // sending node that's foreign to both this P and the receiver
+        // so need to tell the P where the node resides to export it to
+        // the receiver.
+        exporter.addAgentExportRequest(receiver, targetId);
+      }
+
+      provider.provideEdgeContent(edge, *edgeContent);
+    }
+    requests.push_back(comm->isend(receiver, NET_EDGE_UPDATE, *edgeContent)); //*edges));
+  }
+}
+
+/**
+ * Notifies other processes of any edges that have been created between
+ * nodes on this process and imported nodes. The other process will then
+ * create the complimentary edge. For example, if P1 creates an edge
+ * between A and B where B resides on P2, then this method will notify P2
+ * to create the incoming edge A->B on its copy of B. Any unknown agents
+ * will be added to the context. For example, if P2 didn't have a reference
+ * to A, then A will be added to P2's context.
+ *
+ * @param net the network in which to create the complementary edges or from which to send
+ * complementary edges
+ * @param context the context that contains the agents in the process
+ * @param edgeManager creates edges from EdgeContent and creates EdgeContent from an edge and a context.
+ * @param creator creates agents from AgentContent.
+ *
+ * @tparam Vertex the vertex (agent) type
+ * @tparam Edge the edge type
+ * @tparam AgentContent the serializable struct or class that describes the agent state. It must contain a getId()
+ * method that returns the AgentId of the agent it describes.
+ * @tparam EdgeContent the serializable struct or class that describes edge state. At the very least
+ * EdgeContent must contain two public fields sourceContent and targetContent of type AgentContent. These represent
+ * the source and target of the edge.
+ * @tparam EdgeManager create edges from EdgeContent and provides EdgeContent given a context and an edge of type Edge. It must
+ * implement void provideEdgeContent(constEdge* edge, std::vector<EdgeContent>& edgeContent) and
+ * Edge* createEdge(repast::Context<Vertex>& context, EdgeContent& edge);
+ * @tparam AgentCreator creates agents from AgentContent, implementing the following method
+ * Vertex* createAgent(constAgentContent& content);
+ */
+template<typename Vertex, typename Edge, typename AgentContent, typename EdgeContent, typename EdgeManager,
+    typename AgentCreator>
+void createComplementaryEdges(SharedNetwork<Vertex, Edge>* net, SharedContext<Vertex>& context,
+    EdgeManager& edgeManager, AgentCreator& creator) {
+  boost::mpi::communicator* world = RepastProcess::instance()->getCommunicator();
+
+  // created edges with foreign node, so push that edge to the foreign proc
+  // 1. gather the list of receivers procs that each proc wants to send to
+  // 2. Send that list to 0
+  // 3. If 0, sort the received lists such that a list of which process to expect
+  // edges from can be sent to each proc
+
+  std::vector<int> listToSend;
+  std::vector<int> list;
+
+  // gather a list of ints that the edgeExporter
+  // should send to.
+  net->edgeExporter.gatherReceivers(listToSend);
+
+  // tells each process who to expect edges from
+  SRManager exchanger(world);
+  exchanger.retrieveSources(listToSend, list);
+  listToSend.clear();
+
+
+  std::vector<boost::mpi::request> requests;
+
+
+  // sends edge content
+  boost::ptr_vector<std::vector<EdgeContent> >* sendBuffer = new boost::ptr_vector<std::vector<EdgeContent> >;
+  sendContent<Edge, EdgeContent, EdgeManager> (net->edgeExporter, requests, edgeManager, *sendBuffer);
+
+  std::vector<ItemReceipt<EdgeContent>*> receipts;
+  for (size_t i = 0; i < list.size(); i++) {
+    int sender = list[i];
+    ItemReceipt<EdgeContent>* receipt = new ItemReceipt<EdgeContent> (sender);
+    requests.push_back(world->irecv(sender, NET_EDGE_UPDATE, receipt->items));
+    receipts.push_back(receipt);
+  }
+  boost::mpi::wait_all(requests.begin(), requests.end());
+
+  // requests are now fulfilled, so we can clean up the edgeExporter
+  net->edgeExporter.cleanUp();
+  delete sendBuffer;
+
+  // process the received edges
+  for (size_t i = 0; i < receipts.size(); i++) {
+    ItemReceipt<EdgeContent>* receipt = receipts[i];
+    net->addSender(receipt->source_);
+
+    const size_t countOfItemsReceived = receipt->items.size();
+    for (size_t j = 0; j < countOfItemsReceived; j++) {
+      EdgeContent edge = receipt->items[j];
+      // Process edge:
+      // 1. If source or target exist in the network, then replace the
+      //       appropriate end points of the edge and delete the existing end point.
+      // 2. End point agents that don't exist in context need to be added to the context
+      // 3. Add the edge to the network.
+      AgentContent source = edge.sourceContent;
+      AgentContent target = edge.targetContent;
+
+      AgentId sourceId = source.getId();
+      AgentId targetId = target.getId();
+      if (!context.contains(sourceId)) {
+        // source was added to context, so this P didn't know about it
+        // so we need to add it to the agents to import
+        Vertex* out = creator.createAgent(source);
+        context.addAgent(out);
+        context.incrementProjRefCount(out->getId());
+        RepastProcess::instance()->addImportedAgent(sourceId);
+      }
+
+      if (!context.contains(targetId)) {
+        // target was added to context, so this P didn't know about it
+        // so we need to add it to the agents to import
+        Vertex* out = creator.createAgent(target);
+        context.addAgent(out);
+        context.incrementProjRefCount(out->getId());
+        RepastProcess::instance()->addImportedAgent(targetId);
+      }
+
+      boost::shared_ptr<Edge> newEdge(edgeManager.createEdge(context, edge));
+      net->graphAddEdge(newEdge);
+    }
+
+    delete receipt;
+    receipt = 0;
+  }
+  net->notifyExporters();
+}
+
+
+template<typename V, typename E, typename Ec, typename EcM>
+SharedNetwork<V, E, Ec, EcM>::SharedNetwork(std::string name, bool directed, EcM* edgeContentMgr) :
+  Graph<V, E, Ec, EcM> (name, directed, edgeContentMgr) {
 	rank = RepastProcess::instance()->rank();
 	worldSize = RepastProcess::instance()->worldSize();
 }
 
-template<typename V, typename E>
-void SharedNetwork<V, E>::addSender(int rank) {
+template<typename V, typename E, typename Ec, typename EcM>
+void SharedNetwork<V, E, Ec, EcM>::addSender(int rank) {
 	std::map<int, int>::iterator iter = senders.find(rank);
 	if (iter == senders.end()) {
 		senders[rank] = 1;
@@ -459,8 +632,8 @@ void SharedNetwork<V, E>::addSender(int rank) {
 	}
 }
 
-template<typename V, typename E>
-void SharedNetwork<V, E>::removeSender(int rank) {
+template<typename V, typename E, typename Ec, typename EcM>
+void SharedNetwork<V, E, Ec, EcM>::removeSender(int rank) {
 	std::map<int, int>::iterator iter = senders.find(rank);
 	if (iter == senders.end()) throw Repast_Error_30(rank); // Cannot remove non-existent sender
 
@@ -471,26 +644,26 @@ void SharedNetwork<V, E>::removeSender(int rank) {
 		senders[rank] = val - 1;
 }
 
-template<typename V, typename E>
-bool SharedNetwork<V, E>::addAgent(boost::shared_ptr<V> agent) {
+template<typename V, typename E, typename Ec, typename EcM>
+bool SharedNetwork<V, E, Ec, EcM>::addAgent(boost::shared_ptr<V> agent) {
 	AgentId id = agent->getId();
 	if (id.currentRank() != rank) {
 		// add to foreign ids
 		fAgents.insert(id);
 	}
-	return Graph<V, E>::addAgent(agent);
+	return Graph<V, E, Ec, EcM>::addAgent(agent);
 }
 
-template<typename V, typename E>
-void SharedNetwork<V, E>::removeEdge(V* source, V* target) {
-  boost::shared_ptr<E> edge = Graph<V, E>::findEdge(source, target);
-	edgeExporter.edgeRemoved(edge, removedEdges);
-	Graph<V, E>::removeEdge(source, target);
+template<typename V, typename E, typename Ec, typename EcM>
+void SharedNetwork<V, E, Ec, EcM>::removeEdge(V* source, V* target) {
+  boost::shared_ptr<E> edge = Graph<V, E, Ec, EcM>::findEdge(source, target);
+  edgeExporter.edgeRemoved(edge, removedEdges);
+  Graph<V, E, Ec, EcM>::removeEdge(source, target);
 
 }
 
-template<typename V, typename E>
-void SharedNetwork<V, E>::removeAgent(V* agent) {
+template<typename V, typename E, typename Ec, typename EcM>
+void SharedNetwork<V, E, Ec, EcM>::removeAgent(V* agent) {
 	AgentId id = agent->getId();
 	if (id.currentRank() != rank) {
 		fAgents.erase(id);
@@ -506,7 +679,7 @@ void SharedNetwork<V, E>::removeAgent(V* agent) {
 			edgeExporter.edgeRemoved(edges[i], removedEdges);
 		}
 
-		if (Graph<V,E>::isDirected) {
+		if (Graph<V,E, Ec, EcM>::isDirected) {
 			edges.clear();
 			vertex->edges(Vertex<V, E>::INCOMING, edges);
 			for (size_t i = 0, n = edges.size(); i < n; ++i) {
@@ -515,22 +688,22 @@ void SharedNetwork<V, E>::removeAgent(V* agent) {
 		}
 	}
 
-	Graph<V, E>::removeAgent(agent);
+	Graph<V, E, Ec, EcM>::removeAgent(agent);
 }
-template<typename V, typename E>
-void SharedNetwork<V, E>::addEdge(boost::shared_ptr<E> edge) {
-	SharedNetwork<V, E>::doAddEdge(edge);
+template<typename V, typename E, typename Ec, typename EcM>
+void SharedNetwork<V, E, Ec, EcM>::addEdge(boost::shared_ptr<E> edge) {
+  SharedNetwork<V, E, Ec, EcM>::doAddEdge(edge);
 }
 
-template<typename V, typename E>
-void SharedNetwork<V, E>::doAddEdge(boost::shared_ptr<E> edge) {
-	Graph<V, E>::doAddEdge(edge);
+template<typename V, typename E, typename Ec, typename EcM>
+void SharedNetwork<V, E, Ec, EcM>::doAddEdge(boost::shared_ptr<E> edge) {
+  Graph<V, E, Ec, EcM>::doAddEdge(edge);
 	edgeExporter.addEdge(edge);
 }
 
-template<typename V, typename E>
-void SharedNetwork<V, E>::graphAddEdge(boost::shared_ptr<E> edge) {
-	Graph<V, E>::doAddEdge(edge);
+template<typename V, typename E, typename Ec, typename EcM>
+void SharedNetwork<V, E, Ec, EcM>::graphAddEdge(boost::shared_ptr<E> edge) {
+  Graph<V, E, Ec, EcM>::doAddEdge(edge);
 }
 
 /**
@@ -538,8 +711,8 @@ void SharedNetwork<V, E>::graphAddEdge(boost::shared_ptr<E> edge) {
  * now export agents to process Y because agents were shared as a result
  * of sending edges.
  */
-template<typename V, typename E>
-void SharedNetwork<V, E>::notifyExporters() {
+template<typename V, typename E, typename Ec, typename EcM>
+void SharedNetwork<V, E, Ec, EcM>::notifyExporters() {
   RepastProcess* rp = RepastProcess::instance();
   boost::mpi::communicator* world = rp->getCommunicator();
 
@@ -577,169 +750,6 @@ void SharedNetwork<V, E>::notifyExporters() {
 	}
 }
 
-/**
- * NON USER API
- */
-template<typename E, typename EdgeContent, typename ProviderReceiver>
-void sendContent(EdgeExporter<E>& exporter, std::vector<boost::mpi::request>& requests, ProviderReceiver& provider, boost::ptr_vector<std::vector<EdgeContent> > &sendBuffer) {
-	std::map<int, std::vector<boost::shared_ptr<E> >*>& edgesToExport = exporter.getEdgesToExport();
-	boost::mpi::communicator* comm = RepastProcess::instance()->getCommunicator();
-
-	std::vector<EdgeContent>* edgeContent;
-
-	for (typename EdgeExporter<E>::EdgeMapIterator emIter = edgesToExport.begin(); emIter != edgesToExport.end(); ++emIter) {
-		// the process to send the edge to
-		int receiver = emIter->first;
-		std::vector<boost::shared_ptr<E> >* edges = emIter->second;
-	  sendBuffer.push_back(edgeContent = new std::vector<EdgeContent>);
-		// check end points and add any local nodes to the AgentExporter
-		for (typename std::vector<boost::shared_ptr<E> >::iterator iter = edges->begin(); iter != edges->end(); ++iter) {
-
-		  boost::shared_ptr<E> edge = *iter;
-			AgentId srcId = edge->source()->getId();
-			AgentId targetId = edge->target()->getId();
-			if (srcId.currentRank() == comm->rank()) {
-				RepastProcess::instance()->addExportedAgent(receiver, srcId);
-			} else if (srcId.currentRank() != receiver) {
-				// sending node that's foreign to both this P and the receiver
-				// so need to tell the P where the node resides to export it to
-				// the receiver.
-				exporter.addAgentExportRequest(receiver, srcId);
-			}
-
-			if (targetId.currentRank() == comm->rank()) {
-				RepastProcess::instance()->addExportedAgent(receiver, targetId);
-			} else if (targetId.currentRank() != receiver) {
-				// sending node that's foreign to both this P and the receiver
-				// so need to tell the P where the node resides to export it to
-				// the receiver.
-				exporter.addAgentExportRequest(receiver, targetId);
-			}
-
-			provider.provideEdgeContent(edge, *edgeContent);
-		}
-		requests.push_back(comm->isend(receiver, NET_EDGE_UPDATE, *edgeContent)); //*edges));
-	}
-}
-
-/**
- * Notifies other processes of any edges that have been created between
- * nodes on this process and imported nodes. The other process will then
- * create the complimentary edge. For example, if P1 creates an edge
- * between A and B where B resides on P2, then this method will notify P2
- * to create the incoming edge A->B on its copy of B. Any unknown agents
- * will be added to the context. For example, if P2 didn't have a reference
- * to A, then A will be added to P2's context.
- *
- * @param net the network in which to create the complementary edges or from which to send
- * complementary edges
- * @param context the context that contains the agents in the process
- * @param edgeManager creates edges from EdgeContent and creates EdgeContent from an edge and a context.
- * @param creator creates agents from AgentContent.
- *
- * @tparam Vertex the vertex (agent) type
- * @tparam Edge the edge type
- * @tparam AgentContent the serializable struct or class that describes the agent state. It must contain a getId()
- * method that returns the AgentId of the agent it describes.
- * @tparam EdgeContent the serializable struct or class that describes edge state. At the very least
- * EdgeContent must contain two public fields sourceContent and targetContent of type AgentContent. These represent
- * the source and target of the edge.
- * @tparam EdgeManager create edges from EdgeContent and provides EdgeContent given a context and an edge of type Edge. It must
- * implement void provideEdgeContent(constEdge* edge, std::vector<EdgeContent>& edgeContent) and
- * Edge* createEdge(repast::Context<Vertex>& context, EdgeContent& edge);
- * @tparam AgentCreator creates agents from AgentContent, implementing the following method
- * Vertex* createAgent(constAgentContent& content);
- */
-template<typename Vertex, typename Edge, typename AgentContent, typename EdgeContent, typename EdgeManager,
-		typename AgentCreator>
-void createComplementaryEdges(SharedNetwork<Vertex, Edge>* net, SharedContext<Vertex>& context,
-		EdgeManager& edgeManager, AgentCreator& creator) {
-  boost::mpi::communicator* world = RepastProcess::instance()->getCommunicator();
-
-	// created edges with foreign node, so push that edge to the foreign proc
-	// 1. gather the list of receivers procs that each proc wants to send to
-	// 2. Send that list to 0
-	// 3. If 0, sort the received lists such that a list of which process to expect
-	// edges from can be sent to each proc
-
-	std::vector<int> listToSend;
-	std::vector<int> list;
-
-	// gather a list of ints that the edgeExporter
-	// should send to.
-	net->edgeExporter.gatherReceivers(listToSend);
-
-	// tells each process who to expect edges from
-  SRManager exchanger(world);
-  exchanger.retrieveSources(listToSend, list);
-  listToSend.clear();
-
-
-	std::vector<boost::mpi::request> requests;
-
-
-	// sends edge content
-	boost::ptr_vector<std::vector<EdgeContent> >* sendBuffer = new boost::ptr_vector<std::vector<EdgeContent> >;
-	sendContent<Edge, EdgeContent, EdgeManager> (net->edgeExporter, requests, edgeManager, *sendBuffer);
-
-	std::vector<ItemReceipt<EdgeContent>*> receipts;
-	for (size_t i = 0; i < list.size(); i++) {
-		int sender = list[i];
-		ItemReceipt<EdgeContent>* receipt = new ItemReceipt<EdgeContent> (sender);
-		requests.push_back(world->irecv(sender, NET_EDGE_UPDATE, receipt->items));
-		receipts.push_back(receipt);
-	}
-	boost::mpi::wait_all(requests.begin(), requests.end());
-
-	// requests are now fulfilled, so we can clean up the edgeExporter
-	net->edgeExporter.cleanUp();
-	delete sendBuffer;
-
-	// process the received edges
-	for (size_t i = 0; i < receipts.size(); i++) {
-		ItemReceipt<EdgeContent>* receipt = receipts[i];
-		net->addSender(receipt->source_);
-
-		const size_t countOfItemsReceived = receipt->items.size();
-		for (size_t j = 0; j < countOfItemsReceived; j++) {
-			EdgeContent edge = receipt->items[j];
-			// Process edge:
-			// 1. If source or target exist in the network, then replace the
-			//       appropriate end points of the edge and delete the existing end point.
-			// 2. End point agents that don't exist in context need to be added to the context
-			// 3. Add the edge to the network.
-			AgentContent source = edge.sourceContent;
-			AgentContent target = edge.targetContent;
-
-			AgentId sourceId = source.getId();
-			AgentId targetId = target.getId();
-			if (!context.contains(sourceId)) {
-				// source was added to context, so this P didn't know about it
-				// so we need to add it to the agents to import
-				Vertex* out = creator.createAgent(source);
-				context.addAgent(out);
-				context.incrementProjRefCount(out->getId());
-				RepastProcess::instance()->addImportedAgent(sourceId);
-			}
-
-			if (!context.contains(targetId)) {
-				// target was added to context, so this P didn't know about it
-				// so we need to add it to the agents to import
-				Vertex* out = creator.createAgent(target);
-				context.addAgent(out);
-				context.incrementProjRefCount(out->getId());
-				RepastProcess::instance()->addImportedAgent(targetId);
-			}
-
-			boost::shared_ptr<Edge> newEdge(edgeManager.createEdge(context, edge));
-			net->graphAddEdge(newEdge);
-		}
-
-		delete receipt;
-		receipt = 0;
-	}
-	net->notifyExporters();
-}
 
 template<typename V, typename E>
 void SharedNetwork<V, E>::synchRemovedEdges() {
