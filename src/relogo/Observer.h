@@ -943,26 +943,6 @@ void Observer::synchronizeBuffers(Provider& provider, AgentsCreator& creator) {
 	}
 }
 
-template<typename LinkContent, typename LinkManager>
-void Observer::synchronizeLinks(const std::string& networkName, LinkManager& linkManager) {
-	SharedNetwork<RelogoAgent, RelogoLink>* net = findNetwork(networkName);
-	repast::synchEdges<RelogoAgent, RelogoLink, LinkContent, LinkManager>(net, linkManager);
-}
-
-template<typename LinkContent, typename LinkManager>
-void Observer::synchronizeDirectedLinks(LinkManager& linkManager) {
-	synchronizeLinks(DEFAULT_DIR_NET, linkManager);
-}
-
-template<typename LinkContent, typename LinkManager>
-void Observer::synchronizeUndirectedLinks(LinkManager& linkManager) {
-	synchronizeLinks(DEFAULT_UNDIR_NET, linkManager);
-}
-
-//template<typename Vertex, typename Edge, typename EdgeContent, typename EdgeManager>
-//void synchEdges(SharedNetwork<Vertex, Edge>* net, EdgeManager& edgeManager) {
-// synchEdges<ModelAgent, ModelEdge, EdgeContent, Model> (model->net, *model);
-
 template<typename AgentType>
 AgentType* Observer::who(const AgentId& id) {
 	RelogoAgent* agent = context.getAgent(id);

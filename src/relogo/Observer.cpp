@@ -331,10 +331,5 @@ void Observer::initSynchronize() {
 	}
 }
 
-void Observer::synchronizeRemovedLinks(const std::string& networkName) {
-	SharedNetwork<RelogoAgent, RelogoLink>* net = findNetwork(networkName);
-	net->synchRemovedEdges();
-}
-
 }
 }
