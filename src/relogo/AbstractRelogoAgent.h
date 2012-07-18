@@ -137,7 +137,7 @@ public:
 	 * @param out the turtles will be put in out
 	 */
 	template<typename AgentType>
-	void turtlesOn(AgentSet<AgentType> out) const;
+	void turtlesOn(AgentSet<AgentType>& out) const;
 
 	/**
 	 * Gets the turtles that are on this patch or if this is a Turtle
@@ -183,7 +183,7 @@ PatchType* AbstractRelogoAgent::patchAtHeadingAndDistance(float heading, double 
 }
 
 template<typename AgentType>
-void AbstractRelogoAgent::turtlesOn(AgentSet<AgentType> out) const {
+void AbstractRelogoAgent::turtlesOn(AgentSet<AgentType>& out) const {
 	_observer->turtlesOn(this, out);
 }
 
