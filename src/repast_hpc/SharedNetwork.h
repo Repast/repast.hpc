@@ -810,57 +810,56 @@ void SharedNetwork<V, E, Ec, EcM>::notifyExporters() {
 	}
 }
 
+template<typename V, typename E, typename Ec, typename EcM>
+void SharedNetwork<V, E, Ec, EcM>::synchRemovedEdges() {
+  std::vector<boost::mpi::request> requests;
+  // receive from senders
+  std::map<int, std::vector<std::pair<AgentId, AgentId> >*> contents;
 
-template<typename V, typename E>
-void SharedNetwork<V, E>::synchRemovedEdges() {
-	std::vector<boost::mpi::request> requests;
-	// receive from senders
-	std::map<int, std::vector<std::pair<AgentId, AgentId> >*> contents;
+  boost::mpi::communicator* world = RepastProcess::instance()->getCommunicator();
+  // receive edge content from those this P is importing from
+  for (std::map<int, int>::const_iterator iter = senders.begin(); iter != senders.end(); ++iter) {
+    int sender = iter->first;
+    std::vector<std::pair<AgentId, AgentId> >* content = new std::vector<std::pair<AgentId, AgentId> >();
+    requests.push_back(world->irecv(sender, NET_EDGE_REMOVE_SYNC, *content));
+    contents[sender] = content;
+  }
 
-	boost::mpi::communicator* world = RepastProcess::instance()->getCommunicator();
-	// receive edge content from those this P is importing from
-	for (std::map<int, int>::const_iterator iter = senders.begin(); iter != senders.end(); ++iter) {
-		int sender = iter->first;
-		std::vector<std::pair<AgentId, AgentId> >* content = new std::vector<std::pair<AgentId, AgentId> >();
-		requests.push_back(world->irecv(sender, NET_EDGE_REMOVE_SYNC, *content));
-		contents[sender] = content;
-	}
+  std::vector<std::pair<AgentId, AgentId> > empty;
+  std::map<int, std::vector<boost::shared_ptr<E> >*>& exports = edgeExporter.getExportedEdges();
+  for (typename std::map<int, std::vector<boost::shared_ptr<E> >*>::iterator iter = exports.begin(); iter != exports.end();) {
+    int sendTo = iter->first;
+    std::map<int, std::vector<std::pair<AgentId, AgentId> > >::iterator removeIter = removedEdges.find(sendTo);
+    if (removeIter == removedEdges.end()) {
+      requests.push_back(world->isend(sendTo, NET_EDGE_REMOVE_SYNC, empty));
+    } else {
+      requests.push_back(world->isend(sendTo, NET_EDGE_REMOVE_SYNC, removeIter->second));
+    }
 
-	std::vector<std::pair<AgentId, AgentId> > empty;
-	std::map<int, std::vector<boost::shared_ptr<E> >*>& exports = edgeExporter.getExportedEdges();
-	for (typename std::map<int, std::vector<boost::shared_ptr<E> >*>::iterator iter = exports.begin(); iter != exports.end();) {
-		int sendTo = iter->first;
-		std::map<int, std::vector<std::pair<AgentId, AgentId> > >::iterator removeIter = removedEdges.find(sendTo);
-		if (removeIter == removedEdges.end()) {
-			requests.push_back(world->isend(sendTo, NET_EDGE_REMOVE_SYNC, empty));
-		} else {
-			requests.push_back(world->isend(sendTo, NET_EDGE_REMOVE_SYNC, removeIter->second));
-		}
+    // delete any empty vectors from exportedEdges
+    // and remove them from the map. This eliminates the
+    // map key as a rank to send to
+    if (iter->second->size() == 0) {
+      delete iter->second;
+      exports.erase(iter++);
+    } else {
+      ++iter;
+    }
+  }
 
-		// delete any empty vectors from exportedEdges
-		// and remove them from the map. This eliminates the
-		// map key as a rank to send to
-		if (iter->second->size() == 0) {
-			delete iter->second;
-			exports.erase(iter++);
-		} else {
-			++iter;
-		}
-	}
+  boost::mpi::wait_all(requests.begin(), requests.end());
 
-	boost::mpi::wait_all(requests.begin(), requests.end());
-
-	for (std::map<int, std::vector<std::pair<AgentId, AgentId> >*>::iterator iter = contents.begin(); iter
-			!= contents.end(); ++iter) {
-		std::vector<std::pair<AgentId, AgentId> >* vec = iter->second;
-		for (size_t j = 0, k = vec->size(); j < k; ++j) {
-			std::pair<AgentId, AgentId>& ends = (*vec)[j];
-			Graph<V, E>::removeEdge(ends.first, ends.second);
-			removeSender(iter->first);
-		}
-		delete vec;
-	}
-	removedEdges.clear();
+  for (std::map<int, std::vector<std::pair<AgentId, AgentId> >*>::iterator iter = contents.begin(); iter
+      != contents.end(); ++iter) {
+    std::vector<std::pair<AgentId, AgentId> >* vec = iter->second;
+    for (size_t j = 0, k = vec->size(); j < k; ++j) {
+      std::pair<AgentId, AgentId>& ends = (*vec)[j];
+      Graph<V, E, Ec, EcM>::removeEdge(ends.first, ends.second);
+      removeSender(iter->first);
+    }
+    delete vec;
+  }
+  removedEdges.clear();
 }
 
 
