@@ -369,10 +369,10 @@ template<typename V, typename E, typename Ec, typename EcM>
 class SharedNetwork: public Graph<V, E, Ec, EcM> {
 private:
 
-  //  template<typename Vertex, typename Edge, typename EdgeContent, typename AgentContent, typename EdgeManager,
-  //      typename AgentAdder>
-  //  friend void createComplementaryEdges(SharedNetwork<Vertex, Edge, EdgeContent, EdgeManager>* net, SharedContext<Vertex>& context,
-  //      EdgeManager& edgeManager, AgentAdder&);
+//  template<typename Vertex, typename Edge, typename EdgeContent, typename AgentContent, typename EdgeManager,
+//      typename AgentAdder>
+//  friend void createComplementaryEdges(SharedNetwork<Vertex, Edge, EdgeContent, EdgeManager>* net, SharedContext<Vertex>& context,
+//      EdgeManager& edgeManager, AgentAdder&);
 
   template<typename Vertex, typename Edge, typename AgentContent, typename EdgeContent, typename EdgeManager, typename AgentCreator>
   friend void createComplementaryEdges(SharedNetwork<Vertex, Edge, EdgeContent, EdgeManager>* net, SharedContext<Vertex>& context,
