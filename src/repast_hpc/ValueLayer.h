@@ -44,6 +44,7 @@
 #include <boost/noncopyable.hpp>
 
 #include "Point.h"
+#include "GridDimensions.h"
 #include "matrix.h"
 
 #include <functional>

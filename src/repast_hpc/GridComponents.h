@@ -44,6 +44,7 @@
 #include <boost/unordered_map.hpp>
 #include <boost/shared_ptr.hpp>
 
+#include "GridDimensions.h"
 #include "Grid.h"
 #include "Random.h"
 
