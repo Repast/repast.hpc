@@ -46,6 +46,7 @@
 
 #include "Projection.h"
 #include "Point.h"
+#include "GridDimensions.h"
 #include "AgentId.h"
 
 namespace repast {
