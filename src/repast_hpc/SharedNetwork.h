@@ -614,6 +614,66 @@ void createComplementaryEdges(SharedNetwork<Vertex, Edge, EdgeContent, EdgeManag
 //  net->notifyExporters();
 }
 
+/**
+ * Synchronizes any edges that have been created as complementary edges. This only
+ * necessary if the edges have been deleted or their state has been changed in some way.
+ *
+ * @param net the network in which to create the complementary edges or from which to send
+ * complementary edges
+ * @param edgeManager updates edges from EdgeContent and creates EdgeContent from an edge and a context.
+ *
+ * @tparam Vertex the vertex (agent) type
+ * @tparam Edge the edge type
+ * @tparam EdgeContent the serializable struct or class that describes edge state.
+ * @tparam EdgeManager updates edges from EdgeContent and provides EdgeContent given a context and an edge of type Edge. It must
+ * implement void provideEdgeContent(const Edge* edge, std::vector<EdgeContent>& edgeContent) and
+ * void receiveEdgeContent(const EdgeContent& content);
+ */
+template<typename Vertex, typename Edge, typename EdgeContent, typename EdgeManager>
+void synchEdges(SharedNetwork<Vertex, Edge>* net, EdgeManager& edgeManager) {
+
+  std::map<int, std::vector<boost::shared_ptr<Edge> >* >& exports = net->edgeExporter.getExportedEdges();
+  boost::mpi::communicator* world = RepastProcess::instance()->getCommunicator();
+
+  std::vector<boost::mpi::request> requests;
+  std::vector<std::vector<EdgeContent>*> contents;
+
+  // receive edge content from those this P is importing from
+  for (std::map<int, int>::const_iterator iter = net->senders.begin(); iter != net->senders.end(); ++iter) {
+    int sender = iter->first;
+    std::vector<EdgeContent>* content = new std::vector<EdgeContent>();
+    requests.push_back(world->irecv(sender, NET_EDGE_SYNC, *content));
+    contents.push_back(content);
+  }
+
+  boost::ptr_vector<std::vector<EdgeContent> >* contentVector = new boost::ptr_vector<std::vector<EdgeContent> >;
+  std::vector<EdgeContent>* edgeContent;
+
+  // send updated edge content to those I'm exporting to
+  for (typename EdgeExporter<Edge>::EdgeMapIterator emIter = exports.begin(); emIter != exports.end(); ++emIter) {
+    // the process to send the edge to
+    int receiver = emIter->first;
+    std::vector<boost::shared_ptr<Edge> >* edges = emIter->second;
+    contentVector->push_back( edgeContent = new std::vector<EdgeContent>);
+    for (typename std::vector<boost::shared_ptr<Edge> >::iterator iter = edges->begin(); iter != edges->end(); ++iter) {
+      edgeManager.provideEdgeContent(*iter, *edgeContent);
+    }
+    requests.push_back(world->isend(receiver, NET_EDGE_SYNC, *edgeContent));
+  }
+
+  boost::mpi::wait_all(requests.begin(), requests.end());
+  delete contentVector;
+
+  for (int i = 0, n = contents.size(); i < n; i++) {
+    std::vector<EdgeContent>* content = contents[i];
+    for (typename std::vector<EdgeContent>::const_iterator iter = content->begin(); iter != content->end(); ++iter) {
+      edgeManager.receiveEdgeContent(*iter);
+    }
+    delete content;
+  }
+}
+
+/* Shared Network Definition */
 
 template<typename V, typename E, typename Ec, typename EcM>
 SharedNetwork<V, E, Ec, EcM>::SharedNetwork(std::string name, bool directed, EcM* edgeContentMgr) :
@@ -803,64 +863,7 @@ void SharedNetwork<V, E>::synchRemovedEdges() {
 	removedEdges.clear();
 }
 
-/**
- * Synchronizes any edges that have been created as complementary edges. This only
- * necessary if the edges have been deleted or their state has been changed in some way.
- *
- * @param net the network in which to create the complementary edges or from which to send
- * complementary edges
- * @param edgeManager updates edges from EdgeContent and creates EdgeContent from an edge and a context.
- *
- * @tparam Vertex the vertex (agent) type
- * @tparam Edge the edge type
- * @tparam EdgeContent the serializable struct or class that describes edge state.
- * @tparam EdgeManager updates edges from EdgeContent and provides EdgeContent given a context and an edge of type Edge. It must
- * implement void provideEdgeContent(const Edge* edge, std::vector<EdgeContent>& edgeContent) and
- * void receiveEdgeContent(const EdgeContent& content);
- */
-template<typename Vertex, typename Edge, typename EdgeContent, typename EdgeManager>
-void synchEdges(SharedNetwork<Vertex, Edge>* net, EdgeManager& edgeManager) {
 
-	std::map<int, std::vector<boost::shared_ptr<Edge> >* >& exports = net->edgeExporter.getExportedEdges();
-	boost::mpi::communicator* world = RepastProcess::instance()->getCommunicator();
-
-	std::vector<boost::mpi::request> requests;
-	std::vector<std::vector<EdgeContent>*> contents;
-
-	// receive edge content from those this P is importing from
-	for (std::map<int, int>::const_iterator iter = net->senders.begin(); iter != net->senders.end(); ++iter) {
-		int sender = iter->first;
-		std::vector<EdgeContent>* content = new std::vector<EdgeContent>();
-		requests.push_back(world->irecv(sender, NET_EDGE_SYNC, *content));
-		contents.push_back(content);
-	}
-
-	boost::ptr_vector<std::vector<EdgeContent> >* contentVector = new boost::ptr_vector<std::vector<EdgeContent> >;
-	std::vector<EdgeContent>* edgeContent;
-
-	// send updated edge content to those I'm exporting to
-	for (typename EdgeExporter<Edge>::EdgeMapIterator emIter = exports.begin(); emIter != exports.end(); ++emIter) {
-		// the process to send the edge to
-		int receiver = emIter->first;
-		std::vector<boost::shared_ptr<Edge> >* edges = emIter->second;
-		contentVector->push_back( edgeContent = new std::vector<EdgeContent>);
-		for (typename std::vector<boost::shared_ptr<Edge> >::iterator iter = edges->begin(); iter != edges->end(); ++iter) {
-			edgeManager.provideEdgeContent(*iter, *edgeContent);
-		}
-		requests.push_back(world->isend(receiver, NET_EDGE_SYNC, *edgeContent));
-	}
-
-	boost::mpi::wait_all(requests.begin(), requests.end());
-	delete contentVector;
-
-	for (int i = 0, n = contents.size(); i < n; i++) {
-		std::vector<EdgeContent>* content = contents[i];
-		for (typename std::vector<EdgeContent>::const_iterator iter = content->begin(); iter != content->end(); ++iter) {
-			edgeManager.receiveEdgeContent(*iter);
-		}
-		delete content;
-	}
-}
 
 }
 
