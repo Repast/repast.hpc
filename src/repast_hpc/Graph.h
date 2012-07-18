@@ -104,7 +104,7 @@ public:
 	 * @param directed whether or not the created Graph is directed
 	 */
   Graph(std::string name, bool directed, EcM* edgeContentMgr) :
-    Projection<V> (name), edgeCount_(0), isDirected(directed), edgeContentManager(edgeContentMgr), keepsAgents(true), sendsSecondaryAgents(true) {
+    Projection<V> (name), edgeCount_(0), isDirected(directed), edgeContentManager(edgeContentMgr) {
   }
 
 	/**
