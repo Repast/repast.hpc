@@ -525,93 +525,93 @@ void sendContent(EdgeExporter<E>& exporter, std::vector<boost::mpi::request>& re
  */
 template<typename Vertex, typename Edge, typename AgentContent, typename EdgeContent, typename EdgeManager,
     typename AgentCreator>
-void createComplementaryEdges(SharedNetwork<Vertex, Edge>* net, SharedContext<Vertex>& context,
+void createComplementaryEdges(SharedNetwork<Vertex, Edge, EdgeContent, EdgeManager>* net, SharedContext<Vertex>& context,
     EdgeManager& edgeManager, AgentCreator& creator) {
-  boost::mpi::communicator* world = RepastProcess::instance()->getCommunicator();
-
-  // created edges with foreign node, so push that edge to the foreign proc
-  // 1. gather the list of receivers procs that each proc wants to send to
-  // 2. Send that list to 0
-  // 3. If 0, sort the received lists such that a list of which process to expect
-  // edges from can be sent to each proc
-
-  std::vector<int> listToSend;
-  std::vector<int> list;
-
-  // gather a list of ints that the edgeExporter
-  // should send to.
-  net->edgeExporter.gatherReceivers(listToSend);
-
-  // tells each process who to expect edges from
-  SRManager exchanger(world);
-  exchanger.retrieveSources(listToSend, list);
-  listToSend.clear();
-
-
-  std::vector<boost::mpi::request> requests;
-
-
-  // sends edge content
-  boost::ptr_vector<std::vector<EdgeContent> >* sendBuffer = new boost::ptr_vector<std::vector<EdgeContent> >;
-  sendContent<Edge, EdgeContent, EdgeManager> (net->edgeExporter, requests, edgeManager, *sendBuffer);
-
-  std::vector<ItemReceipt<EdgeContent>*> receipts;
-  for (size_t i = 0; i < list.size(); i++) {
-    int sender = list[i];
-    ItemReceipt<EdgeContent>* receipt = new ItemReceipt<EdgeContent> (sender);
-    requests.push_back(world->irecv(sender, NET_EDGE_UPDATE, receipt->items));
-    receipts.push_back(receipt);
-  }
-  boost::mpi::wait_all(requests.begin(), requests.end());
-
-  // requests are now fulfilled, so we can clean up the edgeExporter
-  net->edgeExporter.cleanUp();
-  delete sendBuffer;
-
-  // process the received edges
-  for (size_t i = 0; i < receipts.size(); i++) {
-    ItemReceipt<EdgeContent>* receipt = receipts[i];
-    net->addSender(receipt->source_);
-
-    const size_t countOfItemsReceived = receipt->items.size();
-    for (size_t j = 0; j < countOfItemsReceived; j++) {
-      EdgeContent edge = receipt->items[j];
-      // Process edge:
-      // 1. If source or target exist in the network, then replace the
-      //       appropriate end points of the edge and delete the existing end point.
-      // 2. End point agents that don't exist in context need to be added to the context
-      // 3. Add the edge to the network.
-      AgentContent source = edge.sourceContent;
-      AgentContent target = edge.targetContent;
-
-      AgentId sourceId = source.getId();
-      AgentId targetId = target.getId();
-      if (!context.contains(sourceId)) {
-        // source was added to context, so this P didn't know about it
-        // so we need to add it to the agents to import
-        Vertex* out = creator.createAgent(source);
-        context.addAgent(out);
-        context.incrementProjRefCount(out->getId());
-        RepastProcess::instance()->addImportedAgent(sourceId);
-      }
-
-      if (!context.contains(targetId)) {
-        // target was added to context, so this P didn't know about it
-        // so we need to add it to the agents to import
-        Vertex* out = creator.createAgent(target);
-        context.addAgent(out);
-        context.incrementProjRefCount(out->getId());
-        RepastProcess::instance()->addImportedAgent(targetId);
-      }
-
-      boost::shared_ptr<Edge> newEdge(edgeManager.createEdge(context, edge));
-      net->graphAddEdge(newEdge);
-    }
-
-    delete receipt;
-    receipt = 0;
-  }
-  net->notifyExporters();
+//  boost::mpi::communicator* world = RepastProcess::instance()->getCommunicator();
+//
+//  // created edges with foreign node, so push that edge to the foreign proc
+//  // 1. gather the list of receivers procs that each proc wants to send to
+//  // 2. Send that list to 0
+//  // 3. If 0, sort the received lists such that a list of which process to expect
+//  // edges from can be sent to each proc
+//
+//  std::vector<int> listToSend;
+//  std::vector<int> list;
+//
+//  // gather a list of ints that the edgeExporter
+//  // should send to.
+//  net->edgeExporter.gatherReceivers(listToSend);
+//
+//  // tells each process who to expect edges from
+//  SRManager exchanger(world);
+//  exchanger.retrieveSources(listToSend, list);
+//  listToSend.clear();
+//
+//
+//  std::vector<boost::mpi::request> requests;
+//
+//
+//  // sends edge content
+//  boost::ptr_vector<std::vector<EdgeContent> >* sendBuffer = new boost::ptr_vector<std::vector<EdgeContent> >;
+//  sendContent<Edge, EdgeContent, EdgeManager> (net->edgeExporter, requests, edgeManager, *sendBuffer);
+//
+//  std::vector<ItemReceipt<EdgeContent>*> receipts;
+//  for (size_t i = 0; i < list.size(); i++) {
+//    int sender = list[i];
+//    ItemReceipt<EdgeContent>* receipt = new ItemReceipt<EdgeContent> (sender);
+//    requests.push_back(world->irecv(sender, NET_EDGE_UPDATE, receipt->items));
+//    receipts.push_back(receipt);
+//  }
+//  boost::mpi::wait_all(requests.begin(), requests.end());
+//
+//  // requests are now fulfilled, so we can clean up the edgeExporter
+//  net->edgeExporter.cleanUp();
+//  delete sendBuffer;
+//
+//  // process the received edges
+//  for (size_t i = 0; i < receipts.size(); i++) {
+//    ItemReceipt<EdgeContent>* receipt = receipts[i];
+//    net->addSender(receipt->source_);
+//
+//    const size_t countOfItemsReceived = receipt->items.size();
+//    for (size_t j = 0; j < countOfItemsReceived; j++) {
+//      EdgeContent edge = receipt->items[j];
+//      // Process edge:
+//      // 1. If source or target exist in the network, then replace the
+//      //       appropriate end points of the edge and delete the existing end point.
+//      // 2. End point agents that don't exist in context need to be added to the context
+//      // 3. Add the edge to the network.
+////      AgentContent source = edge.sourceContent;
+////      AgentContent target = edge.targetContent;
+////
+////      AgentId sourceId = source.getId();
+////      AgentId targetId = target.getId();
+////      if (!context.contains(sourceId)) {
+////        // source was added to context, so this P didn't know about it
+////        // so we need to add it to the agents to import
+////        Vertex* out = creator.createAgent(source);
+////        context.addAgent(out);
+////        context.incrementProjRefCount(out->getId());
+////        RepastProcess::instance()->addImportedAgent(sourceId);
+////      }
+////
+////      if (!context.contains(targetId)) {
+////        // target was added to context, so this P didn't know about it
+////        // so we need to add it to the agents to import
+////        Vertex* out = creator.createAgent(target);
+////        context.addAgent(out);
+////        context.incrementProjRefCount(out->getId());
+////        RepastProcess::instance()->addImportedAgent(targetId);
+////      }
+////
+////      boost::shared_ptr<Edge> newEdge(edgeManager.createEdge(context, edge));
+////      net->graphAddEdge(newEdge);
+//    }
+//
+//    delete receipt;
+//    receipt = 0;
+//  }
+//  net->notifyExporters();
 }
 
 
