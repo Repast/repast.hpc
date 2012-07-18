@@ -62,7 +62,7 @@ namespace repast {
  * Graph / Network implementation where agents are vertices in the graph.
  *
  * @tparam V the type agents in the graph. This type should extend repast::Agent
- * @tparam E the edge type of the graph. This type should extent
+ * @tparam E the edge type of the graph. This type should extend
  * repast::RepastEdge.
  *
  */
@@ -86,6 +86,7 @@ protected:
 	virtual void doAddEdge(boost::shared_ptr<E> edge);
 
 public:
+
 
 	/**
 	 * An iterator over the agents that are the vertices in this Graph.
