@@ -149,6 +149,7 @@ void RepastProcess::initiateAgentRequest(AgentRequest& request
 #endif
 
   int* countsOfRequests = new int[worldSize_];
+  for(int i = 0; i < worldSize_; ++i) countsOfRequests[i] = 0; // OOPS! This was not included in version 1.0.1 final
   int maxNumRequests = 0;
 
   const vector<AgentId>& requestedAgents = request.requestedAgents();
