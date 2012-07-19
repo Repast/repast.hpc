@@ -88,8 +88,10 @@ private:
 	typedef typename AgentMap::const_iterator AgentMapConstIterator;
 
 	AgentMap agents;
-	std::vector<Projection<T> *> projections;
 	std::map<std::string, BaseValueLayer*> valueLayers;
+
+protected:
+  std::vector<Projection<T> *> projections;
 
 public:
 
@@ -736,6 +738,77 @@ public:
   void selectAgents(int count, std::vector<T*>& selectedAgents, int type, filterStruct& filter, bool remove = false, int popSize = -1);
 	
 
+
+  // BETA
+  /**
+   * Gets the projection information for all projections in this context, for all agents whose IDs are listed
+   * in the AgentRequest.
+   *
+   * The general sense of this method can be easily understood: given a list of agents, get the projection
+   * information for all of those agents. But there are some subtleties that should be kept in mind.
+   *
+   * "The projection information for an agent" is misleading. In fact, the projection information that
+   * is needed can vary depending on the context and on the kind of projection.
+   *
+   * Generally speaking, spaces return only one kind projection information: coordinate locations for
+   * the agent specified. This is the simplest case.
+   *
+   * The more complicated case is given by graphs. A graph projection can return different sets of information
+   * depending on how that information will have to be used. The basic issue is that a graph projection
+   * returns sets of edges, and edges must be connected to other agents; this means that a mechanism
+   * must be in place for ensuring that the projection info that arrives can be used, which means that
+   * for a given 'ego' agent, all 'alter' agents that are connected to it by edges must also be on the
+   * receiving process. (Note: Repast HPC 1.0 versions sent all of the alter agents' content along with
+   * the edge send; this version does not do this, partly to minimize the amount of information being
+   * packaged and sent but also because the alternative method used is integrated with the normal
+   * bookkeeping for sharing agent information across processes (AgentRequests).) In different
+   * circumstances, different assumptions can be made about what information will be available on the
+   * receiving process. Note that the coordinate information is generally referred to as 'Primary'
+   * information, while edge information is 'secondary'; in a third category ('secondary IDs') are the IDs of the
+   * alter agents, which can be packaged separately.
+   *
+   * The impact of this is that this function is generally called in the following ways:
+   *
+   * 1)   When requesting agents: in this case, a copy of the agent will be sent from one
+   * process to another. No secondary information will be sent at all. This is because it is
+   * assumed that if an agent participated in a graph on the receiving process, it would already
+   * be present on that process and would not be being requested.
+   *
+   * 2)   When synchronizing Projection Information: in this case, some secondary information
+   * (edges) is needed: the edges that connect the specified ego agent with edges on the receiving
+   * process. No secondary IDs are needed, because the only edges being sent are those that connect
+   * to agents on the receiving process, which will be assumed to already be available on that
+   * process.
+   *
+   * 3)   When synchronizing Agent Status (moving agents from process to process): in this case,
+   * the full collection of projection information is needed, including all of the edges in which
+   * the specified agent participates and all of the secondary IDs. (The secondary
+   * IDs of agents that are already on the receiving process can be omitted, at least theoretically.)
+   * This allows the full reconstruction of Projection Information on the receiving process.
+   *
+   * @param req List of IDs for agents whose information is requested
+   * @param map A map into which the projection information will be placed. Key values represent the names
+   * of the projections in this context.
+   * @param secondaryInfo true if the 'secondary' projection info must also be returned
+   * @param secondaryIds A set of IDs for agents who are referred to by the projection informaton
+   * being returned (may be null)
+   * @param destProc The Process that will be receiving this information (the information sent may
+   * be customized depending on the destination process). If not specified a larger set of information
+   * will be sent.
+   */
+  void getProjectionInfo(AgentRequest req, std::map<std::string, std::vector<repast::ProjectionInfoPacket*> >& map,
+      bool secondaryInfo = false, std::set<AgentId>* secondaryIds = 0, int destProc = -1);
+
+  /**
+   * Sets the projection information as specified.
+   *
+   * @param projInfo map where keys represent projections in this context and the values represent collections
+   * of projection information content that will be used to specify the relationships among the agents.
+   */
+  void setProjectionInfo(std::map<std::string, std::vector<repast::ProjectionInfoPacket*> >& projInfo);
+
+  void cleanProjectionInfo(std::set<AgentId>& agentsToKeep);
+
 };
 
 
@@ -1007,9 +1080,33 @@ void Context<T>::selectAgents(int count, std::vector<T*>& selectedAgents, int ty
 	if(popSize <= -1) selectNElementsInRandomOrder(byTypeFilteredBegin(type, filter), byTypeFilteredEnd(type, filter), count, selectedAgents, remove);
 	else              selectNElementsInRandomOrder(byTypeFilteredBegin(type, filter), popSize, count, selectedAgents, remove);
 }
-	
-	
-	
+
+
+// Beta
+
+template<typename T>
+void Context<T>::getProjectionInfo(AgentRequest req, std::map<std::string, std::vector<repast::ProjectionInfoPacket*> >& map,
+    bool secondaryInfo, std::set<AgentId>* secondaryIds, int destProc){
+  std::vector<AgentId> ids = req.requestedAgents();
+  for(typename std::vector<Projection<T> *>::iterator iter = projections.begin(), iterEnd = projections.end(); iter != iterEnd; iter++){
+    std::string projName = (*iter)->name();
+    map[projName] = std::vector<repast::ProjectionInfoPacket*>(); // New, then inserted into collection
+    (*iter)->getProjectionInfo(ids, map[projName], secondaryInfo, secondaryIds, destProc);
+  }
+}
+
+template<typename T>
+void Context<T>::setProjectionInfo(std::map<std::string, std::vector<repast::ProjectionInfoPacket*> >& projInfo){
+  for(std::map<std::string, std::vector<repast::ProjectionInfoPacket*> >::iterator iter = projInfo.begin(), iterEnd = projInfo.end(); iter != iterEnd; iter++)
+      getProjection(iter->first)->updateProjectionInfo(iter->second, this);
+}
+
+template<typename T>
+void Context<T>::cleanProjectionInfo(std::set<AgentId>& agentsToKeep){
+  for(typename std::vector<Projection<T> *>::iterator iter = projections.begin(), iterEnd = projections.end(); iter != iterEnd; iter++){
+      (*iter)->cleanProjectionInfo(agentsToKeep);
+  }
+}
 
 }
 #endif /* CONTEXT_H_ */
