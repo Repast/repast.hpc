@@ -160,63 +160,66 @@ const RelogoSpaceType* Observer::space() {
 }
 
 bool Observer::spacePtToGridPt(std::vector<double>& spacePt, std::vector<int>& gridPt) {
-	bool switchSpace = false;
-	int px = doubleCoordToInt(spacePt[0]);
-	int py = doubleCoordToInt(spacePt[1]);
-	gridPt[0] = px;
-	gridPt[1] = py;
-	bool gridContains = grid()->dimensions().contains(gridPt);
-	bool spaceContains = space()->dimensions().contains(spacePt);
-	if (spaceContains) {
-		if (!gridContains) {
-			switchSpace = true;
-			spacePt[0] = px;
-			spacePt[1] = py;
-		}
-	} else {
-		if (gridContains) {
-			switchSpace = true;
-			spacePt[0] = px;
-			spacePt[1] = py;
-			/*
-			 // move out of the grid as well then.
-			 double x = spacePt[0];
-			 double y = spacePt[1];
-			 if (x < minPxcor()) {
-			 gridPt[0] = (int) floor(x);
-			 } else if (x > maxPxcor()) {
-			 gridPt[0] = (int) ceil(x);
-			 }
-
-			 if (y < minPycor()) {
-			 gridPt[1] = (int) floor(y);
-			 } else if (y > maxPycor()) {
-			 gridPt[1] = (int) ceil(y);
-			 }
-			 */
-
-		} else {
-			// outside of both need to make sure
-			// that the points refer to the same neighbor
-			double x = spacePt[0];
-			double y = spacePt[1];
-			if ((x > maxPxcor() && x < maxPxcor() + 1) || (x < minPxcor() && x > minPxcor() - 1)) {
-				// x is in no-man's land but px must be
-				// past that
-				switchSpace = true;
-				spacePt[0] = px;
-			}
-
-			if ((y > maxPycor() && y < maxPycor() + 1) || (y < minPycor() && y > minPycor() - 1)) {
-				// y is in no-man's land but py must be
-				// past that
-				switchSpace = true;
-				spacePt[1] = py;
-			}
-		}
-	}
-
-	return switchSpace;
+  gridPt[0] = doubleCoordToInt(spacePt[0]);
+  gridPt[1] = doubleCoordToInt(spacePt[1]);
+  return false;
+//	bool switchSpace = false;
+//	int px = doubleCoordToInt(spacePt[0]);
+//	int py = doubleCoordToInt(spacePt[1]);
+//	gridPt[0] = px;
+//	gridPt[1] = py;
+//	bool gridContains = grid()->dimensions().contains(gridPt);
+//	bool spaceContains = space()->dimensions().contains(spacePt);
+//	if (spaceContains) {
+//		if (!gridContains) {
+//			switchSpace = true;
+//			spacePt[0] = px;
+//			spacePt[1] = py;
+//		}
+//	} else {
+//		if (gridContains) {
+//			switchSpace = true;
+//			spacePt[0] = px;
+//			spacePt[1] = py;
+//			/*
+//			 // move out of the grid as well then.
+//			 double x = spacePt[0];
+//			 double y = spacePt[1];
+//			 if (x < minPxcor()) {
+//			 gridPt[0] = (int) floor(x);
+//			 } else if (x > maxPxcor()) {
+//			 gridPt[0] = (int) ceil(x);
+//			 }
+//
+//			 if (y < minPycor()) {
+//			 gridPt[1] = (int) floor(y);
+//			 } else if (y > maxPycor()) {
+//			 gridPt[1] = (int) ceil(y);
+//			 }
+//			 */
+//
+//		} else {
+//			// outside of both need to make sure
+//			// that the points refer to the same neighbor
+//			double x = spacePt[0];
+//			double y = spacePt[1];
+//			if ((x > maxPxcor() && x < maxPxcor() + 1) || (x < minPxcor() && x > minPxcor() - 1)) {
+//				// x is in no-man's land but px must be
+//				// past that
+//				switchSpace = true;
+//				spacePt[0] = px;
+//			}
+//
+//			if ((y > maxPycor() && y < maxPycor() + 1) || (y < minPycor() && y > minPycor() - 1)) {
+//				// y is in no-man's land but py must be
+//				// past that
+//				switchSpace = true;
+//				spacePt[1] = py;
+//			}
+//		}
+//	}
+//
+//	return switchSpace;
 }
 
 Observer::NetworkType* Observer::findNetwork(const std::string& name) {
