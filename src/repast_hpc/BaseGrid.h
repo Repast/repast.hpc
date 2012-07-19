@@ -475,8 +475,7 @@ void BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::getDisplacement(co
       throw Repast_Error_8(pt1.dimensionCount(), pt2.dimensionCount()); // Points do not have same number of dimensions
 
 	for (int i = 0, n = pt1.dimensionCount(); i < n; i++) {
-//		GPType diff = pt1.getCoordinate(i) - pt2.getCoordinate(i);  // Original, up to release 1.0b
-		GPType diff = pt2.getCoordinate(i) - pt1.getCoordinate(i);    // Corrected
+		GPType diff = pt2.getCoordinate(i) - pt1.getCoordinate(i);
 		if (gpTransformer.isPeriodic()) {
 			int dim = dimensions_.extents(i);
 			GPType absDiff = abs(diff);
