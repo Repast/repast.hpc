@@ -189,7 +189,7 @@ void SharedDiscreteSpace<T, GPTransformer, Adder>::synchBuffer(SharedContext<T>&
 				obj->getId().currentRank(rank);
 				AgentId id = obj->getId();
 				SharedBaseGridType::buffered.push_back(id);
-				if (!context.addAgent(obj)) {
+				if (context.addAgent(obj) != obj) {
 					// already exists in the context so delete this one.
 					// this will occur if an obj is in the buffer of > 1
 					// spaces in the same context
