@@ -47,6 +47,7 @@
 #include "repast_hpc/Properties.h"
 #include "repast_hpc/Random.h"
 #include "repast_hpc/DataSet.h"
+#include "repast_hpc/RepastProcess.h"
 
 #include "AgentSet.h"
 #include "RelogoAgent.h"
@@ -545,26 +546,8 @@ public:
 	 * RelogoAgent* createAgent(TurtleContent&).
 	 *
 	 */
-	template<typename TurtleContent, typename Provider, typename AgentCreator>
-	void synchronizeTurtleStatus(Provider& provider, AgentCreator& creator);
-
-	/**
-	 * Synchronizes the grid buffers between processes by copying turtles and patches from
-	 * one process into its neighboring processes.
-	 *
-	 * @param provider a class that provides AgentContent for a Patch or Turtle.
-	 * @param creator a class that creates a Patches and Turtles when given
-	 * AgentContent.
-	 *
-	 * @tparam TurtleContent the serializable struct or class that describes the
-	 * state of turtles and patches
-	 * @tparam Provider a class that provides AgentContent for a Patch or Turtle,
-	 * implementing void provideContent(RelogoAgent* agent, std::vector<AgentContent>& out)
-	 * @tparam AgentsCreator a class that creates Patches or Turtles given AgentContent, implementing
-	 * void createAgents(std::vector<AgentContent>& contents, std::vector<RelogoAgent*>& out)
-	 */
-	template<typename AgentContent, typename Provider, typename AgentsCreator>
-	void synchronizeBuffers(Provider& provider, AgentsCreator& creator);
+  template<typename TurtleContent, typename Provider, typename Updater, typename AgentCreator>
+  void synchronizeTurtleStatus(Provider& provider, Updater& updater, AgentCreator& creator, RepastProcess::EXCHANGE_PATTERN exchangePattern = RepastProcess::POLL);
 
 	/**
 	 * Synchronizes the state of any Turtles that are shared across processes.
@@ -583,18 +566,15 @@ public:
 	 * the TurtleContent, implementing void updateAgent(const TurtleContent&).
 	 */
 	template<typename TurtleContent, typename Provider, typename Updater>
-	void synchronizeTurtleState(Provider& provider, Updater& updater);
+	void synchronizeTurtleStates(Provider& provider, Updater& updater);
 
-	/**
-	 * Synchronizes the processes to account for turtles moving across processes.
-	 */
-	void synchronizeTurtleCrossPMovement();
+  template<typename TurtleContent, typename Provider, typename Updater, typename AgentCreator>
+  void synchronize(Provider& provider, Updater& updater, AgentCreator& creator, RepastProcess::EXCHANGE_PATTERN exchangePattern = RepastProcess::POLL
+#ifdef SHARE_AGENTS_BY_SET
+    , bool declareNoAgentsKeptOnAnyProcess = false
+#endif
+    );
 
-	/**
-	 * Initializes the synchronization of observers across processes. This
-	 * should be called before any other synchronization.
-	 */
-	void initSynchronize();
 
 protected:
 	typedef SharedNetwork<RelogoAgent, RelogoLink, RepastEdgeContent<RelogoAgent>, RepastEdgeContentManager<RelogoAgent> > NetworkType;
@@ -836,42 +816,34 @@ void Observer::inRadius(const Point<double>& center, AgentSet<RelogoAgent>& inSe
 }
 
 template<typename TurtleContent, typename Provider, typename Updater>
-void Observer::synchronizeTurtleState(Provider& provider, Updater& updater) {
-	repast::syncAgents<TurtleContent>(provider, updater);
+void Observer::synchronizeTurtleStates(Provider& provider, Updater& updater) {
+	repast::RepastProcess::instance()->synchronizeAgentStates<TurtleContent>(provider, updater);
 }
 
-template<typename TurtleContent, typename Provider, typename AgentCreator>
-void Observer::synchronizeTurtleStatus(Provider& provider, AgentCreator& creator) {
-	RepastProcess::instance()->syncAgentStatus<RelogoAgent, TurtleContent> (context, provider, creator);
+template<typename TurtleContent, typename Provider, typename Updater, typename AgentCreator>
+void Observer::synchronizeTurtleStatus(Provider& provider, Updater& updater, AgentCreator& creator, RepastProcess::EXCHANGE_PATTERN exchangePattern) {
+  repast::RepastProcess::instance()->synchronizeAgentStatus<RelogoAgent, TurtleContent, Provider, Updater, AgentCreator>(context, provider, updater, creator, exchangePattern);
 }
 
-template<typename AgentContent, typename Provider, typename AgentsCreator>
-void Observer::synchronizeBuffers(Provider& provider, AgentsCreator& creator) {
-	RelogoGridType* aGrid = const_cast<RelogoGridType*> (grid());
-	if (aGrid->isPeriodic()) {
-		((relogo::ToroidalDiscreteSpace*) aGrid)->initSynchBuffer(context);
-	} else {
-		((relogo::BoundedDiscreteSpace*) aGrid)->initSynchBuffer(context);
-	}
+template<typename TurtleContent, typename Provider, typename Updater, typename AgentCreator>
+void Observer::synchronize(Provider& provider, Updater& updater, AgentCreator& creator, RepastProcess::EXCHANGE_PATTERN exchangePattern
+#ifdef SHARE_AGENTS_BY_SET
+    , bool declareNoAgentsKeptOnAnyProcess
+#endif
+    ){
 
-	RelogoSpaceType* aSpace = const_cast<RelogoSpaceType*> (space());
-	if (aSpace->isPeriodic()) {
-		((relogo::ToroidalContinuousSpace*) aSpace)->initSynchBuffer(context);
-	} else {
-		((relogo::BoundedContinuousSpace*) aSpace)->initSynchBuffer(context);
-	}
+  context.getProjection(SPACE_NAME)->balance();
 
-	if (aGrid->isPeriodic()) {
-		((relogo::ToroidalDiscreteSpace*) aGrid)->synchBuffer<AgentContent> (context, provider, creator);
-	} else {
-		((relogo::BoundedDiscreteSpace*) aGrid)->synchBuffer<AgentContent> (context, provider, creator);
-	}
+  synchronizeTurtleStatus<TurtleContent>(provider, updater, creator, exchangePattern);
 
-	if (aSpace->isPeriodic()) {
-		((relogo::ToroidalContinuousSpace*) aSpace)->synchBuffer<AgentContent> (context, provider, creator);
-	} else {
-		((relogo::BoundedContinuousSpace*) aSpace)->synchBuffer<AgentContent> (context, provider, creator);
-	}
+#ifdef SHARE_AGENTS_BY_SET
+  repast::RepastProcess::instance()->synchronizeProjectionInfo<RelogoAgent, TurtleContent, Provider, AgentCreator, Updater>(context, provider, updater, creator, exchangePattern, declareNoAgentsKeptOnAnyProcess);
+#else
+  repast::RepastProcess::instance()->synchronizeProjectionInfo<RelogoAgent, TurtleContent, Provider, AgentCreator, Updater>(context, provider, updater, creator, exchangePattern);
+#endif
+
+
+//  synchronizeTurtleStates<TurtleContent>(provider, updater);
 }
 
 
