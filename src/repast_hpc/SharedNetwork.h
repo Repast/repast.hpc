@@ -448,6 +448,10 @@ public:
 	 * across processes.
 	 */
 	void synchRemovedEdges();
+
+  virtual bool isMaster(E* e){
+    return e->source()->getId().currentRank() == rank;
+  }
 };
 
 /**
