@@ -104,16 +104,22 @@ public:
 	virtual ~Context();
 
 	/**
-	 * Adds the agent to the context. Returns true if the
-	 * agent is added, or false if an agent with the same
-	 * id is already in the context.
+	 * Adds the agent to the context. Performs a check to ensure
+	 * that no agent with the same ID (presumably the 'same' agent)
+	 * has previously been added. If a matching ID is found, the
+	 * new agent is not added, and the address of the pre-existing
+	 * agent is returned. If no match is found, the agent is added
+	 * and the return value is the same as the value passed
 	 *
 	 * @param agent the agent to add
 	 *
-	 * @return true if the agent is successfully dded, or false if an agent with the same
-	 * id is already in the context.
+	 * @return the address of the agent in the context; will be the
+	 * same as the address passed if the agent was successfully added,
+	 * but if there was already an agent with the same ID the address
+	 * returned will be that of the pre-existing agent, which is
+	 * not replaced.
 	 */
-	bool addAgent(T* agent);
+	T* addAgent(T* agent);
 
 	/**
 	 * Adds the specified projection to this context. All the agents in this
@@ -734,8 +740,6 @@ public:
 
 
 
-
-
 template<typename T>
 Context<T>::Context() {
 }
@@ -803,10 +807,10 @@ void Context<T>::getRandomAgents(const int count, std::vector<T*>& agents) {
 }
 
 template<typename T>
-bool Context<T>::addAgent(T* agent) {
+T* Context<T>::addAgent(T* agent) {
 	const AgentId& id = agent->getId();
-	if (agents.find(id) != agents.end())
-		return false;
+	typename AgentMap::iterator findIter = agents.find(id);
+	if (findIter != agents.end())    return &*(findIter->second);
 
 	boost::shared_ptr<T> ptr(agent);
 	agents[id] = ptr;
@@ -816,7 +820,7 @@ bool Context<T>::addAgent(T* agent) {
 		proj->addAgent(ptr);
 	}
 
-	return true;
+	return agent;
 }
 
 template<typename T>
