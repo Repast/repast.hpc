@@ -57,14 +57,9 @@ namespace repast {
 template<typename T>
 struct IsLocalAgent {
 	int rank;
-	IsLocalAgent() {
-		boost::mpi::communicator world;
-		rank = world.rank();
-	}
+	IsLocalAgent(int rankInCommunicator): rank(rankInCommunicator){ 	}
 
 	bool operator()(const boost::shared_ptr<T>& ptr) {
-		//std::cout << "id: " << std::endl;
-		//std::cout <<  "\t" << ptr->getId() << std::endl;
 		return ptr->getId().currentRank() == rank;
 	}
 
@@ -77,38 +72,32 @@ template<typename T>
 struct AgentStateFilter{
 	int rank;
 	bool local;
-	AgentStateFilter(){
-		boost::mpi::communicator world;
-		rank = world.rank();
+	AgentStateFilter(int rankInCommunicator): rank(rankInCommunicator){
 		local = true;
 	}
-	AgentStateFilter(bool localFlag){
-		boost::mpi::communicator world;
-		rank = world.rank();
-		local = localFlag;
-	}
+	AgentStateFilter(bool localFlag, int rankInCommunicator): local(localFlag), rank(rankInCommunicator){	}
 		
 	bool operator()(const boost::shared_ptr<T>& ptr) {
 		return (local ? ptr->getId().currentRank() == rank : ptr->getId().currentRank() != rank);
 	}
 };
-
-/*
- * An instance of the AgentStateFilter that filters for local agents
- */
-template<typename T>
-struct LocalFilter: public AgentStateFilter<T>{
-	LocalFilter(): AgentStateFilter<T>(true){}
-};
-
-/*
- * An instance of the AgentStateFilter that filters for nonlocal agents
- */
-template<typename T>
-struct NonLocalFilter: public AgentStateFilter<T>{
-	NonLocalFilter(): AgentStateFilter<T>(false){}
-};
-	
+//
+///*
+// * An instance of the AgentStateFilter that filters for local agents
+// */
+//template<typename T>
+//struct LocalFilter: public AgentStateFilter<T>{
+//	LocalFilter(int rank): AgentStateFilter<T>(true, rank){}
+//};
+//
+///*
+// * An instance of the AgentStateFilter that filters for nonlocal agents
+// */
+//template<typename T>
+//struct NonLocalFilter: public AgentStateFilter<T>{
+//	NonLocalFilter(int rank): AgentStateFilter<T>(false, rank){}
+//};
+//
 	
 /**
  * NON USER API.
@@ -144,16 +133,16 @@ private:
 public:
 
 	// Create single instances for these and reuse them
-  IsLocalAgent<T>    localPredicate;
-  LocalFilter<T>     LOCAL_FILTER;
-  NonLocalFilter<T>  NON_LOCAL_FILTER;
+  IsLocalAgent<T>      localPredicate;
+  AgentStateFilter<T>  LOCAL_FILTER;
+  AgentStateFilter<T>  NON_LOCAL_FILTER;
 
 	typedef typename boost::filter_iterator<IsLocalAgent<T> , typename Context<T>::const_iterator> const_local_iterator;
 
   typedef typename boost::filter_iterator<AgentStateFilter<T> , typename Context<T>::const_iterator>        const_state_aware_iterator;
   typedef typename boost::filter_iterator<AgentStateFilter<T> , typename Context<T>::const_bytype_iterator> const_state_aware_bytype_iterator;
 	
-	SharedContext();
+	SharedContext(boost::mpi::communicator* comm);
 	virtual ~SharedContext();
 
 	/**
@@ -166,7 +155,7 @@ public:
 	const_local_iterator localBegin() const;
 
 	/**
-	 * Gets then end of an iterator over the local agents in this context.
+	 * Gets the end of an iterator over the local agents in this context.
 	 * The iterator derefrences into shared_ptr<T>. The actual
 	 * agent can be accessed by derefrenceing the iter: (*iter)->getId() for example.
 	 */
@@ -214,9 +203,6 @@ public:
 	 */
 	void decrementProjRefCount(const AgentId& id);
 
-	
-	
-	
 	/*
 	 * Used as an argument to the 'selectAgents' routines;
 	 * cannot use an 'int' because doing so would mask
@@ -352,9 +338,9 @@ public:
 	 * set is returned (default is false)
 	 * @param popSize size of the population from which the sample will be drawn
 	 */
-    void selectAgents(filterLocalFlag localOrNonLocalOnly, std::set<T*>& selectedAgents, bool remove = false, int popSize = -1);
+  void selectAgents(filterLocalFlag localOrNonLocalOnly, std::set<T*>& selectedAgents, bool remove = false, int popSize = -1);
 
-    /**
+  /**
 	 * Gets a randomly ordered vector of pointers to all local or non-local agents in this context.
 	 *
 	 * If the 'remove' parameter is set to true, any elements in the
@@ -398,7 +384,7 @@ public:
 	 * set is returned (default is false)
 	 * @param popSize size of the population from which the sample will be drawn
 	 */
-    void selectAgents(filterLocalFlag localOrNonLocalOnly, int count, std::set<T*>& selectedAgents, bool remove = false, int popSize = -1);
+  void selectAgents(filterLocalFlag localOrNonLocalOnly, int count, std::set<T*>& selectedAgents, bool remove = false, int popSize = -1);
 
 	/**
 	 * Gets a randomly ordered vector of pointers to a specified number of randomly selected
@@ -522,7 +508,7 @@ public:
 	 * set is returned (default is false)
 	 * @param popSize size of the population from which the sample will be drawn
 	 */
-    void selectAgents(filterLocalFlag localOrNonLocalOnly, int count, std::vector<T*>& selectedAgents, int type, bool remove = false, int popSize = -1);
+  void selectAgents(filterLocalFlag localOrNonLocalOnly, int count, std::vector<T*>& selectedAgents, int type, bool remove = false, int popSize = -1);
 	
 	/**
 	 * Gets a set of pointers to all local or non-local agents in this
@@ -548,7 +534,7 @@ public:
 	 * @tparam filterStruct the type of the filter to be applied to the agents
 	 */
 	template<typename filterStruct>
-    void selectAgents(filterLocalFlag localOrNonLocalOnly, std::set<T*>& selectedAgents, filterStruct& filter, bool remove = false, int popSize = -1);
+  void selectAgents(filterLocalFlag localOrNonLocalOnly, std::set<T*>& selectedAgents, filterStruct& filter, bool remove = false, int popSize = -1);
 
 	/**
 	 * Gets a randomly ordered vector of pointers to all local or non-local agents in this context
@@ -574,7 +560,7 @@ public:
 	 * @tparam filterStruct the type of the filter to be applied to the agents
 	 */
 	template<typename filterStruct>
-    void selectAgents(filterLocalFlag localOrNonLocalOnly, std::vector<T*>& selectedAgents, filterStruct& filter, bool remove = false, int popSize = -1);
+  void selectAgents(filterLocalFlag localOrNonLocalOnly, std::vector<T*>& selectedAgents, filterStruct& filter, bool remove = false, int popSize = -1);
 
 	/**
 	 * Gets a set of pointers to a specified number of randomly selected local or non-local agents
@@ -605,7 +591,7 @@ public:
 	 * @tparam filterStruct the type of the filter to be applied to the agents
 	 */
 	template<typename filterStruct>
-    void selectAgents(filterLocalFlag localOrNonLocalOnly, int count, std::set<T*>& selectedAgents, filterStruct& filter, bool remove = false, int popSize = -1);
+  void selectAgents(filterLocalFlag localOrNonLocalOnly, int count, std::set<T*>& selectedAgents, filterStruct& filter, bool remove = false, int popSize = -1);
 
 	/**
 	 * Gets a randomly ordered vector of pointers to a specified number of randomly selected local or non-local agents
@@ -636,7 +622,7 @@ public:
 	 * @tparam filterStruct the type of the filter to be applied to the agents
 	 */
 	template<typename filterStruct>
-    void selectAgents(filterLocalFlag localOrNonLocalOnly, int count, std::vector<T*>& selectedAgents, filterStruct& filter, bool remove = false, int popSize = -1);
+  void selectAgents(filterLocalFlag localOrNonLocalOnly, int count, std::vector<T*>& selectedAgents, filterStruct& filter, bool remove = false, int popSize = -1);
 	
 	/**
 	 * Gets a set of pointers to all local or non-local agents in this context
@@ -662,8 +648,8 @@ public:
 	 *
 	 * @tparam filterStruct the type of the filter to be applied to the agents
 	 */
-    template<typename filterStruct>
-    void selectAgents(filterLocalFlag localOrNonLocalOnly, std::set<T*>& selectedAgents, int type, filterStruct& filter, bool remove = false, int popSize = -1);
+  template<typename filterStruct>
+  void selectAgents(filterLocalFlag localOrNonLocalOnly, std::set<T*>& selectedAgents, int type, filterStruct& filter, bool remove = false, int popSize = -1);
 
 	/**
 	 * Gets a randomly ordered vector of pointers to all local or non-local agents in this context
@@ -690,7 +676,7 @@ public:
 	 * @tparam filterStruct the type of the filter to be applied to the agents
 	 */
 	template<typename filterStruct>
-    void selectAgents(filterLocalFlag localOrNonLocalOnly, std::vector<T*>& selectedAgents, int type, filterStruct& filter, bool remove = false, int popSize = -1);
+  void selectAgents(filterLocalFlag localOrNonLocalOnly, std::vector<T*>& selectedAgents, int type, filterStruct& filter, bool remove = false, int popSize = -1);
 
 	/**
 	 * Gets a set of pointers to a specified number of randomly selected local or non-local agents
@@ -722,7 +708,7 @@ public:
 	 * @tparam filterStruct the type of the filter to be applied to the agents
 	 */
 	template<typename filterStruct>
-    void selectAgents(filterLocalFlag localOrNonLocalOnly, int count, std::set<T*>& selectedAgents, int type, filterStruct& filter, bool remove = false, int popSize = -1);
+  void selectAgents(filterLocalFlag localOrNonLocalOnly, int count, std::set<T*>& selectedAgents, int type, filterStruct& filter, bool remove = false, int popSize = -1);
 	
 	/**
 	 * Gets a randomly ordered vector of pointers to a specified number of randomly selected
@@ -754,21 +740,20 @@ public:
 	 *
 	 * @tparam filterStruct the type of the filter to be applied to the agents
 	 */
-    template<typename filterStruct>
-    void selectAgents(filterLocalFlag localOrNonLocalOnly, int count, std::vector<T*>& selectedAgents, int type, filterStruct& filter, bool remove = false, int popSize = -1);
+  template<typename filterStruct>
+  void selectAgents(filterLocalFlag localOrNonLocalOnly, int count, std::vector<T*>& selectedAgents, int type, filterStruct& filter, bool remove = false, int popSize = -1);
 	
 };
 
 template<typename T>
-SharedContext<T>::SharedContext() :
-	Context<T> (), _rank(0) {
-	boost::mpi::communicator world;
-	_rank = world.rank();
+SharedContext<T>::SharedContext(boost::mpi::communicator* comm) :	Context<T> (), _rank(comm->rank()),
+    localPredicate(comm->rank()),
+  LOCAL_FILTER(true, comm->rank()),
+  NON_LOCAL_FILTER(false, comm->rank()){
 }
 
 template<typename T>
-SharedContext<T>::~SharedContext() {
-}
+SharedContext<T>::~SharedContext() { }
 
 template<typename T>
 void SharedContext<T>::removeAgent(T* agent) {
@@ -829,9 +814,6 @@ template<typename T>
 boost::filter_iterator<IsLocalAgent<T> , typename Context<T>::const_iterator> SharedContext<T>::localEnd() const {
 	return const_local_iterator(localPredicate, Context<T>::end(), Context<T>::end());
 }
-
-	
-	
 
 
 // Iterator creation

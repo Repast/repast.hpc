@@ -63,7 +63,7 @@ const int Observer::NO_TYPE_ID = -1;
 static DefaultLinkCreator _defaultLinkCreator;
 
 Observer::Observer() :
-	rndXP(0), rndYP(0), rndX(0), rndY(0) {
+	rndXP(0), rndYP(0), rndX(0), rndY(0), context(RepastProcess::instance()->getCommunicator()) {
 	_rank = RepastProcess::instance()->rank();
 }
 
@@ -276,7 +276,6 @@ Patch* Observer::patchAt(int x, int y) {
 			return static_cast<Patch*> (out[i]);
 		}
 	}
-
 	return 0;
 }
 
