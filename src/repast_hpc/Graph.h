@@ -75,6 +75,8 @@ protected:
 	typedef boost::unordered_map<AgentId, Vertex<V, E>*, HashId> VertexMap;
 	typedef typename VertexMap::iterator VertexMapIterator;
 
+	typedef typename Projection<V>::RADIUS RADIUS;
+
 	int edgeCount_;
 	bool isDirected;
 	VertexMap vertices;
@@ -97,6 +99,15 @@ public:
 	 */
 	typedef typename boost::transform_iterator<NodeGetter<V, E> , typename VertexMap::const_iterator> vertex_iterator;
 
+  std::set<int> ranksToSendProjInfoTo;              // Set these if the ranks for exchanging projection info are known
+  std::set<int> ranksToReceiveProjInfoFrom;
+
+  std::set<int> ranksToSendAgentStatusInfoTo;       // Set these if the ranks for exchanging agent status info are known
+  std::set<int> ranksToReceiveAgentStatusInfoFrom;
+
+  bool keepsAgents;          // Set this to false if you are CERTAIN that this projection will never 'keep' an agent during a proj info sync
+  bool sendsSecondaryAgents; // Set this to false if you are CERTAIN that this projection will never send secondary agents during an agent status sync (VERY RARE)
+
 	/**
 	 * Creates a Graph with the specified name.
 	 *
@@ -104,7 +115,7 @@ public:
 	 * @param directed whether or not the created Graph is directed
 	 */
   Graph(std::string name, bool directed, EcM* edgeContentMgr) :
-    Projection<V> (name), edgeCount_(0), isDirected(directed), edgeContentManager(edgeContentMgr) {
+    Projection<V> (name), edgeCount_(0), isDirected(directed), edgeContentManager(edgeContentMgr), keepsAgents(true), sendsSecondaryAgents(true) {
   }
 
 	/**
@@ -243,6 +254,31 @@ public:
 	}
 
   void showEdges();
+
+
+  // Beta
+  virtual bool isMaster(E* e) = 0;
+
+  virtual bool keepsAgentsOnSyncProj(){ return keepsAgents; }
+
+  virtual bool sendsSecondaryAgentsOnStatusExchange(){ return sendsSecondaryAgents; }
+
+  virtual void getInfoExchangePartners(std::set<int>& psToSendTo, std::set<int>& psToReceiveFrom);
+
+  virtual void getAgentStatusExchangePartners(std::set<int>& psToSendTo, std::set<int>& psToReceiveFrom);
+
+  virtual void getProjectionInfo(std::vector<AgentId>& agents, std::vector<ProjectionInfoPacket*>& packets,
+        bool secondaryInfo = false, std::set<AgentId>* secondaryIds = 0, int destProc = -1);
+
+  virtual ProjectionInfoPacket* getProjectionInfo(AgentId id, bool secondaryInfo = false, std::set<AgentId>* secondaryIds = 0, int destProc = -1 );
+
+  virtual void updateProjectionInfo(ProjectionInfoPacket* pip, Context<V>* context);
+
+  virtual void getRequiredAgents(std::set<AgentId>& agentsToTest, std::set<AgentId>& agentsRequired, RADIUS radius =Projection<V>::PRIMARY);
+
+  virtual void getAgentsToPush(std::set<AgentId>& agentsToTest, std::map<int, std::set<AgentId> >& agentsToPush);
+
+  virtual void cleanProjectionInfo(std::set<AgentId>& agentsToKeep);
 
 };
 
@@ -468,6 +504,211 @@ void Graph<V, E, Ec, EcM>::showEdges(){
   }
   for(typename std::set<boost::shared_ptr<E> >::iterator ei = edgeSet.begin(), eiEnd = edgeSet.end(); ei != eiEnd; ++ei){
     std::cout << "SOURCE: " << (*ei)->source()->getId() << " TARGET: " << (*ei)->target()->getId() << std::endl;
+  }
+}
+
+
+
+// Beta
+
+template<typename V, typename E, typename Ec, typename EcM>
+void Graph<V, E, Ec, EcM>::getInfoExchangePartners(std::set<int>& psToSendTo, std::set<int>& psToReceiveFrom){
+  psToSendTo.insert(ranksToSendProjInfoTo.begin(), ranksToSendProjInfoTo.end());
+  psToReceiveFrom.insert(ranksToReceiveProjInfoFrom.begin(), ranksToReceiveProjInfoFrom.end());
+}
+
+template<typename V, typename E, typename Ec, typename EcM>
+void Graph<V, E, Ec, EcM>::getAgentStatusExchangePartners(std::set<int>& psToSendTo, std::set<int>& psToReceiveFrom){
+  psToSendTo.insert(ranksToSendAgentStatusInfoTo.begin(), ranksToSendAgentStatusInfoTo.end());
+  psToReceiveFrom.insert(ranksToReceiveAgentStatusInfoFrom.begin(), ranksToReceiveAgentStatusInfoFrom.end());
+}
+
+
+template<typename V, typename E, typename Ec, typename EcM>
+void Graph<V, E, Ec, EcM>::getProjectionInfo(std::vector<AgentId>& agents, std::vector<ProjectionInfoPacket*>& packets,
+      bool secondaryInfo, std::set<AgentId>* secondaryIds, int destProc){
+  if(secondaryInfo == false) return; // Can be skipped entirely for graphs
+  // If not, call the superclass's implementation
+  Projection<V>::getProjectionInfo(agents, packets, secondaryInfo, secondaryIds, destProc);
+}
+
+
+template<typename V, typename E, typename Ec, typename EcM>
+ProjectionInfoPacket* Graph<V, E, Ec, EcM>::getProjectionInfo(AgentId id, bool secondaryInfo, std::set<AgentId>* secondaryIds, int destProc ){
+  if(secondaryInfo == false) return 0; // All graph projection info is secondary; if not returning it, done.
+
+  VertexMapIterator agent = vertices.find(id);
+  if(agent == vertices.end()) return 0;  // The requested agent is not in this graph
+
+  std::vector<Ec> edgeContent;
+
+  std::vector<boost::shared_ptr<E> > edges;
+  agent->second->edges(Vertex<V, E>::INCOMING, edges);
+  agent->second->edges(Vertex<V, E>::OUTGOING, edges);
+  // Sometimes the incoming and outgoing edges are the same; purge duplicates
+  std::set<boost::shared_ptr<E> > edgeSet;
+  edgeSet.insert(edges.begin(), edges.end());
+  // Make all four instances of the loop to optimize for each case
+  AgentId sourceId;
+  AgentId targetId;
+  AgentId otherId;
+
+  if(secondaryIds == 0){
+    if(destProc > -1){
+      for(typename std::set<boost::shared_ptr<E> >::iterator iter = edgeSet.begin(), iterEnd = edgeSet.end(); iter != iterEnd; ++iter){
+        sourceId = (*iter)->source()->getId();
+        targetId = (*iter)->target()->getId();
+        otherId = (sourceId != id ? sourceId : targetId);
+        if(otherId.currentRank() == destProc)  edgeContent.push_back(edgeContentManager->provideEdgeContent(*(iter->get())));
+      }
+    }
+    else{
+      for(typename std::set<boost::shared_ptr<E> >::iterator iter = edgeSet.begin(), iterEnd = edgeSet.end(); iter != iterEnd; ++iter){
+        sourceId = (*iter)->source()->getId();
+        targetId = (*iter)->target()->getId();
+        otherId = (sourceId != id ? sourceId : targetId);
+        edgeContent.push_back(edgeContentManager->provideEdgeContent(*(iter->get())));
+      }
+    }
+  }
+  else{
+    if(destProc > -1){
+      for(typename std::set<boost::shared_ptr<E> >::iterator iter = edgeSet.begin(), iterEnd = edgeSet.end(); iter != iterEnd; ++iter){
+        sourceId = (*iter)->source()->getId();
+        targetId = (*iter)->target()->getId();
+        otherId = (sourceId != id ? sourceId : targetId);
+        if(otherId.currentRank() == destProc){
+          secondaryIds->insert(otherId);
+          edgeContent.push_back(edgeContentManager->provideEdgeContent(*(iter->get())));
+        }
+      }
+    }
+    else{
+      for(typename std::set<boost::shared_ptr<E> >::iterator iter = edgeSet.begin(), iterEnd = edgeSet.end(); iter != iterEnd; ++iter){
+        sourceId = (*iter)->source()->getId();
+        targetId = (*iter)->target()->getId();
+        otherId = (sourceId != id ? sourceId : targetId);
+        secondaryIds->insert(otherId);
+        edgeContent.push_back(edgeContentManager->provideEdgeContent(*(iter->get())));
+      }
+    }
+  }
+
+  return new SpecializedProjectionInfoPacket<Ec>(id, edgeContent);
+}
+
+template<typename V, typename E, typename Ec, typename EcM>
+void Graph<V, E, Ec, EcM>::updateProjectionInfo(ProjectionInfoPacket* pip, Context<V>* context){
+  SpecializedProjectionInfoPacket<Ec>* spip = static_cast<SpecializedProjectionInfoPacket<Ec>*>(pip);
+  std::vector<Ec> &edges = spip->data;
+  for(int i = 0; i < edges.size(); i++)  doAddEdge(edgeContentManager->createEdge(*context, edges[i]));
+}
+
+
+
+template<typename V, typename E, typename Ec, typename EcM>
+void Graph<V, E, Ec, EcM>::getRequiredAgents(std::set<AgentId>& agentsToTest, std::set<AgentId>& agentsRequired, RADIUS radius){
+  switch(radius){
+    case Projection<V>::PRIMARY: {// Keep only the nonlocal ends of MASTER edges
+    std::set<AgentId>::iterator iter = agentsToTest.begin();
+      while(iter != agentsToTest.end()){
+        VertexMapIterator vertex = Graph<V, E, Ec, EcM>::vertices.find(*iter);
+        if(vertex != vertices.end()){
+          std::vector<boost::shared_ptr<E> > edges;
+          vertex->second->edges(Vertex<V, E>::INCOMING, edges);
+          vertex->second->edges(Vertex<V, E>::OUTGOING, edges);
+          std::set<boost::shared_ptr<E> > edgeSet;
+          edgeSet.insert(edges.begin(), edges.end());
+          edges.clear();
+          edges.assign(edgeSet.begin(), edgeSet.end());
+          bool keep = false;
+          for(typename std::vector<boost::shared_ptr<E> >::iterator edgeIter = edges.begin(), edgeIterEnd = edges.end(); edgeIter != edgeIterEnd; edgeIter++){
+            if(isMaster(&**edgeIter)){
+              agentsRequired.insert(*iter);
+              keep = true;
+              break;
+            }
+          }
+          if(keep){
+            std::set<AgentId>::iterator iterTEMP = iter;
+            iter++;
+            agentsToTest.erase(*iterTEMP);
+          }
+          else iter++;
+        }
+        else iter++;
+      }
+      break;
+    }
+    case Projection<V>::SECONDARY: {// Keep any nonlocal agent that is in any edge
+      std::set<AgentId>::iterator iter = agentsToTest.begin();
+      while(iter != agentsToTest.end()){
+        VertexMapIterator vertex = Graph<V, E, Ec, EcM>::vertices.find(*iter);
+        if(vertex != vertices.end()){
+          std::vector<boost::shared_ptr<E> > edges;
+          vertex->second->edges(Vertex<V, E>::INCOMING, edges);
+          vertex->second->edges(Vertex<V, E>::OUTGOING, edges);
+          if(edges.size() > 0){
+            std::set<AgentId>::iterator iterTEMP = iter;
+            iter++;
+            agentsToTest.erase(*iterTEMP);
+          }
+          else iter++;
+        }
+        else iter++;
+      }
+      break;
+    }
+  }
+}
+
+template<typename V, typename E, typename Ec, typename EcM>
+void Graph<V, E, Ec, EcM>::getAgentsToPush(std::set<AgentId>& agentsToTest, std::map<int, std::set<AgentId> >& agentsToPush){
+  if(agentsToTest.size() == 0) return;
+  // The local agent ends of master edges must be pushed to the process of the non-local end
+  std::set<AgentId>::iterator iter = agentsToTest.begin();
+  while(iter != agentsToTest.end()){
+    VertexMapIterator vertexMapEntry = Graph<V, E, Ec, EcM>::vertices.find(*iter);
+    if(vertexMapEntry != vertices.end()){
+      int localRank = vertexMapEntry->second->item()->getId().currentRank();
+      std::vector<boost::shared_ptr<E> > edges;
+      vertexMapEntry->second->edges(Vertex<V, E>::INCOMING, edges);
+      vertexMapEntry->second->edges(Vertex<V, E>::OUTGOING, edges);
+      for(typename std::vector<boost::shared_ptr<E> >::iterator edgeIter = edges.begin(), edgeIterEnd = edges.end(); edgeIter != edgeIterEnd; ++edgeIter){
+        boost::shared_ptr<E> e = *edgeIter;
+        E* eptr = e.get();
+        if(isMaster(&**edgeIter)){
+          AgentId sourceId = (*edgeIter)->source()->getId();
+          AgentId targetId = (*edgeIter)->target()->getId();
+          AgentId otherAgentId = (sourceId != *iter ? sourceId : targetId);
+          int destRank = otherAgentId.currentRank();
+          if(destRank != localRank){
+            agentsToPush[destRank].insert(*iter);
+            break; // Out of 'for' loop
+          }
+        }
+      }
+    }
+    iter++;
+  }
+}
+
+template<typename V, typename E, typename Ec, typename EcM>
+void Graph<V, E, Ec, EcM>::cleanProjectionInfo(std::set<AgentId>& agentsToKeep){
+  for(std::set<AgentId>::iterator iter = agentsToKeep.begin(), iterEnd = agentsToKeep.end(); iter != iterEnd; ++iter){
+    VertexMapIterator vertexMapEntry = Graph<V, E, Ec, EcM>::vertices.find(*iter);
+    if(vertexMapEntry != vertices.end()){
+      std::vector<boost::shared_ptr<E> > edges;
+      vertexMapEntry->second->edges(Vertex<V, E>::INCOMING, edges);
+      for(typename std::vector<boost::shared_ptr<E> >::iterator edgeIter = edges.begin(), edgeIterEnd = edges.end(); edgeIter != edgeIterEnd; ++edgeIter){
+        if(!isMaster(&**edgeIter)) removeEdge((*edgeIter)->source(), (*edgeIter)->target());
+      }
+      edges.clear();
+      vertexMapEntry->second->edges(Vertex<V, E>::OUTGOING, edges);
+      for(typename std::vector<boost::shared_ptr<E> >::iterator edgeIter = edges.begin(), edgeIterEnd = edges.end(); edgeIter != edgeIterEnd; ++edgeIter){
+        if(!isMaster(&**edgeIter)) removeEdge((*edgeIter)->source(), (*edgeIter)->target());
+      }
+    }
   }
 }
 
