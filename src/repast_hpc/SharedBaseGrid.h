@@ -179,6 +179,10 @@ public:
 	 */
 	Neighbor* findNeighbor(const std::vector<double>& pt);
 
+  void getNeighborRanks(std::set<int>& ranks){
+    for(std::vector<Neighbor*>::iterator iter = nghs.begin(), iterEnd=nghs.end(); iter != iterEnd; ++iter) ranks.insert((*iter)->rank());
+  }
+
 };
 
 std::ostream& operator<<(std::ostream& os, const Neighbors& nghs);
@@ -347,7 +351,14 @@ protected:
 	typedef typename repast::BaseGrid<T, MultipleOccupancy<T, GPType> , GPTransformer, Adder, GPType> GridBaseType;
 	boost::mpi::communicator* comm;
 
+
+  void getMovingAgentInfo(std::map<int, std::vector<AgentId> > agentsToMove, GridMovePackets<GPType> outgoing);
+
+  bool locationIsInBuffer(Point<GPType> pt){ return false; }
+  bool agentIsInBuffer(AgentId id){ return false; }
+
 public:
+  void balance();
 
 	// overriding moveTo that takes newLocation hides the moveTo in the
 	// Grid base class that takes a Point. This using directive
@@ -414,6 +425,23 @@ public:
 	virtual void removeAgent(T* agent);
 
 	// doc inherited from Projection.h
+
+  virtual void getRequiredAgents(std::set<AgentId>& agentsToTest, std::set<AgentId>& agentsRequired){ } // Grids don't keep agents
+
+  virtual void getAgentsToPush(std::set<AgentId>& agentsToTest, std::map<int, std::set<AgentId> >& agentsToPush);
+
+
+  virtual void getInfoExchangePartners(std::set<int>& psToSendTo, std::set<int>& psToReceiveFrom){
+    nghs.getNeighborRanks(psToSendTo);
+    nghs.getNeighborRanks(psToReceiveFrom);
+  }
+
+  virtual void getAgentStatusExchangePartners(std::set<int>& psToSendTo, std::set<int>& psToReceiveFrom){
+    nghs.getNeighborRanks(psToSendTo);
+    nghs.getNeighborRanks(psToReceiveFrom);
+  }
+
+  virtual void updateProjectionInfo(ProjectionInfoPacket* pip, Context<T>* context);
 
 };
 
@@ -536,34 +564,149 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::synchMove() {
 
 
 template<typename T, typename GPTransformer, typename Adder, typename GPType>
+void SharedBaseGrid<T, GPTransformer, Adder, GPType>::balance() {
+  int r = comm->rank();
+  typename GridBaseType::LocationMapConstIter iterEnd = GridBaseType::locationsEnd();
+  for (typename GridBaseType::LocationMapConstIter iter = GridBaseType::locationsBegin(); iter != iterEnd; ++iter) {
+    AgentId id = iter->second->ptr->getId();
+
+    if(id.currentRank() == r){                                   // Local agents only
+      Point<GPType> loc = iter->second->point;
+      if(!localBounds.contains(loc)){                            // If inside bounds, ignore
+        Neighbor* ngh = nghs.findNeighbor(loc.coords());
+        RepastProcess::instance()->moveAgent(id, ngh->rank());
+      }
+    }
+  }
+}
+
+template<typename T, typename GPTransformer, typename Adder, typename GPType>
+void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getMovingAgentInfo(std::map<int, std::vector<AgentId> > agentsToMove, GridMovePackets<GPType> outgoing){
+  std::map<int, std::vector<AgentId> >::const_iterator mapIterEnd = agentsToMove.end();
+  for(std::map<int, std::vector<AgentId> >::const_iterator mapIter = agentsToMove.begin(); mapIter != mapIterEnd; ++mapIter){
+    int dest                      = mapIter->first;
+    std::vector<AgentId> agentIDs = mapIter->second;
+
+    std::vector<AgentId>::const_iterator agentIdIterEnd = agentIDs.end();
+    for(std::vector<AgentId>::const_iterator agentIdIter = agentIDs.begin(); agentIdIter != agentIdIterEnd; ++agentIdIter){
+      AgentId id = *agentIdIter;
+      Point<GPType> loc = GridBaseType::agentToLocation.find(id)->second.point;
+      GridMovePacket<GPType> packet(loc, id, mapIter->first);
+      outgoing.addPacket(packet);
+    }
+  }
+}
+
+template<typename T, typename GPTransformer, typename Adder, typename GPType>
 bool SharedBaseGrid<T, GPTransformer, Adder, GPType>::moveTo(const AgentId& id, const Point<GPType>& newLocation) {
 	return SharedBaseGrid<T, GPTransformer, Adder, GPType>::moveTo(id, newLocation.coords());
 }
 
 template<typename T, typename GPTransformer, typename Adder, typename GPType>
 bool SharedBaseGrid<T, GPTransformer, Adder, GPType>::moveTo(const AgentId& id, const std::vector<GPType>& newLocation) {
-  int r = comm->rank();
-	if (!localBounds.contains(newLocation)) {
-
-		// new location is outside of local bounds so see if it moved
-		// off of grid entirely or just into a neighbor
-		std::vector<GPType> out;
-		// if new location is off of grid, this should throw an exception
-		GridBaseType::gpTransformer.transform(newLocation, out);
-		Neighbor* ngh = nghs.findNeighbor(out);
-		if(ngh == 0) std::cout << "   RANK " << r << " HAS NO ADDRESS FOR AGENT " << id << std::endl;
-		RepastProcess::instance()->moveAgent(id, ngh->rank());
-		GridMovePacket<GPType> packet(Point<GPType> (out), id, ngh->rank());
-		movePackets.addPacket(packet);
-	}
-	// even if outside of local bounds we add it for now so that any subsequent moves
-	// will be able to use it.
 	return GridBaseType::moveTo(id, newLocation);
 }
 
 template<typename T, typename GPTransformer, typename Adder, typename GPType>
 void SharedBaseGrid<T, GPTransformer, Adder, GPType>::removeAgent(T* agent) {
 	GridBaseType::removeAgent(agent);
+}
+
+
+// Beta
+
+template<typename T, typename GPTransformer, typename Adder, typename GPType>
+void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<AgentId>& agentsToTest, std::map<int, std::set<AgentId> >& agentsToPush){
+
+  // In a general case, we might not want to do this, but
+  // for the current configuration, we can make this (perhaps much) more efficient
+  // this way:
+  Point<double> localOrigin = localBounds.origin();
+  Point<double> localExtent = localBounds.extents();
+
+  double xStart = localOrigin.getX() + _buffer;
+  double xEnd   = localOrigin.getX() + localExtent.getX() - _buffer * 2;
+  double yStart = localOrigin.getY() + _buffer;
+  double yEnd   = localOrigin.getY() + localExtent.getY() - _buffer * 2;
+  GridDimensions unbuffered(Point<double> (xStart, yStart), Point<double> (xEnd, yEnd));
+
+  GridDimensions NW_bounds = createSendBufferBounds(Neighbors::NW);  int NW_rank = nghs.neighbor(Neighbors::NW)->rank(); std::set<AgentId> NW_set;
+  GridDimensions N_bounds  = createSendBufferBounds(Neighbors::N);   int N_rank  = nghs.neighbor(Neighbors::N)->rank();  std::set<AgentId> N_set;
+  GridDimensions NE_bounds = createSendBufferBounds(Neighbors::NE);  int NE_rank = nghs.neighbor(Neighbors::NE)->rank(); std::set<AgentId> NE_set;
+  GridDimensions E_bounds  = createSendBufferBounds(Neighbors::E);   int E_rank  = nghs.neighbor(Neighbors::E)->rank();  std::set<AgentId> E_set;
+  GridDimensions SE_bounds = createSendBufferBounds(Neighbors::SE);  int SE_rank = nghs.neighbor(Neighbors::SE)->rank(); std::set<AgentId> SE_set;
+  GridDimensions S_bounds  = createSendBufferBounds(Neighbors::S);   int S_rank  = nghs.neighbor(Neighbors::S)->rank();  std::set<AgentId> S_set;
+  GridDimensions SW_bounds = createSendBufferBounds(Neighbors::SW);  int SW_rank = nghs.neighbor(Neighbors::SW)->rank(); std::set<AgentId> SW_set;
+  GridDimensions W_bounds  = createSendBufferBounds(Neighbors::W);   int W_rank  = nghs.neighbor(Neighbors::W)->rank();  std::set<AgentId> W_set;
+
+
+  // Local agents that are in other processes' 'buffer zones' must be exported to those other processes.
+  int r = comm->rank();
+  for(typename std::set<AgentId>::iterator idIter = agentsToTest.begin(), idIterEnd = agentsToTest.end(); idIter != idIterEnd; ++idIter){
+    AgentId id = *idIter;
+    if(id.currentRank() == r){ // Local agents only
+      std::vector<GPType> locationVector;
+      GridBaseType::getLocation(id, locationVector);
+      Point<GPType> loc(locationVector);
+      if(!unbuffered.contains(loc)){
+        if(W_bounds.contains(loc)){
+          W_set.insert(id);
+          if(N_bounds.contains(loc)){
+            N_set.insert(id);
+            NW_set.insert(id);
+          }
+          else{
+            if(S_bounds.contains(loc)){
+              S_set.insert(id);
+              SW_set.insert(id);
+            }
+          }
+        }
+        else{
+          if(E_bounds.contains(loc)){
+            E_set.insert(id);
+            if(N_bounds.contains(loc)){
+              N_set.insert(id);
+              NE_set.insert(id);
+            }
+            else{
+              if(S_bounds.contains(loc)){
+                S_set.insert(id);
+                SE_set.insert(id);
+              }
+            }
+          }
+          else{
+            if(N_bounds.contains(loc)){
+              N_set.insert(id);
+            }
+            else{
+              if(S_bounds.contains(loc)){
+                S_set.insert(id);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if(NW_set.size() > 0) agentsToPush[NW_rank].insert(NW_set.begin(), NW_set.end());
+  if( N_set.size() > 0) agentsToPush[ N_rank].insert( N_set.begin(),  N_set.end());
+  if(NE_set.size() > 0) agentsToPush[NE_rank].insert(NE_set.begin(), NE_set.end());
+  if( E_set.size() > 0) agentsToPush[ E_rank].insert( E_set.begin(),  E_set.end());
+  if(SE_set.size() > 0) agentsToPush[SE_rank].insert(SE_set.begin(), SE_set.end());
+  if( S_set.size() > 0) agentsToPush[ S_rank].insert( S_set.begin(),  S_set.end());
+  if(SW_set.size() > 0) agentsToPush[SW_rank].insert(SW_set.begin(), SW_set.end());
+  if( W_set.size() > 0) agentsToPush[ W_rank].insert( W_set.begin(),  W_set.end());
+
+
+}
+
+template<typename T, typename GPTransformer, typename Adder, typename GPType>
+void SharedBaseGrid<T, GPTransformer, Adder, GPType>::updateProjectionInfo(ProjectionInfoPacket* pip, Context<T>* context){
+  SpecializedProjectionInfoPacket<GPType>* spip = static_cast<SpecializedProjectionInfoPacket<GPType>*>(pip);
+  synchMoveTo(spip->id, spip->data);
 }
 
 }
