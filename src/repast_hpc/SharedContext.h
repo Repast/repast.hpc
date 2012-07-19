@@ -779,7 +779,7 @@ public:
 };
 
 template<typename T>
-SharedContext<T>::SharedContext(boost::mpi::communicator* comm) :	Context<T> (), _rank(comm->rank()), localPredicate(comm->rank()),
+SharedContext<T>::SharedContext(boost::mpi::communicator* comm) : Context<T> (), _rank(comm->rank()), localPredicate(comm->rank()),
   LOCAL_FILTER(true, comm->rank()),
   NON_LOCAL_FILTER(false, comm->rank()){
 }
