@@ -276,6 +276,11 @@ public:
 		return gpTransformer.isPeriodic();
 	}
 
+  virtual ProjectionInfoPacket* getProjectionInfo(AgentId id, bool secondaryInfo = false, std::set<AgentId>* secondaryIds = 0, int destProc = -1 );
+
+  virtual void updateProjectionInfo(ProjectionInfoPacket* pip, Context<T>* context);
+
+  virtual void getAgentsToPush(std::set<AgentId>& agentsToTest, std::map<int, std::set<AgentId> >& agentsToPush){ }
 };
 
 template<typename T, typename CellAccessor, typename GPTransformer, typename Adder, typename GPType>
@@ -485,6 +490,24 @@ void BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::getDisplacement(co
 		}
 		out[i] = diff;
 	}
+}
+
+template<typename T, typename CellAccessor, typename GPTransformer, typename Adder, typename GPType>
+ProjectionInfoPacket* BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::getProjectionInfo(AgentId id, bool secondaryInfo,
+    std::set<AgentId>* secondaryIds, int destProc){
+  typename AgentLocationMap::const_iterator agentIter = agentToLocation.find(id);
+  if(agentIter == agentToLocation.end())
+      return 0;
+  else
+      return new SpecializedProjectionInfoPacket<GPType>(id, agentIter->second->point.coords());
+}
+
+
+template<typename T, typename CellAccessor, typename GPTransformer, typename Adder, typename GPType>
+void BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::updateProjectionInfo(ProjectionInfoPacket* pip, Context<T>* context){
+  SpecializedProjectionInfoPacket<GPType>* spip = static_cast<SpecializedProjectionInfoPacket<GPType>*>(pip);
+  moveTo(spip->id, spip->data);
+  std::cout << " UPDATING PROJECTION INFO: " << spip->id << " " << spip->data[0] << "," << spip->data[1] << " " << context->getAgent(spip->id)->location() << std::endl;
 }
 
 }
