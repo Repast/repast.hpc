@@ -46,6 +46,18 @@ namespace relogo {
 repast::Projection<RelogoAgent>*  WorldCreator::createDiscreteSpace(const WorldDefinition& def, const std::vector<int>& pConfiguration) const {
 	repast::Projection<RelogoAgent>* proj = 0;
   boost::mpi::communicator world;
+	if (def.isWrapped()) {
+		proj = new ToroidalDiscreteSpace(GRID_NAME, def.dimensions(), pConfiguration, def.buffer(), comm);
+	} else {
+		proj = new BoundedDiscreteSpace(GRID_NAME, def.dimensions(), pConfiguration, def.buffer(), comm);
+	}
+	return proj;
+
+}
+
+repast::Projection<RelogoAgent>*  WorldCreator::createContinuousSpace(const WorldDefinition& def, const std::vector<int>& pConfiguration) const {
+	repast::Projection<RelogoAgent>* proj = 0;
+	boost::mpi::communicator world;
   GridDimensions originalDimensions = def.dimensions();
   std::vector<double> origins = originalDimensions.origin().coords();
   for(size_t i = 0, n = origins.size(); i < n; i++) origins[i] -= .5;
@@ -55,19 +67,7 @@ repast::Projection<RelogoAgent>*  WorldCreator::createDiscreteSpace(const WorldD
   } else {
     proj = new BoundedContinuousSpace(SPACE_NAME, newDimensions, pConfiguration, def.buffer(), comm);
   }
-	return proj;
-
-}
-
-repast::Projection<RelogoAgent>*  WorldCreator::createContinuousSpace(const WorldDefinition& def, const std::vector<int>& pConfiguration) const {
-	repast::Projection<RelogoAgent>* proj = 0;
-	boost::mpi::communicator world;
-	if (def.isWrapped()) {
-		proj = new ToroidalContinuousSpace(SPACE_NAME, def.dimensions(), pConfiguration, def.buffer(), comm);
-	} else {
-		proj = new BoundedContinuousSpace(SPACE_NAME, def.dimensions(), pConfiguration, def.buffer(), comm);
-	}
-	return proj;
+  return proj;
 }
 
 }
