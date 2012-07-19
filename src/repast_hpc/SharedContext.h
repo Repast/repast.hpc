@@ -141,7 +141,9 @@ public:
 
   typedef typename boost::filter_iterator<AgentStateFilter<T> , typename Context<T>::const_iterator>        const_state_aware_iterator;
   typedef typename boost::filter_iterator<AgentStateFilter<T> , typename Context<T>::const_bytype_iterator> const_state_aware_bytype_iterator;
-	
+
+  typedef typename Projection<T>::RADIUS RADIUS;
+
 	SharedContext(boost::mpi::communicator* comm);
 	virtual ~SharedContext();
 
@@ -742,12 +744,42 @@ public:
 	 */
   template<typename filterStruct>
   void selectAgents(filterLocalFlag localOrNonLocalOnly, int count, std::vector<T*>& selectedAgents, int type, filterStruct& filter, bool remove = false, int popSize = -1);
-	
+
+
+  // Beta
+
+  /**
+   * Returns true if any of the projections in this context will try to 'keep' non-local agents
+   * during a synchronize projection operation. (Generally graphs keep local agents that are
+   * part of master copies of links, but spaces do not keep any local agents.)
+   */
+  bool keepsAgentsOnSyncProj();
+
+  bool sendsSecondaryDataOnStatusExchange();
+
+  void getProjInfoExchangePartners(std::set<int>& sends, std::set<int>& recvs);
+
+  void getAgentStatusInfoExchangePartners(std::set<int>& sends, std::set<int>& recvs);
+
+  /**
+   * Given a set of agents to test, returns the set of those agents that must be kept in order
+   * to keep required projection information.
+   */
+  void getRequiredAgents(std::set<AgentId>& agentsToTest, std::set<AgentId>& agentsToKeep, RADIUS radius = Projection<T>::PRIMARY);
+
+  /**
+   * Given an initial set of agents that must be kept a priori, add any agents that must be kept due to
+   * projection requirements, and return the set of all non-local agents that can be dropped.
+   */
+  void getNonlocalAgentsToDrop(std::set<AgentId>& agentsToKeep, std::set<AgentId>& agentsToDrop, RADIUS radius = Projection<T>::PRIMARY);
+
+  void getAgentsToPushToOtherProcesses(std::map<int, std::set<AgentId> >& agentsToPush);
+
+
 };
 
 template<typename T>
-SharedContext<T>::SharedContext(boost::mpi::communicator* comm) :	Context<T> (), _rank(comm->rank()),
-    localPredicate(comm->rank()),
+SharedContext<T>::SharedContext(boost::mpi::communicator* comm) :	Context<T> (), _rank(comm->rank()), localPredicate(comm->rank()),
   LOCAL_FILTER(true, comm->rank()),
   NON_LOCAL_FILTER(false, comm->rank()){
 }
@@ -973,6 +1005,91 @@ void SharedContext<T>::selectAgents(filterLocalFlag localOrNonLocalOnly, int cou
 	if(popSize <= -1) selectNElementsInRandomOrder(byTypeFilteredBegin(localOrNonLocalOnly, type, filter), byTypeFilteredEnd(localOrNonLocalOnly, type, filter), count, selectedAgents, remove);
 	else              selectNElementsInRandomOrder(byTypeFilteredBegin(localOrNonLocalOnly, type, filter), popSize, count, selectedAgents, remove);
 }
+
+
+
+
+// Beta
+
+template<typename T>
+bool SharedContext<T>::keepsAgentsOnSyncProj(){
+  typename std::vector<Projection<T> *>::iterator iter    = Context<T>::projections.begin();
+  typename std::vector<Projection<T> *>::iterator iterEnd = Context<T>::projections.end();
+  while((iter != iterEnd)){
+    if((*iter)->keepsAgentsOnSyncProj()) return true;
+    iter++;
+  }
+  return false;
+}
+
+template<typename T>
+bool SharedContext<T>::sendsSecondaryDataOnStatusExchange(){
+  for(typename std::vector<Projection<T> *>::iterator iter = Context<T>::projections.begin(), iterEnd = Context<T>::projections.end(); iter != iterEnd; iter++){
+    if((*iter)->sendsSecondaryAgentsOnStatusExchange()) return true;
+  }
+  return false;
+}
+
+template<typename T>
+void SharedContext<T>::getProjInfoExchangePartners(std::set<int>& sends, std::set<int>& recvs){
+  for(typename std::vector<Projection<T> *>::iterator iter = Context<T>::projections.begin(), iterEnd = Context<T>::projections.end(); iter != iterEnd; iter++){
+    (*iter)->getInfoExchangePartners(sends, recvs);
+  }
+}
+
+
+template<typename T>
+void SharedContext<T>::getAgentStatusInfoExchangePartners(std::set<int>& sends, std::set<int>& recvs){
+  for(typename std::vector<Projection<T> *>::iterator iter = Context<T>::projections.begin(), iterEnd = Context<T>::projections.end(); iter != iterEnd; iter++){
+    (*iter)->getAgentStatusExchangePartners(sends, recvs);
+  }
+}
+
+
+template<typename T>
+void SharedContext<T>::getRequiredAgents(std::set<AgentId>& agentsToTest, std::set<AgentId>& agentsToKeep, RADIUS radius){
+  typename std::vector<Projection<T> *>::iterator iter    = Context<T>::projections.begin();
+  typename std::vector<Projection<T> *>::iterator iterEnd = Context<T>::projections.end();
+  while((iter != iterEnd) && (agentsToTest.size() > 0)){
+    (*iter)->getRequiredAgents(agentsToTest, agentsToKeep);
+    iter++;
+  }
+}
+
+template<typename T>
+void SharedContext<T>::getNonlocalAgentsToDrop(std::set<AgentId>& agentsToKeep, std::set<AgentId>& agentsToDrop, RADIUS radius){
+  if(agentsToKeep.size() > 0){
+    const_state_aware_iterator iter = begin(NON_LOCAL), iterEnd = end(NON_LOCAL);
+    std::set<AgentId>::iterator notFound = agentsToKeep.end();
+    while(iter != iterEnd){
+      AgentId id = (*iter)->getId();
+      if(agentsToKeep.find(id) == notFound) agentsToDrop.insert((*iter)->getId());
+      iter++;
+    }
+  }
+  else{
+    const_state_aware_iterator iter = begin(NON_LOCAL), iterEnd = end(NON_LOCAL);
+    while(iter != iterEnd){
+      agentsToDrop.insert((*iter)->getId());
+      iter++;
+    }
+  }
+  getRequiredAgents(agentsToDrop, agentsToKeep, radius);
+}
+
+template<typename T>
+void SharedContext<T>::getAgentsToPushToOtherProcesses(std::map<int, std::set<AgentId> >& agentsToPush){
+  std::set<AgentId> agentsToTest;
+  for(const_state_aware_iterator iter = begin(LOCAL), iterEnd = end(LOCAL); iter != iterEnd; ++iter){
+    agentsToTest.insert((*iter)->getId());
+  }
+  for(typename std::vector<Projection<T> *>::iterator iter = Context<T>::projections.begin(), iterEnd = Context<T>::projections.end(); iter != iterEnd; iter++){
+    (*iter)->getAgentsToPush(agentsToTest, agentsToPush);
+  }
+}
+
+
+
 
 
 }
