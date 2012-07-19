@@ -47,6 +47,19 @@ using namespace std;
 
 namespace repast {
 
+Neighbors::Location sendDirections[8] = {
+    Neighbors::NW, Neighbors::N, Neighbors::NE,
+    Neighbors::W,                Neighbors::E,
+    Neighbors::SW, Neighbors::S, Neighbors::SE
+};
+
+Neighbors::Location recvDirections[8] = {
+    Neighbors::SE, Neighbors::S, Neighbors::SW,
+    Neighbors::E,                Neighbors::W,
+    Neighbors::NE, Neighbors::N, Neighbors::NW
+};
+
+
 CartTopology::CartTopology(vector<int> processesPerDim, vector<double> origin, vector<double> extents, bool spaceIsPeriodic, boost::mpi::communicator* world) :
   periodic(spaceIsPeriodic), procsPerDim(processesPerDim) {
   int numDims = procsPerDim.size();
