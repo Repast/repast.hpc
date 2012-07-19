@@ -148,6 +148,8 @@ void Observer::_setup(Properties& props) {
 	_RealUniformGenerator gen4(random->engine(), boost::uniform_real<>(minPycor(), maxPycor()));
 	rndY = new DefaultNumberGenerator<_RealUniformGenerator> (gen4);
 
+	std::cout << _rank << " minX " << minPxcor() << " maxX " << maxPxcor() << " minY " << minPycor() << " maxY " << maxPycor() << std::endl;
+
 	setup(props);
 }
 
@@ -298,39 +300,6 @@ Patch* Observer::patchAt(Point<double> location, double dx, double dy) {
 Patch* Observer::patchAtOffset(Point<double> location, double heading, double distance){
   std::vector<double> offset = relogo::calcDisplacementFromHeadingDistance(heading, distance);
   return patchAt(location, offset[0], offset[1]);
-}
-
-
-void Observer::synchronizeTurtleCrossPMovement() {
-	RelogoGridType* aGrid = const_cast<RelogoGridType*> (grid());
-	if (aGrid->isPeriodic()) {
-		((relogo::ToroidalDiscreteSpace*) aGrid)->synchMove();
-	} else {
-		((relogo::BoundedDiscreteSpace*) aGrid)->synchMove();
-	}
-
-	RelogoSpaceType* aSpace = const_cast<RelogoSpaceType*> (space());
-	if (aSpace->isPeriodic()) {
-		((relogo::ToroidalContinuousSpace*) aSpace)->synchMove();
-	} else {
-		((relogo::BoundedContinuousSpace*) aSpace)->synchMove();
-	}
-}
-
-void Observer::initSynchronize() {
-	RelogoGridType* aGrid = const_cast<RelogoGridType*> (grid());
-	if (aGrid->isPeriodic()) {
-		((relogo::ToroidalDiscreteSpace*) aGrid)->initSynchBuffer(context);
-	} else {
-		((relogo::BoundedDiscreteSpace*) aGrid)->initSynchBuffer(context);
-	}
-
-	RelogoSpaceType* aSpace = const_cast<RelogoSpaceType*> (space());
-	if (aSpace->isPeriodic()) {
-		((relogo::ToroidalContinuousSpace*) aSpace)->initSynchBuffer(context);
-	} else {
-		((relogo::BoundedContinuousSpace*) aSpace)->initSynchBuffer(context);
-	}
 }
 
 }
