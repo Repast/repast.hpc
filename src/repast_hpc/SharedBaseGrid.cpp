@@ -96,11 +96,13 @@ int CartTopology::getRank(vector<int>& loc, int rowAdj, int colAdj) {
 	coord[1] = loc[1] + colAdj;
 	if (!periodic) {
 		if (coord[0] < 0 || coord[0] > procsPerDim[0] - 1 || coord[1] < 0 || coord[1] > procsPerDim[1] - 1){
+		  delete[] coord;
 			return MPI_PROC_NULL;
 		}
 	}
 	int rank;
 	MPI_Cart_rank(topologyComm, coord, &rank);
+	delete[] coord;
 	return rank;
 }
 
