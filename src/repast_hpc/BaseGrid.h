@@ -422,10 +422,11 @@ void BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::getObjectsAt(const
 
 template<typename T, typename CellAccessor, typename GPTransformer, typename Adder, typename GPType>
 bool BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::addAgent(boost::shared_ptr<T> agent) {
-	GridPointHolder<T, GPType>* gp = new GridPointHolder<T, GPType> ();
-	gp->ptr = agent;
-	agentToLocation[agent->getId()] = gp;
-	return adder.add(agent);
+  if(!Projection<T>::agentCanBeAdded(agent)) return false;
+  GridPointHolder<T, GPType>* gp = new GridPointHolder<T, GPType> ();
+  gp->ptr = agent;
+  agentToLocation[agent->getId()] = gp;
+  return adder.add(agent);
 }
 
 template<typename T, typename CellAccessor, typename GPTransformer, typename Adder, typename GPType>

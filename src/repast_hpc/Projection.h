@@ -41,9 +41,14 @@
 #ifndef PROJECTION_H_
 #define PROJECTION_H_
 
+#include <sstream>
 #include <string>
+#include <set>
+#include <map>
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
+
+#include "AgentId.h"
 
 namespace repast {
 
@@ -64,7 +69,13 @@ protected:
 	virtual bool addAgent(boost::shared_ptr<T> agent) = 0;
 	virtual void removeAgent(T* agent) = 0;
 
+
+	// Beta (Protected)
+	std::set<int> filter;
+
+
 public:
+
 
 	/**
 	 * Creates a projection with specified name.
@@ -86,6 +97,49 @@ public:
 		return name_;
 	}
 
+	// Beta (public)
+
+	/**
+	 * Adds an entry to the list of agent types that can be added to this projection.
+	 *
+	 * Note: no indication if type is already listed
+	 *
+	 * @param type type to be added
+	 */
+	void addFilterVal(int type){
+	  filter.insert(type);
+	}
+
+	/**
+	 * Removes an entry from the list of agent types that can be added to this projection.
+	 *
+	 * Note: no indication if type is not listed
+	 *
+	 * @param type entry to be removed
+	 */
+	void removeFilterVal(int type){
+	  filter.erase(type);
+	}
+
+	/**
+	 * Clears the list of agent types that can be added to this projection; the result
+	 * is that the filter is empty, and any agent can be added.
+	 */
+	void clearFilter(){
+	  filter.clear();
+	}
+
+	/**
+	 * Returns true if the agent can be added to the projection, which will
+	 * be the case if the filter list is empty or if the agent's type is in the
+	 * filter list.
+	 *
+	 * @param agent pointer to the agent to be tested
+	 */
+	bool agentCanBeAdded(boost::shared_ptr<T> agent){
+	  return ( (filter.size() == 0) ||
+	           (filter.find(agent->getId().agentType()) != filter.end()));
+	}
 };
 
 }
