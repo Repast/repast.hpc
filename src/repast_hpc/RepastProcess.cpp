@@ -37,8 +37,6 @@
  *  Created on: Jan 5, 2009
  *      Author: nick
  */
-#define INITIATE_AGENT_REQ_ALLTOALL
-
 #include <map>
 #include <algorithm>
 #include <utility>
@@ -47,11 +45,18 @@
 #include <boost/mpi.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/unordered_set.hpp>
+#include <boost/serialization/export.hpp>
+
 
 #include "RepastProcess.h"
 #include "logger.h"
 #include "SRManager.h"
 #include "Utilities.h"
+
+BOOST_CLASS_EXPORT_GUID(repast::SpecializedProjectionInfoPacket<double>, "SpecializedProjectionInfoPacket_DOUBLE");
+
+BOOST_CLASS_EXPORT_GUID(repast::SpecializedProjectionInfoPacket<int>, "SpecializedProjectionInfoPacket_INT");
+
 
 using namespace std;
 namespace mpi = boost::mpi;
@@ -61,7 +66,9 @@ namespace repast {
 
 RepastProcess* RepastProcess::_instance = 0;
 
-RepastProcess::RepastProcess(boost::mpi::communicator* comm){
+RepastProcess::RepastProcess(boost::mpi::communicator* comm):
+  procsToSendProjInfoTo(NULL), procsToRecvProjInfoFrom(NULL),
+  procsToSendAgentStatusInfoTo(NULL), procsToRecvAgentStatusInfoFrom(NULL){
   world = (comm  != 0 ? comm : &myWorld);
   runner = new ScheduleRunner(world);
   rank_ = world->rank();
@@ -73,6 +80,17 @@ RepastProcess::RepastProcess(boost::mpi::communicator* comm){
 	importer_exporter = new ImporterExporter_BY_SET();
 #endif
 
+  SpecializedProjectionInfoPacket<double>* test1 = new SpecializedProjectionInfoPacket<double>();
+  SpecializedProjectionInfoPacket<double>*  recvT1;
+  SpecializedProjectionInfoPacket<int>*    test2 = new SpecializedProjectionInfoPacket<int>();
+  SpecializedProjectionInfoPacket<int>*     recvT2;
+  int topRank = world->size() - 1;
+  int recv = (rank_ > 0        ? rank_ - 1 : topRank);
+  int send = (rank_ < topRank  ? rank_ + 1 : 0);
+  world->send(send, 0, test1);
+  world->recv(recv, 0, recvT1);
+  world->send(send, 1, test2);
+  world->recv(recv, 1, recvT2);
 }
 
 RepastProcess* RepastProcess::init(string propsfile, boost::mpi::communicator* comm, int maxConfigFileSize) {
@@ -264,6 +282,13 @@ void RepastProcess::initiateAgentRequest(AgentRequest& request
 RepastProcess::~RepastProcess() {
   delete runner;
   delete importer_exporter;
+
+  delete procsToSendProjInfoTo;
+  delete procsToRecvProjInfoFrom;
+
+  delete procsToSendAgentStatusInfoTo;
+  delete procsToRecvAgentStatusInfoFrom;
+
 	_instance = 0;
 }
 
