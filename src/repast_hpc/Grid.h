@@ -60,6 +60,7 @@ namespace repast {
  */
 template<typename T, typename GPType>
 class Grid: public Projection<T> {
+  typedef typename Projection<T>::RADIUS RADIUS;
 
 public:
 
@@ -238,6 +239,24 @@ public:
 	 * @return true if this Grid is periodic, otherwise false.
 	 */
 	virtual bool isPeriodic() const = 0;
+
+  virtual ProjectionInfoPacket* getProjectionInfo(AgentId id, bool secondaryInfo = false, std::set<AgentId>* secondaryIds = 0, int destProc = -1 ) = 0;
+
+  virtual void updateProjectionInfo(ProjectionInfoPacket* pip, Context<T>* context) = 0;
+
+  virtual void getRequiredAgents(std::set<AgentId>& agentsToTest, std::set<AgentId>& agentsRequired, RADIUS radius = Projection<T>::PRIMARY){} // Grids allow all agents to be dropped b/c agent info not dependent on other agents
+
+  virtual void getAgentsToPush(std::set<AgentId>& agentsToTest, std::map<int, std::set<AgentId> >& agentsToPush) = 0;
+
+  virtual bool keepsAgentsOnSyncProj(){ return false; }
+
+  virtual bool sendsSecondaryAgentsOnStatusExchange(){ return false; }
+
+  virtual void getInfoExchangePartners(std::set<int>& psToSendTo, std::set<int>& psToReceiveFrom) = 0;
+
+  virtual void getAgentStatusExchangePartners(std::set<int>& psToSendTo, std::set<int>& psToReceiveFrom) = 0;
+
+  virtual void cleanProjectionInfo(std::set<AgentId>& agentsToKeep){}; // Grids don't do this
 
 };
 
