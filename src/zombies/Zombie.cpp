@@ -56,21 +56,29 @@ struct CountHumansOnPatch {
 };
 
 void Zombie::step() {
-	// move to where the humans are
-	AgentSet<Patch> nghs = patchHere<Patch>()->neighbors<Patch>();
+  //  bool track = true;//(getId() == AgentId(0,0,2));
+  //  bool track = (RepastProcess::instance()->rank() == 1);
+  //  if(track) std::cout << " I'm Zombie " << getId() << " and I'm on Proc " << RepastProcess::instance()->rank() << " at " << location() << " and I'm stepping..." << std::endl;
+
+    Patch* p = patchHere<Patch>();
+    AgentSet<Patch> nghs = patchHere<Patch>()->neighbors<Patch>();
     Patch* winningPatch = nghs.maxOneOf(CountHumansOnPatch());
+  //  if(track) std::cout << " I'm Zombie " << getId() << " and I'm turning to face: " << winningPatch->location() << std::endl;
     face(winningPatch);
     move(.5);
+    //if(track) std::cout << " I'm Zombie " << getId() << " and now I'm at " << location() << std::endl;
 
-	AgentSet<Human> humans;
-	turtlesHere(humans);
+    AgentSet<Human> humans;
+    turtlesHere(humans);
 
-	if (humans.size() > 0) {
-		Human* human = humans.oneOf();
-		infect(human);
-	}
-}
+    if (humans.size() > 0) {
+      Human* human = humans.oneOf();
+    //  std::cout << " I'm Zombie " << getId() << " and I'm infecting " << human->getId() << std::endl;
+      infect(human);
+    }
+  }
 
-void Zombie::infect(Human* human) {
-	human->infect();
+  void Zombie::infect(Human* human) {
+    human->infect();
+    //_observer->createLink(this*, human, "Infection");
 }

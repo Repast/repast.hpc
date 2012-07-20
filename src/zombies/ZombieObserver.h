@@ -69,6 +69,8 @@ public:
 	void createAgents(std::vector<AgentPackage>& content, std::vector<repast::relogo::RelogoAgent*>& out);
 	void provideContent(repast::relogo::RelogoAgent* agent, std::vector<AgentPackage>& out);
 
+	void updateAgent(AgentPackage package);
+
 	void incrementInfectionCount() {
 		_infectionCount++;
 	}

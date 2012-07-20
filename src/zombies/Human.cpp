@@ -72,7 +72,7 @@ void Human::step() {
 	bool alive = true;
 	if (_infected) {
 		_infectionTime++;
-		if (_infectionTime == 5) {
+		if (_infectionTime == 50) {
 			// should be safe to die here as nothing else
 			// will need this object, so OK to delete it
 			_observer->hatch<Zombie> (this);
@@ -88,7 +88,7 @@ void Human::step() {
 		face(winningPatch);
 		double distanceToMove = 1.5; // For non-toroidal worlds, need to check to make sure move is not out of bounds
 		while((_observer->patchAtOffset(location(), heading(), distanceToMove) == 0) && (distanceToMove > 0)) distanceToMove--;
-		if(distanceToMove > 0) move(distanceToMove);
+	//  if(distanceToMove > 0) move(distanceToMove);
 	}
 }
 

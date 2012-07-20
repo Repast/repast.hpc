@@ -51,18 +51,19 @@ struct AgentPackage {
 		ar & id;
 		ar & proc;
 		ar & type;
+		ar & currentProc;
 
 		ar & infectionTime;
 		ar & infected;
 	}
 
-	int id, proc, type;
+	int id, proc, type, currentProc;
 
 	int infectionTime;
 	bool infected;
 
 	repast::AgentId getId() const {
-		return repast::AgentId(id, proc, type);
+		return repast::AgentId(id, proc, type, currentProc);
 	}
 };
 

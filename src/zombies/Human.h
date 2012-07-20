@@ -66,7 +66,12 @@ public:
 
 	int infectionTime() const {
 		return _infectionTime;
-	}	
+	}
+
+  void set(bool infected, int infectionTime){
+    _infected = infected;
+    _infectionTime = infectionTime;
+  }
 };
 
 #endif /* HUMAN_H_ */
