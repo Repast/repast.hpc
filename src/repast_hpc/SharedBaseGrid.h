@@ -335,11 +335,12 @@ template<typename T, typename GPTransformer, typename Adder, typename GPType>
 class SharedBaseGrid: public BaseGrid<T, MultipleOccupancy<T, GPType> , GPTransformer, Adder, GPType> {
 
 private:
-	GridDimensions localBounds;
-	int _buffer;
+
 	GridMovePackets<GPType> movePackets;
 
 protected:
+	int _buffer;
+	GridDimensions localBounds;
 	Neighbors nghs;
 	// vector of ids of agents in this spaces buffer
 	std::vector<AgentId> buffered;
