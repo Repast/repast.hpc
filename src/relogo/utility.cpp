@@ -48,10 +48,7 @@ namespace relogo {
 
 
 int doubleCoordToInt(double val) {
-	//.000000001 part helps avoid rounding issues when applied to a
-	// double like .499999999999999999999 which is not .5 due to
-	// floating point arithmetic issues
-	return (int)(val >= 0 ? val + 0.5000000001 : val - 0.500000001);
+  return (int)floor(val + 0.5);
 }
 
 float subtractHeadings(float to, float from) {
