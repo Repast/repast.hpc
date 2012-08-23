@@ -660,7 +660,7 @@ void synchEdges(SharedNetwork<Vertex, Edge, EdgeContent, EdgeManager>* net, Edge
     std::vector<boost::shared_ptr<Edge> >* edges = emIter->second;
     contentVector->push_back( edgeContent = new std::vector<EdgeContent>);
     for (typename std::vector<boost::shared_ptr<Edge> >::iterator iter = edges->begin(); iter != edges->end(); ++iter) {
-      edgeContent->push_back(edgeManager.provideEdgeContent(**iter));
+      edgeContent->push_back(edgeManager.provideEdgeContent(iter->get()));
     }
     requests.push_back(world->isend(receiver, NET_EDGE_SYNC, *edgeContent));
   }

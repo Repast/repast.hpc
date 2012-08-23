@@ -229,7 +229,7 @@ public:
     return new RepastEdge<V>(context->getAgent(content.source), context->getAgent(content.target), content.weight);
   }
 
-  RepastEdgeContent<V>* provideContent(RepastEdge<V>* edge){
+  RepastEdgeContent<V>* provideEdgeContent(RepastEdge<V>* edge){
     return new RepastEdgeContent<V>(edge);
   }
 

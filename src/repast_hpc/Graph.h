@@ -559,7 +559,7 @@ ProjectionInfoPacket* Graph<V, E, Ec, EcM>::getProjectionInfo(AgentId id, bool s
         sourceId = (*iter)->source()->getId();
         targetId = (*iter)->target()->getId();
         otherId = (sourceId != id ? sourceId : targetId);
-        if(otherId.currentRank() == destProc)  edgeContent.push_back(edgeContentManager->provideEdgeContent(*(iter->get())));
+        if(otherId.currentRank() == destProc)  edgeContent.push_back(*(edgeContentManager->provideEdgeContent(iter->get())));
       }
     }
     else{
@@ -567,7 +567,7 @@ ProjectionInfoPacket* Graph<V, E, Ec, EcM>::getProjectionInfo(AgentId id, bool s
         sourceId = (*iter)->source()->getId();
         targetId = (*iter)->target()->getId();
         otherId = (sourceId != id ? sourceId : targetId);
-        edgeContent.push_back(edgeContentManager->provideEdgeContent(*(iter->get())));
+        edgeContent.push_back(*(edgeContentManager->provideEdgeContent(iter->get())));
       }
     }
   }
@@ -579,7 +579,7 @@ ProjectionInfoPacket* Graph<V, E, Ec, EcM>::getProjectionInfo(AgentId id, bool s
         otherId = (sourceId != id ? sourceId : targetId);
         if(otherId.currentRank() == destProc){
           secondaryIds->insert(otherId);
-          edgeContent.push_back(edgeContentManager->provideEdgeContent(*(iter->get())));
+          edgeContent.push_back(*(edgeContentManager->provideEdgeContent(iter->get())));
         }
       }
     }
@@ -589,7 +589,7 @@ ProjectionInfoPacket* Graph<V, E, Ec, EcM>::getProjectionInfo(AgentId id, bool s
         targetId = (*iter)->target()->getId();
         otherId = (sourceId != id ? sourceId : targetId);
         secondaryIds->insert(otherId);
-        edgeContent.push_back(edgeContentManager->provideEdgeContent(*(iter->get())));
+        edgeContent.push_back(*(edgeContentManager->provideEdgeContent(iter->get())));
       }
     }
   }
@@ -601,7 +601,10 @@ template<typename V, typename E, typename Ec, typename EcM>
 void Graph<V, E, Ec, EcM>::updateProjectionInfo(ProjectionInfoPacket* pip, Context<V>* context){
   SpecializedProjectionInfoPacket<Ec>* spip = static_cast<SpecializedProjectionInfoPacket<Ec>*>(pip);
   std::vector<Ec> &edges = spip->data;
-  for(int i = 0; i < edges.size(); i++)  doAddEdge(edgeContentManager->createEdge(*context, edges[i]));
+  for(int i = 0; i < edges.size(); i++){
+    boost::shared_ptr<E> newEdge(edgeContentManager->createEdge(edges[i], context));
+    doAddEdge(newEdge);
+  }
 }
 
 
