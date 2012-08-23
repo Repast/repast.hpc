@@ -643,14 +643,17 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<A
 
   // Local agents that are in other processes' 'buffer zones' must be exported to those other processes.
   int r = comm->rank();
-  for(typename std::set<AgentId>::iterator idIter = agentsToTest.begin(), idIterEnd = agentsToTest.end(); idIter != idIterEnd; ++idIter){
+  std::set<AgentId>::iterator idIter = agentsToTest.begin();
+  while(idIter != agentsToTest.end()){
     AgentId id = *idIter;
+    bool found = false;
     if(id.currentRank() == r){ // Local agents only
       std::vector<GPType> locationVector;
       GridBaseType::getLocation(id, locationVector);
       Point<GPType> loc(locationVector);
       if(!unbuffered.contains(loc)){
         if(W_bounds.contains(loc)){
+          found = true;
           W_set.insert(id);
           if(N_bounds.contains(loc)){
             N_set.insert(id);
@@ -665,6 +668,7 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<A
         }
         else{
           if(E_bounds.contains(loc)){
+            found = true;
             E_set.insert(id);
             if(N_bounds.contains(loc)){
               N_set.insert(id);
@@ -679,16 +683,26 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<A
           }
           else{
             if(N_bounds.contains(loc)){
+              found = true;
               N_set.insert(id);
             }
             else{
               if(S_bounds.contains(loc)){
+                found = true;
                 S_set.insert(id);
               }
             }
           }
         }
       }
+    }
+    if(found){
+      std::set<AgentId>::iterator tmp = idIter;
+      idIter++;
+      agentsToTest.erase(tmp);
+    }
+    else{
+      idIter++;
     }
   }
 
