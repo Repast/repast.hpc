@@ -137,6 +137,9 @@ public:
   AgentStateFilter<T>  LOCAL_FILTER;
   AgentStateFilter<T>  NON_LOCAL_FILTER;
 
+  // For more efficient 'push' during projection sync
+  std::vector<std::string> getAgentsToPushProjOrder;
+
 	typedef typename boost::filter_iterator<IsLocalAgent<T> , typename Context<T>::const_iterator> const_local_iterator;
 
   typedef typename boost::filter_iterator<AgentStateFilter<T> , typename Context<T>::const_iterator>        const_state_aware_iterator;
@@ -775,6 +778,7 @@ public:
 
   void getAgentsToPushToOtherProcesses(std::map<int, std::set<AgentId> >& agentsToPush);
 
+  virtual void addProjection(Projection<T>* projection);
 
 };
 
@@ -1079,15 +1083,23 @@ void SharedContext<T>::getNonlocalAgentsToDrop(std::set<AgentId>& agentsToKeep, 
 
 template<typename T>
 void SharedContext<T>::getAgentsToPushToOtherProcesses(std::map<int, std::set<AgentId> >& agentsToPush){
+  std::vector<AgentId> tmp;
   std::set<AgentId> agentsToTest;
   for(const_state_aware_iterator iter = begin(LOCAL), iterEnd = end(LOCAL); iter != iterEnd; ++iter){
-    agentsToTest.insert((*iter)->getId());
+    tmp.push_back((*iter)->getId());
   }
-  for(typename std::vector<Projection<T> *>::iterator iter = Context<T>::projections.begin(), iterEnd = Context<T>::projections.end(); iter != iterEnd; iter++){
-    (*iter)->getAgentsToPush(agentsToTest, agentsToPush);
+  agentsToTest.insert(tmp.begin(), tmp.end());
+  for(typename std::vector<std::string>::iterator iter = getAgentsToPushProjOrder.begin(), iterEnd = getAgentsToPushProjOrder.end(); iter != iterEnd; iter++){
+     Context<T>::getProjection(*iter)->getAgentsToPush(agentsToTest, agentsToPush);
   }
 }
 
+template<typename T>
+void SharedContext<T>::addProjection(Projection<T>* projection){
+  int sizeBefore = Context<T>::projections.size();
+  Context<T>::addProjection(projection);
+  if(sizeBefore != Context<T>::projections.size()) getAgentsToPushProjOrder.push_back(projection->name());
+}
 
 
 

@@ -130,7 +130,7 @@ public:
 	 *
 	 * @param projection the projection to add
 	 */
-	void addProjection(Projection<T>* projection);
+	virtual void addProjection(Projection<T>* projection);
 
 	/**
 	 * Get the named Projection.

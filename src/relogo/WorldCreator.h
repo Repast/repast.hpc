@@ -118,7 +118,16 @@ ObsType* WorldCreator::createWorld(const WorldDefinition& worldDef, const std::v
 	ObsType* observer = new ObsType();
 
 	observer->context.addProjection(createDiscreteSpace(worldDef, pConfig));
-	observer->context.addProjection(createContinuousSpace(worldDef, pConfig));
+
+	Projection<RelogoAgent>* spaceProj = createContinuousSpace(worldDef, pConfig);
+	observer->context.addProjection(spaceProj);
+	std::string projName = spaceProj->name();
+	std::vector<std::string>::iterator iter = observer->context.getAgentsToPushProjOrder.begin();
+	while(iter != observer->context.getAgentsToPushProjOrder.end()){
+	  if(*iter == projName) iter = observer->context.getAgentsToPushProjOrder.erase(iter);
+	  else iter++;
+	}
+
 
 	RelogoGridType* grid = static_cast<RelogoGridType*> (observer->context.getProjection(GRID_NAME));
 	RelogoSpaceType* space = static_cast<RelogoSpaceType*> (observer->context.getProjection(SPACE_NAME));
