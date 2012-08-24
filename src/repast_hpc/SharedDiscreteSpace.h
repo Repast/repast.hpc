@@ -237,7 +237,6 @@ void SharedDiscreteSpace<T, GPTransformer, Adder>::getAgentsToPush(std::set<Agen
 
 
   int r = SharedBaseGrid<T, GPTransformer, Adder, int>::comm->rank();
-  if(r == 0) std::cout << " RUNNING CHILD: AgentsToTest initial size: " << agentsToTest.size() << std::endl;
 
   // In a general case, we might not want to do this, but
   // for the current configuration, we can make this (perhaps much) more efficient
@@ -371,8 +370,6 @@ void SharedDiscreteSpace<T, GPTransformer, Adder>::getAgentsToPush(std::set<Agen
       }
     }
   }
-
-  if(r == 0) std::cout << " RUNNING CHILD: AgentsToTest   final size: " << agentsToTest.size() << std::endl;
 
   if(NW_set.size() > 0){
     agentsToPush[ W_rank].insert(NW_set.begin(), NW_set.end());

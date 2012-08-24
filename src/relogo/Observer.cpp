@@ -148,8 +148,6 @@ void Observer::_setup(Properties& props) {
 	_RealUniformGenerator gen4(random->engine(), boost::uniform_real<>(minPycor(), maxPycor()));
 	rndY = new DefaultNumberGenerator<_RealUniformGenerator> (gen4);
 
-	std::cout << _rank << " minX " << minPxcor() << " maxX " << maxPxcor() << " minY " << minPycor() << " maxY " << maxPycor() << std::endl;
-
 	setup(props);
 }
 

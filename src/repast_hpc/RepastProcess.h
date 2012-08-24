@@ -649,7 +649,6 @@ void RepastProcess::synchronizeProjectionInfo(SharedContext<T>& context, Provide
   // Drop all of the agents that can be dropped
   std::set<AgentId>::iterator dropIter = agentsToDrop.begin(), dropIterEnd = agentsToDrop.end();
   while(dropIter != dropIterEnd){
-    if(dropIter->agentType() == 2) std::cout << " RANK " << rank_ << " SYNCHING PROJECTION INFO AND DROPPING " << *dropIter << std::endl;
     context.removeAgent(*dropIter);
     agentRemoved(*dropIter);
     dropIter++;
@@ -779,7 +778,6 @@ void RepastProcess::synchronizeProjectionInfo(SharedContext<T>& context, Provide
     AgentRequest requestToRegister(iter->first);
     for (typename std::vector<Content>::const_iterator contentIter = contentVector->begin(), contentIterEnd = contentVector->end(); contentIter != contentIterEnd; ++contentIter) {
       T* newAgent       = creator.createAgent(*contentIter);
-      if(newAgent->getId().agentType() == 2) std::cout << " RANK " << rank_ << " IN SYNC PROJECTION INFO RECEIVED " << newAgent->getId() << std::endl;
       T* agentInContext = context.addAgent(newAgent);
       if (agentInContext != newAgent){ // This agent was already on this process
         updater.updateAgent(*contentIter);
