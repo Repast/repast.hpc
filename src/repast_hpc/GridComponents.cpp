@@ -171,12 +171,7 @@ void WrapAroundBorders::translate(const std::vector<double>& oldPos, std::vector
       throw Repast_Error_15(oldPos, newPos, displacement); // Position and displacement vectors must be of the same size
 
   for (int i = 0, n = displacement.size(); i < n; ++i) newPos[i] = oldPos[i] + displacement[i];
-
-  if(newPos[1] == 100) std::cout << " A HUNDRED! A" << std::endl;
-
   transform(newPos, newPos);
-
-  if(newPos[1] == 100) std::cout << " A HUNDRED! B" << std::endl;
 }
 
 void WrapAroundBorders::translate(const std::vector<int>& oldPos, std::vector<int>& newPos,
@@ -186,10 +181,7 @@ void WrapAroundBorders::translate(const std::vector<int>& oldPos, std::vector<in
       throw Repast_Error_16(oldPos, newPos, displacement); // Position and displacement vectors must be of the same size
 
   for (int i = 0, n = displacement.size(); i < n; ++i) newPos[i] = oldPos[i] + displacement[i];
-
-  if(newPos[1] == 100) std::cout << " A HUNDRED! C" << std::endl;
   transform(newPos, newPos);
-  if(newPos[1] == 100) std::cout << " A HUNDRED! D" << std::endl;
 }
 
 }
