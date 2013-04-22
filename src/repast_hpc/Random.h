@@ -413,8 +413,7 @@ public:
    * @param size
    */
   RandomAccess(I beginning, int size) :
-    interval((int)(sqrt((double)size))), maxLandmark(0)  {
-        begin = beginning;
+    interval((int)(sqrt((double)size))), maxLandmark(0), it(beginning), begin(beginning)  {
         landmarks.push_back(std::pair<int, I >(0, beginning));
   }
 
