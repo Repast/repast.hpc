@@ -978,7 +978,6 @@ void RepastProcess::synchronizeAgentStatus(SharedContext<T>& context, Provider& 
 
   for(std::set<AgentId>::iterator idIter = agentsToDrop.begin(), idIterEnd = agentsToDrop.end(); idIter != idIterEnd; ++idIter) context.removeAgent(*idIter);
 
-
   // STEP 10: Insert the newly received agents that moved to this process and update exporters
   typename std::vector<SyncStatus_Packet<Content>* >::iterator packetIter;
   typename std::vector<SyncStatus_Packet<Content>* >::iterator packetIterEnd = packetsRecd.end();

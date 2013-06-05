@@ -1055,7 +1055,7 @@ void SharedContext<T>::getRequiredAgents(std::set<AgentId>& agentsToTest, std::s
   typename std::vector<Projection<T> *>::iterator iter    = Context<T>::projections.begin();
   typename std::vector<Projection<T> *>::iterator iterEnd = Context<T>::projections.end();
   while((iter != iterEnd) && (agentsToTest.size() > 0)){
-    (*iter)->getRequiredAgents(agentsToTest, agentsToKeep);
+    (*iter)->getRequiredAgents(agentsToTest, agentsToKeep, radius);
     iter++;
   }
 }

@@ -45,7 +45,7 @@
 #include <vector>
 #include <stdexcept>
 
-#include "RepastErrors.h"
+#include "repast_hpc/RepastErrors.h"
 
 #include <boost/lexical_cast.hpp>
 
