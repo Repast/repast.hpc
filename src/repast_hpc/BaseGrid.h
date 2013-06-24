@@ -353,8 +353,9 @@ bool BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::moveTo(const Agent
 template<typename T, typename CellAccessor, typename GPTransformer, typename Adder, typename GPType>
 bool BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::moveTo(const AgentId& id,
 		const std::vector<GPType>& newLocation) {
-	LocationMapIter iter = agentToLocation.find(id);
-	if (iter == agentToLocation.end())
+  LocationMapIter iter = agentToLocation.find(id);
+
+  if (iter == agentToLocation.end())
 		throw Repast_Error_2<AgentId>(id, Projection<T>::name()); // Agent has not yet been introduced to this space/is not present
 
 	if (newLocation.size() < dimensions_.dimensionCount())
@@ -496,10 +497,12 @@ template<typename T, typename CellAccessor, typename GPTransformer, typename Add
 ProjectionInfoPacket* BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::getProjectionInfo(AgentId id, bool secondaryInfo,
     std::set<AgentId>* secondaryIds, int destProc){
   typename AgentLocationMap::const_iterator agentIter = agentToLocation.find(id);
-  if(agentIter == agentToLocation.end())
+  if(agentIter == agentToLocation.end()){
       return 0;
-  else
+  }
+  else{
       return new SpecializedProjectionInfoPacket<GPType>(id, agentIter->second->point.coords());
+  }
 }
 
 
@@ -507,7 +510,7 @@ template<typename T, typename CellAccessor, typename GPTransformer, typename Add
 void BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::updateProjectionInfo(ProjectionInfoPacket* pip, Context<T>* context){
   SpecializedProjectionInfoPacket<GPType>* spip = static_cast<SpecializedProjectionInfoPacket<GPType>*>(pip);
   moveTo(spip->id, spip->data);
-  std::cout << " UPDATING PROJECTION INFO: " << spip->id << " " << spip->data[0] << "," << spip->data[1] << " " << context->getAgent(spip->id)->location() << std::endl;
+//  std::cout << " UPDATING PROJECTION INFO: " << spip->id << " " << spip->data[0] << "," << spip->data[1] << " " << context->getAgent(spip->id)->location() << std::endl;
 }
 
 }
