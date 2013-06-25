@@ -646,6 +646,12 @@ public:
     processesExportedTo.clear();
     exportedMap.clear();
   }
+
+  virtual void clearExportToSpecificProc(int rank){
+    processesExportedTo.erase(rank);
+    exportedMap.erase(rank);
+  }
+
 };
 
 
@@ -748,6 +754,10 @@ public:
 
   virtual void clearExporter(){
     exporter->clear();
+  }
+
+  virtual void clearExportToSpecificProc(int rank){
+    exporter->clearExportToSpecificProc(rank);
   }
 
 };
@@ -955,6 +965,14 @@ public:
     if(it != importersExportersMap.end()) it->second->clearExporter();
   }
 
+  void clearExportToSpecificProc(int rank){
+    std::map<std::string, AbstractImporterExporter*>::iterator it    = importersExportersMap.begin();
+    std::map<std::string, AbstractImporterExporter*>::iterator itEnd = importersExportersMap.end();
+    while(it != itEnd){
+      it->second->clearExportToSpecificProc(rank);
+      it++;
+    }
+  }
 
 };
 #endif
