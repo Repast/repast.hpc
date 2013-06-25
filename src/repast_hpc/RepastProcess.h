@@ -992,14 +992,6 @@ void RepastProcess::synchronizeAgentStatus(SharedContext<T>& context, Provider& 
         // Already contained the agent as an imported agent so update the existing agent's id and other info
         inContext->getId().currentRank(rank_);
         updater.updateAgent(*contentIter);
-        // Already contained the agent
-        // If the agent is local on this rank, do nothing (the agent received must be a secondary agent), but
-        // If the agent is non-local on this rank
-        if(inContext->getId().currentRank() != rank_){
-          // Update the existing agent's id and other info
-          updater.updateAgent(*contentIter);
-          inContext->getId().currentRank(rank_);
-        }
         delete out;
       }
       else{// Agent was not already on this rank and is not a new local agent; must process it as a new request
