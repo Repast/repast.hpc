@@ -449,8 +449,14 @@ public:
 	 */
 	void synchRemovedEdges();
 
+	/**
+	 * Returns true if this is a master link; will be a master link if
+	 * its master node is local. The master node is usually the edge 'source',
+	 * but if the usesTargetAsMaster flag is set to true then the 'target'
+	 * is the master node.
+	 */
   virtual bool isMaster(E* e){
-    return e->source()->getId().currentRank() == rank;
+    return (e->usesTargetAsMaster() ? e->target()->getId().currentRank() : e->source()->getId().currentRank()) == rank;
   }
 };
 

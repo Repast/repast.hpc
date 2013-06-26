@@ -503,7 +503,7 @@ void Graph<V, E, Ec, EcM>::showEdges(){
     for(typename std::vector<boost::shared_ptr<E> >::iterator EI = edges.begin(), EIEnd = edges.end(); EI != EIEnd; ++EI) edgeSet.insert(*EI);
   }
   for(typename std::set<boost::shared_ptr<E> >::iterator ei = edgeSet.begin(), eiEnd = edgeSet.end(); ei != eiEnd; ++ei){
-    std::cout << "SOURCE: " << (*ei)->source()->getId() << " TARGET: " << (*ei)->target()->getId() << std::endl;
+    std::cout << "SOURCE: " << (*ei)->source()->getId() << " TARGET: " << (*ei)->target()->getId() << " " << (isMaster(&**ei) ? "MASTER" : "NONLOCAL") << std::endl;
   }
 }
 
