@@ -61,103 +61,104 @@ public:
   enum MASTER_NODE{ DEFAULT, SOURCE, TARGET };
 
 private:
-	double _weight;
-	V* _source, *_target;
-	bool _useTargetAsMaster;
+  double _weight;
+  V* _source, *_target;
+  bool _useTargetAsMaster;
+  bool _conflicted;
 
-	bool defaultTarget(int sourceRank, int targetRank, MASTER_NODE useTargetAsMaster){
-	  int rank = repast::RepastProcess::instance()->rank();
-	  return (useTargetAsMaster == SOURCE ? false :
-	          useTargetAsMaster == TARGET ? true  :
-	          ((_source->getId().currentRank() != rank) &&
-	           (_target->getId().currentRank() == rank)));
-	}
+  bool defaultTarget(int sourceRank, int targetRank, MASTER_NODE useTargetAsMaster){
+    int rank = repast::RepastProcess::instance()->rank();
+    return (useTargetAsMaster == SOURCE ? false :
+            useTargetAsMaster == TARGET ? true  :
+            ((_source->getId().currentRank() != rank) &&
+             (_target->getId().currentRank() == rank)));
+  }
 
 public:
 
-	// no arg constructor for serialization
-  RepastEdge() : _source(0), _target(0), _weight(1), _useTargetAsMaster(false){ }
+  // no arg constructor for serialization
+  RepastEdge() : _source(0), _target(0), _weight(1), _useTargetAsMaster(false), _conflicted(false){ }
   ~RepastEdge(){ }
 
-	/**
-	 * Creates a RepastEdge with the specified source and target and a default
-	 * weight of 1.
-	 *
-	 * @param source the edge source
-	 * @param target the edge target
-	 */
-	RepastEdge(V* source, V* target, MASTER_NODE useTargetAsMaster = DEFAULT);
+  /**
+   * Creates a RepastEdge with the specified source and target and a default
+   * weight of 1.
+   *
+   * @param source the edge source
+   * @param target the edge target
+   */
+  RepastEdge(V* source, V* target, MASTER_NODE useTargetAsMaster = DEFAULT);
 
-	/**
-	 * Creates a RepastEdge with the specified source, target,
-	 * and weight
-	 *
-	 * @param source the edge source
-	 * @param target the edge target
-	 * @param weight the edge weight
-	 */
-	RepastEdge(V* source, V* target, double weight, MASTER_NODE useTargetAsMaster = DEFAULT);
+  /**
+   * Creates a RepastEdge with the specified source, target,
+   * and weight
+   *
+   * @param source the edge source
+   * @param target the edge target
+   * @param weight the edge weight
+   */
+  RepastEdge(V* source, V* target, double weight, MASTER_NODE useTargetAsMaster = DEFAULT);
 
-	/**
-	 * Creates a RepastEdge with the specified source and target and a default
-	 * weight of 1.
-	 *
-	 * @param source the edge source
-	 * @param target the edge target
-	 */
-	RepastEdge(boost::shared_ptr<V> source, boost::shared_ptr<V> target, MASTER_NODE useTargetAsMaster = DEFAULT);
+  /**
+   * Creates a RepastEdge with the specified source and target and a default
+   * weight of 1.
+   *
+   * @param source the edge source
+   * @param target the edge target
+   */
+  RepastEdge(boost::shared_ptr<V> source, boost::shared_ptr<V> target, MASTER_NODE useTargetAsMaster = DEFAULT);
 
-	/**
-	 * Creates a RepastEdge with the specified source, target,
-	 * and weight
-	 *
-	 * @param source the edge source
-	 * @param target the edge target
-	 * @param weight the edge weight
-	 */
-	RepastEdge(boost::shared_ptr<V> source, boost::shared_ptr<V> target, double weight, MASTER_NODE useTargetAsMaster = DEFAULT);
+  /**
+   * Creates a RepastEdge with the specified source, target,
+   * and weight
+   *
+   * @param source the edge source
+   * @param target the edge target
+   * @param weight the edge weight
+   */
+  RepastEdge(boost::shared_ptr<V> source, boost::shared_ptr<V> target, double weight, MASTER_NODE useTargetAsMaster = DEFAULT);
 
-	/**
-	 * Copy constructor that creates a RepastEdge from another RepastEdge.
-	 */
-	RepastEdge(const RepastEdge& edge);
+  /**
+   * Copy constructor that creates a RepastEdge from another RepastEdge.
+   */
+  RepastEdge(const RepastEdge& edge);
 
-	/**
-	 * Gets the source of this RepastEdge.
-	 *
-	 * @return the source of this RepastEdge.
-	 */
-	V* source() const {
-		return _source;
-	}
+  /**
+   * Gets the source of this RepastEdge.
+   *
+   * @return the source of this RepastEdge.
+   */
+  V* source() const {
+    return _source;
+  }
 
-	/**
-	 * Gets the target of this RepastEdge.
-	 *
-	 * @return the target of this RepastEdge.
-	 */
-	V* target() const {
-		return _target;
-	}
+  /**
+   * Gets the target of this RepastEdge.
+   *
+   * @return the target of this RepastEdge.
+   */
+  V* target() const {
+    return _target;
+  }
 
-	// sets the target. NON USER API
-	void target(V* target) {
-		_target = target;
-	}
+  // sets the target. NON USER API
+  void target(V* target) {
+    _target = target;
+  }
 
-	// sets the source. NON USER API
-	void source(V* source) {
-		_source = source;
-	}
+  // sets the source. NON USER API
+  void source(V* source) {
+    _source = source;
+  }
 
-	/**
-	 * Gets the weight of this RepastEdge.
-	 *
-	 * @return the weight of this RepastEdge.
-	 */
-	double weight() const {
-		return _weight;
-	}
+  /**
+   * Gets the weight of this RepastEdge.
+   *
+   * @return the weight of this RepastEdge.
+   */
+  double weight() const {
+    return _weight;
+  }
 
   void weight(double wt){
     _weight = wt;
@@ -165,40 +166,45 @@ public:
 
   bool usesTargetAsMaster(){ return _useTargetAsMaster; }
 
+  void markConflicted(){  _conflicted = true; }
+  void clearConflicted(){ _conflicted = false; }
+  bool isConflicted(){ return _conflicted; }
+
 };
 
 template<typename V>
 RepastEdge<V>::RepastEdge(boost::shared_ptr<V> source, boost::shared_ptr<V> target, MASTER_NODE useTargetAsMaster) :
-  _source(source.get()), _target(target.get()), _weight(1) {
+  _source(source.get()), _target(target.get()), _weight(1), _conflicted(false) {
   _useTargetAsMaster = defaultTarget(_source->getId().currentRank(), _target->getId().currentRank(), useTargetAsMaster);
 }
 
 template<typename V>
 RepastEdge<V>::RepastEdge(V* source, V* target, MASTER_NODE useTargetAsMaster) :
-  _source(source), _target(target), _weight(1){
+  _source(source), _target(target), _weight(1), _conflicted(false){
   _useTargetAsMaster = defaultTarget(_source->getId().currentRank(), _target->getId().currentRank(), useTargetAsMaster);
 }
 
 template<typename V>
 RepastEdge<V>::RepastEdge(V* source, V* target, double weight, MASTER_NODE useTargetAsMaster) :
-  _source(source), _target(target), _weight(weight){
+  _source(source), _target(target), _weight(weight), _conflicted(false){
   _useTargetAsMaster = defaultTarget(_source->getId().currentRank(), _target->getId().currentRank(), useTargetAsMaster);
 }
 
 template<typename V>
 RepastEdge<V>::RepastEdge(boost::shared_ptr<V> source, boost::shared_ptr<V> target, double weight, MASTER_NODE useTargetAsMaster) :
-  _source(source.get()), _target(target.get()), _weight(weight){
+  _source(source.get()), _target(target.get()), _weight(weight), _conflicted(false){
   _useTargetAsMaster = defaultTarget(_source->getId().currentRank(), _target->getId().currentRank(), useTargetAsMaster);
 }
 
 template<typename V>
 RepastEdge<V>::RepastEdge(const RepastEdge& edge) :
-  _source(edge._source), _target(edge._target), _weight(edge._weight), _useTargetAsMaster(edge._useTargetAsMaster) { }
+  _source(edge._source), _target(edge._target), _weight(edge._weight),
+  _useTargetAsMaster(edge._useTargetAsMaster), _conflicted(edge._conflicted) { }
 
 template<typename V>
 std::ostream& operator<<(std::ostream& os, const RepastEdge<V>& edge) {
-	os << (*edge.source()) << (edge._useTargetAsMaster ? "" : "(M)") << " -- " << (*edge.target() << (edge._useTargetAsMaster ? "(M)" : ""));
-	return os;
+  os << (*edge.source()) << (edge._useTargetAsMaster ? "" : "(M)") << " -- " << (*edge.target() << (edge._useTargetAsMaster ? "(M)" : ""));
+  return os;
 }
 
 
