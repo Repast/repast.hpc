@@ -988,14 +988,21 @@ void RepastProcess::synchronizeAgentStatus(SharedContext<T>& context, Provider& 
     while(contentIter != content->end()){
       T* out = creator.createAgent(*contentIter);
       T* inContext = context.addAgent(out);
-      if (inContext != out) {
-        // Already contained the agent
-        // If the agent is local on this rank, do nothing (the agent received must be a secondary agent), but
+      if (inContext != out) { // Already contain the agent
+        // If the agent is local on this rank, do nothing (the agent received must be a secondary agent)
         // If the agent is non-local on this rank
         if(inContext->getId().currentRank() != rank_){
-          // Update the existing agent's id and other info
-          updater.updateAgent(*contentIter);
-          inContext->getId().currentRank(rank_);
+          // If the arriving agent has a current rank equal to this rank, this
+          // is an incoming, newly arrived local agent that already existed on this
+          // process as a secondary agent; it should be updated and its currentRank in
+          // its ID set to the local rank
+          if(out->getId().currentRank() == rank_){
+            updater.updateAgent(*contentIter);
+            inContext->getId().currentRank(rank_);
+          }
+          // Otherwise, it's a secondary agent arriving from another process, when it
+          // already exists as a non-local agent on this process; leave the original alone
+          // and discard the new version.
         }
         delete out;
       }
