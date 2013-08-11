@@ -50,6 +50,10 @@
 
 namespace repast {
 
+/**
+ * Base class for representations of border semantics
+ * (e.g. Strict, Sticky, etc.)
+ */
 class Borders {
 
 protected:
@@ -139,6 +143,13 @@ public:
 
 };
 
+/**
+ * Basic class for adding elements to grids. NOTE: This does NOT
+ * actually add the element to the grid; this simply returns 'true'
+ * and leaves the actual addition to the grid up to the user.
+ * Other classes may do other things (e.g. add to a random location)
+ * but this one does NOT.
+ */
 template<typename T>
 class SimpleAdder {
 public:

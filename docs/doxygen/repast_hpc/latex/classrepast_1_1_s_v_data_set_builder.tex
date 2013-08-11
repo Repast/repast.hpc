@@ -1,0 +1,95 @@
+\hypertarget{classrepast_1_1_s_v_data_set_builder}{\section{repast\-:\-:S\-V\-Data\-Set\-Builder Class Reference}
+\label{classrepast_1_1_s_v_data_set_builder}\index{repast\-::\-S\-V\-Data\-Set\-Builder@{repast\-::\-S\-V\-Data\-Set\-Builder}}
+}
+
+
+Used to build S\-V\-Data\-Sets to record data in plain text tabular format.  
+
+
+
+
+{\ttfamily \#include $<$S\-V\-Data\-Set\-Builder.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classrepast_1_1_s_v_data_set_builder_a859c517b2469745dc3ac66843f987285}{S\-V\-Data\-Set\-Builder} (const std\-::string \&file, const std\-::string \&separator, const \hyperlink{classrepast_1_1_schedule}{Schedule} \&schedule)
+\begin{DoxyCompactList}\small\item\em Creates a \hyperlink{classrepast_1_1_s_v_data_set_builder}{S\-V\-Data\-Set\-Builder} that will create a \hyperlink{classrepast_1_1_s_v_data_set}{S\-V\-Data\-Set} that will write to the specified file and use the specified string as a data value separator. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_s_v_data_set_builder}{S\-V\-Data\-Set\-Builder} \& \hyperlink{classrepast_1_1_s_v_data_set_builder_ac81c7b7d834d9332e8cbdd4ae7c0010a}{add\-Data\-Source} (\hyperlink{classrepast_1_1_s_v_data_source}{S\-V\-Data\-Source} $\ast$source)
+\begin{DoxyCompactList}\small\item\em Adds a Data\-Source to the \hyperlink{classrepast_1_1_data_set}{Data\-Set} produced by this builder. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_s_v_data_set}{S\-V\-Data\-Set} $\ast$ \hyperlink{classrepast_1_1_s_v_data_set_builder_a2c69751064d7746c47dbc2793b0fb01f}{create\-Data\-Set} ()
+\begin{DoxyCompactList}\small\item\em Creates the Data\-Source defined by this builder. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Used to build S\-V\-Data\-Sets to record data in plain text tabular format. 
+
+Steps for use are\-: 
+\begin{DoxyEnumerate}
+\item Create a \hyperlink{classrepast_1_1_s_v_data_set_builder}{S\-V\-Data\-Set\-Builder}. 
+\item Add S\-V\-Data\-Sources to the builder using the create\-S\-V\-Data\-Source functions. Each data source defines a column in the output and where the data for that column will be retrieved. Recording data on the \hyperlink{classrepast_1_1_s_v_data_set}{S\-V\-Data\-Set} produced by the builder will record this data for each column. 
+\item Call create\-Data\-Set to create the \hyperlink{classrepast_1_1_s_v_data_set}{S\-V\-Data\-Set}. 
+\item \hyperlink{classrepast_1_1_schedule}{Schedule} calls to record and write on the \hyperlink{classrepast_1_1_s_v_data_set}{S\-V\-Data\-Set}. 
+\end{DoxyEnumerate}
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1_s_v_data_set_builder_a859c517b2469745dc3ac66843f987285}{\index{repast\-::\-S\-V\-Data\-Set\-Builder@{repast\-::\-S\-V\-Data\-Set\-Builder}!S\-V\-Data\-Set\-Builder@{S\-V\-Data\-Set\-Builder}}
+\index{S\-V\-Data\-Set\-Builder@{S\-V\-Data\-Set\-Builder}!repast::SVDataSetBuilder@{repast\-::\-S\-V\-Data\-Set\-Builder}}
+\subsubsection[{S\-V\-Data\-Set\-Builder}]{\setlength{\rightskip}{0pt plus 5cm}repast\-::\-S\-V\-Data\-Set\-Builder\-::\-S\-V\-Data\-Set\-Builder (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{file, }
+\item[{const std\-::string \&}]{separator, }
+\item[{const {\bf Schedule} \&}]{schedule}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_s_v_data_set_builder_a859c517b2469745dc3ac66843f987285}
+
+
+Creates a \hyperlink{classrepast_1_1_s_v_data_set_builder}{S\-V\-Data\-Set\-Builder} that will create a \hyperlink{classrepast_1_1_s_v_data_set}{S\-V\-Data\-Set} that will write to the specified file and use the specified string as a data value separator. 
+
+Tick info will be gathered from the specified schedule.
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & the file path where the data will be recorded to \\
+\hline
+{\em separator} & a string used to separate the data values (e.\-g. a \char`\"{},\char`\"{}). \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_s_v_data_set_builder_ac81c7b7d834d9332e8cbdd4ae7c0010a}{\index{repast\-::\-S\-V\-Data\-Set\-Builder@{repast\-::\-S\-V\-Data\-Set\-Builder}!add\-Data\-Source@{add\-Data\-Source}}
+\index{add\-Data\-Source@{add\-Data\-Source}!repast::SVDataSetBuilder@{repast\-::\-S\-V\-Data\-Set\-Builder}}
+\subsubsection[{add\-Data\-Source}]{\setlength{\rightskip}{0pt plus 5cm}{\bf S\-V\-Data\-Set\-Builder} \& repast\-::\-S\-V\-Data\-Set\-Builder\-::add\-Data\-Source (
+\begin{DoxyParamCaption}
+\item[{{\bf S\-V\-Data\-Source} $\ast$}]{source}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_s_v_data_set_builder_ac81c7b7d834d9332e8cbdd4ae7c0010a}
+
+
+Adds a Data\-Source to the \hyperlink{classrepast_1_1_data_set}{Data\-Set} produced by this builder. 
+
+The create\-Data\-Source functions can be used to create Data Sources. Each data source defines a column in the output and where the data for that column will be retrieved. Recording data on the \hyperlink{classrepast_1_1_s_v_data_set}{S\-V\-Data\-Set} produced by the builder will record this data for each column.
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & the data source to add \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_s_v_data_set_builder_a2c69751064d7746c47dbc2793b0fb01f}{\index{repast\-::\-S\-V\-Data\-Set\-Builder@{repast\-::\-S\-V\-Data\-Set\-Builder}!create\-Data\-Set@{create\-Data\-Set}}
+\index{create\-Data\-Set@{create\-Data\-Set}!repast::SVDataSetBuilder@{repast\-::\-S\-V\-Data\-Set\-Builder}}
+\subsubsection[{create\-Data\-Set}]{\setlength{\rightskip}{0pt plus 5cm}{\bf S\-V\-Data\-Set} $\ast$ repast\-::\-S\-V\-Data\-Set\-Builder\-::create\-Data\-Set (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_s_v_data_set_builder_a2c69751064d7746c47dbc2793b0fb01f}
+
+
+Creates the Data\-Source defined by this builder. 
+
+This can only be called once. The caller is responsible for properly deleting the returned pointer. 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/S\-V\-Data\-Set\-Builder.\-h\item 
+repast\-\_\-hpc/S\-V\-Data\-Set\-Builder.\-cpp\end{DoxyCompactItemize}

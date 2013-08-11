@@ -1,0 +1,127 @@
+\hypertarget{classrepast_1_1_continuous_value_layer}{\section{repast\-:\-:Continuous\-Value\-Layer$<$ Value\-Type, Borders $>$ Class Template Reference}
+\label{classrepast_1_1_continuous_value_layer}\index{repast\-::\-Continuous\-Value\-Layer$<$ Value\-Type, Borders $>$@{repast\-::\-Continuous\-Value\-Layer$<$ Value\-Type, Borders $>$}}
+}
+
+
+Continous value layer whose location coordinates are double.  
+
+
+
+
+{\ttfamily \#include $<$Value\-Layer.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Continuous\-Value\-Layer$<$ Value\-Type, Borders $>$\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{classrepast_1_1_continuous_value_layer}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_continuous_value_layer_a89bd9bd46e0bc1b10f1106a88298bdbd}{{\bfseries Continuous\-Value\-Layer} (const \hyperlink{classrepast_1_1_continuous_value_layer}{Continuous\-Value\-Layer}$<$ Value\-Type, \hyperlink{classrepast_1_1_borders}{Borders} $>$ \&other)}\label{classrepast_1_1_continuous_value_layer_a89bd9bd46e0bc1b10f1106a88298bdbd}
+
+\item 
+\hypertarget{classrepast_1_1_continuous_value_layer_ae302163efacfefd43908f9ca37574010}{\hyperlink{classrepast_1_1_continuous_value_layer}{Continuous\-Value\-Layer} \& {\bfseries operator=} (const \hyperlink{classrepast_1_1_continuous_value_layer}{Continuous\-Value\-Layer}$<$ Value\-Type, \hyperlink{classrepast_1_1_borders}{Borders} $>$ \&rhs)}\label{classrepast_1_1_continuous_value_layer_ae302163efacfefd43908f9ca37574010}
+
+\item 
+\hyperlink{classrepast_1_1_continuous_value_layer_ab5c3df3bdca7ef3b87150f9be3dfc2fe}{Continuous\-Value\-Layer} (const std\-::string \&\hyperlink{classrepast_1_1_base_value_layer_a27277765ee50f9d5446b253f77797f5c}{name}, const \hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} \&\hyperlink{classrepast_1_1_value_layer_a51fe7fe718305d0c006bc465a14ef0e3}{dimensions}, const Value\-Type \&default\-Value=Value\-Type())
+\begin{DoxyCompactList}\small\item\em Creates a \hyperlink{classrepast_1_1_continuous_value_layer}{Continuous\-Value\-Layer} whose cells contain a default value of Value\-Type() with the specified dimensions. \end{DoxyCompactList}\item 
+Value\-Type \& \hyperlink{classrepast_1_1_continuous_value_layer_a020830982b41af4f1d955eee5b617bfa}{get} (const \hyperlink{classrepast_1_1_point}{Point}$<$ double $>$ \&pt)
+\begin{DoxyCompactList}\small\item\em Gets the value at the specified point. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_continuous_value_layer_a619f04cc04200c8de6616ec971674289}{set} (const Value\-Type \&value, const \hyperlink{classrepast_1_1_point}{Point}$<$ double $>$ \&pt)
+\begin{DoxyCompactList}\small\item\em Sets the value at the specified point. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename Value\-Type, typename Borders$>$class repast\-::\-Continuous\-Value\-Layer$<$ Value\-Type, Borders $>$}
+
+Continous value layer whose location coordinates are double. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Value\-Type} & the type of what the value layer stores. \\
+\hline
+{\em \hyperlink{classrepast_1_1_borders}{Borders}} & the type of borders (wrapped / periodic, strict). Border types can be found in \hyperlink{_grid_components_8h_source}{Grid\-Components.\-h} \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1_continuous_value_layer_ab5c3df3bdca7ef3b87150f9be3dfc2fe}{\index{repast\-::\-Continuous\-Value\-Layer@{repast\-::\-Continuous\-Value\-Layer}!Continuous\-Value\-Layer@{Continuous\-Value\-Layer}}
+\index{Continuous\-Value\-Layer@{Continuous\-Value\-Layer}!repast::ContinuousValueLayer@{repast\-::\-Continuous\-Value\-Layer}}
+\subsubsection[{Continuous\-Value\-Layer}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Value\-Type , typename Borders $>$ {\bf repast\-::\-Continuous\-Value\-Layer}$<$ Value\-Type, {\bf Borders} $>$\-::{\bf Continuous\-Value\-Layer} (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{name, }
+\item[{const {\bf Grid\-Dimensions} \&}]{dimensions, }
+\item[{const Value\-Type \&}]{default\-Value = {\ttfamily ValueType()}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_continuous_value_layer_ab5c3df3bdca7ef3b87150f9be3dfc2fe}
+
+
+Creates a \hyperlink{classrepast_1_1_continuous_value_layer}{Continuous\-Value\-Layer} whose cells contain a default value of Value\-Type() with the specified dimensions. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & the name of the \hyperlink{classrepast_1_1_continuous_value_layer}{Continuous\-Value\-Layer} \\
+\hline
+{\em dimension} & the dimensions of the \hyperlink{classrepast_1_1_continuous_value_layer}{Continuous\-Value\-Layer} \\
+\hline
+{\em dense} & whether or not the \hyperlink{classrepast_1_1_value_layer}{Value\-Layer} will be densely populated or not \\
+\hline
+{\em default\-Value} & the default value to return if no value has been set of a location. The default is the result of Value\-Type(). \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_continuous_value_layer_a020830982b41af4f1d955eee5b617bfa}{\index{repast\-::\-Continuous\-Value\-Layer@{repast\-::\-Continuous\-Value\-Layer}!get@{get}}
+\index{get@{get}!repast::ContinuousValueLayer@{repast\-::\-Continuous\-Value\-Layer}}
+\subsubsection[{get}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Value\-Type , typename Borders $>$ Value\-Type \& {\bf repast\-::\-Continuous\-Value\-Layer}$<$ Value\-Type, {\bf Borders} $>$\-::get (
+\begin{DoxyParamCaption}
+\item[{const {\bf Point}$<$ double $>$ \&}]{pt}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_continuous_value_layer_a020830982b41af4f1d955eee5b617bfa}
+
+
+Gets the value at the specified point. 
+
+If no value has been set at the specified point then this returns the default value.
+
+param pt the location to get the value of
+
+\begin{DoxyReturn}{Returns}
+the value at the specified point, or if no value has been set, then the default value. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1_value_layer_a472a2fcaa29b30c6410ec29b1cde34c0}{repast\-::\-Value\-Layer$<$ Value\-Type, double $>$}.
+
+\hypertarget{classrepast_1_1_continuous_value_layer_a619f04cc04200c8de6616ec971674289}{\index{repast\-::\-Continuous\-Value\-Layer@{repast\-::\-Continuous\-Value\-Layer}!set@{set}}
+\index{set@{set}!repast::ContinuousValueLayer@{repast\-::\-Continuous\-Value\-Layer}}
+\subsubsection[{set}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Value\-Type , typename Borders $>$ void {\bf repast\-::\-Continuous\-Value\-Layer}$<$ Value\-Type, {\bf Borders} $>$\-::set (
+\begin{DoxyParamCaption}
+\item[{const Value\-Type \&}]{value, }
+\item[{const {\bf Point}$<$ double $>$ \&}]{pt}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_continuous_value_layer_a619f04cc04200c8de6616ec971674289}
+
+
+Sets the value at the specified point. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em value} & the value \\
+\hline
+{\em pt} & the point where the value should be stored \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{classrepast_1_1_value_layer_a34ab3f83380ca978f19748cff9361425}{repast\-::\-Value\-Layer$<$ Value\-Type, double $>$}.
+
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Value\-Layer.\-h\end{DoxyCompactItemize}

@@ -1,0 +1,181 @@
+\hypertarget{classrepast_1_1_agent_id}{\section{repast\-:\-:Agent\-Id Class Reference}
+\label{classrepast_1_1_agent_id}\index{repast\-::\-Agent\-Id@{repast\-::\-Agent\-Id}}
+}
+
+
+\hyperlink{classrepast_1_1_agent}{Agent} identity information.  
+
+
+
+
+{\ttfamily \#include $<$Agent\-Id.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_agent_id_ad1da5259ce0bfa4b99f0adea5646ff78}{\hyperlink{classrepast_1_1_agent_id_ad1da5259ce0bfa4b99f0adea5646ff78}{Agent\-Id} ()}\label{classrepast_1_1_agent_id_ad1da5259ce0bfa4b99f0adea5646ff78}
+
+\begin{DoxyCompactList}\small\item\em No-\/arg constructor necessary for serialization. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_agent_id_aedbcc79ba8794ec1d0e7cfb3e7bee83d}{Agent\-Id} (int \hyperlink{classrepast_1_1_agent_id_af8482957f7cc22c0b79b7c62680af219}{id}, int start\-Proc, int \hyperlink{classrepast_1_1_agent_id_a2e28383a437cf176a596783288227e28}{agent\-Type}, int current\-Proc=-\/1)
+\begin{DoxyCompactList}\small\item\em Creates an \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1_agent_id_af8482957f7cc22c0b79b7c62680af219}{id} () const 
+\begin{DoxyCompactList}\small\item\em Gets the id component of this \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1_agent_id_a8f085b7feffaa55fb958f6b78a76ec43}{starting\-Rank} () const 
+\begin{DoxyCompactList}\small\item\em Gets the starting rank component of this \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1_agent_id_a2e28383a437cf176a596783288227e28}{agent\-Type} () const 
+\begin{DoxyCompactList}\small\item\em Gets the agent type component of this \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1_agent_id_a2cd64629db02df00ff9718b99f42059f}{current\-Rank} () const 
+\begin{DoxyCompactList}\small\item\em Gets the current process rank of this \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_agent_id_ae55db02b1adb2bf1906fb3356bbc4b21}{current\-Rank} (int val)
+\begin{DoxyCompactList}\small\item\em Sets the current process rank of this \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. \end{DoxyCompactList}\item 
+std\-::size\-\_\-t \hyperlink{classrepast_1_1_agent_id_adaf9d5613b079105f0973f7a4eecd86d}{hashcode} () const 
+\begin{DoxyCompactList}\small\item\em Gets the hashcode for this \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_agent_id_ac98d07dd8f7b70e16ccb9a01abf56b9c}{class {\bfseries boost\-::serialization\-::access}}\label{classrepast_1_1_agent_id_ac98d07dd8f7b70e16ccb9a01abf56b9c}
+
+\item 
+\hypertarget{classrepast_1_1_agent_id_a99514e02ab7b8141d3997fe15d337e98}{std\-::ostream \& \hyperlink{classrepast_1_1_agent_id_a99514e02ab7b8141d3997fe15d337e98}{operator$<$$<$} (std\-::ostream \&os, const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&\hyperlink{classrepast_1_1_agent_id_af8482957f7cc22c0b79b7c62680af219}{id})}\label{classrepast_1_1_agent_id_a99514e02ab7b8141d3997fe15d337e98}
+
+\begin{DoxyCompactList}\small\item\em Writes the agent id to the ostream. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_agent_id_a82148a933e439e1ec53d491438beeb6a}{bool \hyperlink{classrepast_1_1_agent_id_a82148a933e439e1ec53d491438beeb6a}{operator==} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&one, const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&two)}\label{classrepast_1_1_agent_id_a82148a933e439e1ec53d491438beeb6a}
+
+\begin{DoxyCompactList}\small\item\em Equality operator. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_agent_id_a96354ea883cef44bf168f04f38d197a1}{bool \hyperlink{classrepast_1_1_agent_id_a96354ea883cef44bf168f04f38d197a1}{operator$<$} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&one, const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&two)}\label{classrepast_1_1_agent_id_a96354ea883cef44bf168f04f38d197a1}
+
+\begin{DoxyCompactList}\small\item\em A comparison operator for use with std\-::set. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{classrepast_1_1_agent}{Agent} identity information. 
+
+An \hyperlink{classrepast_1_1_agent}{Agent} I\-D consists of four values\-: 1) a numerical identifier; 2) the process on which the agent was created; 3) a numerical identifier that indicates the agent's type (in simulation semantic terms, not a software object type); and 4) the process on which the agent is a local agent. Each agent should be uniquely identified by an \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} using the first three of the four values, which should be immutable. The fourth value can change throughout the simulation. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1_agent_id_aedbcc79ba8794ec1d0e7cfb3e7bee83d}{\index{repast\-::\-Agent\-Id@{repast\-::\-Agent\-Id}!Agent\-Id@{Agent\-Id}}
+\index{Agent\-Id@{Agent\-Id}!repast::AgentId@{repast\-::\-Agent\-Id}}
+\subsubsection[{Agent\-Id}]{\setlength{\rightskip}{0pt plus 5cm}repast\-::\-Agent\-Id\-::\-Agent\-Id (
+\begin{DoxyParamCaption}
+\item[{int}]{id, }
+\item[{int}]{start\-Proc, }
+\item[{int}]{agent\-Type, }
+\item[{int}]{current\-Proc = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_agent_id_aedbcc79ba8794ec1d0e7cfb3e7bee83d}
+
+
+Creates an \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. 
+
+The combination of the first three parameters should uniquely identify the agent.
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the agent's id \\
+\hline
+{\em start\-Proc} & the rank of the agent's starting process \\
+\hline
+{\em agent\-Type} & the agent's type (user defined) \\
+\hline
+{\em current\-Proc} & the rank where the agent is a local agent \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_agent_id_a2e28383a437cf176a596783288227e28}{\index{repast\-::\-Agent\-Id@{repast\-::\-Agent\-Id}!agent\-Type@{agent\-Type}}
+\index{agent\-Type@{agent\-Type}!repast::AgentId@{repast\-::\-Agent\-Id}}
+\subsubsection[{agent\-Type}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::\-Agent\-Id\-::agent\-Type (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_agent_id_a2e28383a437cf176a596783288227e28}
+
+
+Gets the agent type component of this \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. 
+
+\begin{DoxyReturn}{Returns}
+the agent type component of this \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_agent_id_a2cd64629db02df00ff9718b99f42059f}{\index{repast\-::\-Agent\-Id@{repast\-::\-Agent\-Id}!current\-Rank@{current\-Rank}}
+\index{current\-Rank@{current\-Rank}!repast::AgentId@{repast\-::\-Agent\-Id}}
+\subsubsection[{current\-Rank}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::\-Agent\-Id\-::current\-Rank (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_agent_id_a2cd64629db02df00ff9718b99f42059f}
+
+
+Gets the current process rank of this \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. 
+
+The current rank identifies which process the agent with this \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} is currently on.
+
+\begin{DoxyReturn}{Returns}
+the current process rank of this \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_agent_id_ae55db02b1adb2bf1906fb3356bbc4b21}{\index{repast\-::\-Agent\-Id@{repast\-::\-Agent\-Id}!current\-Rank@{current\-Rank}}
+\index{current\-Rank@{current\-Rank}!repast::AgentId@{repast\-::\-Agent\-Id}}
+\subsubsection[{current\-Rank}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Agent\-Id\-::current\-Rank (
+\begin{DoxyParamCaption}
+\item[{int}]{val}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_agent_id_ae55db02b1adb2bf1906fb3356bbc4b21}
+
+
+Sets the current process rank of this \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. 
+
+The current rank identifies which process the agent with this \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} is currently on.
+
+
+\begin{DoxyParams}{Parameters}
+{\em val} & the current process rank \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_agent_id_adaf9d5613b079105f0973f7a4eecd86d}{\index{repast\-::\-Agent\-Id@{repast\-::\-Agent\-Id}!hashcode@{hashcode}}
+\index{hashcode@{hashcode}!repast::AgentId@{repast\-::\-Agent\-Id}}
+\subsubsection[{hashcode}]{\setlength{\rightskip}{0pt plus 5cm}std\-::size\-\_\-t repast\-::\-Agent\-Id\-::hashcode (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_agent_id_adaf9d5613b079105f0973f7a4eecd86d}
+
+
+Gets the hashcode for this \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. 
+
+\begin{DoxyReturn}{Returns}
+the hashcode for this \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_agent_id_af8482957f7cc22c0b79b7c62680af219}{\index{repast\-::\-Agent\-Id@{repast\-::\-Agent\-Id}!id@{id}}
+\index{id@{id}!repast::AgentId@{repast\-::\-Agent\-Id}}
+\subsubsection[{id}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::\-Agent\-Id\-::id (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_agent_id_af8482957f7cc22c0b79b7c62680af219}
+
+
+Gets the id component of this \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. 
+
+\begin{DoxyReturn}{Returns}
+the id component of this \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_agent_id_a8f085b7feffaa55fb958f6b78a76ec43}{\index{repast\-::\-Agent\-Id@{repast\-::\-Agent\-Id}!starting\-Rank@{starting\-Rank}}
+\index{starting\-Rank@{starting\-Rank}!repast::AgentId@{repast\-::\-Agent\-Id}}
+\subsubsection[{starting\-Rank}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::\-Agent\-Id\-::starting\-Rank (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_agent_id_a8f085b7feffaa55fb958f6b78a76ec43}
+
+
+Gets the starting rank component of this \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. 
+
+\begin{DoxyReturn}{Returns}
+the starting rank component of this \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Agent\-Id.\-h\item 
+repast\-\_\-hpc/Agent\-Id.\-cpp\end{DoxyCompactItemize}

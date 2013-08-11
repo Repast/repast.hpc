@@ -1,0 +1,665 @@
+\hypertarget{classrepast_1_1_base_grid}{\section{repast\-:\-:Base\-Grid$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$ Class Template Reference}
+\label{classrepast_1_1_base_grid}\index{repast\-::\-Base\-Grid$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$@{repast\-::\-Base\-Grid$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$}}
+}
+
+
+Base grid implementation, implementing elements common to both Grids and Continuous\-Spaces.  
+
+
+
+
+{\ttfamily \#include $<$Base\-Grid.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Base\-Grid$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{classrepast_1_1_base_grid}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_base_grid_ae4de9c96ae3ee3d7021a1e5b3c61b9a6}{typedef \\*
+boost\-::transform\-\_\-iterator\\*
+$<$ \hyperlink{structrepast_1_1_agent_from_grid_point}{Agent\-From\-Grid\-Point}$<$ T, \\*
+G\-P\-Type $>$, Location\-Map\-Const\-Iter $>$ \hyperlink{classrepast_1_1_base_grid_ae4de9c96ae3ee3d7021a1e5b3c61b9a6}{const\-\_\-iterator}}\label{classrepast_1_1_base_grid_ae4de9c96ae3ee3d7021a1e5b3c61b9a6}
+
+\begin{DoxyCompactList}\small\item\em A const iterator over shared\-\_\-ptr$<$\-T$>$. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classrepast_1_1_base_grid_a73eae15ca682e2c03a71392c29453d43}{Base\-Grid} (std\-::string \hyperlink{classrepast_1_1_projection_ab60a0ab4f584685780307d7431b61800}{name}, \hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} \hyperlink{classrepast_1_1_base_grid_a5f8a2fc16b8aeba026a58fcb374cf05c}{dimensions})
+\begin{DoxyCompactList}\small\item\em Creates a \hyperlink{classrepast_1_1_base_grid}{Base\-Grid} with the specified name and dimensions. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classrepast_1_1_base_grid_a648fcba07fdc15b4072b5807b4f1b6b0}{contains} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)
+\begin{DoxyCompactList}\small\item\em Gets whether or not this grid contains the agent with the specified id. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classrepast_1_1_base_grid_a9ef8aae56bb771fa152b10408d718f6e}{get\-Location} (const T $\ast$agent, std\-::vector$<$ G\-P\-Type $>$ \&pt) const 
+\begin{DoxyCompactList}\small\item\em Gets the location of this agent and puts it in the specified vector. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classrepast_1_1_base_grid_aa18b424b73ff46fde970ad1e1bb3cdc4}{get\-Location} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id, std\-::vector$<$ G\-P\-Type $>$ \&out) const 
+\begin{DoxyCompactList}\small\item\em Gets the location of this agent and puts it in the specified vectors. \end{DoxyCompactList}\item 
+virtual T $\ast$ \hyperlink{classrepast_1_1_base_grid_a3710f4aca96eeb3a95a44fe80e0c998a}{get\-Object\-At} (const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&pt) const 
+\begin{DoxyCompactList}\small\item\em Gets the first object found at the specified point, or N\-U\-L\-L if there is no such object. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_base_grid_a21d840f3eb758b8f223ca51bf1996328}{get\-Objects\-At} (const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&pt, std\-::vector$<$ T $\ast$ $>$ \&out) const 
+\begin{DoxyCompactList}\small\item\em Gets all the objects found at the specified point. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classrepast_1_1_base_grid_a40e9d1d23b2e9f4e3d40d87d92595693}{move\-To} (const T $\ast$agent, const std\-::vector$<$ G\-P\-Type $>$ \&new\-Location)
+\begin{DoxyCompactList}\small\item\em Moves the specified agent to the specified location. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classrepast_1_1_base_grid_a60f5499f55a0736c07ed87bb37caeae8}{move\-To} (const T $\ast$agent, const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&new\-Location)
+\begin{DoxyCompactList}\small\item\em Moves the specified agent to the specified location. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classrepast_1_1_base_grid_a3a39996218f4426aa1b2f081d3b44eb4}{move\-To} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id, const std\-::vector$<$ G\-P\-Type $>$ \&new\-Location)
+\begin{DoxyCompactList}\small\item\em Moves the specified agent to the specified location. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classrepast_1_1_base_grid_a9f3dbdfe875327dbcc069971de98bc83}{move\-To} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id, const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&pt)
+\begin{DoxyCompactList}\small\item\em Moves the specified agent to the specified point. \end{DoxyCompactList}\item 
+virtual std\-::pair$<$ bool, \hyperlink{classrepast_1_1_point}{Point}\\*
+$<$ G\-P\-Type $>$ $>$ \hyperlink{classrepast_1_1_base_grid_a75758e9f795679c0a9c9b92fbd9413af}{move\-By\-Displacement} (const T $\ast$agent, const std\-::vector$<$ G\-P\-Type $>$ \&displacement)
+\begin{DoxyCompactList}\small\item\em Moves the specified object from its current location by the specified amount. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_base_grid_a14de646e4c01d6bcd0356669a23af43d}{virtual std\-::pair$<$ bool, \hyperlink{classrepast_1_1_point}{Point}\\*
+$<$ G\-P\-Type $>$ $>$ \hyperlink{classrepast_1_1_base_grid_a14de646e4c01d6bcd0356669a23af43d}{move\-By\-Vector} (const T $\ast$agent, double distance, const std\-::vector$<$ double $>$ \&angles\-In\-Radians)}\label{classrepast_1_1_base_grid_a14de646e4c01d6bcd0356669a23af43d}
+
+\begin{DoxyCompactList}\small\item\em doc inherited from \hyperlink{classrepast_1_1_grid}{Grid} \end{DoxyCompactList}\item 
+virtual \hyperlink{classrepast_1_1_base_grid_ae4de9c96ae3ee3d7021a1e5b3c61b9a6}{const\-\_\-iterator} \hyperlink{classrepast_1_1_base_grid_ab5aa5a65509879b528bac5b3a9f544b9}{begin} () const 
+\begin{DoxyCompactList}\small\item\em Gets an iterator over the agents in this \hyperlink{classrepast_1_1_base_grid}{Base\-Grid} starting with the first agent. \end{DoxyCompactList}\item 
+virtual \hyperlink{classrepast_1_1_base_grid_ae4de9c96ae3ee3d7021a1e5b3c61b9a6}{const\-\_\-iterator} \hyperlink{classrepast_1_1_base_grid_ac7eced6c979ccf417b4bbc1c064c687d}{end} () const 
+\begin{DoxyCompactList}\small\item\em Gets the end of an iterator over the agents in this \hyperlink{classrepast_1_1_base_grid}{Base\-Grid}. \end{DoxyCompactList}\item 
+virtual size\-\_\-t \hyperlink{classrepast_1_1_base_grid_ab1e81ffc9b8f581279a89abf1a4e62e1}{size} () const 
+\begin{DoxyCompactList}\small\item\em Gets the number of agents in this \hyperlink{classrepast_1_1_base_grid}{Base\-Grid}. \end{DoxyCompactList}\item 
+virtual double \hyperlink{classrepast_1_1_base_grid_a124b5f53a5e96e9ed8e59534e9417f42}{get\-Distance} (const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&pt1, const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&pt2) const 
+\begin{DoxyCompactList}\small\item\em Gets the distance between the two grid points. \end{DoxyCompactList}\item 
+virtual double \hyperlink{classrepast_1_1_base_grid_a8075dd20e6d559d453a530943ab9d387}{get\-Distance\-Sq} (const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&pt1, const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&pt2) const 
+\begin{DoxyCompactList}\small\item\em Gets the square of the distance between the two grid points. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_base_grid_a8c3b8755d2fc2bf75163a0fc76ce1d4a}{get\-Displacement} (const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&pt1, const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&pt2, std\-::vector$<$ G\-P\-Type $>$ \&out) const 
+\begin{DoxyCompactList}\small\item\em Gets vector difference between point 1 and point 2, putting the result in out. \end{DoxyCompactList}\item 
+virtual const \hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} \hyperlink{classrepast_1_1_base_grid_a5f8a2fc16b8aeba026a58fcb374cf05c}{dimensions} () const 
+\begin{DoxyCompactList}\small\item\em Gets the dimensions of this \hyperlink{classrepast_1_1_grid}{Grid}. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_base_grid_aa5607ff3f29ed7478f0de1d6884e0d7e}{translate} (const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&location, const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&displacement, std\-::vector$<$ G\-P\-Type $>$ \&out) const 
+\begin{DoxyCompactList}\small\item\em Translates the specified location by the specified displacement put the result in out. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_base_grid_abe3c51f54b40e50e5e2b92b0b1b8e0de}{transform} (const std\-::vector$<$ G\-P\-Type $>$ \&location, std\-::vector$<$ G\-P\-Type $>$ \&out) const 
+\begin{DoxyCompactList}\small\item\em Transforms the specified location using the properties (e.\-g. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classrepast_1_1_base_grid_a4dd5ec33acc952ab136f5e2b9886771e}{is\-Periodic} () const 
+\begin{DoxyCompactList}\small\item\em Gets whether or not this grid is periodic (i.\-e. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_base_grid_a51685b60fcfb3081007b22559225af8f}{virtual \hyperlink{classrepast_1_1_projection_info_packet}{Projection\-Info\-Packet} $\ast$ {\bfseries get\-Projection\-Info} (\hyperlink{classrepast_1_1_agent_id}{Agent\-Id} id, bool secondary\-Info=false, std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ $\ast$secondary\-Ids=0, int dest\-Proc=-\/1)}\label{classrepast_1_1_base_grid_a51685b60fcfb3081007b22559225af8f}
+
+\item 
+\hypertarget{classrepast_1_1_base_grid_ac95c2c141f8b8365472c2f47df614554}{virtual void {\bfseries update\-Projection\-Info} (\hyperlink{classrepast_1_1_projection_info_packet}{Projection\-Info\-Packet} $\ast$pip, \hyperlink{classrepast_1_1_context}{Context}$<$ T $>$ $\ast$context)}\label{classrepast_1_1_base_grid_ac95c2c141f8b8365472c2f47df614554}
+
+\item 
+virtual void \hyperlink{classrepast_1_1_base_grid_a8f718ade5af8285f71151eea824ce3cd}{get\-Agents\-To\-Push} (std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&agents\-To\-Test, std\-::map$<$ int, std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ $>$ \&agents\-To\-Push)
+\begin{DoxyCompactList}\small\item\em Given a set of agents, gets the agents that this projection implementation must 'push' to other processes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_base_grid_acd798e07433e8da414ea2c9ce689f767}{typedef Agent\-Location\-Map\-::iterator {\bfseries Location\-Map\-Iter}}\label{classrepast_1_1_base_grid_acd798e07433e8da414ea2c9ce689f767}
+
+\item 
+\hypertarget{classrepast_1_1_base_grid_a42588a88a435a0d3447c4752dd05b3ff}{typedef \\*
+Agent\-Location\-Map\-::const\-\_\-iterator {\bfseries Location\-Map\-Const\-Iter}}\label{classrepast_1_1_base_grid_a42588a88a435a0d3447c4752dd05b3ff}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_base_grid_aa119b75be38ed500437d908707752c53}{virtual bool {\bfseries add\-Agent} (boost\-::shared\-\_\-ptr$<$ T $>$ agent)}\label{classrepast_1_1_base_grid_aa119b75be38ed500437d908707752c53}
+
+\item 
+\hypertarget{classrepast_1_1_base_grid_ab3a15e82c71ae8467e34adcef97eda10}{virtual void {\bfseries remove\-Agent} (T $\ast$agent)}\label{classrepast_1_1_base_grid_ab3a15e82c71ae8467e34adcef97eda10}
+
+\item 
+\hypertarget{classrepast_1_1_base_grid_af2895a0c0f8df474c70fe1f5dc9d7e79}{Location\-Map\-Const\-Iter {\bfseries locations\-Begin} () const }\label{classrepast_1_1_base_grid_af2895a0c0f8df474c70fe1f5dc9d7e79}
+
+\item 
+\hypertarget{classrepast_1_1_base_grid_a4e46f683b8f413cd4ef761791436d0c3}{Location\-Map\-Const\-Iter {\bfseries locations\-End} () const }\label{classrepast_1_1_base_grid_a4e46f683b8f413cd4ef761791436d0c3}
+
+\item 
+\hypertarget{classrepast_1_1_base_grid_aab0d37e733a70b57f045f934ca9aa5f6}{T $\ast$ {\bfseries get} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)}\label{classrepast_1_1_base_grid_aab0d37e733a70b57f045f934ca9aa5f6}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_base_grid_a4116ebd80bf98c4d403bfdf1d7891b5e}{G\-P\-Transformer {\bfseries gp\-Transformer}}\label{classrepast_1_1_base_grid_a4116ebd80bf98c4d403bfdf1d7891b5e}
+
+\item 
+\hypertarget{classrepast_1_1_base_grid_a268f1e662d2423eb06554c1da59f22c2}{Adder {\bfseries adder}}\label{classrepast_1_1_base_grid_a268f1e662d2423eb06554c1da59f22c2}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T, typename Cell\-Accessor, typename G\-P\-Transformer, typename Adder, typename G\-P\-Type$>$class repast\-::\-Base\-Grid$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$}
+
+Base grid implementation, implementing elements common to both Grids and Continuous\-Spaces. 
+
+Standard grid and space types that provide defaults for the various template parameters can be found in Space in Space.\-h
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & the type of objects contained by this \hyperlink{classrepast_1_1_base_grid}{Base\-Grid} (generally the type of agents) \\
+\hline
+{\em Cell\-Accessor} & implements the actual storage for the grid. \\
+\hline
+{\em G\-P\-Transformer} & transforms cell points according to the topology (e.\-g. periodic) of the \hyperlink{classrepast_1_1_base_grid}{Base\-Grid}. \\
+\hline
+{\em Adder} & determines how objects are added to the grid from its associated context. \\
+\hline
+{\em G\-P\-Type} & the coordinate type of the grid point locations; this must be an int or a double. \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1_base_grid_a73eae15ca682e2c03a71392c29453d43}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!Base\-Grid@{Base\-Grid}}
+\index{Base\-Grid@{Base\-Grid}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{Base\-Grid}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename Cell\-Accessor , typename G\-P\-Transformer , typename Adder , typename G\-P\-Type $>$ {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::{\bf Base\-Grid} (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{name, }
+\item[{{\bf Grid\-Dimensions}}]{dimensions}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_base_grid_a73eae15ca682e2c03a71392c29453d43}
+
+
+Creates a \hyperlink{classrepast_1_1_base_grid}{Base\-Grid} with the specified name and dimensions. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & the name of the \hyperlink{classrepast_1_1_base_grid}{Base\-Grid} \\
+\hline
+{\em dimensions} & the dimensions of the \hyperlink{classrepast_1_1_base_grid}{Base\-Grid} \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_base_grid_ab5aa5a65509879b528bac5b3a9f544b9}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!begin@{begin}}
+\index{begin@{begin}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{begin}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename Cell\-Accessor, typename G\-P\-Transformer, typename Adder, typename G\-P\-Type$>$ virtual {\bf const\-\_\-iterator} {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::begin (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_ab5aa5a65509879b528bac5b3a9f544b9}
+
+
+Gets an iterator over the agents in this \hyperlink{classrepast_1_1_base_grid}{Base\-Grid} starting with the first agent. 
+
+The iterator derefrences into shared\-\_\-ptr$<$\-T$>$. The actual agent can be accessed by derefrenceing the iter\-: ($\ast$iter)-\/$>$get\-Id() for example.
+
+\begin{DoxyReturn}{Returns}
+an iterator over the agents in this \hyperlink{classrepast_1_1_base_grid}{Base\-Grid} starting with the first agent. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_base_grid_a648fcba07fdc15b4072b5807b4f1b6b0}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!contains@{contains}}
+\index{contains@{contains}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{contains}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename Cell\-Accessor , typename G\-P\-Transformer , typename Adder , typename G\-P\-Type $>$ bool {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::contains (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{id}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_a648fcba07fdc15b4072b5807b4f1b6b0}
+
+
+Gets whether or not this grid contains the agent with the specified id. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the id of the agent to check\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the grid contains the agent, otherwise false. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1_grid_a022599f875eeb1e72c11766500d8282c}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}.
+
+\hypertarget{classrepast_1_1_base_grid_a5f8a2fc16b8aeba026a58fcb374cf05c}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!dimensions@{dimensions}}
+\index{dimensions@{dimensions}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{dimensions}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename Cell\-Accessor, typename G\-P\-Transformer, typename Adder, typename G\-P\-Type$>$ virtual const {\bf Grid\-Dimensions} {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::dimensions (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_a5f8a2fc16b8aeba026a58fcb374cf05c}
+
+
+Gets the dimensions of this \hyperlink{classrepast_1_1_grid}{Grid}. 
+
+\begin{DoxyReturn}{Returns}
+the dimensions of this \hyperlink{classrepast_1_1_grid}{Grid}. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1_grid_ac6a979a6491565212ae44b8bfbbc9393}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}.
+
+
+
+Reimplemented in \hyperlink{classrepast_1_1_shared_base_grid_a9ec19652232000368ec1fe98ff47e121}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$}, \hyperlink{classrepast_1_1_shared_base_grid_a9ec19652232000368ec1fe98ff47e121}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, int $>$}, and \hyperlink{classrepast_1_1_shared_base_grid_a9ec19652232000368ec1fe98ff47e121}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, double $>$}.
+
+\hypertarget{classrepast_1_1_base_grid_ac7eced6c979ccf417b4bbc1c064c687d}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!end@{end}}
+\index{end@{end}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{end}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename Cell\-Accessor, typename G\-P\-Transformer, typename Adder, typename G\-P\-Type$>$ virtual {\bf const\-\_\-iterator} {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::end (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_ac7eced6c979ccf417b4bbc1c064c687d}
+
+
+Gets the end of an iterator over the agents in this \hyperlink{classrepast_1_1_base_grid}{Base\-Grid}. 
+
+\begin{DoxyReturn}{Returns}
+the end of an iterator over the agents in this \hyperlink{classrepast_1_1_base_grid}{Base\-Grid}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_base_grid_a8f718ade5af8285f71151eea824ce3cd}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!get\-Agents\-To\-Push@{get\-Agents\-To\-Push}}
+\index{get\-Agents\-To\-Push@{get\-Agents\-To\-Push}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{get\-Agents\-To\-Push}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename Cell\-Accessor, typename G\-P\-Transformer, typename Adder, typename G\-P\-Type$>$ virtual void {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::get\-Agents\-To\-Push (
+\begin{DoxyParamCaption}
+\item[{std\-::set$<$ {\bf Agent\-Id} $>$ \&}]{agents\-To\-Test, }
+\item[{std\-::map$<$ int, std\-::set$<$ {\bf Agent\-Id} $>$ $>$ \&}]{agents\-To\-Push}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_a8f718ade5af8285f71151eea824ce3cd}
+
+
+Given a set of agents, gets the agents that this projection implementation must 'push' to other processes. 
+
+Generally spaces must push agents that are in 'buffer zones' and graphs must push local agents that are vertices to master edges where the other vertex is non-\/ local. The results are returned per-\/process in the agents\-To\-Push map. 
+
+Implements \hyperlink{classrepast_1_1_grid_aa83b294fc8765e2f8ee44d8238855460}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}.
+
+
+
+Reimplemented in \hyperlink{classrepast_1_1_shared_base_grid_ab1486e7698288efc1218653d4e5e1e15}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$}, \hyperlink{classrepast_1_1_shared_base_grid_ab1486e7698288efc1218653d4e5e1e15}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, int $>$}, \hyperlink{classrepast_1_1_shared_base_grid_ab1486e7698288efc1218653d4e5e1e15}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, double $>$}, and \hyperlink{classrepast_1_1_shared_discrete_space_a1f690e82e6b7ea6a279db020e12b4d21}{repast\-::\-Shared\-Discrete\-Space$<$ T, G\-P\-Transformer, Adder $>$}.
+
+\hypertarget{classrepast_1_1_base_grid_a8c3b8755d2fc2bf75163a0fc76ce1d4a}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!get\-Displacement@{get\-Displacement}}
+\index{get\-Displacement@{get\-Displacement}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{get\-Displacement}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename Cell\-Accessor , typename G\-P\-Transformer , typename Adder , typename G\-P\-Type$>$ void {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::get\-Displacement (
+\begin{DoxyParamCaption}
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{pt1, }
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{pt2, }
+\item[{std\-::vector$<$ G\-P\-Type $>$ \&}]{out}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_a8c3b8755d2fc2bf75163a0fc76ce1d4a}
+
+
+Gets vector difference between point 1 and point 2, putting the result in out. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em p1} & the first point \\
+\hline
+ & {\em p2} & the second point \\
+\hline
+\mbox{\tt out}  & {\em the} & vector where the difference will be put \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{classrepast_1_1_grid_a23236c2387ba343121dbf71901dbb341}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}.
+
+\hypertarget{classrepast_1_1_base_grid_a124b5f53a5e96e9ed8e59534e9417f42}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!get\-Distance@{get\-Distance}}
+\index{get\-Distance@{get\-Distance}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{get\-Distance}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename Cell\-Accessor , typename G\-P\-Transformer , typename Adder , typename G\-P\-Type$>$ double {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::get\-Distance (
+\begin{DoxyParamCaption}
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{pt1, }
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{pt2}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_a124b5f53a5e96e9ed8e59534e9417f42}
+
+
+Gets the distance between the two grid points. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p1} & the first point \\
+\hline
+{\em p2} & the second point\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the distance between pt1 and pt2. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1_grid_a27213b5f9decf10e1c99a5a7b4ae387a}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}.
+
+\hypertarget{classrepast_1_1_base_grid_a8075dd20e6d559d453a530943ab9d387}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!get\-Distance\-Sq@{get\-Distance\-Sq}}
+\index{get\-Distance\-Sq@{get\-Distance\-Sq}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{get\-Distance\-Sq}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename Cell\-Accessor , typename G\-P\-Transformer , typename Adder , typename G\-P\-Type$>$ double {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::get\-Distance\-Sq (
+\begin{DoxyParamCaption}
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{pt1, }
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{pt2}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_a8075dd20e6d559d453a530943ab9d387}
+
+
+Gets the square of the distance between the two grid points. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p1} & the first point \\
+\hline
+{\em p2} & the second point\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the square of the distance between pt1 and pt2. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1_grid_a456d00d28995a48b41b8f6c84817879e}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}.
+
+\hypertarget{classrepast_1_1_base_grid_a9ef8aae56bb771fa152b10408d718f6e}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!get\-Location@{get\-Location}}
+\index{get\-Location@{get\-Location}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{get\-Location}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename Cell\-Accessor , typename G\-P\-Transformer , typename Adder , typename G\-P\-Type$>$ bool {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::get\-Location (
+\begin{DoxyParamCaption}
+\item[{const T $\ast$}]{agent, }
+\item[{std\-::vector$<$ G\-P\-Type $>$ \&}]{out}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_a9ef8aae56bb771fa152b10408d718f6e}
+
+
+Gets the location of this agent and puts it in the specified vector. 
+
+The x coordinate will be the first value, the y the second and so on.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em agent} & the agent whose location we want to get \\
+\hline
+\mbox{\tt out}  & {\em the} & vector where the agents location will be put\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the location was successfully found, otherwise false. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1_grid_a159a33da91ef58dbd8ca88829d82ca36}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}.
+
+\hypertarget{classrepast_1_1_base_grid_aa18b424b73ff46fde970ad1e1bb3cdc4}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!get\-Location@{get\-Location}}
+\index{get\-Location@{get\-Location}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{get\-Location}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename Cell\-Accessor , typename G\-P\-Transformer , typename Adder , typename G\-P\-Type$>$ bool {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::get\-Location (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{id, }
+\item[{std\-::vector$<$ G\-P\-Type $>$ \&}]{out}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_aa18b424b73ff46fde970ad1e1bb3cdc4}
+
+
+Gets the location of this agent and puts it in the specified vectors. 
+
+The x coordinate will be the first value, the y the second and so on.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em id} & the id of the agent whose location we want to get \\
+\hline
+\mbox{\tt out}  & {\em out} & the agent's location will be put into this vector\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the location was successfully found, otherwise false. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1_grid_a6fef590f66b69e4a06207df59d1b2737}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}.
+
+\hypertarget{classrepast_1_1_base_grid_a3710f4aca96eeb3a95a44fe80e0c998a}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!get\-Object\-At@{get\-Object\-At}}
+\index{get\-Object\-At@{get\-Object\-At}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{get\-Object\-At}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename Cell\-Accessor , typename G\-P\-Transformer , typename Adder , typename G\-P\-Type$>$ T $\ast$ {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::get\-Object\-At (
+\begin{DoxyParamCaption}
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{pt}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_a3710f4aca96eeb3a95a44fe80e0c998a}
+
+
+Gets the first object found at the specified point, or N\-U\-L\-L if there is no such object. 
+
+\begin{DoxyReturn}{Returns}
+the first object found at the specified point, or N\-U\-L\-L if there is no such object. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1_grid_a8b77b072353aed6f06b6d02e21ee9879}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}.
+
+\hypertarget{classrepast_1_1_base_grid_a21d840f3eb758b8f223ca51bf1996328}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!get\-Objects\-At@{get\-Objects\-At}}
+\index{get\-Objects\-At@{get\-Objects\-At}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{get\-Objects\-At}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename Cell\-Accessor , typename G\-P\-Transformer , typename Adder , typename G\-P\-Type$>$ void {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::get\-Objects\-At (
+\begin{DoxyParamCaption}
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{pt, }
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{out}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_a21d840f3eb758b8f223ca51bf1996328}
+
+
+Gets all the objects found at the specified point. 
+
+The found objects will be put into the out parameter.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em pt} & the point to get all the objects at \\
+\hline
+\mbox{\tt out}  & {\em out} & the vector into which the found objects will be put \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{classrepast_1_1_grid_aaa3a1fd92707079f7dd4805e36ca83ff}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}.
+
+\hypertarget{classrepast_1_1_base_grid_a4dd5ec33acc952ab136f5e2b9886771e}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!is\-Periodic@{is\-Periodic}}
+\index{is\-Periodic@{is\-Periodic}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{is\-Periodic}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename Cell\-Accessor, typename G\-P\-Transformer, typename Adder, typename G\-P\-Type$>$ virtual bool {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::is\-Periodic (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_a4dd5ec33acc952ab136f5e2b9886771e}
+
+
+Gets whether or not this grid is periodic (i.\-e. 
+
+toroidal).
+
+\begin{DoxyReturn}{Returns}
+true if this \hyperlink{classrepast_1_1_grid}{Grid} is periodic, otherwise false. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1_grid_a81e7eb612dabbf2fb4b3f1190cd92f88}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}.
+
+\hypertarget{classrepast_1_1_base_grid_a75758e9f795679c0a9c9b92fbd9413af}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!move\-By\-Displacement@{move\-By\-Displacement}}
+\index{move\-By\-Displacement@{move\-By\-Displacement}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{move\-By\-Displacement}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename Cell\-Accessor , typename G\-P\-Transformer , typename Adder , typename G\-P\-Type$>$ std\-::pair$<$ bool, {\bf Point}$<$ G\-P\-Type $>$ $>$ {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::move\-By\-Displacement (
+\begin{DoxyParamCaption}
+\item[{const T $\ast$}]{agent, }
+\item[{const std\-::vector$<$ G\-P\-Type $>$ \&}]{displacement}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_a75758e9f795679c0a9c9b92fbd9413af}
+
+
+Moves the specified object from its current location by the specified amount. 
+
+For example {\ttfamily move\-By\-Displacement(object, 3, -\/2, 1)} will move the object by 3 along the x-\/axis, -\/2 along the y and 1 along the z. The displacement argument can be less than the number of dimensions in the space in which case the remaining argument will be set to 0. For example, {\ttfamily move\-By\-Displacement(object, 3)} will move the object 3 along the x-\/axis and 0 along the y and z axes, assuming a 3\-D grid.
+
+
+\begin{DoxyParams}{Parameters}
+{\em agent} & the object to move \\
+\hline
+{\em displacement} & the amount to move the object \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a pair containing a bool that indicates whether the move was a success or not, and the point where the agent was moved to. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1_grid_a20efd6bdadf8dac405542de7e33f6b9e}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}.
+
+\hypertarget{classrepast_1_1_base_grid_a40e9d1d23b2e9f4e3d40d87d92595693}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!move\-To@{move\-To}}
+\index{move\-To@{move\-To}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{move\-To}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename Cell\-Accessor , typename G\-P\-Transformer , typename Adder , typename G\-P\-Type$>$ bool {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::move\-To (
+\begin{DoxyParamCaption}
+\item[{const T $\ast$}]{agent, }
+\item[{const std\-::vector$<$ G\-P\-Type $>$ \&}]{new\-Location}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_a40e9d1d23b2e9f4e3d40d87d92595693}
+
+
+Moves the specified agent to the specified location. 
+
+Returns true if the move was successful otherwise false. The agent must be already added to the context associated with this space, otherwise this throws an out\-\_\-of\-\_\-range exception if the new location out of bounds.
+
+
+\begin{DoxyParams}{Parameters}
+{\em agent} & the agent to move \\
+\hline
+{\em new\-Location} & the location to move to\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the move was successful, otherwise false 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_base_grid_a60f5499f55a0736c07ed87bb37caeae8}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!move\-To@{move\-To}}
+\index{move\-To@{move\-To}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{move\-To}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename Cell\-Accessor , typename G\-P\-Transformer , typename Adder , typename G\-P\-Type$>$ bool {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::move\-To (
+\begin{DoxyParamCaption}
+\item[{const T $\ast$}]{agent, }
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{new\-Location}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_a60f5499f55a0736c07ed87bb37caeae8}
+
+
+Moves the specified agent to the specified location. 
+
+Returns true if the move was successful otherwise false. The agent must be already added to the context associated with this space, otherwise this throws an out\-\_\-of\-\_\-range exception if the new location out of bounds.
+
+
+\begin{DoxyParams}{Parameters}
+{\em agent} & the agent to move \\
+\hline
+{\em new\-Location} & the location to move to\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the move was successful, otherwise false 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_base_grid_a3a39996218f4426aa1b2f081d3b44eb4}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!move\-To@{move\-To}}
+\index{move\-To@{move\-To}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{move\-To}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename Cell\-Accessor , typename G\-P\-Transformer , typename Adder , typename G\-P\-Type$>$ bool {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::move\-To (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{id, }
+\item[{const std\-::vector$<$ G\-P\-Type $>$ \&}]{new\-Location}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_a3a39996218f4426aa1b2f081d3b44eb4}
+
+
+Moves the specified agent to the specified location. 
+
+Returns true if the move was successful otherwise false. The agent must be already added to the context associated with this space, otherwise this throws an out\-\_\-of\-\_\-range exception if the new location out of bounds.
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the id of the agent to move \\
+\hline
+{\em new\-Location} & the location to move to\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the move was successful, otherwise false 
+\end{DoxyReturn}
+
+
+Reimplemented in \hyperlink{classrepast_1_1_shared_base_grid_a480fc6f517d1bb098c7ee47450fba522}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$}, \hyperlink{classrepast_1_1_shared_base_grid_a480fc6f517d1bb098c7ee47450fba522}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, int $>$}, and \hyperlink{classrepast_1_1_shared_base_grid_a480fc6f517d1bb098c7ee47450fba522}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, double $>$}.
+
+\hypertarget{classrepast_1_1_base_grid_a9f3dbdfe875327dbcc069971de98bc83}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!move\-To@{move\-To}}
+\index{move\-To@{move\-To}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{move\-To}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename Cell\-Accessor , typename G\-P\-Transformer , typename Adder , typename G\-P\-Type$>$ bool {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::move\-To (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{id, }
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{pt}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_a9f3dbdfe875327dbcc069971de98bc83}
+
+
+Moves the specified agent to the specified point. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the id of the agent to move \\
+\hline
+{\em pt} & where to move the agent to\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the move was successful, otherwise false 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1_grid_ae5bf061d62f1998e0c75bf3967ac63d3}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}.
+
+
+
+Reimplemented in \hyperlink{classrepast_1_1_shared_base_grid_ab4d74c36e126cffa5638aeaab6c0df85}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$}, \hyperlink{classrepast_1_1_shared_base_grid_ab4d74c36e126cffa5638aeaab6c0df85}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, int $>$}, and \hyperlink{classrepast_1_1_shared_base_grid_ab4d74c36e126cffa5638aeaab6c0df85}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, double $>$}.
+
+\hypertarget{classrepast_1_1_base_grid_ab1e81ffc9b8f581279a89abf1a4e62e1}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!size@{size}}
+\index{size@{size}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{size}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename Cell\-Accessor, typename G\-P\-Transformer, typename Adder, typename G\-P\-Type$>$ virtual size\-\_\-t {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::size (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_ab1e81ffc9b8f581279a89abf1a4e62e1}
+
+
+Gets the number of agents in this \hyperlink{classrepast_1_1_base_grid}{Base\-Grid}. 
+
+\begin{DoxyReturn}{Returns}
+the number of agents in this \hyperlink{classrepast_1_1_base_grid}{Base\-Grid}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_base_grid_abe3c51f54b40e50e5e2b92b0b1b8e0de}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!transform@{transform}}
+\index{transform@{transform}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{transform}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename Cell\-Accessor, typename G\-P\-Transformer, typename Adder, typename G\-P\-Type$>$ virtual void {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::transform (
+\begin{DoxyParamCaption}
+\item[{const std\-::vector$<$ G\-P\-Type $>$ \&}]{location, }
+\item[{std\-::vector$<$ G\-P\-Type $>$ \&}]{out}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_abe3c51f54b40e50e5e2b92b0b1b8e0de}
+
+
+Transforms the specified location using the properties (e.\-g. 
+
+toroidal) of this space.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em location} & the location to transform \\
+\hline
+\mbox{\tt out}  & {\em out} & the vector where the result of the transform will be put \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{classrepast_1_1_grid_a001bf75cd2e436112555a5f992d1d372}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}.
+
+\hypertarget{classrepast_1_1_base_grid_aa5607ff3f29ed7478f0de1d6884e0d7e}{\index{repast\-::\-Base\-Grid@{repast\-::\-Base\-Grid}!translate@{translate}}
+\index{translate@{translate}!repast::BaseGrid@{repast\-::\-Base\-Grid}}
+\subsubsection[{translate}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename Cell\-Accessor, typename G\-P\-Transformer, typename Adder, typename G\-P\-Type$>$ virtual void {\bf repast\-::\-Base\-Grid}$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::translate (
+\begin{DoxyParamCaption}
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{location, }
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{displacement, }
+\item[{std\-::vector$<$ G\-P\-Type $>$ \&}]{out}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}}\label{classrepast_1_1_base_grid_aa5607ff3f29ed7478f0de1d6884e0d7e}
+
+
+Translates the specified location by the specified displacement put the result in out. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em location} & the initial location \\
+\hline
+ & {\em displacement} & the amount to translate the location by \\
+\hline
+\mbox{\tt out}  & {\em out} & the vector where the result of the translation is put \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{classrepast_1_1_grid_a5aa30c315b9a32830b804d2e49af14d0}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}.
+
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Base\-Grid.\-h\end{DoxyCompactItemize}

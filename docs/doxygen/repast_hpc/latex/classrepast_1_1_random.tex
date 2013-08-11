@@ -1,0 +1,287 @@
+\hypertarget{classrepast_1_1_random}{\section{repast\-:\-:Random Class Reference}
+\label{classrepast_1_1_random}\index{repast\-::\-Random@{repast\-::\-Random}}
+}
+
+
+Methods for working with random distributions, draws etc.  
+
+
+
+
+{\ttfamily \#include $<$Random.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classrepast_1_1_random_af3e9c83a19e18347f05dbd0fe7044144}{put\-Generator} (const std\-::string \&id, \hyperlink{classrepast_1_1_number_generator}{Number\-Generator} $\ast$generator)
+\begin{DoxyCompactList}\small\item\em Puts the named generator into this \hyperlink{classrepast_1_1_random}{Random}. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_number_generator}{Number\-Generator} $\ast$ \hyperlink{classrepast_1_1_random_ae74efa6b1d2a91054538378f6488b066}{get\-Generator} (const std\-::string \&id)
+\begin{DoxyCompactList}\small\item\em Gets the named generator or 0 if the name is not found. \end{DoxyCompactList}\item 
+boost\-::mt19937 \& \hyperlink{classrepast_1_1_random_ac3bcb79b02d9158f2d681a6887ec1f6f}{engine} ()
+\begin{DoxyCompactList}\small\item\em Gets the random number engine from which the distributions are created. \end{DoxyCompactList}\item 
+boost\-::uint32\-\_\-t \hyperlink{classrepast_1_1_random_abc9590ab2bbd9a61bc1af7c1f72bb604}{seed} ()
+\begin{DoxyCompactList}\small\item\em Gets the current seed. \end{DoxyCompactList}\item 
+double \hyperlink{classrepast_1_1_random_aac8516b6a9f9005013dafc82034ce2e3}{next\-Double} ()
+\begin{DoxyCompactList}\small\item\em Gets the next double in the range \mbox{[}0, 1). \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_default_number_generator}{Double\-Uniform\-Generator} \hyperlink{classrepast_1_1_random_a5017a5f8427219f9e0d487f4ae2b215d}{create\-Uni\-Double\-Generator} (double from, double to)
+\begin{DoxyCompactList}\small\item\em Creates a generator that produces doubles in the range \mbox{[}from, to). \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_default_number_generator}{Int\-Uniform\-Generator} \hyperlink{classrepast_1_1_random_a5263c2b66369177674e2d223d5ff7945}{create\-Uni\-Int\-Generator} (int from, int to)
+\begin{DoxyCompactList}\small\item\em Creates a generator that produces ints in the range \mbox{[}from, to\mbox{]}. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_default_number_generator}{Triangle\-Generator} \hyperlink{classrepast_1_1_random_a405c6638702359ebc0038dc309a73a45}{create\-Triangle\-Generator} (double lower\-Bound, double most\-Likely, double upper\-Bound)
+\begin{DoxyCompactList}\small\item\em Creates a triangle generator with the specified properties. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_default_number_generator}{Cauchy\-Generator} \hyperlink{classrepast_1_1_random_a59e3fefc2dc6406b25ad00c0250ca12e}{create\-Cauchy\-Generator} (double median, double sigma)
+\begin{DoxyCompactList}\small\item\em pdf\-: p(x) = sigma/(pi$\ast$(sigma$\ast$$\ast$2 + (x-\/median)$\ast$$\ast$2)) \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_default_number_generator}{Exponential\-Generator} \hyperlink{classrepast_1_1_random_a223f65315bcc4a07087116719b5fa251}{create\-Exponential\-Generator} (double lambda)
+\begin{DoxyCompactList}\small\item\em pdf\-: p(x) = lambda $\ast$ exp(-\/lambda $\ast$ x) \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_default_number_generator}{Normal\-Generator} \hyperlink{classrepast_1_1_random_a33226e423e66a9fcd3e3cdf3c9ce62ae}{create\-Normal\-Generator} (double mean, double sigma)
+\begin{DoxyCompactList}\small\item\em Creates a normal generator. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_random_aff15cda637d1579444379195681aa5d4}{\hyperlink{classrepast_1_1_default_number_generator}{Log\-Normal\-Generator} \hyperlink{classrepast_1_1_random_aff15cda637d1579444379195681aa5d4}{create\-Log\-Normal\-Generator} (double mean, double sigma)}\label{classrepast_1_1_random_aff15cda637d1579444379195681aa5d4}
+
+\begin{DoxyCompactList}\small\item\em Produces random numbers with p(x) = 1/(x $\ast$ normal\-\_\-sigma $\ast$ sqrt(2$\ast$pi)) $\ast$ exp( -\/(log(x)-\/normal\-\_\-mean)2 / (2$\ast$normal\-\_\-sigma2) ) for x $>$ 0, where normal\-\_\-mean = log(mean2/sqrt(sigma2 + mean2)) and normal\-\_\-sigma = sqrt(log(1 + sigma2/mean2)) \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \hyperlink{classrepast_1_1_random_aff5e636ed06991e91b149e880944022e}{initialize} (boost\-::uint32\-\_\-t \hyperlink{classrepast_1_1_random_abc9590ab2bbd9a61bc1af7c1f72bb604}{seed})
+\begin{DoxyCompactList}\small\item\em Initialize the \hyperlink{classrepast_1_1_random}{Random} singleton with the specified seed. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_random_abd9ca1f149eda9adf01c48174caa6734}{static \hyperlink{classrepast_1_1_random}{Random} $\ast$ \hyperlink{classrepast_1_1_random_abd9ca1f149eda9adf01c48174caa6734}{instance} ()}\label{classrepast_1_1_random_abd9ca1f149eda9adf01c48174caa6734}
+
+\begin{DoxyCompactList}\small\item\em Gets the singleton instance of this \hyperlink{classrepast_1_1_random}{Random}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_random_aa2f7a12fcf5b872549684405cb196139}{{\bfseries Random} (boost\-::uint32\-\_\-t \hyperlink{classrepast_1_1_random_abc9590ab2bbd9a61bc1af7c1f72bb604}{seed})}\label{classrepast_1_1_random_aa2f7a12fcf5b872549684405cb196139}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Methods for working with random distributions, draws etc. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_random_a59e3fefc2dc6406b25ad00c0250ca12e}{\index{repast\-::\-Random@{repast\-::\-Random}!create\-Cauchy\-Generator@{create\-Cauchy\-Generator}}
+\index{create\-Cauchy\-Generator@{create\-Cauchy\-Generator}!repast::Random@{repast\-::\-Random}}
+\subsubsection[{create\-Cauchy\-Generator}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Cauchy\-Generator} repast\-::\-Random\-::create\-Cauchy\-Generator (
+\begin{DoxyParamCaption}
+\item[{double}]{median, }
+\item[{double}]{sigma}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_random_a59e3fefc2dc6406b25ad00c0250ca12e}
+
+
+pdf\-: p(x) = sigma/(pi$\ast$(sigma$\ast$$\ast$2 + (x-\/median)$\ast$$\ast$2)) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em median} & \\
+\hline
+{\em sigma} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a Cauchy generator. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_random_a223f65315bcc4a07087116719b5fa251}{\index{repast\-::\-Random@{repast\-::\-Random}!create\-Exponential\-Generator@{create\-Exponential\-Generator}}
+\index{create\-Exponential\-Generator@{create\-Exponential\-Generator}!repast::Random@{repast\-::\-Random}}
+\subsubsection[{create\-Exponential\-Generator}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Exponential\-Generator} repast\-::\-Random\-::create\-Exponential\-Generator (
+\begin{DoxyParamCaption}
+\item[{double}]{lambda}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_random_a223f65315bcc4a07087116719b5fa251}
+
+
+pdf\-: p(x) = lambda $\ast$ exp(-\/lambda $\ast$ x) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em lambda} & must be $>$ 0\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+an exponential generator. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_random_a33226e423e66a9fcd3e3cdf3c9ce62ae}{\index{repast\-::\-Random@{repast\-::\-Random}!create\-Normal\-Generator@{create\-Normal\-Generator}}
+\index{create\-Normal\-Generator@{create\-Normal\-Generator}!repast::Random@{repast\-::\-Random}}
+\subsubsection[{create\-Normal\-Generator}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Normal\-Generator} repast\-::\-Random\-::create\-Normal\-Generator (
+\begin{DoxyParamCaption}
+\item[{double}]{mean, }
+\item[{double}]{sigma}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_random_a33226e423e66a9fcd3e3cdf3c9ce62ae}
+
+
+Creates a normal generator. 
+
+pdf\-: p(x) = 1/sqrt(2$\ast$pi$\ast$sigma) $\ast$ exp(-\/ (x-\/mean)2 / (2$\ast$sigma2) ) \hypertarget{classrepast_1_1_random_a405c6638702359ebc0038dc309a73a45}{\index{repast\-::\-Random@{repast\-::\-Random}!create\-Triangle\-Generator@{create\-Triangle\-Generator}}
+\index{create\-Triangle\-Generator@{create\-Triangle\-Generator}!repast::Random@{repast\-::\-Random}}
+\subsubsection[{create\-Triangle\-Generator}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Triangle\-Generator} repast\-::\-Random\-::create\-Triangle\-Generator (
+\begin{DoxyParamCaption}
+\item[{double}]{lower\-Bound, }
+\item[{double}]{most\-Likely, }
+\item[{double}]{upper\-Bound}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_random_a405c6638702359ebc0038dc309a73a45}
+
+
+Creates a triangle generator with the specified properties. 
+
+A Triangle\-Generator produces a floating point value x where lowerbound $<$= x $<$= upper\-Bound and most\-Likely is the most probable value for x.
+
+
+\begin{DoxyParams}{Parameters}
+{\em lower\-Bound} & the lower bound of the values produced by the generator \\
+\hline
+{\em most\-Likely} & the most likely value produced by the generator \\
+\hline
+{\em upper\-Bound} & the upper bound of the values produced by the generator\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a triangle generator. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_random_a5017a5f8427219f9e0d487f4ae2b215d}{\index{repast\-::\-Random@{repast\-::\-Random}!create\-Uni\-Double\-Generator@{create\-Uni\-Double\-Generator}}
+\index{create\-Uni\-Double\-Generator@{create\-Uni\-Double\-Generator}!repast::Random@{repast\-::\-Random}}
+\subsubsection[{create\-Uni\-Double\-Generator}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Double\-Uniform\-Generator} repast\-::\-Random\-::create\-Uni\-Double\-Generator (
+\begin{DoxyParamCaption}
+\item[{double}]{from, }
+\item[{double}]{to}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_random_a5017a5f8427219f9e0d487f4ae2b215d}
+
+
+Creates a generator that produces doubles in the range \mbox{[}from, to). 
+
+inclusive of from, exclusive of to.
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & the range start (inclusive) \\
+\hline
+{\em to} & the range end (exclusive)\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a generator that produces doubles in the range \mbox{[}from, to). 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_random_a5263c2b66369177674e2d223d5ff7945}{\index{repast\-::\-Random@{repast\-::\-Random}!create\-Uni\-Int\-Generator@{create\-Uni\-Int\-Generator}}
+\index{create\-Uni\-Int\-Generator@{create\-Uni\-Int\-Generator}!repast::Random@{repast\-::\-Random}}
+\subsubsection[{create\-Uni\-Int\-Generator}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Int\-Uniform\-Generator} repast\-::\-Random\-::create\-Uni\-Int\-Generator (
+\begin{DoxyParamCaption}
+\item[{int}]{from, }
+\item[{int}]{to}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_random_a5263c2b66369177674e2d223d5ff7945}
+
+
+Creates a generator that produces ints in the range \mbox{[}from, to\mbox{]}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & the range start (inclusive) \\
+\hline
+{\em to} & the range end (inclusive)\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a generator that produces ints in the range \mbox{[}from, to\mbox{]}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_random_ac3bcb79b02d9158f2d681a6887ec1f6f}{\index{repast\-::\-Random@{repast\-::\-Random}!engine@{engine}}
+\index{engine@{engine}!repast::Random@{repast\-::\-Random}}
+\subsubsection[{engine}]{\setlength{\rightskip}{0pt plus 5cm}boost\-::mt19937\& repast\-::\-Random\-::engine (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_random_ac3bcb79b02d9158f2d681a6887ec1f6f}
+
+
+Gets the random number engine from which the distributions are created. 
+
+\begin{DoxyReturn}{Returns}
+he random number engine from which the distributions are created. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_random_ae74efa6b1d2a91054538378f6488b066}{\index{repast\-::\-Random@{repast\-::\-Random}!get\-Generator@{get\-Generator}}
+\index{get\-Generator@{get\-Generator}!repast::Random@{repast\-::\-Random}}
+\subsubsection[{get\-Generator}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Number\-Generator} $\ast$ repast\-::\-Random\-::get\-Generator (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{id}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_random_ae74efa6b1d2a91054538378f6488b066}
+
+
+Gets the named generator or 0 if the name is not found. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the name of the generator to get \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_random_aff5e636ed06991e91b149e880944022e}{\index{repast\-::\-Random@{repast\-::\-Random}!initialize@{initialize}}
+\index{initialize@{initialize}!repast::Random@{repast\-::\-Random}}
+\subsubsection[{initialize}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Random\-::initialize (
+\begin{DoxyParamCaption}
+\item[{boost\-::uint32\-\_\-t}]{seed}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}}\label{classrepast_1_1_random_aff5e636ed06991e91b149e880944022e}
+
+
+Initialize the \hyperlink{classrepast_1_1_random}{Random} singleton with the specified seed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em the} & seed to initialize the random number generator with. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_random_aac8516b6a9f9005013dafc82034ce2e3}{\index{repast\-::\-Random@{repast\-::\-Random}!next\-Double@{next\-Double}}
+\index{next\-Double@{next\-Double}!repast::Random@{repast\-::\-Random}}
+\subsubsection[{next\-Double}]{\setlength{\rightskip}{0pt plus 5cm}double repast\-::\-Random\-::next\-Double (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_random_aac8516b6a9f9005013dafc82034ce2e3}
+
+
+Gets the next double in the range \mbox{[}0, 1). 
+
+\begin{DoxyReturn}{Returns}
+the next double in the range \mbox{[}0, 1). 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_random_af3e9c83a19e18347f05dbd0fe7044144}{\index{repast\-::\-Random@{repast\-::\-Random}!put\-Generator@{put\-Generator}}
+\index{put\-Generator@{put\-Generator}!repast::Random@{repast\-::\-Random}}
+\subsubsection[{put\-Generator}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Random\-::put\-Generator (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{id, }
+\item[{{\bf Number\-Generator} $\ast$}]{generator}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_random_af3e9c83a19e18347f05dbd0fe7044144}
+
+
+Puts the named generator into this \hyperlink{classrepast_1_1_random}{Random}. 
+
+Added generators will be deleted by \hyperlink{classrepast_1_1_random}{Random} when it is destroyed.
+
+
+\begin{DoxyParams}{Parameters}
+{\em the} & id of the generator \\
+\hline
+{\em generator} & the generator to add \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_random_abc9590ab2bbd9a61bc1af7c1f72bb604}{\index{repast\-::\-Random@{repast\-::\-Random}!seed@{seed}}
+\index{seed@{seed}!repast::Random@{repast\-::\-Random}}
+\subsubsection[{seed}]{\setlength{\rightskip}{0pt plus 5cm}boost\-::uint32\-\_\-t repast\-::\-Random\-::seed (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_random_abc9590ab2bbd9a61bc1af7c1f72bb604}
+
+
+Gets the current seed. 
+
+\begin{DoxyReturn}{Returns}
+the current seed. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Random.\-h\item 
+repast\-\_\-hpc/Random.\-cpp\end{DoxyCompactItemize}

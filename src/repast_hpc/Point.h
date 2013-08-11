@@ -60,6 +60,9 @@ namespace repast {
 template<typename T>
 class Point;
 
+/**
+ * Class that allows retrieval of hash value for Point objects.
+ */
 template<typename T>
 struct HashGridPoint {
 	std::size_t operator()(const Point<T>& pt) const {

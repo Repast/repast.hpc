@@ -48,6 +48,9 @@
 namespace repast {
 namespace relogo {
 
+/**
+ * Repast SharedDiscreteSpace specialized for Relogo.
+ */
 template <typename GPTransformer, typename Adder>
 class RelogoSharedDiscreteSpace : public repast::SharedDiscreteSpace<RelogoAgent, GPTransformer, Adder> {
 

@@ -1,0 +1,52 @@
+\hypertarget{classrepast_1_1_request___packet}{\section{repast\-:\-:Request\-\_\-\-Packet$<$ Content $>$ Class Template Reference}
+\label{classrepast_1_1_request___packet}\index{repast\-::\-Request\-\_\-\-Packet$<$ Content $>$@{repast\-::\-Request\-\_\-\-Packet$<$ Content $>$}}
+}
+
+
+Contains information sent as agents are exchanged, either in response to requests or agent movement.  
+
+
+
+
+{\ttfamily \#include $<$Repast\-Process.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_request___packet_a533d224a16012ea64470f1dbb62877d2}{{\bfseries Request\-\_\-\-Packet} (std\-::vector$<$ Content $>$ $\ast$agent\-Content, std\-::map$<$ std\-::string, std\-::vector$<$ \hyperlink{classrepast_1_1_projection_info_packet}{Projection\-Info\-Packet} $\ast$ $>$ $>$ $\ast$projection\-Info)}\label{classrepast_1_1_request___packet_a533d224a16012ea64470f1dbb62877d2}
+
+\item 
+\hypertarget{classrepast_1_1_request___packet_abb795210d8ed989db6c0f03a74883751}{{\footnotesize template$<$class Archive $>$ }\\void {\bfseries serialize} (Archive \&ar, const unsigned int version)}\label{classrepast_1_1_request___packet_abb795210d8ed989db6c0f03a74883751}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_request___packet_a59c95fb4b18c6196f9b2add885b272e1}{std\-::vector$<$ Content $>$ $\ast$ {\bfseries agent\-Content\-Ptr}}\label{classrepast_1_1_request___packet_a59c95fb4b18c6196f9b2add885b272e1}
+
+\item 
+\hypertarget{classrepast_1_1_request___packet_aa95c5672630f536c4f4c57c39b78fa1c}{std\-::map$<$ std\-::string, \\*
+std\-::vector\\*
+$<$ \hyperlink{classrepast_1_1_projection_info_packet}{Projection\-Info\-Packet} $\ast$ $>$ $>$ $\ast$ {\bfseries projection\-Info\-Ptr}}\label{classrepast_1_1_request___packet_aa95c5672630f536c4f4c57c39b78fa1c}
+
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_request___packet_ac98d07dd8f7b70e16ccb9a01abf56b9c}{class {\bfseries boost\-::serialization\-::access}}\label{classrepast_1_1_request___packet_ac98d07dd8f7b70e16ccb9a01abf56b9c}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename Content$>$class repast\-::\-Request\-\_\-\-Packet$<$ Content $>$}
+
+Contains information sent as agents are exchanged, either in response to requests or agent movement. 
+
+Contains both agent raw information (of type 'Content') and projection information.
+
+Note\-: A 'Packet' is responsible for deleting the objects to which it points This is essentially not optional\-: when boost sends the Packet via M\-P\-I the locations at which it places the different elements are not known (no 'new' is called in the user code). Some code must be written to track these down and delete, and it is manifestly easier to provide that code in the Packet itself than to rewrite where needed, inspecting the Packet for the locations 
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Repast\-Process.\-h\end{DoxyCompactItemize}

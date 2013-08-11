@@ -1,0 +1,40 @@
+\hypertarget{classrepast_1_1_grid_move_packets}{\section{repast\-:\-:Grid\-Move\-Packets$<$ Pt\-Type $>$ Class Template Reference}
+\label{classrepast_1_1_grid_move_packets}\index{repast\-::\-Grid\-Move\-Packets$<$ Pt\-Type $>$@{repast\-::\-Grid\-Move\-Packets$<$ Pt\-Type $>$}}
+}
+
+
+A collection of \hyperlink{structrepast_1_1_grid_move_packet}{Grid\-Move\-Packet} objects, kept in a map per destination process.  
+
+
+
+
+{\ttfamily \#include $<$Grid\-Move\-Packets.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_grid_move_packets_a8bc8af3fd01e9896508a70a6681c7fb2}{void {\bfseries add\-Packet} (const \hyperlink{structrepast_1_1_grid_move_packet}{Grid\-Move\-Packet}$<$ Pt\-Type $>$ \&packet)}\label{classrepast_1_1_grid_move_packets_a8bc8af3fd01e9896508a70a6681c7fb2}
+
+\item 
+\hypertarget{classrepast_1_1_grid_move_packets_a6c54ec55d5bb7145c4e76583b0f6c4df}{void {\bfseries clear} ()}\label{classrepast_1_1_grid_move_packets_a6c54ec55d5bb7145c4e76583b0f6c4df}
+
+\item 
+\hypertarget{classrepast_1_1_grid_move_packets_aabe5f41d7a3b20e17ef58423d51b8acf}{void \hyperlink{classrepast_1_1_grid_move_packets_aabe5f41d7a3b20e17ef58423d51b8acf}{remove\-Packet\-For} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)}\label{classrepast_1_1_grid_move_packets_aabe5f41d7a3b20e17ef58423d51b8acf}
+
+\begin{DoxyCompactList}\small\item\em Removes any Grid\-Move\-Packet-\/s associated with the specified agent id. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_grid_move_packets_a87a42bb21680295cbc11f5f7dcc86b80}{void {\bfseries send} (std\-::vector$<$ boost\-::mpi\-::request $>$ \&requests, boost\-::mpi\-::communicator world)}\label{classrepast_1_1_grid_move_packets_a87a42bb21680295cbc11f5f7dcc86b80}
+
+\item 
+\hypertarget{classrepast_1_1_grid_move_packets_a42c07125961b39ee4ef64b933cb546a0}{void {\bfseries receivers} (std\-::vector$<$ int $>$ \&receivers)}\label{classrepast_1_1_grid_move_packets_a42c07125961b39ee4ef64b933cb546a0}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename Pt\-Type$>$class repast\-::\-Grid\-Move\-Packets$<$ Pt\-Type $>$}
+
+A collection of \hyperlink{structrepast_1_1_grid_move_packet}{Grid\-Move\-Packet} objects, kept in a map per destination process. 
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Grid\-Move\-Packets.\-h\end{DoxyCompactItemize}

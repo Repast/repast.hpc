@@ -1,0 +1,1045 @@
+\hypertarget{classrepast_1_1relogo_1_1_observer}{\section{repast\-:\-:relogo\-:\-:Observer Class Reference}
+\label{classrepast_1_1relogo_1_1_observer}\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}}
+}
+
+
+Implementation of a logo \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}.  
+
+
+
+
+{\ttfamily \#include $<$Observer.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classrepast_1_1relogo_1_1_observer_a08d634c4dde933cd0a690271e7b2edd6}{add\-Data\-Set} (repast\-::\-Data\-Set $\ast$data\-Set)
+\begin{DoxyCompactList}\small\item\em Adds a dataset to this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1relogo_1_1_observer_abcf29ed2775f06aa3e77d3140723d4ce}{void \hyperlink{classrepast_1_1relogo_1_1_observer_abcf29ed2775f06aa3e77d3140723d4ce}{data\-Set\-Close} ()}\label{classrepast_1_1relogo_1_1_observer_abcf29ed2775f06aa3e77d3140723d4ce}
+
+\begin{DoxyCompactList}\small\item\em Non A\-P\-I method for closing all the datasets at the end of a sim runs. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1relogo_1_1_observer_a4ab373d9fd531a50e788c5a6bac04002}{go} ()=0
+\begin{DoxyCompactList}\small\item\em Called every tick of the simulation. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1relogo_1_1_observer_a2780109d873c73115d44cddf8f138ef3}{setup} (Properties \&props)
+\begin{DoxyCompactList}\small\item\em Classes that extend this should include model initialization here. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_observer_aa84ed23a631c997aaf5942eb22becfa5}{\-\_\-setup} (Properties \&props)
+\begin{DoxyCompactList}\small\item\em Performs internal Relogo initialization. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1relogo_1_1_observer_a4b6cf502f73063c0d99af21e7a3eab50}{min\-Pxcor} () const 
+\begin{DoxyCompactList}\small\item\em Gets the minimum x coordinate of the patches managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1relogo_1_1_observer_a8b4a2f3c5b662a20caf690baa389be05}{min\-Pycor} () const 
+\begin{DoxyCompactList}\small\item\em Gets the minimum y coordinate of the patches managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1relogo_1_1_observer_a02da6b9980c4a06926e024234c708f85}{max\-Pxcor} () const 
+\begin{DoxyCompactList}\small\item\em Gets the maximum x coordinate of the patches managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1relogo_1_1_observer_a7435b47c62c790d656092fce3ce1647e}{max\-Pycor} () const 
+\begin{DoxyCompactList}\small\item\em Gets the maximum y coordinate of the patches managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1relogo_1_1_observer_a8a46f049d939c640f0e4094c17145dfd}{random\-Pxcor} ()
+\begin{DoxyCompactList}\small\item\em Gets a random x coodinate of the patches managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1relogo_1_1_observer_acf3115c0cd3cbd2f2b9d979ff166daa7}{random\-Pycor} ()
+\begin{DoxyCompactList}\small\item\em Gets a random y coodinate of the patches managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. \end{DoxyCompactList}\item 
+double \hyperlink{classrepast_1_1relogo_1_1_observer_a0cb7be571b2750313e6678ce01b97a2c}{random\-Xcor} ()
+\begin{DoxyCompactList}\small\item\em Gets a random x coodinate of the turtles managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. \end{DoxyCompactList}\item 
+double \hyperlink{classrepast_1_1relogo_1_1_observer_aba7a10326c6c8fe6e9de52ab073981e0}{random\-Ycor} ()
+\begin{DoxyCompactList}\small\item\em Gets a random y coodinate of the turtles managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1relogo_1_1_observer_a67845540835cd3976a12adea78ede7b4}{bool {\bfseries space\-Pt\-To\-Grid\-Pt} (std\-::vector$<$ double $>$ \&space\-Pt, std\-::vector$<$ int $>$ \&grid\-Pt)}\label{classrepast_1_1relogo_1_1_observer_a67845540835cd3976a12adea78ede7b4}
+
+\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\Agent\-Type $\ast$ \hyperlink{classrepast_1_1relogo_1_1_observer_ae9bccf456c22ebdc3faf71ca1ebc9931}{hatch} (\hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $\ast$parent)
+\begin{DoxyCompactList}\small\item\em Hatchs an agent of the specified type. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type , typename Factory\-Functor $>$ }\\Agent\-Type $\ast$ \hyperlink{classrepast_1_1relogo_1_1_observer_afece369146d9b5c0f4ec1a46e8d570e1}{hatch} (\hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $\ast$parent, Factory\-Functor agent\-Creator)
+\begin{DoxyCompactList}\small\item\em Hatchs an agent of the specified type. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\Agent\-Type $\ast$ \hyperlink{classrepast_1_1relogo_1_1_observer_a00d27f676b62f1c0dbd5d30e842983ca}{who} (const Agent\-Id \&id)
+\begin{DoxyCompactList}\small\item\em Gets the agent with the specified id. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\int \hyperlink{classrepast_1_1relogo_1_1_observer_adf2bea53506dfc407f5c72ad506f634f}{create} (size\-\_\-t count)
+\begin{DoxyCompactList}\small\item\em Create count number of agents of the specified type. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type , typename Factory\-Functor $>$ }\\int \hyperlink{classrepast_1_1relogo_1_1_observer_a560cc8f342873668d6ffedd980bbd623}{create} (size\-\_\-t count, Factory\-Functor agent\-Creator)
+\begin{DoxyCompactList}\small\item\em Create count number of agents of the specified type, using the specified Factory\-Functor. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1relogo_1_1_observer_a4f788359649fb91f08284628aa86e23d}{void \hyperlink{classrepast_1_1relogo_1_1_observer_a4f788359649fb91f08284628aa86e23d}{remove\-Agent} (const Agent\-Id \&id)}\label{classrepast_1_1relogo_1_1_observer_a4f788359649fb91f08284628aa86e23d}
+
+\begin{DoxyCompactList}\small\item\em Removes the specified turtle from the world. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \hyperlink{classrepast_1_1relogo_1_1_observer_adc2973bf611da5b3150241767ea0aaf4}{get} ()
+\begin{DoxyCompactList}\small\item\em Gets all of the agents of the templated type and returns them in an \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1relogo_1_1_observer_a801236adc73230ae18d3f52c88462c16}{\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} $>$ \hyperlink{classrepast_1_1relogo_1_1_observer_a801236adc73230ae18d3f52c88462c16}{turtles} ()}\label{classrepast_1_1relogo_1_1_observer_a801236adc73230ae18d3f52c88462c16}
+
+\begin{DoxyCompactList}\small\item\em Gets all the turtles in this world and return them in the \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_observer_aecb694175ac25b641ab39fdf66a1d865}{get} (\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} $>$ \&\hyperlink{classrepast_1_1relogo_1_1_observer_a801236adc73230ae18d3f52c88462c16}{turtles})
+\begin{DoxyCompactList}\small\item\em Gets all the turtles in this world and put them into the specified \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_observer_a895df31674a579f8eb506cf76cfc1dba}{get} (\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \&agent\-Set)
+\begin{DoxyCompactList}\small\item\em Gets all of the agents of the templated type and puts them into the agent\-Set. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\Agent\-Type $\ast$ \hyperlink{classrepast_1_1relogo_1_1_observer_a7251d8ec999c10df60cbe55b45f84e16}{get} (const Agent\-Id \&id)
+\begin{DoxyCompactList}\small\item\em Gets the turtle with the specified id or 0 if no such turtle is found. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \hyperlink{classrepast_1_1relogo_1_1_observer_a8d1157c42f9ae822860e9865cb871741}{turtles\-At} (int x, int y)
+\begin{DoxyCompactList}\small\item\em Gets all of the agents of the templated type at the specified patch location. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_observer_aa35e9afb1ecc83b3bb5c2b62c1059cdc}{turtles\-At} (int x, int y, \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \&set)
+\begin{DoxyCompactList}\small\item\em Gets all of the agents of the templated type at the specified patch location and puts them in the specified set. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1relogo_1_1_observer_aca1427918732c400436240998ba1739f}{rank} () const 
+\begin{DoxyCompactList}\small\item\em Gets the process rank of this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. \end{DoxyCompactList}\item 
+const Relogo\-Grid\-Type $\ast$ \hyperlink{classrepast_1_1relogo_1_1_observer_a11b3edc4275730a56775fc8f275b47c7}{grid} ()
+\begin{DoxyCompactList}\small\item\em Gets the grid managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. \end{DoxyCompactList}\item 
+const Relogo\-Space\-Type $\ast$ \hyperlink{classrepast_1_1relogo_1_1_observer_aea3636a7f63319553eee9e0b09d2523c}{space} ()
+\begin{DoxyCompactList}\small\item\em Gets the space managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_observer_aa6a58226752ace6c89cff6cdd546806b}{create\-Link} (\hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $\ast$source, \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $\ast$target, const std\-::string \&network\-Name)
+\begin{DoxyCompactList}\small\item\em Creates a link between the source and target agents in the named network. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Link\-Creator $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_observer_a82c935b25859fb94e8010e25ee880854}{create\-Link} (\hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $\ast$source, \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $\ast$target, const std\-::string \&network\-Name, Link\-Creator \&creator)
+\begin{DoxyCompactList}\small\item\em Creates a link between the source and target agents in the named network, using the specified Link\-Creator. \end{DoxyCompactList}\item 
+boost\-::shared\-\_\-ptr$<$ \hyperlink{classrepast_1_1relogo_1_1_relogo_link}{Relogo\-Link} $>$ \hyperlink{classrepast_1_1relogo_1_1_observer_a26e12713f282594d49b31919de373f25}{link} (\hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $\ast$source, \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $\ast$target, const std\-::string \&network\-Name)
+\begin{DoxyCompactList}\small\item\em Gets the link, if any, between the source and target agents in the named network. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_observer_a01f927604bdd537d650596604703d09c}{predecessors} (\hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $\ast$agent, const std\-::string \&network\-Name, \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \&out)
+\begin{DoxyCompactList}\small\item\em Gets the network predecessors of the specified agent in the specified network and puts the result into out. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_observer_a225bb07be2ba509b88746bff2e6d8745}{successors} (\hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $\ast$agent, const std\-::string \&network\-Name, \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \&out)
+\begin{DoxyCompactList}\small\item\em Gets the network successors of the specified agent in the specified network and puts the result into out. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Patch\-Type $>$ }\\Patch\-Type $\ast$ \hyperlink{classrepast_1_1relogo_1_1_observer_a78c7ec8b81efadd6a3a1050ddf9043ce}{patch\-At} (int x, int y)
+\begin{DoxyCompactList}\small\item\em Gets the patch at the specified coordinates. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1relogo_1_1_patch}{Patch} $\ast$ \hyperlink{classrepast_1_1relogo_1_1_observer_ad573c6f1bd2d8c8047d025652a43100c}{patch\-At} (int x, int y)
+\begin{DoxyCompactList}\small\item\em Gets the patch at the specified coordinates. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1relogo_1_1_patch}{Patch} $\ast$ \hyperlink{classrepast_1_1relogo_1_1_observer_a94254d970a0e8f8409b1fa0aca0aab5b}{patch\-At} (Point$<$ double $>$ location, double dx, double dy)
+\begin{DoxyCompactList}\small\item\em Gets the patch at the delta from the specified location or 0 if the resulting location is outside the world. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1relogo_1_1_patch}{Patch} $\ast$ \hyperlink{classrepast_1_1relogo_1_1_observer_acb1163537fb7f53ccb6cf99d1cfdff47}{patch\-At\-Offset} (Point$<$ double $>$ location, double heading, double distance)
+\begin{DoxyCompactList}\small\item\em Gets the patch at the heading/distance offset from the specified location or 0 if the resulting location is outside the world. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Patch\-Type $>$ }\\\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Patch\-Type $>$ \hyperlink{classrepast_1_1relogo_1_1_observer_ad68866a2584551d27c9bb6c53aca5f20}{patches} ()
+\begin{DoxyCompactList}\small\item\em Gets an agent set of the all the patches. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Patch\-Type $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_observer_a2384690c4e773727acdccaa7fc314bcd}{patches} (\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Patch\-Type $>$ \&set)
+\begin{DoxyCompactList}\small\item\em Gets all the patches and places them in the specified set. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Turtle\-Type $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_observer_aad4c5fbcf929481f361cca41c4b432ec}{turtles\-On} (\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $>$ \&agent\-Set, \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Turtle\-Type $>$ \&out)
+\begin{DoxyCompactList}\small\item\em Gets all the turtles that are on any patches contained in the agent\-Set or on the patches where any turtles in the agent\-Set are standing. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Turtle\-Type $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_observer_aedb92a41bdaafe4a179f2b4a027e7929}{turtles\-On} (const \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $\ast$agent, \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Turtle\-Type $>$ \&out)
+\begin{DoxyCompactList}\small\item\em Gets all the turtles that are on the patch if the agent is a patch, otherwise get all the agents on the patch where the agent is standing. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_observer_a1e832a3c9c59198c105e39e4820b4be3}{in\-Radius} (const Point$<$ double $>$ \&center, \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $>$ \&in\-Set, double radius, \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \&out\-Set)
+\begin{DoxyCompactList}\small\item\em Puts all the agents in the in\-Set that are of the specified type and within the specified radius from the specified center into the out\-Set. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Turtle\-Content , typename Provider , typename Updater , typename Agent\-Creator $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_observer_a966b0c9fac6e6d4e3e21f74ac3b955b6}{synchronize\-Turtle\-Status} (Provider \&provider, Updater \&updater, Agent\-Creator \&creator, Repast\-Process\-::\-E\-X\-C\-H\-A\-N\-G\-E\-\_\-\-P\-A\-T\-T\-E\-R\-N exchange\-Pattern=Repast\-Process\-::\-P\-O\-L\-L)
+\begin{DoxyCompactList}\small\item\em Synchronizes the status (moved or died) of all turtles across processes. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Turtle\-Content , typename Provider , typename Updater $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_observer_a4db8efa2a511050a5432c185816d3cec}{synchronize\-Turtle\-States} (Provider \&provider, Updater \&updater)
+\begin{DoxyCompactList}\small\item\em Synchronizes the state of any Turtles that are shared across processes. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1relogo_1_1_observer_a0268b843eec648ada141c031f6a13621}{{\footnotesize template$<$typename Turtle\-Content , typename Provider , typename Updater , typename Agent\-Creator $>$ }\\void {\bfseries synchronize} (Provider \&provider, Updater \&updater, Agent\-Creator \&creator, Repast\-Process\-::\-E\-X\-C\-H\-A\-N\-G\-E\-\_\-\-P\-A\-T\-T\-E\-R\-N exchange\-Pattern=Repast\-Process\-::\-P\-O\-L\-L)}\label{classrepast_1_1relogo_1_1_observer_a0268b843eec648ada141c031f6a13621}
+
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_observer_aa7cb67c53a3a3b5012494bb45f0c6b40}{{\footnotesize template$<$typename Agent $>$ }\\\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent $>$ {\bfseries get} ()}\label{classrepast_1_1relogo_1_1_observer_aa7cb67c53a3a3b5012494bb45f0c6b40}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_observer_a217887f3aa32a6ede5e1e501d68cfe76}{typedef Shared\-Network\\*
+$<$ \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent}, \hyperlink{classrepast_1_1relogo_1_1_relogo_link}{Relogo\-Link}, \\*
+Repast\-Edge\-Content$<$ \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $>$\\*
+, Repast\-Edge\-Content\-Manager\\*
+$<$ \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $>$ $>$ {\bfseries Network\-Type}}\label{classrepast_1_1relogo_1_1_observer_a217887f3aa32a6ede5e1e501d68cfe76}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_observer_a9a6da36977fc44e0364be1d7032055ca}{Network\-Type $\ast$ {\bfseries find\-Network} (const std\-::string \&name)}\label{classrepast_1_1relogo_1_1_observer_a9a6da36977fc44e0364be1d7032055ca}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_observer_a77aae0a56dedd99a7ae481c74407e8d2}{Properties {\bfseries \-\_\-props}}\label{classrepast_1_1relogo_1_1_observer_a77aae0a56dedd99a7ae481c74407e8d2}
+
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_observer_a886b32011faa0ed43e084908d80d995b}{int {\bfseries \-\_\-rank}}\label{classrepast_1_1relogo_1_1_observer_a886b32011faa0ed43e084908d80d995b}
+
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_observer_a242cab3ecef167edeed2f8598fd7220d}{Grid\-Dimensions {\bfseries local\-Bounds}}\label{classrepast_1_1relogo_1_1_observer_a242cab3ecef167edeed2f8598fd7220d}
+
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_observer_a69c5a7ee964212debd1b2a60f75ba847}{repast\-::\-Shared\-Context\\*
+$<$ \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $>$ {\bfseries context}}\label{classrepast_1_1relogo_1_1_observer_a69c5a7ee964212debd1b2a60f75ba847}
+
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_observer_aaf7ab7bd044b24b5903e8c8fd65feefc}{std\-::vector$<$ repast\-::\-Data\-Set $\ast$ $>$ {\bfseries data\-Sets}}\label{classrepast_1_1relogo_1_1_observer_aaf7ab7bd044b24b5903e8c8fd65feefc}
+
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_observer_a8d256944f28ec0cd654da58d4dcff11c}{class {\bfseries World\-Creator}}\label{classrepast_1_1relogo_1_1_observer_a8d256944f28ec0cd654da58d4dcff11c}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Implementation of a logo \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1relogo_1_1_observer_aa84ed23a631c997aaf5942eb22becfa5}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!\-\_\-setup@{\-\_\-setup}}
+\index{\-\_\-setup@{\-\_\-setup}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{\-\_\-setup}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Observer\-::\-\_\-setup (
+\begin{DoxyParamCaption}
+\item[{Properties \&}]{props}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_aa84ed23a631c997aaf5942eb22becfa5}
+
+
+Performs internal Relogo initialization. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em props} & Properties collection that can be used to drive initialization \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a08d634c4dde933cd0a690271e7b2edd6}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!add\-Data\-Set@{add\-Data\-Set}}
+\index{add\-Data\-Set@{add\-Data\-Set}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{add\-Data\-Set}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Observer\-::add\-Data\-Set (
+\begin{DoxyParamCaption}
+\item[{repast\-::\-Data\-Set $\ast$}]{data\-Set}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_a08d634c4dde933cd0a690271e7b2edd6}
+
+
+Adds a dataset to this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+
+This observer will schedule the dataset for recording and writing, and properly destroy the dataset.
+
+
+\begin{DoxyParams}{Parameters}
+{\em data\-Set} & the data set to add \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_observer_adf2bea53506dfc407f5c72ad506f634f}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!create@{create}}
+\index{create@{create}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{create}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ int repast\-::relogo\-::\-Observer\-::create (
+\begin{DoxyParamCaption}
+\item[{size\-\_\-t}]{count}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_adf2bea53506dfc407f5c72ad506f634f}
+
+
+Create count number of agents of the specified type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em count} & the number of agents to create \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of agents to create. This must be a \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} or a class that extends \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle}. It must have a constructor that takes an Agent\-Id and a pointer to this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}.\\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+the integer type id for agents of this type. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a560cc8f342873668d6ffedd980bbd623}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!create@{create}}
+\index{create@{create}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{create}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type , typename Factory\-Functor $>$ int repast\-::relogo\-::\-Observer\-::create (
+\begin{DoxyParamCaption}
+\item[{size\-\_\-t}]{count, }
+\item[{Factory\-Functor}]{agent\-Creator}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_a560cc8f342873668d6ffedd980bbd623}
+
+
+Create count number of agents of the specified type, using the specified Factory\-Functor. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em count} & the number of agents to create \\
+\hline
+{\em agent\-Creator} & a Factory\-Functor used to create the agents\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of agent to create. This must either be a \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} or extend \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle}. \\
+\hline
+{\em Factory\-Functor} & a functor or function with the following signature Agent\-Type$\ast$ (Agent\-Id id, Observer$\ast$ obs).\\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+an the integer id for agents of this type 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_aa6a58226752ace6c89cff6cdd546806b}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!create\-Link@{create\-Link}}
+\index{create\-Link@{create\-Link}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{create\-Link}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Observer\-::create\-Link (
+\begin{DoxyParamCaption}
+\item[{{\bf Relogo\-Agent} $\ast$}]{source, }
+\item[{{\bf Relogo\-Agent} $\ast$}]{target, }
+\item[{const std\-::string \&}]{network\-Name}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_aa6a58226752ace6c89cff6cdd546806b}
+
+
+Creates a link between the source and target agents in the named network. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & the source agent \\
+\hline
+{\em target} & the target agent \\
+\hline
+{\em network\-Name} & the name of the network to create the link in \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a82c935b25859fb94e8010e25ee880854}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!create\-Link@{create\-Link}}
+\index{create\-Link@{create\-Link}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{create\-Link}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Link\-Creator $>$ void repast\-::relogo\-::\-Observer\-::create\-Link (
+\begin{DoxyParamCaption}
+\item[{{\bf Relogo\-Agent} $\ast$}]{source, }
+\item[{{\bf Relogo\-Agent} $\ast$}]{target, }
+\item[{const std\-::string \&}]{network\-Name, }
+\item[{Link\-Creator \&}]{creator}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_a82c935b25859fb94e8010e25ee880854}
+
+
+Creates a link between the source and target agents in the named network, using the specified Link\-Creator. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & the source agent \\
+\hline
+{\em target} & the target agent \\
+\hline
+{\em network\-Name} & the name of the network to create the link in\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Link\-Creator} & an function or functor with the following signature Relogo\-Link$\ast$ (Turtle$\ast$ source, Turtle$\ast$ target) \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_observer_adc2973bf611da5b3150241767ea0aaf4}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!get@{get}}
+\index{get@{get}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{get}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ {\bf Agent\-Set}$<$Agent\-Type$>$ repast\-::relogo\-::\-Observer\-::get (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_adc2973bf611da5b3150241767ea0aaf4}
+
+
+Gets all of the agents of the templated type and returns them in an \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of turtle agents to get \\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+an agent set containing the agents 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_aecb694175ac25b641ab39fdf66a1d865}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!get@{get}}
+\index{get@{get}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{get}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Observer\-::get (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Set}$<$ {\bf Turtle} $>$ \&}]{turtles}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_aecb694175ac25b641ab39fdf66a1d865}
+
+
+Gets all the turtles in this world and put them into the specified \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em turtles} & the \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} to put the turtles in \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a895df31674a579f8eb506cf76cfc1dba}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!get@{get}}
+\index{get@{get}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{get}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ void repast\-::relogo\-::\-Observer\-::get (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Set}$<$ Agent\-Type $>$ \&}]{agent\-Set}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_a895df31674a579f8eb506cf76cfc1dba}
+
+
+Gets all of the agents of the templated type and puts them into the agent\-Set. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em agent\-Set} & the \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} to put the found agents in\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of turtle agents to get \\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+an agent set containing the agents 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a7251d8ec999c10df60cbe55b45f84e16}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!get@{get}}
+\index{get@{get}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{get}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ Agent\-Type $\ast$ repast\-::relogo\-::\-Observer\-::get (
+\begin{DoxyParamCaption}
+\item[{const Agent\-Id \&}]{id}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_a7251d8ec999c10df60cbe55b45f84e16}
+
+
+Gets the turtle with the specified id or 0 if no such turtle is found. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of the turtle to find \\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+the turtle with the specified id, or 0. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a4ab373d9fd531a50e788c5a6bac04002}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!go@{go}}
+\index{go@{go}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{go}]{\setlength{\rightskip}{0pt plus 5cm}virtual void repast\-::relogo\-::\-Observer\-::go (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1relogo_1_1_observer_a4ab373d9fd531a50e788c5a6bac04002}
+
+
+Called every tick of the simulation. 
+
+Implementations of this method will implement that actual simulation behavior. \hypertarget{classrepast_1_1relogo_1_1_observer_a11b3edc4275730a56775fc8f275b47c7}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!grid@{grid}}
+\index{grid@{grid}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{grid}]{\setlength{\rightskip}{0pt plus 5cm}const Relogo\-Grid\-Type $\ast$ repast\-::relogo\-::\-Observer\-::grid (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_a11b3edc4275730a56775fc8f275b47c7}
+
+
+Gets the grid managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+
+\begin{DoxyReturn}{Returns}
+the grid managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_ae9bccf456c22ebdc3faf71ca1ebc9931}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!hatch@{hatch}}
+\index{hatch@{hatch}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{hatch}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ Agent\-Type $\ast$ repast\-::relogo\-::\-Observer\-::hatch (
+\begin{DoxyParamCaption}
+\item[{{\bf Relogo\-Agent} $\ast$}]{parent}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_ae9bccf456c22ebdc3faf71ca1ebc9931}
+
+
+Hatchs an agent of the specified type. 
+
+The new agent will have the location and heading of the specified \char`\"{}parent\char`\"{}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em the} & \char`\"{}parent\char`\"{} of the hatched agent \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of turtle to hatch \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_observer_afece369146d9b5c0f4ec1a46e8d570e1}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!hatch@{hatch}}
+\index{hatch@{hatch}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{hatch}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type , typename Factory\-Functor $>$ Agent\-Type $\ast$ repast\-::relogo\-::\-Observer\-::hatch (
+\begin{DoxyParamCaption}
+\item[{{\bf Relogo\-Agent} $\ast$}]{parent, }
+\item[{Factory\-Functor}]{agent\-Creator}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_afece369146d9b5c0f4ec1a46e8d570e1}
+
+
+Hatchs an agent of the specified type. 
+
+The new agent will have the location and heading of the specified \char`\"{}parent\char`\"{} and will be created using the Factory\-Functor.
+
+
+\begin{DoxyParams}{Parameters}
+{\em the} & \char`\"{}parent\char`\"{} of the hatched agent \\
+\hline
+{\em agent\-Creator} & a Factory\-Functor used to create the agent\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Factory\-Functor} & a functor or function with the following signature Agent\-Type$\ast$ (Agent\-Id id, Observer$\ast$ obs).\\
+\hline
+{\em Agent\-Type} & the type of turtle to hatch. This must either be \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} or extend \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle}. \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a1e832a3c9c59198c105e39e4820b4be3}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!in\-Radius@{in\-Radius}}
+\index{in\-Radius@{in\-Radius}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{in\-Radius}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ void repast\-::relogo\-::\-Observer\-::in\-Radius (
+\begin{DoxyParamCaption}
+\item[{const Point$<$ double $>$ \&}]{center, }
+\item[{{\bf Agent\-Set}$<$ {\bf Relogo\-Agent} $>$ \&}]{in\-Set, }
+\item[{double}]{radius, }
+\item[{{\bf Agent\-Set}$<$ Agent\-Type $>$ \&}]{out\-Set}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_a1e832a3c9c59198c105e39e4820b4be3}
+
+
+Puts all the agents in the in\-Set that are of the specified type and within the specified radius from the specified center into the out\-Set. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em center} & the center of the circle within whose radius we filter on \\
+\hline
+{\em in\-Set} & the set of agents to filter \\
+\hline
+{\em out\-Set} & the set that will contain the results of the radius filter\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em the} & type of agent to get \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a26e12713f282594d49b31919de373f25}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!link@{link}}
+\index{link@{link}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{link}]{\setlength{\rightskip}{0pt plus 5cm}boost\-::shared\-\_\-ptr$<$ {\bf Relogo\-Link} $>$ repast\-::relogo\-::\-Observer\-::link (
+\begin{DoxyParamCaption}
+\item[{{\bf Relogo\-Agent} $\ast$}]{source, }
+\item[{{\bf Relogo\-Agent} $\ast$}]{target, }
+\item[{const std\-::string \&}]{network\-Name}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_a26e12713f282594d49b31919de373f25}
+
+
+Gets the link, if any, between the source and target agents in the named network. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & the source of the link \\
+\hline
+{\em target} & the target of the link \\
+\hline
+{\em network\-Name} & the name of the network to find link in \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a02da6b9980c4a06926e024234c708f85}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!max\-Pxcor@{max\-Pxcor}}
+\index{max\-Pxcor@{max\-Pxcor}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{max\-Pxcor}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::relogo\-::\-Observer\-::max\-Pxcor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_observer_a02da6b9980c4a06926e024234c708f85}
+
+
+Gets the maximum x coordinate of the patches managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+
+\begin{DoxyReturn}{Returns}
+the maximum x coordinate of the patches managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a7435b47c62c790d656092fce3ce1647e}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!max\-Pycor@{max\-Pycor}}
+\index{max\-Pycor@{max\-Pycor}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{max\-Pycor}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::relogo\-::\-Observer\-::max\-Pycor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_observer_a7435b47c62c790d656092fce3ce1647e}
+
+
+Gets the maximum y coordinate of the patches managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+
+\begin{DoxyReturn}{Returns}
+the maximum y coordinate of the patches managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a4b6cf502f73063c0d99af21e7a3eab50}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!min\-Pxcor@{min\-Pxcor}}
+\index{min\-Pxcor@{min\-Pxcor}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{min\-Pxcor}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::relogo\-::\-Observer\-::min\-Pxcor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_observer_a4b6cf502f73063c0d99af21e7a3eab50}
+
+
+Gets the minimum x coordinate of the patches managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+
+\begin{DoxyReturn}{Returns}
+the minimum x coordinate of the patches managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a8b4a2f3c5b662a20caf690baa389be05}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!min\-Pycor@{min\-Pycor}}
+\index{min\-Pycor@{min\-Pycor}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{min\-Pycor}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::relogo\-::\-Observer\-::min\-Pycor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_observer_a8b4a2f3c5b662a20caf690baa389be05}
+
+
+Gets the minimum y coordinate of the patches managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+
+\begin{DoxyReturn}{Returns}
+the minimum y coordinate of the patches managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a78c7ec8b81efadd6a3a1050ddf9043ce}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!patch\-At@{patch\-At}}
+\index{patch\-At@{patch\-At}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{patch\-At}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Patch\-Type $>$ Patch\-Type $\ast$ repast\-::relogo\-::\-Observer\-::patch\-At (
+\begin{DoxyParamCaption}
+\item[{int}]{x, }
+\item[{int}]{y}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_a78c7ec8b81efadd6a3a1050ddf9043ce}
+
+
+Gets the patch at the specified coordinates. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & the x coordinate \\
+\hline
+{\em y} & the y coordinate\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em the} & patch type\\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+a pointer to the patch at x,y 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_ad573c6f1bd2d8c8047d025652a43100c}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!patch\-At@{patch\-At}}
+\index{patch\-At@{patch\-At}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{patch\-At}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Patch}$\ast$ repast\-::relogo\-::\-Observer\-::patch\-At (
+\begin{DoxyParamCaption}
+\item[{int}]{x, }
+\item[{int}]{y}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_ad573c6f1bd2d8c8047d025652a43100c}
+
+
+Gets the patch at the specified coordinates. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & the x coordinate \\
+\hline
+{\em y} & the y coordinate\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a pointer to the patch at x,y 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a94254d970a0e8f8409b1fa0aca0aab5b}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!patch\-At@{patch\-At}}
+\index{patch\-At@{patch\-At}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{patch\-At}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Patch} $\ast$ repast\-::relogo\-::\-Observer\-::patch\-At (
+\begin{DoxyParamCaption}
+\item[{Point$<$ double $>$}]{location, }
+\item[{double}]{dx, }
+\item[{double}]{dy}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_a94254d970a0e8f8409b1fa0aca0aab5b}
+
+
+Gets the patch at the delta from the specified location or 0 if the resulting location is outside the world. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em location} & \\
+\hline
+{\em dx} & the delta along the x dimension \\
+\hline
+{\em dy} & the delta along the y dimension\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the patch at the delta from the specified location or 0 if the resulting location is outside the world. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_acb1163537fb7f53ccb6cf99d1cfdff47}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!patch\-At\-Offset@{patch\-At\-Offset}}
+\index{patch\-At\-Offset@{patch\-At\-Offset}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{patch\-At\-Offset}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Patch} $\ast$ repast\-::relogo\-::\-Observer\-::patch\-At\-Offset (
+\begin{DoxyParamCaption}
+\item[{Point$<$ double $>$}]{location, }
+\item[{double}]{heading, }
+\item[{double}]{distance}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_acb1163537fb7f53ccb6cf99d1cfdff47}
+
+
+Gets the patch at the heading/distance offset from the specified location or 0 if the resulting location is outside the world. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em location} & \\
+\hline
+{\em heading} & the heading away from location \\
+\hline
+{\em distance} & distance along heading\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the patch at the delta from the specified location or 0 if the resulting location is outside the world. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_ad68866a2584551d27c9bb6c53aca5f20}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!patches@{patches}}
+\index{patches@{patches}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{patches}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Patch\-Type $>$ {\bf Agent\-Set}$<$ Patch\-Type $>$ repast\-::relogo\-::\-Observer\-::patches (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_ad68866a2584551d27c9bb6c53aca5f20}
+
+
+Gets an agent set of the all the patches. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Patch\-Type} & the patch type\\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+all the patches. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a2384690c4e773727acdccaa7fc314bcd}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!patches@{patches}}
+\index{patches@{patches}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{patches}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Patch\-Type $>$ void repast\-::relogo\-::\-Observer\-::patches (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Set}$<$ Patch\-Type $>$ \&}]{set}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_a2384690c4e773727acdccaa7fc314bcd}
+
+
+Gets all the patches and places them in the specified set. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em set} & the \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} to put the patches in \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Patch\-Type} & the patch type \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a01f927604bdd537d650596604703d09c}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!predecessors@{predecessors}}
+\index{predecessors@{predecessors}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{predecessors}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ void repast\-::relogo\-::\-Observer\-::predecessors (
+\begin{DoxyParamCaption}
+\item[{{\bf Relogo\-Agent} $\ast$}]{agent, }
+\item[{const std\-::string \&}]{network\-Name, }
+\item[{{\bf Agent\-Set}$<$ Agent\-Type $>$ \&}]{out}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_a01f927604bdd537d650596604703d09c}
+
+
+Gets the network predecessors of the specified agent in the specified network and puts the result into out. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em agent} & the agent to get the predecessors of \\
+\hline
+{\em network\-Name} & the name of the network \\
+\hline
+{\em out} & an \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} when the predecessors will be put\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of the predecessors \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a8a46f049d939c640f0e4094c17145dfd}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!random\-Pxcor@{random\-Pxcor}}
+\index{random\-Pxcor@{random\-Pxcor}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{random\-Pxcor}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::relogo\-::\-Observer\-::random\-Pxcor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_a8a46f049d939c640f0e4094c17145dfd}
+
+
+Gets a random x coodinate of the patches managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+
+\begin{DoxyReturn}{Returns}
+a random x coordinate of the patches managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_acf3115c0cd3cbd2f2b9d979ff166daa7}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!random\-Pycor@{random\-Pycor}}
+\index{random\-Pycor@{random\-Pycor}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{random\-Pycor}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::relogo\-::\-Observer\-::random\-Pycor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_acf3115c0cd3cbd2f2b9d979ff166daa7}
+
+
+Gets a random y coodinate of the patches managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+
+\begin{DoxyReturn}{Returns}
+a random y coordinate of the patches managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a0cb7be571b2750313e6678ce01b97a2c}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!random\-Xcor@{random\-Xcor}}
+\index{random\-Xcor@{random\-Xcor}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{random\-Xcor}]{\setlength{\rightskip}{0pt plus 5cm}double repast\-::relogo\-::\-Observer\-::random\-Xcor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_a0cb7be571b2750313e6678ce01b97a2c}
+
+
+Gets a random x coodinate of the turtles managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+
+\begin{DoxyReturn}{Returns}
+a random x coordinate of the turtles managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_aba7a10326c6c8fe6e9de52ab073981e0}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!random\-Ycor@{random\-Ycor}}
+\index{random\-Ycor@{random\-Ycor}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{random\-Ycor}]{\setlength{\rightskip}{0pt plus 5cm}double repast\-::relogo\-::\-Observer\-::random\-Ycor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_aba7a10326c6c8fe6e9de52ab073981e0}
+
+
+Gets a random y coodinate of the turtles managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+
+\begin{DoxyReturn}{Returns}
+a random y coordinate of the turtles managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_aca1427918732c400436240998ba1739f}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!rank@{rank}}
+\index{rank@{rank}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{rank}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::relogo\-::\-Observer\-::rank (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_observer_aca1427918732c400436240998ba1739f}
+
+
+Gets the process rank of this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+
+\begin{DoxyReturn}{Returns}
+the process rank of this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a2780109d873c73115d44cddf8f138ef3}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!setup@{setup}}
+\index{setup@{setup}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{setup}]{\setlength{\rightskip}{0pt plus 5cm}virtual void repast\-::relogo\-::\-Observer\-::setup (
+\begin{DoxyParamCaption}
+\item[{Properties \&}]{props}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}}\label{classrepast_1_1relogo_1_1_observer_a2780109d873c73115d44cddf8f138ef3}
+
+
+Classes that extend this should include model initialization here. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em props} & Properties collection that can be used to drive initialization \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_observer_aea3636a7f63319553eee9e0b09d2523c}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!space@{space}}
+\index{space@{space}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{space}]{\setlength{\rightskip}{0pt plus 5cm}const Relogo\-Space\-Type $\ast$ repast\-::relogo\-::\-Observer\-::space (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_aea3636a7f63319553eee9e0b09d2523c}
+
+
+Gets the space managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+
+\begin{DoxyReturn}{Returns}
+the space managed by this \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a225bb07be2ba509b88746bff2e6d8745}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!successors@{successors}}
+\index{successors@{successors}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{successors}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ void repast\-::relogo\-::\-Observer\-::successors (
+\begin{DoxyParamCaption}
+\item[{{\bf Relogo\-Agent} $\ast$}]{agent, }
+\item[{const std\-::string \&}]{network\-Name, }
+\item[{{\bf Agent\-Set}$<$ Agent\-Type $>$ \&}]{out}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_a225bb07be2ba509b88746bff2e6d8745}
+
+
+Gets the network successors of the specified agent in the specified network and puts the result into out. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em agent} & the agent to get the successors of \\
+\hline
+{\em network\-Name} & the name of the network \\
+\hline
+{\em out} & an \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} when the successors will be put\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of the successors \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a4db8efa2a511050a5432c185816d3cec}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!synchronize\-Turtle\-States@{synchronize\-Turtle\-States}}
+\index{synchronize\-Turtle\-States@{synchronize\-Turtle\-States}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{synchronize\-Turtle\-States}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Turtle\-Content , typename Provider , typename Updater $>$ void repast\-::relogo\-::\-Observer\-::synchronize\-Turtle\-States (
+\begin{DoxyParamCaption}
+\item[{Provider \&}]{provider, }
+\item[{Updater \&}]{updater}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_a4db8efa2a511050a5432c185816d3cec}
+
+
+Synchronizes the state of any Turtles that are shared across processes. 
+
+If no turtles are shared across processes, then this does not need to be called.
+
+
+\begin{DoxyParams}{Parameters}
+{\em provider} & provides Turtle\-Content given an Agent\-Request \\
+\hline
+{\em updater} & updates an existing agent given Turtle\-Content\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Turtle\-Content} & the serializable struct or class that describes the state of turtles and patches \\
+\hline
+{\em Provider} & given an Agent\-Request, a Provider provides the Turtle\-Content for the requested Turtles, implementing void provide\-Content(const Agent\-Request\&, std\-::vector$<$\-Turtle\-Content$>$\&) \\
+\hline
+{\em Updater} & given Turtle\-Content, an Updater updates an existing agent with the Turtle\-Content, implementing void update\-Agent(const Turtle\-Content\&). \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a966b0c9fac6e6d4e3e21f74ac3b955b6}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!synchronize\-Turtle\-Status@{synchronize\-Turtle\-Status}}
+\index{synchronize\-Turtle\-Status@{synchronize\-Turtle\-Status}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{synchronize\-Turtle\-Status}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Turtle\-Content , typename Provider , typename Updater , typename Agent\-Creator $>$ void repast\-::relogo\-::\-Observer\-::synchronize\-Turtle\-Status (
+\begin{DoxyParamCaption}
+\item[{Provider \&}]{provider, }
+\item[{Updater \&}]{updater, }
+\item[{Agent\-Creator \&}]{creator, }
+\item[{Repast\-Process\-::\-E\-X\-C\-H\-A\-N\-G\-E\-\_\-\-P\-A\-T\-T\-E\-R\-N}]{exchange\-Pattern = {\ttfamily RepastProcess\-:\-:POLL}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_a966b0c9fac6e6d4e3e21f74ac3b955b6}
+
+
+Synchronizes the status (moved or died) of all turtles across processes. 
+
+If any turtle may have moved into the grid portion managed by another process or if any turtle has died then this must be called prior to those turtles doing anything.
+
+
+\begin{DoxyParams}{Parameters}
+{\em provider} & the class that provides agents given an Agent\-Request \\
+\hline
+{\em creator} & creates Turtles given Turtle\-Content\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Turtle\-Content} & the serializable struct or class that describes a turtles state. \\
+\hline
+{\em Provider} & a class that provides Turtle\-Content from given an Agent\-Request, implementing void provide\-Content(const repast\-::\-Agent\-Request\&, std\-::vector$<$\-Turtle\-Content$>$\& out) \\
+\hline
+{\em Agent\-Creator} & a class that can create agents from Turtle\-Content, implementing Relogo\-Agent$\ast$ create\-Agent(\-Turtle\-Content\&). \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a8d1157c42f9ae822860e9865cb871741}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!turtles\-At@{turtles\-At}}
+\index{turtles\-At@{turtles\-At}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{turtles\-At}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ {\bf Agent\-Set}$<$ Agent\-Type $>$ repast\-::relogo\-::\-Observer\-::turtles\-At (
+\begin{DoxyParamCaption}
+\item[{int}]{x, }
+\item[{int}]{y}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_a8d1157c42f9ae822860e9865cb871741}
+
+
+Gets all of the agents of the templated type at the specified patch location. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of the agents \\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+an agent list containing the agents at the specified location. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_observer_aa35e9afb1ecc83b3bb5c2b62c1059cdc}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!turtles\-At@{turtles\-At}}
+\index{turtles\-At@{turtles\-At}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{turtles\-At}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ void repast\-::relogo\-::\-Observer\-::turtles\-At (
+\begin{DoxyParamCaption}
+\item[{int}]{x, }
+\item[{int}]{y, }
+\item[{{\bf Agent\-Set}$<$ Agent\-Type $>$ \&}]{set}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_aa35e9afb1ecc83b3bb5c2b62c1059cdc}
+
+
+Gets all of the agents of the templated type at the specified patch location and puts them in the specified set. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & the x coordinate of the patch \\
+\hline
+{\em y} & the y coordinate of the patch \\
+\hline
+{\em set} & the \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} to add the found agents to \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the agent type \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_observer_aad4c5fbcf929481f361cca41c4b432ec}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!turtles\-On@{turtles\-On}}
+\index{turtles\-On@{turtles\-On}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{turtles\-On}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Turtle\-Type $>$ void repast\-::relogo\-::\-Observer\-::turtles\-On (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Set}$<$ {\bf Relogo\-Agent} $>$ \&}]{agent\-Set, }
+\item[{{\bf Agent\-Set}$<$ Turtle\-Type $>$ \&}]{out}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_aad4c5fbcf929481f361cca41c4b432ec}
+
+
+Gets all the turtles that are on any patches contained in the agent\-Set or on the patches where any turtles in the agent\-Set are standing. 
+
+The result is placed in out.
+
+
+\begin{DoxyParams}{Parameters}
+{\em agent\-Set} & a set of turtles or patches \\
+\hline
+{\em out} & the \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} where the found turtles will put \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Turtle\-Type} & the type of the turtles to return \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_observer_aedb92a41bdaafe4a179f2b4a027e7929}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!turtles\-On@{turtles\-On}}
+\index{turtles\-On@{turtles\-On}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{turtles\-On}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Turtle\-Type $>$ void repast\-::relogo\-::\-Observer\-::turtles\-On (
+\begin{DoxyParamCaption}
+\item[{const {\bf Relogo\-Agent} $\ast$}]{agent, }
+\item[{{\bf Agent\-Set}$<$ Turtle\-Type $>$ \&}]{out}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_aedb92a41bdaafe4a179f2b4a027e7929}
+
+
+Gets all the turtles that are on the patch if the agent is a patch, otherwise get all the agents on the patch where the agent is standing. 
+
+The result is placed in out.
+
+
+\begin{DoxyParams}{Parameters}
+{\em agent} & the turtle or patch used to determine which turtles to get \\
+\hline
+{\em out} & the agent set where the found turtles will be put\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Turtle\-Type} & the type of the turtles to return \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_observer_a00d27f676b62f1c0dbd5d30e842983ca}{\index{repast\-::relogo\-::\-Observer@{repast\-::relogo\-::\-Observer}!who@{who}}
+\index{who@{who}!repast::relogo::Observer@{repast\-::relogo\-::\-Observer}}
+\subsubsection[{who}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ Agent\-Type $\ast$ repast\-::relogo\-::\-Observer\-::who (
+\begin{DoxyParamCaption}
+\item[{const Agent\-Id \&}]{id}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_observer_a00d27f676b62f1c0dbd5d30e842983ca}
+
+
+Gets the agent with the specified id. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the id of the agent to get \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of the agent to get\\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+the agent with the specified id, or 0 if the agent is not found. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/\-Users/murphy/work/\-Repast\-H\-P\-C\-\_\-\-G\-I\-T/repast.\-hpc/src/relogo/Observer.\-h\item 
+/\-Users/murphy/work/\-Repast\-H\-P\-C\-\_\-\-G\-I\-T/repast.\-hpc/src/relogo/Observer.\-cpp\end{DoxyCompactItemize}

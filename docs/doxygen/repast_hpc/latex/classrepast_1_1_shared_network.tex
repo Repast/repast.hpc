@@ -1,0 +1,246 @@
+\hypertarget{classrepast_1_1_shared_network}{\section{repast\-:\-:Shared\-Network$<$ V, E, Ec, Ec\-M $>$ Class Template Reference}
+\label{classrepast_1_1_shared_network}\index{repast\-::\-Shared\-Network$<$ V, E, Ec, Ec\-M $>$@{repast\-::\-Shared\-Network$<$ V, E, Ec, Ec\-M $>$}}
+}
+
+
+Network implementation that can be shared across processes.  
+
+
+
+
+{\ttfamily \#include $<$Shared\-Network.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Shared\-Network$<$ V, E, Ec, Ec\-M $>$\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{classrepast_1_1_shared_network}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classrepast_1_1_shared_network_a70d7821c1371664ecbac90a077ce61d7}{Shared\-Network} (std\-::string \hyperlink{classrepast_1_1_projection_ab60a0ab4f584685780307d7431b61800}{name}, bool directed, Ec\-M $\ast$edge\-Content\-Mgr)
+\begin{DoxyCompactList}\small\item\em Creates a \hyperlink{classrepast_1_1_shared_network}{Shared\-Network} with the specified name and whether or not the network is directed. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_shared_network_a877cec9bc39c22449a38acf018a93986}{add\-Sender} (int rank)
+\begin{DoxyCompactList}\small\item\em N\-O\-N U\-S\-E\-R A\-P\-I. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_shared_network_a4551cfa219810bf1fad86c8bf7203aee}{void \hyperlink{classrepast_1_1_shared_network_a4551cfa219810bf1fad86c8bf7203aee}{remove\-Sender} (int rank)}\label{classrepast_1_1_shared_network_a4551cfa219810bf1fad86c8bf7203aee}
+
+\begin{DoxyCompactList}\small\item\em N\-O\-N U\-S\-E\-R A\-P\-I Decrements the count of edges that are sent from rank to this network. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_shared_network_a93396d324b570d7728cbe6ce3271173c}{remove\-Edge} (V $\ast$source, V $\ast$target)
+\begin{DoxyCompactList}\small\item\em Removes the edge between source and target from this \hyperlink{classrepast_1_1_graph}{Graph}. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_shared_network_aef2348197f25207e12f128f1eea01b8a}{add\-Edge} (boost\-::shared\-\_\-ptr$<$ E $>$ edge)
+\begin{DoxyCompactList}\small\item\em Add an edge to this \hyperlink{classrepast_1_1_shared_network}{Shared\-Network}. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_shared_network_acaa004bf43b32a5d864abd93cd3dd409}{void \hyperlink{classrepast_1_1_shared_network_acaa004bf43b32a5d864abd93cd3dd409}{synch\-Removed\-Edges} ()}\label{classrepast_1_1_shared_network_acaa004bf43b32a5d864abd93cd3dd409}
+
+\begin{DoxyCompactList}\small\item\em Synchronizes any removed edges that are have been copied across processes. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classrepast_1_1_shared_network_a0a09808e13f613c58b5131e5fe7b5646}{is\-Master} (E $\ast$e)
+\begin{DoxyCompactList}\small\item\em Returns true if this is a master link; will be a master link if its master node is local. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_shared_network_a7d91463db92db8fa70f19674a2e4e83d}{virtual bool {\bfseries add\-Agent} (boost\-::shared\-\_\-ptr$<$ V $>$ agent)}\label{classrepast_1_1_shared_network_a7d91463db92db8fa70f19674a2e4e83d}
+
+\item 
+\hypertarget{classrepast_1_1_shared_network_a3ca94a03db9dd836a1d4c87491c0095c}{virtual void {\bfseries remove\-Agent} (V $\ast$agent)}\label{classrepast_1_1_shared_network_a3ca94a03db9dd836a1d4c87491c0095c}
+
+\item 
+\hypertarget{classrepast_1_1_shared_network_a700b536243250fa954cb279eb6fb300f}{virtual void {\bfseries do\-Add\-Edge} (boost\-::shared\-\_\-ptr$<$ E $>$ edge)}\label{classrepast_1_1_shared_network_a700b536243250fa954cb279eb6fb300f}
+
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename Vertex , typename Edge , typename Agent\-Content , typename Edge\-Content , typename Edge\-Manager , typename Agent\-Creator $>$ }\\void \hyperlink{classrepast_1_1_shared_network_aab38d29bc953ebb66d39ecb27f392acf}{create\-Complementary\-Edges} (\hyperlink{classrepast_1_1_shared_network}{Shared\-Network}$<$ \hyperlink{classrepast_1_1_vertex}{Vertex}, Edge, Edge\-Content, Edge\-Manager $>$ $\ast$net, \hyperlink{classrepast_1_1_shared_context}{Shared\-Context}$<$ \hyperlink{classrepast_1_1_vertex}{Vertex} $>$ \&context, Edge\-Manager \&edge\-Manager, Agent\-Creator \&creator)
+\begin{DoxyCompactList}\small\item\em Notifies other processes of any edges that have been created between nodes on this process and imported nodes. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Vertex , typename Edge , typename Edge\-Content , typename Edge\-Manager $>$ }\\void \hyperlink{classrepast_1_1_shared_network_a97ffdbe7b82199b6b83c1f581c820a85}{synch\-Edges} (\hyperlink{classrepast_1_1_shared_network}{Shared\-Network}$<$ \hyperlink{classrepast_1_1_vertex}{Vertex}, Edge, Edge\-Content, Edge\-Manager $>$ $\ast$, Edge\-Manager \&)
+\begin{DoxyCompactList}\small\item\em Synchronizes any edges that have been created as complementary edges. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename V, typename E, typename Ec, typename Ec\-M$>$class repast\-::\-Shared\-Network$<$ V, E, Ec, Ec\-M $>$}
+
+Network implementation that can be shared across processes. 
+
+Networks are shared across processes by creating edges between local and non-\/local agents on a process. The create\-Complementary\-Edges function will create complementary edges across processes in those cases. For example, if an edge is created between A1 and B2 on process 1 where B2 is copy of B1 on process 2, then creating complementary edges will create a copy of that edge on process 2, importing A1 into process 2 if necessary.
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em V} & the agent (vertex) type \\
+\hline
+{\em E} & the edge type. The edge type must be contain a constructor that takes a source and target of type V and extends \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge}. \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge} can also be used. \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1_shared_network_a70d7821c1371664ecbac90a077ce61d7}{\index{repast\-::\-Shared\-Network@{repast\-::\-Shared\-Network}!Shared\-Network@{Shared\-Network}}
+\index{Shared\-Network@{Shared\-Network}!repast::SharedNetwork@{repast\-::\-Shared\-Network}}
+\subsubsection[{Shared\-Network}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E , typename Ec , typename Ec\-M $>$ {\bf repast\-::\-Shared\-Network}$<$ V, E, Ec, Ec\-M $>$\-::{\bf Shared\-Network} (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{name, }
+\item[{bool}]{directed, }
+\item[{Ec\-M $\ast$}]{edge\-Content\-Mgr}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_network_a70d7821c1371664ecbac90a077ce61d7}
+
+
+Creates a \hyperlink{classrepast_1_1_shared_network}{Shared\-Network} with the specified name and whether or not the network is directed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em the} & network name \\
+\hline
+{\em directed} & if true the network will be directed, otherwise not. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_shared_network_aef2348197f25207e12f128f1eea01b8a}{\index{repast\-::\-Shared\-Network@{repast\-::\-Shared\-Network}!add\-Edge@{add\-Edge}}
+\index{add\-Edge@{add\-Edge}!repast::SharedNetwork@{repast\-::\-Shared\-Network}}
+\subsubsection[{add\-Edge}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E , typename Ec , typename Ec\-M $>$ void {\bf repast\-::\-Shared\-Network}$<$ V, E, Ec, Ec\-M $>$\-::add\-Edge (
+\begin{DoxyParamCaption}
+\item[{boost\-::shared\-\_\-ptr$<$ E $>$}]{edge}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_network_aef2348197f25207e12f128f1eea01b8a}
+
+
+Add an edge to this \hyperlink{classrepast_1_1_shared_network}{Shared\-Network}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em edge} & the edge to add \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_shared_network_a877cec9bc39c22449a38acf018a93986}{\index{repast\-::\-Shared\-Network@{repast\-::\-Shared\-Network}!add\-Sender@{add\-Sender}}
+\index{add\-Sender@{add\-Sender}!repast::SharedNetwork@{repast\-::\-Shared\-Network}}
+\subsubsection[{add\-Sender}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E , typename Ec , typename Ec\-M $>$ void {\bf repast\-::\-Shared\-Network}$<$ V, E, Ec, Ec\-M $>$\-::add\-Sender (
+\begin{DoxyParamCaption}
+\item[{int}]{rank}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_network_a877cec9bc39c22449a38acf018a93986}
+
+
+N\-O\-N U\-S\-E\-R A\-P\-I. 
+
+Increments the count of edges that are sent from rank to this network. \hypertarget{classrepast_1_1_shared_network_a0a09808e13f613c58b5131e5fe7b5646}{\index{repast\-::\-Shared\-Network@{repast\-::\-Shared\-Network}!is\-Master@{is\-Master}}
+\index{is\-Master@{is\-Master}!repast::SharedNetwork@{repast\-::\-Shared\-Network}}
+\subsubsection[{is\-Master}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E, typename Ec, typename Ec\-M$>$ virtual bool {\bf repast\-::\-Shared\-Network}$<$ V, E, Ec, Ec\-M $>$\-::is\-Master (
+\begin{DoxyParamCaption}
+\item[{E $\ast$}]{e}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}}\label{classrepast_1_1_shared_network_a0a09808e13f613c58b5131e5fe7b5646}
+
+
+Returns true if this is a master link; will be a master link if its master node is local. 
+
+The master node is usually the edge 'source', but if the uses\-Target\-As\-Master flag is set to true then the 'target' is the master node. 
+
+Implements \hyperlink{classrepast_1_1_graph}{repast\-::\-Graph$<$ V, E, Ec, Ec\-M $>$}.
+
+\hypertarget{classrepast_1_1_shared_network_a93396d324b570d7728cbe6ce3271173c}{\index{repast\-::\-Shared\-Network@{repast\-::\-Shared\-Network}!remove\-Edge@{remove\-Edge}}
+\index{remove\-Edge@{remove\-Edge}!repast::SharedNetwork@{repast\-::\-Shared\-Network}}
+\subsubsection[{remove\-Edge}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E , typename Ec , typename Ec\-M $>$ void {\bf repast\-::\-Shared\-Network}$<$ V, E, Ec, Ec\-M $>$\-::remove\-Edge (
+\begin{DoxyParamCaption}
+\item[{V $\ast$}]{source, }
+\item[{V $\ast$}]{target}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_shared_network_a93396d324b570d7728cbe6ce3271173c}
+
+
+Removes the edge between source and target from this \hyperlink{classrepast_1_1_graph}{Graph}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & the source of the edge \\
+\hline
+{\em target} & the target of the edge \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{classrepast_1_1_graph_a95ddd223fa26a5390c13aa1c4fec9254}{repast\-::\-Graph$<$ V, E, Ec, Ec\-M $>$}.
+
+
+
+\subsection{Friends And Related Function Documentation}
+\hypertarget{classrepast_1_1_shared_network_aab38d29bc953ebb66d39ecb27f392acf}{\index{repast\-::\-Shared\-Network@{repast\-::\-Shared\-Network}!create\-Complementary\-Edges@{create\-Complementary\-Edges}}
+\index{create\-Complementary\-Edges@{create\-Complementary\-Edges}!repast::SharedNetwork@{repast\-::\-Shared\-Network}}
+\subsubsection[{create\-Complementary\-Edges}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E, typename Ec, typename Ec\-M$>$ template$<$typename Vertex , typename Edge , typename Agent\-Content , typename Edge\-Content , typename Edge\-Manager , typename Agent\-Creator $>$ void create\-Complementary\-Edges (
+\begin{DoxyParamCaption}
+\item[{{\bf Shared\-Network}$<$ {\bf Vertex}, Edge, Edge\-Content, Edge\-Manager $>$ $\ast$}]{net, }
+\item[{{\bf Shared\-Context}$<$ {\bf Vertex} $>$ \&}]{context, }
+\item[{Edge\-Manager \&}]{edge\-Manager, }
+\item[{Agent\-Creator \&}]{creator}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [friend]}}}\label{classrepast_1_1_shared_network_aab38d29bc953ebb66d39ecb27f392acf}
+
+
+Notifies other processes of any edges that have been created between nodes on this process and imported nodes. 
+
+The other process will then create the complimentary edge. For example, if P1 creates an edge between A and B where B resides on P2, then this method will notify P2 to create the incoming edge A-\/$>$B on its copy of B. Any unknown agents will be added to the context. For example, if P2 didn't have a reference to A, then A will be added to P2's context.
+
+
+\begin{DoxyParams}{Parameters}
+{\em net} & the network in which to create the complementary edges or from which to send complementary edges \\
+\hline
+{\em context} & the context that contains the agents in the process \\
+\hline
+{\em edge\-Manager} & creates edges from Edge\-Content and creates Edge\-Content from an edge and a context. \\
+\hline
+{\em creator} & creates agents from Agent\-Content.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em \hyperlink{classrepast_1_1_vertex}{Vertex}} & the vertex (agent) type \\
+\hline
+{\em Edge} & the edge type \\
+\hline
+{\em Agent\-Content} & the serializable struct or class that describes the agent state. It must contain a get\-Id() method that returns the \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} of the agent it describes. \\
+\hline
+{\em Edge\-Content} & the serializable struct or class that describes edge state. At the very least Edge\-Content must contain two public fields source\-Content and target\-Content of type Agent\-Content. These represent the source and target of the edge. \\
+\hline
+{\em Edge\-Manager} & create edges from Edge\-Content and provides Edge\-Content given a context and an edge of type Edge. It must implement void provide\-Edge\-Content(const\-Edge$\ast$ edge, std\-::vector$<$\-Edge\-Content$>$\& edge\-Content) and Edge$\ast$ create\-Edge(repast\-::\-Context$<$\-Vertex$>$\& context, Edge\-Content\& edge); \\
+\hline
+{\em Agent\-Creator} & creates agents from Agent\-Content, implementing the following method Vertex$\ast$ create\-Agent(const\-Agent\-Content\& content); \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_shared_network_a97ffdbe7b82199b6b83c1f581c820a85}{\index{repast\-::\-Shared\-Network@{repast\-::\-Shared\-Network}!synch\-Edges@{synch\-Edges}}
+\index{synch\-Edges@{synch\-Edges}!repast::SharedNetwork@{repast\-::\-Shared\-Network}}
+\subsubsection[{synch\-Edges}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E, typename Ec, typename Ec\-M$>$ template$<$typename Vertex , typename Edge , typename Edge\-Content , typename Edge\-Manager $>$ void synch\-Edges (
+\begin{DoxyParamCaption}
+\item[{{\bf Shared\-Network}$<$ {\bf Vertex}, Edge, Edge\-Content, Edge\-Manager $>$ $\ast$}]{net, }
+\item[{Edge\-Manager \&}]{edge\-Manager}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [friend]}}}\label{classrepast_1_1_shared_network_a97ffdbe7b82199b6b83c1f581c820a85}
+
+
+Synchronizes any edges that have been created as complementary edges. 
+
+This only necessary if the edges have been deleted or their state has been changed in some way.
+
+
+\begin{DoxyParams}{Parameters}
+{\em net} & the network in which to create the complementary edges or from which to send complementary edges \\
+\hline
+{\em edge\-Manager} & updates edges from Edge\-Content and creates Edge\-Content from an edge and a context.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em \hyperlink{classrepast_1_1_vertex}{Vertex}} & the vertex (agent) type \\
+\hline
+{\em Edge} & the edge type \\
+\hline
+{\em Edge\-Content} & the serializable struct or class that describes edge state. \\
+\hline
+{\em Edge\-Manager} & updates edges from Edge\-Content and provides Edge\-Content given a context and an edge of type Edge. It must implement void provide\-Edge\-Content(const Edge$\ast$ edge, std\-::vector$<$\-Edge\-Content$>$\& edge\-Content) and void receive\-Edge\-Content(const Edge\-Content\& content); \\
+\hline
+\end{DoxyTemplParams}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Shared\-Network.\-h\end{DoxyCompactItemize}

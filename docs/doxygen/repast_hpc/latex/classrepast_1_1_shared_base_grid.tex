@@ -1,0 +1,328 @@
+\hypertarget{classrepast_1_1_shared_base_grid}{\section{repast\-:\-:Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$ Class Template Reference}
+\label{classrepast_1_1_shared_base_grid}\index{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$@{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$}}
+}
+
+
+\hyperlink{classrepast_1_1_grid}{Grid} / Space implementation specialized for the distributed context.  
+
+
+
+
+{\ttfamily \#include $<$Shared\-Base\-Grid.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=5.000000cm]{classrepast_1_1_shared_base_grid}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_shared_base_grid_a6e2cf26b8580f27b9f4bda6afb125987}{void {\bfseries balance} ()}\label{classrepast_1_1_shared_base_grid_a6e2cf26b8580f27b9f4bda6afb125987}
+
+\item 
+\hyperlink{classrepast_1_1_shared_base_grid_aa9c93cbd1c9d92839fe8d0a24dbf4279}{Shared\-Base\-Grid} (std\-::string \hyperlink{classrepast_1_1_projection_ab60a0ab4f584685780307d7431b61800}{name}, \hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} grid\-Dims, std\-::vector$<$ int $>$ process\-Dims, int buffer, boost\-::mpi\-::communicator $\ast$world)
+\begin{DoxyCompactList}\small\item\em Creates a Shared\-Grid with the specified name. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} \hyperlink{classrepast_1_1_shared_base_grid_a9eb45d3b57a22564ce892de6bd96e84e}{bounds} () const 
+\begin{DoxyCompactList}\small\item\em Gets the local bounds of this Shared\-Grid. \end{DoxyCompactList}\item 
+virtual const \hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} \hyperlink{classrepast_1_1_shared_base_grid_a9ec19652232000368ec1fe98ff47e121}{dimensions} () const 
+\begin{DoxyCompactList}\small\item\em Gets the local bounds of this Shared\-Grid. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_shared_base_grid_a99014d8854b57524c9cd40e9cea0507a}{synch\-Move} ()
+\begin{DoxyCompactList}\small\item\em Synchronizes the movement of agents off on one grid and onto another. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_shared_base_grid_a5703bee6037934b6be70d4f17a6b4d7b}{init\-Synch\-Buffer} (\hyperlink{classrepast_1_1_shared_context}{Shared\-Context}$<$ T $>$ \&context)
+\begin{DoxyCompactList}\small\item\em Initializes the synch buffer operation. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classrepast_1_1_shared_base_grid_a480fc6f517d1bb098c7ee47450fba522}{move\-To} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id, const std\-::vector$<$ G\-P\-Type $>$ \&new\-Location)
+\begin{DoxyCompactList}\small\item\em Moves the specified agent to the specified location. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classrepast_1_1_shared_base_grid_ab4d74c36e126cffa5638aeaab6c0df85}{move\-To} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id, const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&pt)
+\begin{DoxyCompactList}\small\item\em Moves the specified agent to the specified point. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_shared_base_grid_ace1d00758e418a574263997e7db2f26a}{virtual void {\bfseries remove\-Agent} (T $\ast$agent)}\label{classrepast_1_1_shared_base_grid_ace1d00758e418a574263997e7db2f26a}
+
+\item 
+\hypertarget{classrepast_1_1_shared_base_grid_a810df20298f76741ab58907fb5e20749}{virtual void {\bfseries get\-Required\-Agents} (std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&agents\-To\-Test, std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&agents\-Required)}\label{classrepast_1_1_shared_base_grid_a810df20298f76741ab58907fb5e20749}
+
+\item 
+virtual void \hyperlink{classrepast_1_1_shared_base_grid_ab1486e7698288efc1218653d4e5e1e15}{get\-Agents\-To\-Push} (std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&agents\-To\-Test, std\-::map$<$ int, std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ $>$ \&agents\-To\-Push)
+\begin{DoxyCompactList}\small\item\em Given a set of agents, gets the agents that this projection implementation must 'push' to other processes. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_shared_base_grid_af4323686714c4f6216125db5609c3184}{get\-Info\-Exchange\-Partners} (std\-::set$<$ int $>$ \&ps\-To\-Send\-To, std\-::set$<$ int $>$ \&ps\-To\-Receive\-From)
+\begin{DoxyCompactList}\small\item\em Gets the set of processes with which this \hyperlink{classrepast_1_1_projection}{Projection} exchanges projection info. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_shared_base_grid_a0388d98240eb59548058d3c45da702d7}{get\-Agent\-Status\-Exchange\-Partners} (std\-::set$<$ int $>$ \&ps\-To\-Send\-To, std\-::set$<$ int $>$ \&ps\-To\-Receive\-From)
+\begin{DoxyCompactList}\small\item\em Gets the set of processes with which this \hyperlink{classrepast_1_1_projection}{Projection} exchanges agent status info-\/ that is, the set of processes from which agents can move to this one or to which they can move when moving from this one. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_shared_base_grid_abe043188d6e0f7dd350aed6d78c4b98e}{virtual void {\bfseries update\-Projection\-Info} (\hyperlink{classrepast_1_1_projection_info_packet}{Projection\-Info\-Packet} $\ast$pip, \hyperlink{classrepast_1_1_context}{Context}$<$ T $>$ $\ast$context)}\label{classrepast_1_1_shared_base_grid_abe043188d6e0f7dd350aed6d78c4b98e}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_shared_base_grid_afdd62d17e80eb799ba63451b8f78f0ee}{typedef \hyperlink{classrepast_1_1_base_grid}{repast\-::\-Base\-Grid}$<$ T, \\*
+\hyperlink{classrepast_1_1_multiple_occupancy}{Multiple\-Occupancy}$<$ T, G\-P\-Type $>$\\*
+, G\-P\-Transformer, Adder, G\-P\-Type $>$ {\bfseries Grid\-Base\-Type}}\label{classrepast_1_1_shared_base_grid_afdd62d17e80eb799ba63451b8f78f0ee}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_shared_base_grid_a84acccc25e0e3e21f8d430a36c9d395a}{\hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} {\bfseries create\-Send\-Buffer\-Bounds} (\hyperlink{classrepast_1_1_neighbors_a7a695a73b614b849f12fd943329b8bdc}{Neighbors\-::\-Location} location)}\label{classrepast_1_1_shared_base_grid_a84acccc25e0e3e21f8d430a36c9d395a}
+
+\item 
+\hypertarget{classrepast_1_1_shared_base_grid_a51922e0249368abd598ead8101088732}{virtual void {\bfseries synch\-Move\-To} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id, const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&pt)=0}\label{classrepast_1_1_shared_base_grid_a51922e0249368abd598ead8101088732}
+
+\item 
+\hypertarget{classrepast_1_1_shared_base_grid_a0ea39fedf8dcb4acd0c9011d323ca52d}{void {\bfseries get\-Moving\-Agent\-Info} (std\-::map$<$ int, std\-::vector$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ $>$ agents\-To\-Move, \hyperlink{classrepast_1_1_grid_move_packets}{Grid\-Move\-Packets}$<$ G\-P\-Type $>$ outgoing)}\label{classrepast_1_1_shared_base_grid_a0ea39fedf8dcb4acd0c9011d323ca52d}
+
+\item 
+\hypertarget{classrepast_1_1_shared_base_grid_a96b291d6e5e8ae2a4100704a4af770c2}{bool {\bfseries location\-Is\-In\-Buffer} (\hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ pt)}\label{classrepast_1_1_shared_base_grid_a96b291d6e5e8ae2a4100704a4af770c2}
+
+\item 
+\hypertarget{classrepast_1_1_shared_base_grid_a0510379d3dab88d33d459b6ae063d07d}{bool {\bfseries agent\-Is\-In\-Buffer} (\hyperlink{classrepast_1_1_agent_id}{Agent\-Id} id)}\label{classrepast_1_1_shared_base_grid_a0510379d3dab88d33d459b6ae063d07d}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_shared_base_grid_a2e19f6831a277a4df1373920ea57d8eb}{int {\bfseries \-\_\-buffer}}\label{classrepast_1_1_shared_base_grid_a2e19f6831a277a4df1373920ea57d8eb}
+
+\item 
+\hypertarget{classrepast_1_1_shared_base_grid_aa9ea56859b5278b0d6bc2bbd8ab4c46b}{\hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} {\bfseries local\-Bounds}}\label{classrepast_1_1_shared_base_grid_aa9ea56859b5278b0d6bc2bbd8ab4c46b}
+
+\item 
+\hypertarget{classrepast_1_1_shared_base_grid_a204f5c23dd15d124d558140cc1571e7c}{\hyperlink{classrepast_1_1_neighbors}{Neighbors} {\bfseries nghs}}\label{classrepast_1_1_shared_base_grid_a204f5c23dd15d124d558140cc1571e7c}
+
+\item 
+\hypertarget{classrepast_1_1_shared_base_grid_aaa8d5d36ce831a360a88c0149f40cd77}{std\-::vector$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ {\bfseries buffered}}\label{classrepast_1_1_shared_base_grid_aaa8d5d36ce831a360a88c0149f40cd77}
+
+\item 
+\hypertarget{classrepast_1_1_shared_base_grid_a48f63bb491afa1078c8d6598b32b5e3e}{int {\bfseries rank}}\label{classrepast_1_1_shared_base_grid_a48f63bb491afa1078c8d6598b32b5e3e}
+
+\item 
+\hypertarget{classrepast_1_1_shared_base_grid_ab9c405f324b799fa0b5fc7472cf6ab49}{boost\-::mpi\-::communicator $\ast$ {\bfseries comm}}\label{classrepast_1_1_shared_base_grid_ab9c405f324b799fa0b5fc7472cf6ab49}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T, typename G\-P\-Transformer, typename Adder, typename G\-P\-Type$>$class repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$}
+
+\hyperlink{classrepast_1_1_grid}{Grid} / Space implementation specialized for the distributed context. 
+
+Each \hyperlink{classrepast_1_1_shared_base_grid}{Shared\-Base\-Grid} of the same name running on different processes is part of a pan process grid. This class manages this local part of the grid and its communication with its process neighbors. Users can specify a buffer size that determines how much of the neighboring grids are visible in this grid. For example, if this grid originates at 0x0 and ends at 3x3, a buffer of 1 would make the locations (4,0), (4,1) (4,2) ... (4,4) and (0,4), (1,4)... (4,4) visible in this grid. The \hyperlink{classrepast_1_1_shared_base_grid}{Shared\-Base\-Grid} takes many template parameters. Default variations of these that define typical grids and spaces are given in Shared\-Grids in Shared\-Space.\-h
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & the type of objects contained by this \hyperlink{classrepast_1_1_base_grid}{Base\-Grid} \\
+\hline
+{\em G\-P\-Transformer} & transforms cell points according to the topology (e.\-g. periodic) of the \hyperlink{classrepast_1_1_base_grid}{Base\-Grid}. \\
+\hline
+{\em Adder} & determines how objects are added to the grid from its associated context. \\
+\hline
+{\em G\-P\-Type} & the coordinate type of the grid point locations. This must be an int or a double. \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1_shared_base_grid_aa9c93cbd1c9d92839fe8d0a24dbf4279}{\index{repast\-::\-Shared\-Base\-Grid@{repast\-::\-Shared\-Base\-Grid}!Shared\-Base\-Grid@{Shared\-Base\-Grid}}
+\index{Shared\-Base\-Grid@{Shared\-Base\-Grid}!repast::SharedBaseGrid@{repast\-::\-Shared\-Base\-Grid}}
+\subsubsection[{Shared\-Base\-Grid}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename G\-P\-Transformer , typename Adder , typename G\-P\-Type $>$ {\bf repast\-::\-Shared\-Base\-Grid}$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::{\bf Shared\-Base\-Grid} (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{name, }
+\item[{{\bf Grid\-Dimensions}}]{grid\-Dims, }
+\item[{std\-::vector$<$ int $>$}]{process\-Dims, }
+\item[{int}]{buffer, }
+\item[{boost\-::mpi\-::communicator $\ast$}]{world}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_base_grid_aa9c93cbd1c9d92839fe8d0a24dbf4279}
+
+
+Creates a Shared\-Grid with the specified name. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & the name of this \hyperlink{classrepast_1_1_shared_base_grid}{Shared\-Base\-Grid} \\
+\hline
+{\em grid\-Dims} & the dimensions of the entire pan-\/process grid \\
+\hline
+{\em process\-Dims} & the number of processes in each dimension. This must divide evenly into grid\-Dims. \\
+\hline
+{\em buffer} & the size of the buffer between this part of the pan-\/process grid and its neighbors. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_shared_base_grid_a9eb45d3b57a22564ce892de6bd96e84e}{\index{repast\-::\-Shared\-Base\-Grid@{repast\-::\-Shared\-Base\-Grid}!bounds@{bounds}}
+\index{bounds@{bounds}!repast::SharedBaseGrid@{repast\-::\-Shared\-Base\-Grid}}
+\subsubsection[{bounds}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename G\-P\-Transformer, typename Adder, typename G\-P\-Type$>$ {\bf Grid\-Dimensions} {\bf repast\-::\-Shared\-Base\-Grid}$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::bounds (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_shared_base_grid_a9eb45d3b57a22564ce892de6bd96e84e}
+
+
+Gets the local bounds of this Shared\-Grid. 
+
+The local bounds are the dimensions of the section of the pan-\/process grid represented by this Shared\-Grid.
+
+\begin{DoxyReturn}{Returns}
+the local bounds of this Shared\-Grid. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_shared_base_grid_a9ec19652232000368ec1fe98ff47e121}{\index{repast\-::\-Shared\-Base\-Grid@{repast\-::\-Shared\-Base\-Grid}!dimensions@{dimensions}}
+\index{dimensions@{dimensions}!repast::SharedBaseGrid@{repast\-::\-Shared\-Base\-Grid}}
+\subsubsection[{dimensions}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename G\-P\-Transformer, typename Adder, typename G\-P\-Type$>$ virtual const {\bf Grid\-Dimensions} {\bf repast\-::\-Shared\-Base\-Grid}$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::dimensions (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}}\label{classrepast_1_1_shared_base_grid_a9ec19652232000368ec1fe98ff47e121}
+
+
+Gets the local bounds of this Shared\-Grid. 
+
+The local bounds are the dimensions of the section of the pan-\/process grid represented by this Shared\-Grid.
+
+\begin{DoxyReturn}{Returns}
+the local bounds of this Shared\-Grid. 
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{classrepast_1_1_base_grid_a5f8a2fc16b8aeba026a58fcb374cf05c}{repast\-::\-Base\-Grid$<$ T, Multiple\-Occupancy$<$ T, G\-P\-Type $>$, G\-P\-Transformer, Adder, G\-P\-Type $>$}.
+
+\hypertarget{classrepast_1_1_shared_base_grid_a0388d98240eb59548058d3c45da702d7}{\index{repast\-::\-Shared\-Base\-Grid@{repast\-::\-Shared\-Base\-Grid}!get\-Agent\-Status\-Exchange\-Partners@{get\-Agent\-Status\-Exchange\-Partners}}
+\index{get\-Agent\-Status\-Exchange\-Partners@{get\-Agent\-Status\-Exchange\-Partners}!repast::SharedBaseGrid@{repast\-::\-Shared\-Base\-Grid}}
+\subsubsection[{get\-Agent\-Status\-Exchange\-Partners}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename G\-P\-Transformer, typename Adder, typename G\-P\-Type$>$ virtual void {\bf repast\-::\-Shared\-Base\-Grid}$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::get\-Agent\-Status\-Exchange\-Partners (
+\begin{DoxyParamCaption}
+\item[{std\-::set$<$ int $>$ \&}]{ps\-To\-Send\-To, }
+\item[{std\-::set$<$ int $>$ \&}]{ps\-To\-Receive\-From}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}}\label{classrepast_1_1_shared_base_grid_a0388d98240eb59548058d3c45da702d7}
+
+
+Gets the set of processes with which this \hyperlink{classrepast_1_1_projection}{Projection} exchanges agent status info-\/ that is, the set of processes from which agents can move to this one or to which they can move when moving from this one. 
+
+In the most general case this will be all other processors. However, simulations where agents move in spaces will usually exchange agents only with a small subset of 'neighbor' processes, which is knowable in advance and constant. To accommodate the general case, the algorithm for exchanging information must poll all other processes to see which are sending to this one; if this is known in advance, this additional (expensive) step can be skipped. 
+
+Implements \hyperlink{classrepast_1_1_grid_a748354698308fe0d0c0fe33a657109d1}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}.
+
+\hypertarget{classrepast_1_1_shared_base_grid_ab1486e7698288efc1218653d4e5e1e15}{\index{repast\-::\-Shared\-Base\-Grid@{repast\-::\-Shared\-Base\-Grid}!get\-Agents\-To\-Push@{get\-Agents\-To\-Push}}
+\index{get\-Agents\-To\-Push@{get\-Agents\-To\-Push}!repast::SharedBaseGrid@{repast\-::\-Shared\-Base\-Grid}}
+\subsubsection[{get\-Agents\-To\-Push}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename G\-P\-Transformer , typename Adder , typename G\-P\-Type $>$ void {\bf repast\-::\-Shared\-Base\-Grid}$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::get\-Agents\-To\-Push (
+\begin{DoxyParamCaption}
+\item[{std\-::set$<$ {\bf Agent\-Id} $>$ \&}]{agents\-To\-Test, }
+\item[{std\-::map$<$ int, std\-::set$<$ {\bf Agent\-Id} $>$ $>$ \&}]{agents\-To\-Push}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_shared_base_grid_ab1486e7698288efc1218653d4e5e1e15}
+
+
+Given a set of agents, gets the agents that this projection implementation must 'push' to other processes. 
+
+Generally spaces must push agents that are in 'buffer zones' and graphs must push local agents that are vertices to master edges where the other vertex is non-\/ local. The results are returned per-\/process in the agents\-To\-Push map. 
+
+Reimplemented from \hyperlink{classrepast_1_1_base_grid_a8f718ade5af8285f71151eea824ce3cd}{repast\-::\-Base\-Grid$<$ T, Multiple\-Occupancy$<$ T, G\-P\-Type $>$, G\-P\-Transformer, Adder, G\-P\-Type $>$}.
+
+
+
+Reimplemented in \hyperlink{classrepast_1_1_shared_discrete_space_a1f690e82e6b7ea6a279db020e12b4d21}{repast\-::\-Shared\-Discrete\-Space$<$ T, G\-P\-Transformer, Adder $>$}.
+
+\hypertarget{classrepast_1_1_shared_base_grid_af4323686714c4f6216125db5609c3184}{\index{repast\-::\-Shared\-Base\-Grid@{repast\-::\-Shared\-Base\-Grid}!get\-Info\-Exchange\-Partners@{get\-Info\-Exchange\-Partners}}
+\index{get\-Info\-Exchange\-Partners@{get\-Info\-Exchange\-Partners}!repast::SharedBaseGrid@{repast\-::\-Shared\-Base\-Grid}}
+\subsubsection[{get\-Info\-Exchange\-Partners}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename G\-P\-Transformer, typename Adder, typename G\-P\-Type$>$ virtual void {\bf repast\-::\-Shared\-Base\-Grid}$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::get\-Info\-Exchange\-Partners (
+\begin{DoxyParamCaption}
+\item[{std\-::set$<$ int $>$ \&}]{ps\-To\-Send\-To, }
+\item[{std\-::set$<$ int $>$ \&}]{ps\-To\-Receive\-From}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}}\label{classrepast_1_1_shared_base_grid_af4323686714c4f6216125db5609c3184}
+
+
+Gets the set of processes with which this \hyperlink{classrepast_1_1_projection}{Projection} exchanges projection info. 
+
+In the most general case this will be all other processors; this is the case for graphs, where agent connections can be arbitrary. However, spaces usually exchange information only with a small subset of 'neighbor' processes, which is knowable in advance and constant. To accommodate the general case, the algorithm for exchanging information must poll all other processes to see which are sending to this one; if this is known in advance, this additional (expensive) step can be skipped. 
+
+Implements \hyperlink{classrepast_1_1_grid_a57b4449e602392119eb4db3e0011de05}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}.
+
+\hypertarget{classrepast_1_1_shared_base_grid_a5703bee6037934b6be70d4f17a6b4d7b}{\index{repast\-::\-Shared\-Base\-Grid@{repast\-::\-Shared\-Base\-Grid}!init\-Synch\-Buffer@{init\-Synch\-Buffer}}
+\index{init\-Synch\-Buffer@{init\-Synch\-Buffer}!repast::SharedBaseGrid@{repast\-::\-Shared\-Base\-Grid}}
+\subsubsection[{init\-Synch\-Buffer}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename G\-P\-Transformer , typename Adder , typename G\-P\-Type $>$ void {\bf repast\-::\-Shared\-Base\-Grid}$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::init\-Synch\-Buffer (
+\begin{DoxyParamCaption}
+\item[{{\bf Shared\-Context}$<$ T $>$ \&}]{context}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_base_grid_a5703bee6037934b6be70d4f17a6b4d7b}
+
+
+Initializes the synch buffer operation. 
+
+This should be called before synchronizing the buffers themselves.
+
+
+\begin{DoxyParams}{Parameters}
+{\em the} & \hyperlink{classrepast_1_1_shared_context}{Shared\-Context} that contains this Shared\-Grid projection. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_shared_base_grid_a480fc6f517d1bb098c7ee47450fba522}{\index{repast\-::\-Shared\-Base\-Grid@{repast\-::\-Shared\-Base\-Grid}!move\-To@{move\-To}}
+\index{move\-To@{move\-To}!repast::SharedBaseGrid@{repast\-::\-Shared\-Base\-Grid}}
+\subsubsection[{move\-To}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename G\-P\-Transformer , typename Adder , typename G\-P\-Type$>$ bool {\bf repast\-::\-Shared\-Base\-Grid}$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::move\-To (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{id, }
+\item[{const std\-::vector$<$ G\-P\-Type $>$ \&}]{new\-Location}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_shared_base_grid_a480fc6f517d1bb098c7ee47450fba522}
+
+
+Moves the specified agent to the specified location. 
+
+Returns true if the move was successful otherwise false. The agent must be already added to the context associated with this space, otherwise this throws an out\-\_\-of\-\_\-range exception if the new location out of bounds.
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the id of the agent to move \\
+\hline
+{\em new\-Location} & the location to move to\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the move was successful, otherwise false 
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{classrepast_1_1_base_grid_a3a39996218f4426aa1b2f081d3b44eb4}{repast\-::\-Base\-Grid$<$ T, Multiple\-Occupancy$<$ T, G\-P\-Type $>$, G\-P\-Transformer, Adder, G\-P\-Type $>$}.
+
+\hypertarget{classrepast_1_1_shared_base_grid_ab4d74c36e126cffa5638aeaab6c0df85}{\index{repast\-::\-Shared\-Base\-Grid@{repast\-::\-Shared\-Base\-Grid}!move\-To@{move\-To}}
+\index{move\-To@{move\-To}!repast::SharedBaseGrid@{repast\-::\-Shared\-Base\-Grid}}
+\subsubsection[{move\-To}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename G\-P\-Transformer , typename Adder , typename G\-P\-Type$>$ bool {\bf repast\-::\-Shared\-Base\-Grid}$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::move\-To (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{id, }
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{pt}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_shared_base_grid_ab4d74c36e126cffa5638aeaab6c0df85}
+
+
+Moves the specified agent to the specified point. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the id of the agent to move \\
+\hline
+{\em pt} & where to move the agent to\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the move was successful, otherwise false 
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{classrepast_1_1_base_grid_a9f3dbdfe875327dbcc069971de98bc83}{repast\-::\-Base\-Grid$<$ T, Multiple\-Occupancy$<$ T, G\-P\-Type $>$, G\-P\-Transformer, Adder, G\-P\-Type $>$}.
+
+\hypertarget{classrepast_1_1_shared_base_grid_a99014d8854b57524c9cd40e9cea0507a}{\index{repast\-::\-Shared\-Base\-Grid@{repast\-::\-Shared\-Base\-Grid}!synch\-Move@{synch\-Move}}
+\index{synch\-Move@{synch\-Move}!repast::SharedBaseGrid@{repast\-::\-Shared\-Base\-Grid}}
+\subsubsection[{synch\-Move}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename G\-P\-Transformer , typename Adder , typename G\-P\-Type $>$ void {\bf repast\-::\-Shared\-Base\-Grid}$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$\-::synch\-Move (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_base_grid_a99014d8854b57524c9cd40e9cea0507a}
+
+
+Synchronizes the movement of agents off on one grid and onto another. 
+
+If there is any chance that an agent has moved off the local dimensions of this Shared\-Grid and into those managed by another then this must be called. 
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Shared\-Base\-Grid.\-h\end{DoxyCompactItemize}

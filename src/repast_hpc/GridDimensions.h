@@ -48,7 +48,13 @@
 
 namespace repast {
 
-
+/**
+ * Basic structure for specifying grid dimenions. Structure is
+ * to specify (using instances of Point) the origin and the
+ * extent, so that an origin of (-100, -100) and an extent
+ * of (200, 200) represents a rectangle with corners at
+ * (-100, -100), (-100, 100), (100, 100), and (100, -100).
+ */
 class GridDimensions {
 
 private:

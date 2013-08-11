@@ -1,0 +1,291 @@
+\hypertarget{classrepast_1_1_projection}{\section{repast\-:\-:Projection$<$ T $>$ Class Template Reference}
+\label{classrepast_1_1_projection}\index{repast\-::\-Projection$<$ T $>$@{repast\-::\-Projection$<$ T $>$}}
+}
+
+
+Abstract base class for all Projections.  
+
+
+
+
+{\ttfamily \#include $<$Projection.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Projection$<$ T $>$\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.552680cm]{classrepast_1_1_projection}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum {\bfseries R\-A\-D\-I\-U\-S} \{ {\bfseries P\-R\-I\-M\-A\-R\-Y}, 
+{\bfseries S\-E\-C\-O\-N\-D\-A\-R\-Y}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classrepast_1_1_projection_a2c5c9f33cf57c5e7a00402eab2080051}{Projection} (std\-::string \hyperlink{classrepast_1_1_projection_ab60a0ab4f584685780307d7431b61800}{name})
+\begin{DoxyCompactList}\small\item\em Creates a projection with specified name. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_projection_ab60a0ab4f584685780307d7431b61800}{const std\-::string \hyperlink{classrepast_1_1_projection_ab60a0ab4f584685780307d7431b61800}{name} () const }\label{classrepast_1_1_projection_ab60a0ab4f584685780307d7431b61800}
+
+\begin{DoxyCompactList}\small\item\em Gets the name of this projection. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_projection_a340bcbf86f1e29489b9ca1a4aa5e9298}{add\-Filter\-Val} (int type)
+\begin{DoxyCompactList}\small\item\em Adds an entry to the list of agent types that can be added to this projection. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_projection_ab4587f793b1c250de22af16fedf7f89d}{remove\-Filter\-Val} (int type)
+\begin{DoxyCompactList}\small\item\em Removes an entry from the list of agent types that can be added to this projection. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_projection_a35eae2c3351ef0de242a2ebeac8719df}{void \hyperlink{classrepast_1_1_projection_a35eae2c3351ef0de242a2ebeac8719df}{clear\-Filter} ()}\label{classrepast_1_1_projection_a35eae2c3351ef0de242a2ebeac8719df}
+
+\begin{DoxyCompactList}\small\item\em Clears the list of agent types that can be added to this projection; the result is that the filter is empty, and any agent can be added. \end{DoxyCompactList}\item 
+bool \hyperlink{classrepast_1_1_projection_a4075a777a46f27e978d376c90e74a409}{agent\-Can\-Be\-Added} (boost\-::shared\-\_\-ptr$<$ T $>$ agent)
+\begin{DoxyCompactList}\small\item\em Returns true if the agent can be added to the projection, which will be the case if the filter list is empty or if the agent's type is in the filter list. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classrepast_1_1_projection_a1da1dcc47517e3e25be129067b21601f}{keeps\-Agents\-On\-Sync\-Proj} ()=0
+\begin{DoxyCompactList}\small\item\em Should return true if the \hyperlink{classrepast_1_1_projection}{Projection} implemented can 'keep' some (non-\/local) agents during a projection information synchronization operation. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classrepast_1_1_projection_a686c52a83dd917e50b04f81dc7321ad7}{sends\-Secondary\-Agents\-On\-Status\-Exchange} ()=0
+\begin{DoxyCompactList}\small\item\em Should return true if the \hyperlink{classrepast_1_1_projection}{Projection} implemented will send secondary agents during a status exchange. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_projection_afdc13fccb129094bfd67b3446873933d}{get\-Info\-Exchange\-Partners} (std\-::set$<$ int $>$ \&ps\-To\-Send\-To, std\-::set$<$ int $>$ \&ps\-To\-Receive\-From)=0
+\begin{DoxyCompactList}\small\item\em Gets the set of processes with which this \hyperlink{classrepast_1_1_projection}{Projection} exchanges projection info. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_projection_ad2d104bb6119d0911053d450932855d5}{get\-Agent\-Status\-Exchange\-Partners} (std\-::set$<$ int $>$ \&ps\-To\-Send\-To, std\-::set$<$ int $>$ \&ps\-To\-Receive\-From)=0
+\begin{DoxyCompactList}\small\item\em Gets the set of processes with which this \hyperlink{classrepast_1_1_projection}{Projection} exchanges agent status info-\/ that is, the set of processes from which agents can move to this one or to which they can move when moving from this one. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_projection_ad13ded8db8e364aa43efde5b35da9a65}{get\-Required\-Agents} (std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&agents\-To\-Test, std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&agents\-Required, R\-A\-D\-I\-U\-S radius=P\-R\-I\-M\-A\-R\-Y)=0
+\begin{DoxyCompactList}\small\item\em Given a set of agents to test, gets the subset that must be kept in order to fulfill the projection's 'contract' to the specified radius. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_projection_ae1877809facd80a5e25d95e3dc5c35f4}{get\-Agents\-To\-Push} (std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&agents\-To\-Test, std\-::map$<$ int, std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ $>$ \&agents\-To\-Push)=0
+\begin{DoxyCompactList}\small\item\em Given a set of agents, gets the agents that this projection implementation must 'push' to other processes. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_projection_ae66e268656f0baee2a7656d5eda6f4b9}{virtual void \hyperlink{classrepast_1_1_projection_ae66e268656f0baee2a7656d5eda6f4b9}{get\-Projection\-Info} (std\-::vector$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&agents, std\-::vector$<$ \hyperlink{classrepast_1_1_projection_info_packet}{Projection\-Info\-Packet} $\ast$ $>$ \&packets, bool secondary\-Info=false, std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ $\ast$secondary\-Ids=0, int dest\-Proc=-\/1)}\label{classrepast_1_1_projection_ae66e268656f0baee2a7656d5eda6f4b9}
+
+\begin{DoxyCompactList}\small\item\em Convenience wrapper that gets all of the projection information for the agents specified (calls implementation in child class that gets only the information for one agent). \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_projection_ae89c14a3463d292ba1cd829204fbee71}{void \hyperlink{classrepast_1_1_projection_ae89c14a3463d292ba1cd829204fbee71}{update\-Projection\-Info} (std\-::vector$<$ \hyperlink{classrepast_1_1_projection_info_packet}{Projection\-Info\-Packet} $\ast$ $>$ \&pips, \hyperlink{classrepast_1_1_context}{Context}$<$ T $>$ $\ast$context)}\label{classrepast_1_1_projection_ae89c14a3463d292ba1cd829204fbee71}
+
+\begin{DoxyCompactList}\small\item\em Updates the projection information for the agents in this projection according to the information contained in the vector of information packets passed. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_projection_a543d26d3a44b7f83ee363044ca6f4884}{virtual void {\bfseries clean\-Projection\-Info} (std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&agents\-To\-Keep)=0}\label{classrepast_1_1_projection_a543d26d3a44b7f83ee363044ca6f4884}
+
+\item 
+\hypertarget{classrepast_1_1_projection_afd5cda203753da3d565d7839f92589e8}{virtual void {\bfseries balance} ()}\label{classrepast_1_1_projection_afd5cda203753da3d565d7839f92589e8}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_projection_ac232dfc16ee5ccdb04d694abf79ce9a3}{virtual bool {\bfseries add\-Agent} (boost\-::shared\-\_\-ptr$<$ T $>$ agent)=0}\label{classrepast_1_1_projection_ac232dfc16ee5ccdb04d694abf79ce9a3}
+
+\item 
+\hypertarget{classrepast_1_1_projection_a804afdbcd384a23f7bf2c7a53209f272}{virtual void {\bfseries remove\-Agent} (T $\ast$agent)=0}\label{classrepast_1_1_projection_a804afdbcd384a23f7bf2c7a53209f272}
+
+\item 
+\hypertarget{classrepast_1_1_projection_af1e3b8e72e84bb73b6260b45cb2d20e5}{virtual \hyperlink{classrepast_1_1_projection_info_packet}{Projection\-Info\-Packet} $\ast$ {\bfseries get\-Projection\-Info} (\hyperlink{classrepast_1_1_agent_id}{Agent\-Id} id, bool secondary\-Info=false, std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ $\ast$secondary\-Ids=0, int dest\-Proc=-\/1)=0}\label{classrepast_1_1_projection_af1e3b8e72e84bb73b6260b45cb2d20e5}
+
+\item 
+\hypertarget{classrepast_1_1_projection_a20dfbb08e40a0425cbf56cb8864f27c4}{virtual void {\bfseries update\-Projection\-Info} (\hyperlink{classrepast_1_1_projection_info_packet}{Projection\-Info\-Packet} $\ast$pip, \hyperlink{classrepast_1_1_context}{Context}$<$ T $>$ $\ast$context)=0}\label{classrepast_1_1_projection_a20dfbb08e40a0425cbf56cb8864f27c4}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_projection_a374d61a05feb62c25e2046170fbd2be4}{std\-::string {\bfseries name\-\_\-}}\label{classrepast_1_1_projection_a374d61a05feb62c25e2046170fbd2be4}
+
+\item 
+\hypertarget{classrepast_1_1_projection_ade2db74e98e56396c2a129a7aefeb19e}{std\-::set$<$ int $>$ {\bfseries filter}}\label{classrepast_1_1_projection_ade2db74e98e56396c2a129a7aefeb19e}
+
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_projection_ab1a0dad4095ba9621060e4c197f8fdfe}{class {\bfseries Context$<$ T $>$}}\label{classrepast_1_1_projection_ab1a0dad4095ba9621060e4c197f8fdfe}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$class repast\-::\-Projection$<$ T $>$}
+
+Abstract base class for all Projections. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1_projection_a2c5c9f33cf57c5e7a00402eab2080051}{\index{repast\-::\-Projection@{repast\-::\-Projection}!Projection@{Projection}}
+\index{Projection@{Projection}!repast::Projection@{repast\-::\-Projection}}
+\subsubsection[{Projection}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ {\bf repast\-::\-Projection}$<$ T $>$\-::{\bf Projection} (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{name}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_projection_a2c5c9f33cf57c5e7a00402eab2080051}
+
+
+Creates a projection with specified name. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & the name of the projection. This must be unique across projections \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_projection_a340bcbf86f1e29489b9ca1a4aa5e9298}{\index{repast\-::\-Projection@{repast\-::\-Projection}!add\-Filter\-Val@{add\-Filter\-Val}}
+\index{add\-Filter\-Val@{add\-Filter\-Val}!repast::Projection@{repast\-::\-Projection}}
+\subsubsection[{add\-Filter\-Val}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ void {\bf repast\-::\-Projection}$<$ T $>$\-::add\-Filter\-Val (
+\begin{DoxyParamCaption}
+\item[{int}]{type}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_projection_a340bcbf86f1e29489b9ca1a4aa5e9298}
+
+
+Adds an entry to the list of agent types that can be added to this projection. 
+
+Note\-: no indication if type is already listed
+
+
+\begin{DoxyParams}{Parameters}
+{\em type} & type to be added \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_projection_a4075a777a46f27e978d376c90e74a409}{\index{repast\-::\-Projection@{repast\-::\-Projection}!agent\-Can\-Be\-Added@{agent\-Can\-Be\-Added}}
+\index{agent\-Can\-Be\-Added@{agent\-Can\-Be\-Added}!repast::Projection@{repast\-::\-Projection}}
+\subsubsection[{agent\-Can\-Be\-Added}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ bool {\bf repast\-::\-Projection}$<$ T $>$\-::agent\-Can\-Be\-Added (
+\begin{DoxyParamCaption}
+\item[{boost\-::shared\-\_\-ptr$<$ T $>$}]{agent}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_projection_a4075a777a46f27e978d376c90e74a409}
+
+
+Returns true if the agent can be added to the projection, which will be the case if the filter list is empty or if the agent's type is in the filter list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em agent} & pointer to the agent to be tested \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_projection_ad2d104bb6119d0911053d450932855d5}{\index{repast\-::\-Projection@{repast\-::\-Projection}!get\-Agent\-Status\-Exchange\-Partners@{get\-Agent\-Status\-Exchange\-Partners}}
+\index{get\-Agent\-Status\-Exchange\-Partners@{get\-Agent\-Status\-Exchange\-Partners}!repast::Projection@{repast\-::\-Projection}}
+\subsubsection[{get\-Agent\-Status\-Exchange\-Partners}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ virtual void {\bf repast\-::\-Projection}$<$ T $>$\-::get\-Agent\-Status\-Exchange\-Partners (
+\begin{DoxyParamCaption}
+\item[{std\-::set$<$ int $>$ \&}]{ps\-To\-Send\-To, }
+\item[{std\-::set$<$ int $>$ \&}]{ps\-To\-Receive\-From}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1_projection_ad2d104bb6119d0911053d450932855d5}
+
+
+Gets the set of processes with which this \hyperlink{classrepast_1_1_projection}{Projection} exchanges agent status info-\/ that is, the set of processes from which agents can move to this one or to which they can move when moving from this one. 
+
+In the most general case this will be all other processors. However, simulations where agents move in spaces will usually exchange agents only with a small subset of 'neighbor' processes, which is knowable in advance and constant. To accommodate the general case, the algorithm for exchanging information must poll all other processes to see which are sending to this one; if this is known in advance, this additional (expensive) step can be skipped. 
+
+Implemented in \hyperlink{classrepast_1_1_shared_base_grid_a0388d98240eb59548058d3c45da702d7}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$}, \hyperlink{classrepast_1_1_shared_base_grid_a0388d98240eb59548058d3c45da702d7}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, int $>$}, \hyperlink{classrepast_1_1_shared_base_grid_a0388d98240eb59548058d3c45da702d7}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, double $>$}, \hyperlink{classrepast_1_1_graph_a3e9a52d6d45473260e2771fe426c8a15}{repast\-::\-Graph$<$ V, E, Ec, Ec\-M $>$}, \hyperlink{classrepast_1_1_grid_a748354698308fe0d0c0fe33a657109d1}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}, \hyperlink{classrepast_1_1_grid_a748354698308fe0d0c0fe33a657109d1}{repast\-::\-Grid$<$ T, double $>$}, and \hyperlink{classrepast_1_1_grid_a748354698308fe0d0c0fe33a657109d1}{repast\-::\-Grid$<$ T, int $>$}.
+
+\hypertarget{classrepast_1_1_projection_ae1877809facd80a5e25d95e3dc5c35f4}{\index{repast\-::\-Projection@{repast\-::\-Projection}!get\-Agents\-To\-Push@{get\-Agents\-To\-Push}}
+\index{get\-Agents\-To\-Push@{get\-Agents\-To\-Push}!repast::Projection@{repast\-::\-Projection}}
+\subsubsection[{get\-Agents\-To\-Push}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ virtual void {\bf repast\-::\-Projection}$<$ T $>$\-::get\-Agents\-To\-Push (
+\begin{DoxyParamCaption}
+\item[{std\-::set$<$ {\bf Agent\-Id} $>$ \&}]{agents\-To\-Test, }
+\item[{std\-::map$<$ int, std\-::set$<$ {\bf Agent\-Id} $>$ $>$ \&}]{agents\-To\-Push}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1_projection_ae1877809facd80a5e25d95e3dc5c35f4}
+
+
+Given a set of agents, gets the agents that this projection implementation must 'push' to other processes. 
+
+Generally spaces must push agents that are in 'buffer zones' and graphs must push local agents that are vertices to master edges where the other vertex is non-\/ local. The results are returned per-\/process in the agents\-To\-Push map. 
+
+Implemented in \hyperlink{classrepast_1_1_shared_base_grid_ab1486e7698288efc1218653d4e5e1e15}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$}, \hyperlink{classrepast_1_1_shared_base_grid_ab1486e7698288efc1218653d4e5e1e15}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, int $>$}, \hyperlink{classrepast_1_1_shared_base_grid_ab1486e7698288efc1218653d4e5e1e15}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, double $>$}, \hyperlink{classrepast_1_1_base_grid_a8f718ade5af8285f71151eea824ce3cd}{repast\-::\-Base\-Grid$<$ T, Cell\-Accessor, G\-P\-Transformer, Adder, G\-P\-Type $>$}, \hyperlink{classrepast_1_1_base_grid_a8f718ade5af8285f71151eea824ce3cd}{repast\-::\-Base\-Grid$<$ T, Multiple\-Occupancy$<$ T, double $>$, G\-P\-Transformer, Adder, double $>$}, \hyperlink{classrepast_1_1_base_grid_a8f718ade5af8285f71151eea824ce3cd}{repast\-::\-Base\-Grid$<$ T, Multiple\-Occupancy$<$ T, G\-P\-Type $>$, G\-P\-Transformer, Adder, G\-P\-Type $>$}, \hyperlink{classrepast_1_1_base_grid_a8f718ade5af8285f71151eea824ce3cd}{repast\-::\-Base\-Grid$<$ T, Multiple\-Occupancy$<$ T, int $>$, G\-P\-Transformer, Adder, int $>$}, \hyperlink{classrepast_1_1_graph_a011c1f0f065e5b8238c6783966c380eb}{repast\-::\-Graph$<$ V, E, Ec, Ec\-M $>$}, \hyperlink{classrepast_1_1_grid_aa83b294fc8765e2f8ee44d8238855460}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}, \hyperlink{classrepast_1_1_grid_aa83b294fc8765e2f8ee44d8238855460}{repast\-::\-Grid$<$ T, double $>$}, \hyperlink{classrepast_1_1_grid_aa83b294fc8765e2f8ee44d8238855460}{repast\-::\-Grid$<$ T, int $>$}, and \hyperlink{classrepast_1_1_shared_discrete_space_a1f690e82e6b7ea6a279db020e12b4d21}{repast\-::\-Shared\-Discrete\-Space$<$ T, G\-P\-Transformer, Adder $>$}.
+
+\hypertarget{classrepast_1_1_projection_afdc13fccb129094bfd67b3446873933d}{\index{repast\-::\-Projection@{repast\-::\-Projection}!get\-Info\-Exchange\-Partners@{get\-Info\-Exchange\-Partners}}
+\index{get\-Info\-Exchange\-Partners@{get\-Info\-Exchange\-Partners}!repast::Projection@{repast\-::\-Projection}}
+\subsubsection[{get\-Info\-Exchange\-Partners}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ virtual void {\bf repast\-::\-Projection}$<$ T $>$\-::get\-Info\-Exchange\-Partners (
+\begin{DoxyParamCaption}
+\item[{std\-::set$<$ int $>$ \&}]{ps\-To\-Send\-To, }
+\item[{std\-::set$<$ int $>$ \&}]{ps\-To\-Receive\-From}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1_projection_afdc13fccb129094bfd67b3446873933d}
+
+
+Gets the set of processes with which this \hyperlink{classrepast_1_1_projection}{Projection} exchanges projection info. 
+
+In the most general case this will be all other processors; this is the case for graphs, where agent connections can be arbitrary. However, spaces usually exchange information only with a small subset of 'neighbor' processes, which is knowable in advance and constant. To accommodate the general case, the algorithm for exchanging information must poll all other processes to see which are sending to this one; if this is known in advance, this additional (expensive) step can be skipped. 
+
+Implemented in \hyperlink{classrepast_1_1_shared_base_grid_af4323686714c4f6216125db5609c3184}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, G\-P\-Type $>$}, \hyperlink{classrepast_1_1_shared_base_grid_af4323686714c4f6216125db5609c3184}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, int $>$}, \hyperlink{classrepast_1_1_shared_base_grid_af4323686714c4f6216125db5609c3184}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, double $>$}, \hyperlink{classrepast_1_1_graph_ab4200382f280c05f020611428507a134}{repast\-::\-Graph$<$ V, E, Ec, Ec\-M $>$}, \hyperlink{classrepast_1_1_grid_a57b4449e602392119eb4db3e0011de05}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}, \hyperlink{classrepast_1_1_grid_a57b4449e602392119eb4db3e0011de05}{repast\-::\-Grid$<$ T, double $>$}, and \hyperlink{classrepast_1_1_grid_a57b4449e602392119eb4db3e0011de05}{repast\-::\-Grid$<$ T, int $>$}.
+
+\hypertarget{classrepast_1_1_projection_ad13ded8db8e364aa43efde5b35da9a65}{\index{repast\-::\-Projection@{repast\-::\-Projection}!get\-Required\-Agents@{get\-Required\-Agents}}
+\index{get\-Required\-Agents@{get\-Required\-Agents}!repast::Projection@{repast\-::\-Projection}}
+\subsubsection[{get\-Required\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ virtual void {\bf repast\-::\-Projection}$<$ T $>$\-::get\-Required\-Agents (
+\begin{DoxyParamCaption}
+\item[{std\-::set$<$ {\bf Agent\-Id} $>$ \&}]{agents\-To\-Test, }
+\item[{std\-::set$<$ {\bf Agent\-Id} $>$ \&}]{agents\-Required, }
+\item[{R\-A\-D\-I\-U\-S}]{radius = {\ttfamily PRIMARY}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1_projection_ad13ded8db8e364aa43efde5b35da9a65}
+
+
+Given a set of agents to test, gets the subset that must be kept in order to fulfill the projection's 'contract' to the specified radius. 
+
+Generally spaces do not require any agents, but graphs do-\/ generally the non-\/local ends to master copies of edges. 
+
+Implemented in \hyperlink{classrepast_1_1_grid_ab1ff08ad641de4f74eab53e30ad14eb6}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}, \hyperlink{classrepast_1_1_grid_ab1ff08ad641de4f74eab53e30ad14eb6}{repast\-::\-Grid$<$ T, double $>$}, and \hyperlink{classrepast_1_1_grid_ab1ff08ad641de4f74eab53e30ad14eb6}{repast\-::\-Grid$<$ T, int $>$}.
+
+\hypertarget{classrepast_1_1_projection_a1da1dcc47517e3e25be129067b21601f}{\index{repast\-::\-Projection@{repast\-::\-Projection}!keeps\-Agents\-On\-Sync\-Proj@{keeps\-Agents\-On\-Sync\-Proj}}
+\index{keeps\-Agents\-On\-Sync\-Proj@{keeps\-Agents\-On\-Sync\-Proj}!repast::Projection@{repast\-::\-Projection}}
+\subsubsection[{keeps\-Agents\-On\-Sync\-Proj}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ virtual bool {\bf repast\-::\-Projection}$<$ T $>$\-::keeps\-Agents\-On\-Sync\-Proj (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1_projection_a1da1dcc47517e3e25be129067b21601f}
+
+
+Should return true if the \hyperlink{classrepast_1_1_projection}{Projection} implemented can 'keep' some (non-\/local) agents during a projection information synchronization operation. 
+
+Generally spaces will allow all non-\/local agents to be deleted, but graphs keep the non-\/local agents that participate in Master edges.
+
+It is possible to override these. A graph projection can be created that does not permit non-\/local agents to be 'kept'. This would be an extremely unusual use case, but it is possible.
+
+Note that these are used for optimization. If no projection in a given context keeps any agents, several steps in the synchronization algorithm can be omitted. Of course, omitting these steps when a projection actually retains agents can caused undefined problems.
+
+\begin{DoxyReturn}{Returns}
+true if this projection will keep non-\/local agents during a projection information synchronziation event, false if it will not. 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classrepast_1_1_graph_aedaa8e44eb04056df2acabbeba373201}{repast\-::\-Graph$<$ V, E, Ec, Ec\-M $>$}, \hyperlink{classrepast_1_1_grid_aa46a5e7692430604bb3b04bbb9e2ff50}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}, \hyperlink{classrepast_1_1_grid_aa46a5e7692430604bb3b04bbb9e2ff50}{repast\-::\-Grid$<$ T, double $>$}, and \hyperlink{classrepast_1_1_grid_aa46a5e7692430604bb3b04bbb9e2ff50}{repast\-::\-Grid$<$ T, int $>$}.
+
+\hypertarget{classrepast_1_1_projection_ab4587f793b1c250de22af16fedf7f89d}{\index{repast\-::\-Projection@{repast\-::\-Projection}!remove\-Filter\-Val@{remove\-Filter\-Val}}
+\index{remove\-Filter\-Val@{remove\-Filter\-Val}!repast::Projection@{repast\-::\-Projection}}
+\subsubsection[{remove\-Filter\-Val}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ void {\bf repast\-::\-Projection}$<$ T $>$\-::remove\-Filter\-Val (
+\begin{DoxyParamCaption}
+\item[{int}]{type}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_projection_ab4587f793b1c250de22af16fedf7f89d}
+
+
+Removes an entry from the list of agent types that can be added to this projection. 
+
+Note\-: no indication if type is not listed
+
+
+\begin{DoxyParams}{Parameters}
+{\em type} & entry to be removed \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_projection_a686c52a83dd917e50b04f81dc7321ad7}{\index{repast\-::\-Projection@{repast\-::\-Projection}!sends\-Secondary\-Agents\-On\-Status\-Exchange@{sends\-Secondary\-Agents\-On\-Status\-Exchange}}
+\index{sends\-Secondary\-Agents\-On\-Status\-Exchange@{sends\-Secondary\-Agents\-On\-Status\-Exchange}!repast::Projection@{repast\-::\-Projection}}
+\subsubsection[{sends\-Secondary\-Agents\-On\-Status\-Exchange}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ virtual bool {\bf repast\-::\-Projection}$<$ T $>$\-::sends\-Secondary\-Agents\-On\-Status\-Exchange (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1_projection_a686c52a83dd917e50b04f81dc7321ad7}
+
+
+Should return true if the \hyperlink{classrepast_1_1_projection}{Projection} implemented will send secondary agents during a status exchange. 
+
+Generally spaces do not and graphs do.
+
+If no secondary agents will be sent, portions of the algorithm can be omitted for optimization.
+
+\begin{DoxyReturn}{Returns}
+true if the \hyperlink{classrepast_1_1_projection}{Projection} returns secondary agents, false if not 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classrepast_1_1_graph_a80cd467aae6d5e2c381bbe9cade6cbba}{repast\-::\-Graph$<$ V, E, Ec, Ec\-M $>$}, \hyperlink{classrepast_1_1_grid_ae3b7e2de573a9212a58a527a9ab519b8}{repast\-::\-Grid$<$ T, G\-P\-Type $>$}, \hyperlink{classrepast_1_1_grid_ae3b7e2de573a9212a58a527a9ab519b8}{repast\-::\-Grid$<$ T, double $>$}, and \hyperlink{classrepast_1_1_grid_ae3b7e2de573a9212a58a527a9ab519b8}{repast\-::\-Grid$<$ T, int $>$}.
+
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Projection.\-h\end{DoxyCompactItemize}

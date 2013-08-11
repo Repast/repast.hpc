@@ -241,7 +241,9 @@ AgentSet<Turtle> Observer::turtles() {
 	return turtles;
 }
 
-// static cast fails here, not sure why.
+/**
+ * Casts a pointer to a RelogoAgent to a pointer to a Turtle
+ */
 struct TurtleCaster: public std::unary_function<boost::shared_ptr<RelogoAgent>, Turtle*> {
 	Turtle* operator()(boost::shared_ptr<RelogoAgent> ptr) const {
 		return (Turtle*) (ptr.get());

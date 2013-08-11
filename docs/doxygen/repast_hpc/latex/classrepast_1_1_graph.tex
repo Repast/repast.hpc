@@ -1,0 +1,570 @@
+\hypertarget{classrepast_1_1_graph}{\section{repast\-:\-:Graph$<$ V, E, Ec, Ec\-M $>$ Class Template Reference}
+\label{classrepast_1_1_graph}\index{repast\-::\-Graph$<$ V, E, Ec, Ec\-M $>$@{repast\-::\-Graph$<$ V, E, Ec, Ec\-M $>$}}
+}
+
+
+\hyperlink{classrepast_1_1_graph}{Graph} / Network implementation where agents are vertices in the graph.  
+
+
+
+
+{\ttfamily \#include $<$Graph.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Graph$<$ V, E, Ec, Ec\-M $>$\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{classrepast_1_1_graph}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_graph_acee609459f11e02371ae4d8d226aafab}{typedef \\*
+boost\-::transform\-\_\-iterator\\*
+$<$ \hyperlink{structrepast_1_1_node_getter}{Node\-Getter}$<$ V, E $>$, typename \\*
+Vertex\-Map\-::const\-\_\-iterator $>$ \hyperlink{classrepast_1_1_graph_acee609459f11e02371ae4d8d226aafab}{vertex\-\_\-iterator}}\label{classrepast_1_1_graph_acee609459f11e02371ae4d8d226aafab}
+
+\begin{DoxyCompactList}\small\item\em An iterator over the agents that are the vertices in this \hyperlink{classrepast_1_1_graph}{Graph}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classrepast_1_1_graph_ae2a9ad624d6fd581450243cd49e4ffe2}{Graph} (std\-::string \hyperlink{classrepast_1_1_projection_ab60a0ab4f584685780307d7431b61800}{name}, bool directed, Ec\-M $\ast$edge\-Content\-Mgr)
+\begin{DoxyCompactList}\small\item\em Creates a \hyperlink{classrepast_1_1_graph}{Graph} with the specified name. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_graph_ad9e5b7105b55f1e967dff196e83a1621}{\hyperlink{classrepast_1_1_graph_ad9e5b7105b55f1e967dff196e83a1621}{Graph} (const \hyperlink{classrepast_1_1_graph}{Graph}$<$ V, E, Ec, Ec\-M $>$ \&graph)}\label{classrepast_1_1_graph_ad9e5b7105b55f1e967dff196e83a1621}
+
+\begin{DoxyCompactList}\small\item\em Copy constructor for the graph. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_graph_a2404ed301bcecb8af4d1d45bd5de4c8a}{\hyperlink{classrepast_1_1_graph}{Graph} \& {\bfseries operator=} (const \hyperlink{classrepast_1_1_graph}{Graph} \&graph)}\label{classrepast_1_1_graph_a2404ed301bcecb8af4d1d45bd5de4c8a}
+
+\item 
+virtual boost\-::shared\-\_\-ptr$<$ E $>$ \hyperlink{classrepast_1_1_graph_a7ce027bc5e1c0119f9cce87aadf49bb7}{add\-Edge} (V $\ast$source, V $\ast$target)
+\begin{DoxyCompactList}\small\item\em Adds an edge between source and target to this \hyperlink{classrepast_1_1_graph}{Graph}. \end{DoxyCompactList}\item 
+virtual boost\-::shared\-\_\-ptr$<$ E $>$ \hyperlink{classrepast_1_1_graph_a9cc7843398086080c064123aaf245dd5}{add\-Edge} (V $\ast$source, V $\ast$target, double weight)
+\begin{DoxyCompactList}\small\item\em Adds an edge with the specified weight between source and target to this \hyperlink{classrepast_1_1_graph}{Graph}. \end{DoxyCompactList}\item 
+virtual boost\-::shared\-\_\-ptr$<$ E $>$ \hyperlink{classrepast_1_1_graph_a160050d2b0ce64a59b32c2697ddd622b}{find\-Edge} (V $\ast$source, V $\ast$target)
+\begin{DoxyCompactList}\small\item\em Gets the edge between the source and target or 0 if no such edge is found. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_graph_a9d6eb280c2a2034f127453c5f965d61e}{successors} (V $\ast$vertex, std\-::vector$<$ V $\ast$ $>$ \&out)
+\begin{DoxyCompactList}\small\item\em Gets the sucessors of the specified vertex and puts them in out. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_graph_a9686c8fee74dbcb6b5bd0ddc9cc82827}{predecessors} (V $\ast$vertex, std\-::vector$<$ V $\ast$ $>$ \&out)
+\begin{DoxyCompactList}\small\item\em Gets the predecessors of the specified vertex and puts them in out. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_graph_ac07ec9433947d5c677786e37e4cb0973}{adjacent} (V $\ast$vertex, std\-::vector$<$ V $\ast$ $>$ \&out)
+\begin{DoxyCompactList}\small\item\em Gets all the agent adjacent to the specified vertex. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_graph_a95ddd223fa26a5390c13aa1c4fec9254}{remove\-Edge} (V $\ast$source, V $\ast$target)
+\begin{DoxyCompactList}\small\item\em Removes the edge between source and target from this \hyperlink{classrepast_1_1_graph}{Graph}. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_graph_a159360404f97fd8a7339ca98d13151cb}{remove\-Edge} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&source, const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&target)
+\begin{DoxyCompactList}\small\item\em Removes the edge between source and target from this \hyperlink{classrepast_1_1_graph}{Graph}. \end{DoxyCompactList}\item 
+virtual int \hyperlink{classrepast_1_1_graph_a00f9c58855d8ba8ca197f695fdf5c6cc}{in\-Degree} (V $\ast$vertex)
+\begin{DoxyCompactList}\small\item\em Gets the in-\/degree of the specified vertex. \end{DoxyCompactList}\item 
+virtual int \hyperlink{classrepast_1_1_graph_aeca552decfd6069f132613c1f5aab59d}{out\-Degree} (V $\ast$vertex)
+\begin{DoxyCompactList}\small\item\em Gets the out-\/degree of the specified vertex. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1_graph_aaf15eede1ff417d8164f0eb4825cad09}{edge\-Count} () const 
+\begin{DoxyCompactList}\small\item\em Gets the number of edges in this \hyperlink{classrepast_1_1_graph}{Graph}. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1_graph_ae9e0b0fc607154387d60596465c8fb80}{vertex\-Count} () const 
+\begin{DoxyCompactList}\small\item\em Gets the number of vertices in this \hyperlink{classrepast_1_1_graph}{Graph}. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_graph_acee609459f11e02371ae4d8d226aafab}{vertex\-\_\-iterator} \hyperlink{classrepast_1_1_graph_abbc3dafd7087984a83ac0190e5058c5b}{vertices\-Begin} ()
+\begin{DoxyCompactList}\small\item\em Gets the start of an iterator over all the vertices in this graph. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_graph_acee609459f11e02371ae4d8d226aafab}{vertex\-\_\-iterator} \hyperlink{classrepast_1_1_graph_acd76c847169c86e1e981100e8cf896f0}{vertices\-End} ()
+\begin{DoxyCompactList}\small\item\em Gets the end of an iterator over all the vertices in this graph. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_graph_a2bfd1ab5fde73c290df15318746831f5}{void {\bfseries show\-Edges} ()}\label{classrepast_1_1_graph_a2bfd1ab5fde73c290df15318746831f5}
+
+\item 
+\hypertarget{classrepast_1_1_graph_a8c2f3ff6eb7d2975ed29cadcdd532b49}{virtual bool {\bfseries is\-Master} (E $\ast$e)=0}\label{classrepast_1_1_graph_a8c2f3ff6eb7d2975ed29cadcdd532b49}
+
+\item 
+virtual bool \hyperlink{classrepast_1_1_graph_aedaa8e44eb04056df2acabbeba373201}{keeps\-Agents\-On\-Sync\-Proj} ()
+\begin{DoxyCompactList}\small\item\em Should return true if the \hyperlink{classrepast_1_1_projection}{Projection} implemented can 'keep' some (non-\/local) agents during a projection information synchronization operation. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{classrepast_1_1_graph_a80cd467aae6d5e2c381bbe9cade6cbba}{sends\-Secondary\-Agents\-On\-Status\-Exchange} ()
+\begin{DoxyCompactList}\small\item\em Should return true if the \hyperlink{classrepast_1_1_projection}{Projection} implemented will send secondary agents during a status exchange. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_graph_ab4200382f280c05f020611428507a134}{get\-Info\-Exchange\-Partners} (std\-::set$<$ int $>$ \&ps\-To\-Send\-To, std\-::set$<$ int $>$ \&ps\-To\-Receive\-From)
+\begin{DoxyCompactList}\small\item\em Gets the set of processes with which this \hyperlink{classrepast_1_1_projection}{Projection} exchanges projection info. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_graph_a3e9a52d6d45473260e2771fe426c8a15}{get\-Agent\-Status\-Exchange\-Partners} (std\-::set$<$ int $>$ \&ps\-To\-Send\-To, std\-::set$<$ int $>$ \&ps\-To\-Receive\-From)
+\begin{DoxyCompactList}\small\item\em Gets the set of processes with which this \hyperlink{classrepast_1_1_projection}{Projection} exchanges agent status info-\/ that is, the set of processes from which agents can move to this one or to which they can move when moving from this one. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_graph_ad3cffccc052f93d644a0d58630577ea0}{virtual void \hyperlink{classrepast_1_1_graph_ad3cffccc052f93d644a0d58630577ea0}{get\-Projection\-Info} (std\-::vector$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&agents, std\-::vector$<$ \hyperlink{classrepast_1_1_projection_info_packet}{Projection\-Info\-Packet} $\ast$ $>$ \&packets, bool secondary\-Info=false, std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ $\ast$secondary\-Ids=0, int dest\-Proc=-\/1)}\label{classrepast_1_1_graph_ad3cffccc052f93d644a0d58630577ea0}
+
+\begin{DoxyCompactList}\small\item\em Convenience wrapper that gets all of the projection information for the agents specified (calls implementation in child class that gets only the information for one agent). \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_graph_acd792216213093f9fea3b676d10ccdc7}{virtual \hyperlink{classrepast_1_1_projection_info_packet}{Projection\-Info\-Packet} $\ast$ {\bfseries get\-Projection\-Info} (\hyperlink{classrepast_1_1_agent_id}{Agent\-Id} id, bool secondary\-Info=false, std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ $\ast$secondary\-Ids=0, int dest\-Proc=-\/1)}\label{classrepast_1_1_graph_acd792216213093f9fea3b676d10ccdc7}
+
+\item 
+\hypertarget{classrepast_1_1_graph_ad1a011ae319ca66af55a4131e3ce7804}{virtual void {\bfseries update\-Projection\-Info} (\hyperlink{classrepast_1_1_projection_info_packet}{Projection\-Info\-Packet} $\ast$pip, \hyperlink{classrepast_1_1_context}{Context}$<$ V $>$ $\ast$context)}\label{classrepast_1_1_graph_ad1a011ae319ca66af55a4131e3ce7804}
+
+\item 
+\hypertarget{classrepast_1_1_graph_af53ecedb239116dfe1a978fdfb1d364c}{virtual void {\bfseries get\-Required\-Agents} (std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&agents\-To\-Test, std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&agents\-Required, R\-A\-D\-I\-U\-S radius=\hyperlink{classrepast_1_1_projection}{Projection}$<$ V $>$\-::P\-R\-I\-M\-A\-R\-Y)}\label{classrepast_1_1_graph_af53ecedb239116dfe1a978fdfb1d364c}
+
+\item 
+virtual void \hyperlink{classrepast_1_1_graph_a011c1f0f065e5b8238c6783966c380eb}{get\-Agents\-To\-Push} (std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&agents\-To\-Test, std\-::map$<$ int, std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ $>$ \&agents\-To\-Push)
+\begin{DoxyCompactList}\small\item\em Given a set of agents, gets the agents that this projection implementation must 'push' to other processes. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_graph_a2fa24c44da950218515a28a9ebae26c0}{virtual void {\bfseries clean\-Projection\-Info} (std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&agents\-To\-Keep)}\label{classrepast_1_1_graph_a2fa24c44da950218515a28a9ebae26c0}
+
+\item 
+\hypertarget{classrepast_1_1_graph_aae3c1f6c8031633d866eed178b5556e7}{void {\bfseries clear\-Conflicted\-Edges} ()}\label{classrepast_1_1_graph_aae3c1f6c8031633d866eed178b5556e7}
+
+\item 
+\hypertarget{classrepast_1_1_graph_a4ecd9032c3380032e5e387b421540b72}{void {\bfseries get\-Conflicted\-Edges} (std\-::set$<$ boost\-::shared\-\_\-ptr$<$ E $>$ $>$ \&conflicted\-Edges)}\label{classrepast_1_1_graph_a4ecd9032c3380032e5e387b421540b72}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_graph_a26a275229c943860f7dcc8f12a819d51}{std\-::set$<$ int $>$ {\bfseries ranks\-To\-Send\-Proj\-Info\-To}}\label{classrepast_1_1_graph_a26a275229c943860f7dcc8f12a819d51}
+
+\item 
+\hypertarget{classrepast_1_1_graph_ac6bd3c93bc7fc980daee32416c62cef5}{std\-::set$<$ int $>$ {\bfseries ranks\-To\-Receive\-Proj\-Info\-From}}\label{classrepast_1_1_graph_ac6bd3c93bc7fc980daee32416c62cef5}
+
+\item 
+\hypertarget{classrepast_1_1_graph_af6ffbf7aafeaa71373c833215d6e7361}{std\-::set$<$ int $>$ {\bfseries ranks\-To\-Send\-Agent\-Status\-Info\-To}}\label{classrepast_1_1_graph_af6ffbf7aafeaa71373c833215d6e7361}
+
+\item 
+\hypertarget{classrepast_1_1_graph_ab6aa89bc4355dc7be2e9ffcf4831b69e}{std\-::set$<$ int $>$ {\bfseries ranks\-To\-Receive\-Agent\-Status\-Info\-From}}\label{classrepast_1_1_graph_ab6aa89bc4355dc7be2e9ffcf4831b69e}
+
+\item 
+\hypertarget{classrepast_1_1_graph_a71df0c0ac35f4464ff6d72f70bead983}{bool {\bfseries keeps\-Agents}}\label{classrepast_1_1_graph_a71df0c0ac35f4464ff6d72f70bead983}
+
+\item 
+\hypertarget{classrepast_1_1_graph_accec73ce11057ca4b5019b3693e93354}{bool {\bfseries sends\-Secondary\-Agents}}\label{classrepast_1_1_graph_accec73ce11057ca4b5019b3693e93354}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_graph_a8d44d7ffee81310e667905eb64798228}{typedef boost\-::unordered\-\_\-map\\*
+$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}, \hyperlink{classrepast_1_1_vertex}{Vertex}$<$ V, E $>$\\*
+ $\ast$, \hyperlink{structrepast_1_1_hash_id}{Hash\-Id} $>$ {\bfseries Vertex\-Map}}\label{classrepast_1_1_graph_a8d44d7ffee81310e667905eb64798228}
+
+\item 
+\hypertarget{classrepast_1_1_graph_aeb3e3741243a80c9d3732805b018ed00}{typedef Vertex\-Map\-::iterator {\bfseries Vertex\-Map\-Iterator}}\label{classrepast_1_1_graph_aeb3e3741243a80c9d3732805b018ed00}
+
+\item 
+\hypertarget{classrepast_1_1_graph_a1c3c8e5132aa39f51bf64440e34f3e5c}{typedef \hyperlink{classrepast_1_1_projection}{Projection}$<$ V $>$\-::R\-A\-D\-I\-U\-S {\bfseries R\-A\-D\-I\-U\-S}}\label{classrepast_1_1_graph_a1c3c8e5132aa39f51bf64440e34f3e5c}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_graph_ac355b765b3ebcaafb62603ded91fb170}{void {\bfseries clean\-Up} ()}\label{classrepast_1_1_graph_ac355b765b3ebcaafb62603ded91fb170}
+
+\item 
+\hypertarget{classrepast_1_1_graph_abb88d9a266f2dde1782f62f221479314}{void {\bfseries init} (const \hyperlink{classrepast_1_1_graph}{Graph} \&graph)}\label{classrepast_1_1_graph_abb88d9a266f2dde1782f62f221479314}
+
+\item 
+\hypertarget{classrepast_1_1_graph_aab6a71c186e6acbe4e04dcd1a866712d}{virtual bool {\bfseries add\-Agent} (boost\-::shared\-\_\-ptr$<$ V $>$ agent)}\label{classrepast_1_1_graph_aab6a71c186e6acbe4e04dcd1a866712d}
+
+\item 
+\hypertarget{classrepast_1_1_graph_a437e50a2ca1330b1bd3d582cf711b628}{virtual void {\bfseries remove\-Agent} (V $\ast$agent)}\label{classrepast_1_1_graph_a437e50a2ca1330b1bd3d582cf711b628}
+
+\item 
+\hypertarget{classrepast_1_1_graph_a83187d1adf22e412f871102f5883df22}{virtual void {\bfseries do\-Add\-Edge} (boost\-::shared\-\_\-ptr$<$ E $>$ edge, bool allow\-Overwrite=true)}\label{classrepast_1_1_graph_a83187d1adf22e412f871102f5883df22}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_graph_a4cf91f79bf224e8550d31a500fc2a47a}{int {\bfseries edge\-Count\-\_\-}}\label{classrepast_1_1_graph_a4cf91f79bf224e8550d31a500fc2a47a}
+
+\item 
+\hypertarget{classrepast_1_1_graph_a31bc527fc394104d5d2252d7302e8bff}{bool {\bfseries is\-Directed}}\label{classrepast_1_1_graph_a31bc527fc394104d5d2252d7302e8bff}
+
+\item 
+\hypertarget{classrepast_1_1_graph_a12f010263d0a805926ff66e54dbd8ae5}{Vertex\-Map {\bfseries vertices}}\label{classrepast_1_1_graph_a12f010263d0a805926ff66e54dbd8ae5}
+
+\item 
+\hypertarget{classrepast_1_1_graph_ab4cab2042913e901d8a9eb2c170da6de}{Ec\-M $\ast$ {\bfseries edge\-Content\-Manager}}\label{classrepast_1_1_graph_ab4cab2042913e901d8a9eb2c170da6de}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename V, typename E, typename Ec, typename Ec\-M$>$class repast\-::\-Graph$<$ V, E, Ec, Ec\-M $>$}
+
+\hyperlink{classrepast_1_1_graph}{Graph} / Network implementation where agents are vertices in the graph. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em V} & the type agents in the graph. This type should extend \hyperlink{classrepast_1_1_agent}{repast\-::\-Agent} \\
+\hline
+{\em E} & the edge type of the graph. This type should extend \hyperlink{classrepast_1_1_repast_edge}{repast\-::\-Repast\-Edge}. \\
+\hline
+{\em Ec} & class of serializable Edge Content \\
+\hline
+{\em Ec\-M} & Class that is capable of transforming an Edge into Edge Content and vice versa \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1_graph_ae2a9ad624d6fd581450243cd49e4ffe2}{\index{repast\-::\-Graph@{repast\-::\-Graph}!Graph@{Graph}}
+\index{Graph@{Graph}!repast::Graph@{repast\-::\-Graph}}
+\subsubsection[{Graph}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E, typename Ec, typename Ec\-M$>$ {\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$\-::{\bf Graph} (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{name, }
+\item[{bool}]{directed, }
+\item[{Ec\-M $\ast$}]{edge\-Content\-Mgr}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_graph_ae2a9ad624d6fd581450243cd49e4ffe2}
+
+
+Creates a \hyperlink{classrepast_1_1_graph}{Graph} with the specified name. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & the name of the graph \\
+\hline
+{\em directed} & whether or not the created \hyperlink{classrepast_1_1_graph}{Graph} is directed \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_graph_a7ce027bc5e1c0119f9cce87aadf49bb7}{\index{repast\-::\-Graph@{repast\-::\-Graph}!add\-Edge@{add\-Edge}}
+\index{add\-Edge@{add\-Edge}!repast::Graph@{repast\-::\-Graph}}
+\subsubsection[{add\-Edge}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E , typename Ec , typename Ec\-M $>$ boost\-::shared\-\_\-ptr$<$ E $>$ {\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$\-::add\-Edge (
+\begin{DoxyParamCaption}
+\item[{V $\ast$}]{source, }
+\item[{V $\ast$}]{target}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_graph_a7ce027bc5e1c0119f9cce87aadf49bb7}
+
+
+Adds an edge between source and target to this \hyperlink{classrepast_1_1_graph}{Graph}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & the source of the edge \\
+\hline
+{\em target} & the target of the edge\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the added edge. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_graph_a9cc7843398086080c064123aaf245dd5}{\index{repast\-::\-Graph@{repast\-::\-Graph}!add\-Edge@{add\-Edge}}
+\index{add\-Edge@{add\-Edge}!repast::Graph@{repast\-::\-Graph}}
+\subsubsection[{add\-Edge}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E , typename Ec , typename Ec\-M $>$ boost\-::shared\-\_\-ptr$<$ E $>$ {\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$\-::add\-Edge (
+\begin{DoxyParamCaption}
+\item[{V $\ast$}]{source, }
+\item[{V $\ast$}]{target, }
+\item[{double}]{weight}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_graph_a9cc7843398086080c064123aaf245dd5}
+
+
+Adds an edge with the specified weight between source and target to this \hyperlink{classrepast_1_1_graph}{Graph}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & the source of the edge \\
+\hline
+{\em target} & the target of the edge \\
+\hline
+{\em weight} & the weight of the edge\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the added edge. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_graph_ac07ec9433947d5c677786e37e4cb0973}{\index{repast\-::\-Graph@{repast\-::\-Graph}!adjacent@{adjacent}}
+\index{adjacent@{adjacent}!repast::Graph@{repast\-::\-Graph}}
+\subsubsection[{adjacent}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E , typename Ec , typename Ec\-M $>$ void {\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$\-::adjacent (
+\begin{DoxyParamCaption}
+\item[{V $\ast$}]{vertex, }
+\item[{std\-::vector$<$ V $\ast$ $>$ \&}]{out}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_graph_ac07ec9433947d5c677786e37e4cb0973}
+
+
+Gets all the agent adjacent to the specified vertex. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em vertex} & the vertex whose adjacent agents we want to get \\
+\hline
+\mbox{\tt out}  & {\em the} & vector where the results will be put \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_graph_aaf15eede1ff417d8164f0eb4825cad09}{\index{repast\-::\-Graph@{repast\-::\-Graph}!edge\-Count@{edge\-Count}}
+\index{edge\-Count@{edge\-Count}!repast::Graph@{repast\-::\-Graph}}
+\subsubsection[{edge\-Count}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E, typename Ec, typename Ec\-M$>$ int {\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$\-::edge\-Count (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_graph_aaf15eede1ff417d8164f0eb4825cad09}
+
+
+Gets the number of edges in this \hyperlink{classrepast_1_1_graph}{Graph}. 
+
+\begin{DoxyReturn}{Returns}
+the number of edges in this \hyperlink{classrepast_1_1_graph}{Graph}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_graph_a160050d2b0ce64a59b32c2697ddd622b}{\index{repast\-::\-Graph@{repast\-::\-Graph}!find\-Edge@{find\-Edge}}
+\index{find\-Edge@{find\-Edge}!repast::Graph@{repast\-::\-Graph}}
+\subsubsection[{find\-Edge}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E , typename Ec , typename Ec\-M $>$ boost\-::shared\-\_\-ptr$<$ E $>$ {\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$\-::find\-Edge (
+\begin{DoxyParamCaption}
+\item[{V $\ast$}]{source, }
+\item[{V $\ast$}]{target}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_graph_a160050d2b0ce64a59b32c2697ddd622b}
+
+
+Gets the edge between the source and target or 0 if no such edge is found. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & the source of the edge to find \\
+\hline
+{\em target} & the target of the edge to find\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the found edge or 0. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_graph_a3e9a52d6d45473260e2771fe426c8a15}{\index{repast\-::\-Graph@{repast\-::\-Graph}!get\-Agent\-Status\-Exchange\-Partners@{get\-Agent\-Status\-Exchange\-Partners}}
+\index{get\-Agent\-Status\-Exchange\-Partners@{get\-Agent\-Status\-Exchange\-Partners}!repast::Graph@{repast\-::\-Graph}}
+\subsubsection[{get\-Agent\-Status\-Exchange\-Partners}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E , typename Ec , typename Ec\-M $>$ void {\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$\-::get\-Agent\-Status\-Exchange\-Partners (
+\begin{DoxyParamCaption}
+\item[{std\-::set$<$ int $>$ \&}]{ps\-To\-Send\-To, }
+\item[{std\-::set$<$ int $>$ \&}]{ps\-To\-Receive\-From}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_graph_a3e9a52d6d45473260e2771fe426c8a15}
+
+
+Gets the set of processes with which this \hyperlink{classrepast_1_1_projection}{Projection} exchanges agent status info-\/ that is, the set of processes from which agents can move to this one or to which they can move when moving from this one. 
+
+In the most general case this will be all other processors. However, simulations where agents move in spaces will usually exchange agents only with a small subset of 'neighbor' processes, which is knowable in advance and constant. To accommodate the general case, the algorithm for exchanging information must poll all other processes to see which are sending to this one; if this is known in advance, this additional (expensive) step can be skipped. 
+
+Implements \hyperlink{classrepast_1_1_projection_ad2d104bb6119d0911053d450932855d5}{repast\-::\-Projection$<$ V $>$}.
+
+\hypertarget{classrepast_1_1_graph_a011c1f0f065e5b8238c6783966c380eb}{\index{repast\-::\-Graph@{repast\-::\-Graph}!get\-Agents\-To\-Push@{get\-Agents\-To\-Push}}
+\index{get\-Agents\-To\-Push@{get\-Agents\-To\-Push}!repast::Graph@{repast\-::\-Graph}}
+\subsubsection[{get\-Agents\-To\-Push}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E , typename Ec , typename Ec\-M $>$ void {\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$\-::get\-Agents\-To\-Push (
+\begin{DoxyParamCaption}
+\item[{std\-::set$<$ {\bf Agent\-Id} $>$ \&}]{agents\-To\-Test, }
+\item[{std\-::map$<$ int, std\-::set$<$ {\bf Agent\-Id} $>$ $>$ \&}]{agents\-To\-Push}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_graph_a011c1f0f065e5b8238c6783966c380eb}
+
+
+Given a set of agents, gets the agents that this projection implementation must 'push' to other processes. 
+
+Generally spaces must push agents that are in 'buffer zones' and graphs must push local agents that are vertices to master edges where the other vertex is non-\/ local. The results are returned per-\/process in the agents\-To\-Push map. 
+
+Implements \hyperlink{classrepast_1_1_projection_ae1877809facd80a5e25d95e3dc5c35f4}{repast\-::\-Projection$<$ V $>$}.
+
+\hypertarget{classrepast_1_1_graph_ab4200382f280c05f020611428507a134}{\index{repast\-::\-Graph@{repast\-::\-Graph}!get\-Info\-Exchange\-Partners@{get\-Info\-Exchange\-Partners}}
+\index{get\-Info\-Exchange\-Partners@{get\-Info\-Exchange\-Partners}!repast::Graph@{repast\-::\-Graph}}
+\subsubsection[{get\-Info\-Exchange\-Partners}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E , typename Ec , typename Ec\-M $>$ void {\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$\-::get\-Info\-Exchange\-Partners (
+\begin{DoxyParamCaption}
+\item[{std\-::set$<$ int $>$ \&}]{ps\-To\-Send\-To, }
+\item[{std\-::set$<$ int $>$ \&}]{ps\-To\-Receive\-From}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_graph_ab4200382f280c05f020611428507a134}
+
+
+Gets the set of processes with which this \hyperlink{classrepast_1_1_projection}{Projection} exchanges projection info. 
+
+In the most general case this will be all other processors; this is the case for graphs, where agent connections can be arbitrary. However, spaces usually exchange information only with a small subset of 'neighbor' processes, which is knowable in advance and constant. To accommodate the general case, the algorithm for exchanging information must poll all other processes to see which are sending to this one; if this is known in advance, this additional (expensive) step can be skipped. 
+
+Implements \hyperlink{classrepast_1_1_projection_afdc13fccb129094bfd67b3446873933d}{repast\-::\-Projection$<$ V $>$}.
+
+\hypertarget{classrepast_1_1_graph_a00f9c58855d8ba8ca197f695fdf5c6cc}{\index{repast\-::\-Graph@{repast\-::\-Graph}!in\-Degree@{in\-Degree}}
+\index{in\-Degree@{in\-Degree}!repast::Graph@{repast\-::\-Graph}}
+\subsubsection[{in\-Degree}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E , typename Ec , typename Ec\-M $>$ int {\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$\-::in\-Degree (
+\begin{DoxyParamCaption}
+\item[{V $\ast$}]{vertex}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_graph_a00f9c58855d8ba8ca197f695fdf5c6cc}
+
+
+Gets the in-\/degree of the specified vertex. 
+
+\begin{DoxyReturn}{Returns}
+the in-\/degree of the specified vertex. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_graph_aedaa8e44eb04056df2acabbeba373201}{\index{repast\-::\-Graph@{repast\-::\-Graph}!keeps\-Agents\-On\-Sync\-Proj@{keeps\-Agents\-On\-Sync\-Proj}}
+\index{keeps\-Agents\-On\-Sync\-Proj@{keeps\-Agents\-On\-Sync\-Proj}!repast::Graph@{repast\-::\-Graph}}
+\subsubsection[{keeps\-Agents\-On\-Sync\-Proj}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E, typename Ec, typename Ec\-M$>$ virtual bool {\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$\-::keeps\-Agents\-On\-Sync\-Proj (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}}\label{classrepast_1_1_graph_aedaa8e44eb04056df2acabbeba373201}
+
+
+Should return true if the \hyperlink{classrepast_1_1_projection}{Projection} implemented can 'keep' some (non-\/local) agents during a projection information synchronization operation. 
+
+Generally spaces will allow all non-\/local agents to be deleted, but graphs keep the non-\/local agents that participate in Master edges.
+
+It is possible to override these. A graph projection can be created that does not permit non-\/local agents to be 'kept'. This would be an extremely unusual use case, but it is possible.
+
+Note that these are used for optimization. If no projection in a given context keeps any agents, several steps in the synchronization algorithm can be omitted. Of course, omitting these steps when a projection actually retains agents can caused undefined problems.
+
+\begin{DoxyReturn}{Returns}
+true if this projection will keep non-\/local agents during a projection information synchronziation event, false if it will not. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1_projection_a1da1dcc47517e3e25be129067b21601f}{repast\-::\-Projection$<$ V $>$}.
+
+\hypertarget{classrepast_1_1_graph_aeca552decfd6069f132613c1f5aab59d}{\index{repast\-::\-Graph@{repast\-::\-Graph}!out\-Degree@{out\-Degree}}
+\index{out\-Degree@{out\-Degree}!repast::Graph@{repast\-::\-Graph}}
+\subsubsection[{out\-Degree}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E , typename Ec , typename Ec\-M $>$ int {\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$\-::out\-Degree (
+\begin{DoxyParamCaption}
+\item[{V $\ast$}]{vertex}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_graph_aeca552decfd6069f132613c1f5aab59d}
+
+
+Gets the out-\/degree of the specified vertex. 
+
+\begin{DoxyReturn}{Returns}
+the out-\/degree of the specified vertex. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_graph_a9686c8fee74dbcb6b5bd0ddc9cc82827}{\index{repast\-::\-Graph@{repast\-::\-Graph}!predecessors@{predecessors}}
+\index{predecessors@{predecessors}!repast::Graph@{repast\-::\-Graph}}
+\subsubsection[{predecessors}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E , typename Ec , typename Ec\-M $>$ void {\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$\-::predecessors (
+\begin{DoxyParamCaption}
+\item[{V $\ast$}]{vertex, }
+\item[{std\-::vector$<$ V $\ast$ $>$ \&}]{out}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_graph_a9686c8fee74dbcb6b5bd0ddc9cc82827}
+
+
+Gets the predecessors of the specified vertex and puts them in out. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em vertex} & the vertex whose predecessors we want to get \\
+\hline
+\mbox{\tt out}  & {\em where} & the predecessors will be returned \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_graph_a95ddd223fa26a5390c13aa1c4fec9254}{\index{repast\-::\-Graph@{repast\-::\-Graph}!remove\-Edge@{remove\-Edge}}
+\index{remove\-Edge@{remove\-Edge}!repast::Graph@{repast\-::\-Graph}}
+\subsubsection[{remove\-Edge}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E , typename Ec , typename Ec\-M $>$ void {\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$\-::remove\-Edge (
+\begin{DoxyParamCaption}
+\item[{V $\ast$}]{source, }
+\item[{V $\ast$}]{target}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_graph_a95ddd223fa26a5390c13aa1c4fec9254}
+
+
+Removes the edge between source and target from this \hyperlink{classrepast_1_1_graph}{Graph}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & the source of the edge \\
+\hline
+{\em target} & the target of the edge \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \hyperlink{classrepast_1_1_shared_network_a93396d324b570d7728cbe6ce3271173c}{repast\-::\-Shared\-Network$<$ V, E, Ec, Ec\-M $>$}.
+
+\hypertarget{classrepast_1_1_graph_a159360404f97fd8a7339ca98d13151cb}{\index{repast\-::\-Graph@{repast\-::\-Graph}!remove\-Edge@{remove\-Edge}}
+\index{remove\-Edge@{remove\-Edge}!repast::Graph@{repast\-::\-Graph}}
+\subsubsection[{remove\-Edge}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E , typename Ec , typename Ec\-M $>$ void {\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$\-::remove\-Edge (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{source, }
+\item[{const {\bf Agent\-Id} \&}]{target}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_graph_a159360404f97fd8a7339ca98d13151cb}
+
+
+Removes the edge between source and target from this \hyperlink{classrepast_1_1_graph}{Graph}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & the id of the vertex that is the source of the edge \\
+\hline
+{\em target} & the id of the vertex that is the target of the edge \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_graph_a80cd467aae6d5e2c381bbe9cade6cbba}{\index{repast\-::\-Graph@{repast\-::\-Graph}!sends\-Secondary\-Agents\-On\-Status\-Exchange@{sends\-Secondary\-Agents\-On\-Status\-Exchange}}
+\index{sends\-Secondary\-Agents\-On\-Status\-Exchange@{sends\-Secondary\-Agents\-On\-Status\-Exchange}!repast::Graph@{repast\-::\-Graph}}
+\subsubsection[{sends\-Secondary\-Agents\-On\-Status\-Exchange}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E, typename Ec, typename Ec\-M$>$ virtual bool {\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$\-::sends\-Secondary\-Agents\-On\-Status\-Exchange (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}}\label{classrepast_1_1_graph_a80cd467aae6d5e2c381bbe9cade6cbba}
+
+
+Should return true if the \hyperlink{classrepast_1_1_projection}{Projection} implemented will send secondary agents during a status exchange. 
+
+Generally spaces do not and graphs do.
+
+If no secondary agents will be sent, portions of the algorithm can be omitted for optimization.
+
+\begin{DoxyReturn}{Returns}
+true if the \hyperlink{classrepast_1_1_projection}{Projection} returns secondary agents, false if not 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1_projection_a686c52a83dd917e50b04f81dc7321ad7}{repast\-::\-Projection$<$ V $>$}.
+
+\hypertarget{classrepast_1_1_graph_a9d6eb280c2a2034f127453c5f965d61e}{\index{repast\-::\-Graph@{repast\-::\-Graph}!successors@{successors}}
+\index{successors@{successors}!repast::Graph@{repast\-::\-Graph}}
+\subsubsection[{successors}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E , typename Ec , typename Ec\-M $>$ void {\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$\-::successors (
+\begin{DoxyParamCaption}
+\item[{V $\ast$}]{vertex, }
+\item[{std\-::vector$<$ V $\ast$ $>$ \&}]{out}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_graph_a9d6eb280c2a2034f127453c5f965d61e}
+
+
+Gets the sucessors of the specified vertex and puts them in out. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em vertex} & the vertex whose successors we want to get \\
+\hline
+\mbox{\tt out}  & {\em where} & the successors will be returned \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_graph_ae9e0b0fc607154387d60596465c8fb80}{\index{repast\-::\-Graph@{repast\-::\-Graph}!vertex\-Count@{vertex\-Count}}
+\index{vertex\-Count@{vertex\-Count}!repast::Graph@{repast\-::\-Graph}}
+\subsubsection[{vertex\-Count}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E, typename Ec, typename Ec\-M$>$ int {\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$\-::vertex\-Count (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_graph_ae9e0b0fc607154387d60596465c8fb80}
+
+
+Gets the number of vertices in this \hyperlink{classrepast_1_1_graph}{Graph}. 
+
+\begin{DoxyReturn}{Returns}
+the number of vertices in this \hyperlink{classrepast_1_1_graph}{Graph}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_graph_abbc3dafd7087984a83ac0190e5058c5b}{\index{repast\-::\-Graph@{repast\-::\-Graph}!vertices\-Begin@{vertices\-Begin}}
+\index{vertices\-Begin@{vertices\-Begin}!repast::Graph@{repast\-::\-Graph}}
+\subsubsection[{vertices\-Begin}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E, typename Ec, typename Ec\-M$>$ {\bf vertex\-\_\-iterator} {\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$\-::vertices\-Begin (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_graph_abbc3dafd7087984a83ac0190e5058c5b}
+
+
+Gets the start of an iterator over all the vertices in this graph. 
+
+The iterator dereferences to a pointer to agents of type V.
+
+\begin{DoxyReturn}{Returns}
+the start of an iterator over all the vertices in this graph. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_graph_acd76c847169c86e1e981100e8cf896f0}{\index{repast\-::\-Graph@{repast\-::\-Graph}!vertices\-End@{vertices\-End}}
+\index{vertices\-End@{vertices\-End}!repast::Graph@{repast\-::\-Graph}}
+\subsubsection[{vertices\-End}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E, typename Ec, typename Ec\-M$>$ {\bf vertex\-\_\-iterator} {\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$\-::vertices\-End (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_graph_acd76c847169c86e1e981100e8cf896f0}
+
+
+Gets the end of an iterator over all the vertices in this graph. 
+
+The iterator dereferences to a pointer to agents of type V.
+
+\begin{DoxyReturn}{Returns}
+the end of an iterator over all the vertices in this graph. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Graph.\-h\end{DoxyCompactItemize}

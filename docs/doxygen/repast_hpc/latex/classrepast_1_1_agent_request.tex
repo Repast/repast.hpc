@@ -1,0 +1,485 @@
+\hypertarget{classrepast_1_1_agent_request}{\section{repast\-:\-:Agent\-Request Class Reference}
+\label{classrepast_1_1_agent_request}\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}}
+}
+
+
+Encapsulates a request made by one process for agents in another.  
+
+
+
+
+{\ttfamily \#include $<$Agent\-Request.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classrepast_1_1_agent_request_a7fcf54013c3f90c22c52fe26b1f2e355}{Agent\-Request} (int \hyperlink{classrepast_1_1_agent_request_afd2499472864d7d8eb2780fd02baf372}{source\-Process})
+\begin{DoxyCompactList}\small\item\em Creates an \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} that comes from the specified process. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_agent_request_a1e302fac20c183af00fd12b669f4f973}{Agent\-Request} (int \hyperlink{classrepast_1_1_agent_request_afd2499472864d7d8eb2780fd02baf372}{source\-Process}, int \hyperlink{classrepast_1_1_agent_request_a19abc9909ceeb4870c07b638e19d6672}{target\-Process})
+\begin{DoxyCompactList}\small\item\em Creates an \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} made from the source process to the target process. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_agent_request_a4ac5995bd89cc5fde63ac0aa5bfaafd2}{add\-All} (const \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} \&req)
+\begin{DoxyCompactList}\small\item\em Adds all the agent ids (both requests and cancellations) in req to this \hyperlink{classrepast_1_1_agent_request}{Agent\-Request}. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_agent_request_ac435adefd74246589b3028dc7aeef5a9}{add\-All\-Requests} (const \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} \&req)
+\begin{DoxyCompactList}\small\item\em Adds all the agent ids in req to this request, including only the ids that are requests and not those that are cancellations. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_agent_request_a446efb284f4804f6d0123c71995237ee}{add\-All\-Cancellations} (const \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} \&req)
+\begin{DoxyCompactList}\small\item\em Adds all the agent ids in req to this request, including only the ids that are cancellations and not those that are requests. \end{DoxyCompactList}\item 
+const std\-::vector$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \& \hyperlink{classrepast_1_1_agent_request_a7961c3fda219def5e403ec610044524e}{requested\-Agents} () const 
+\begin{DoxyCompactList}\small\item\em Gets a reference to the vector of requested agents. \end{DoxyCompactList}\item 
+const std\-::vector$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \& \hyperlink{classrepast_1_1_agent_request_aeb621d544c5a888b56407b21d1d37259}{cancellations} () const 
+\begin{DoxyCompactList}\small\item\em Gets a reference to the vector of cancellations. \end{DoxyCompactList}\item 
+bool \hyperlink{classrepast_1_1_agent_request_a2f984bd8eb8e2dc0ef83ad33de0b7785}{remove} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id, bool remove\-All\-Instances=true)
+\begin{DoxyCompactList}\small\item\em Removes the specified id from the lists of requested agents, including both requests and cancellations. \end{DoxyCompactList}\item 
+bool \hyperlink{classrepast_1_1_agent_request_a6c96d538e1018733866642978a83e509}{remove\-Request} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id, bool remove\-All\-Instances=true)
+\begin{DoxyCompactList}\small\item\em Removes the specified id from the list of agent requests; does not affect the list of cancellations. \end{DoxyCompactList}\item 
+bool \hyperlink{classrepast_1_1_agent_request_a24c0912e47b149ee3aa24a5c6a5cff1a}{remove\-Cancellation} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id, bool remove\-All\-Instances=true)
+\begin{DoxyCompactList}\small\item\em Removes the specified id from the list of agent request cancellations; does not affect the list of requests. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_agent_request_a3b46d7118e7e9f4bcf2d4c973bb9ceef}{targets} (std\-::set$<$ int $>$ \&targets)
+\begin{DoxyCompactList}\small\item\em Puts the targets of all the requests into the set. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_agent_request_af1bee79d13a5d15af1a00c9509b540ef}{targets\-Of\-Requests} (std\-::set$<$ int $>$ \&\hyperlink{classrepast_1_1_agent_request_a3b46d7118e7e9f4bcf2d4c973bb9ceef}{targets})
+\begin{DoxyCompactList}\small\item\em Puts the targets of all the requests into the set, including only the requests and not the cancellations. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_agent_request_a158490663d112ae0100478ca71de4908}{targets\-Of\-Cancellations} (std\-::set$<$ int $>$ \&\hyperlink{classrepast_1_1_agent_request_a3b46d7118e7e9f4bcf2d4c973bb9ceef}{targets})
+\begin{DoxyCompactList}\small\item\em Puts the targets of all the requests into the set, including only the requests and not the cancellations. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_agent_request_a357e606a76f671ce603e151e3b3759cb}{add\-Request} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)
+\begin{DoxyCompactList}\small\item\em Adds the specified agent to the collection agents being requested. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_agent_request_a55316e3d48f9be97552701efd9b0bfea}{add\-Cancellation} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)
+\begin{DoxyCompactList}\small\item\em Adds the specified agent to the collection of agents for which a previous request is being cancelled. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1_agent_request_ab3b18ef9714e7c9cccddda1c91de64ac}{request\-Count} () const 
+\begin{DoxyCompactList}\small\item\em Gets the number agents requested. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1_agent_request_a3cc36891325c34f23a074a816618fe81}{request\-Count\-Requested} () const 
+\begin{DoxyCompactList}\small\item\em Gets the number of agents requested, counting only the requests and not the cancellations. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1_agent_request_a3e842fbe34e47433f51066eed03983b4}{request\-Count\-Cancellations} () const 
+\begin{DoxyCompactList}\small\item\em Gets the number of agents requested, counting only the cancellations and not the requests. \end{DoxyCompactList}\item 
+bool \hyperlink{classrepast_1_1_agent_request_aa2389d645973a361b97f4e7f5e1a0b86}{contains} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)
+\begin{DoxyCompactList}\small\item\em Returns true if this \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} contains a request for the specified id (either a request or a cancellation), otherwise false. \end{DoxyCompactList}\item 
+bool \hyperlink{classrepast_1_1_agent_request_a31aac02439a7b368e92c65acc11f3bb7}{contains\-In\-Requests} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)
+\begin{DoxyCompactList}\small\item\em Returns true if the list of requests contains the specified id (the list of cancellations is ignored) \end{DoxyCompactList}\item 
+bool \hyperlink{classrepast_1_1_agent_request_a680ccca02721405863693f29b2e29ced}{contains\-In\-Cancellations} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)
+\begin{DoxyCompactList}\small\item\em Returns true if the list of cancellations contains the specified id (the list of requests is ignored) \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1_agent_request_afd2499472864d7d8eb2780fd02baf372}{source\-Process} () const 
+\begin{DoxyCompactList}\small\item\em Gets the source process of these requests, that is, the process making the request. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1_agent_request_a19abc9909ceeb4870c07b638e19d6672}{target\-Process} () const 
+\begin{DoxyCompactList}\small\item\em If the requested agent ids are all on the same process then target process will identify that process. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_agent_request_ac98d07dd8f7b70e16ccb9a01abf56b9c}{class {\bfseries boost\-::serialization\-::access}}\label{classrepast_1_1_agent_request_ac98d07dd8f7b70e16ccb9a01abf56b9c}
+
+\item 
+\hypertarget{classrepast_1_1_agent_request_aa7639ebf76360a6503e77366cc231d8a}{class {\bfseries Importer\-\_\-\-L\-I\-S\-T}}\label{classrepast_1_1_agent_request_aa7639ebf76360a6503e77366cc231d8a}
+
+\item 
+\hypertarget{classrepast_1_1_agent_request_a5a13f6efb82ee26ba1a72200d6f2b47e}{class {\bfseries Importer\-\_\-\-S\-E\-T}}\label{classrepast_1_1_agent_request_a5a13f6efb82ee26ba1a72200d6f2b47e}
+
+\item 
+\hypertarget{classrepast_1_1_agent_request_af54ef3fa9be752e0bc2e86fc77d58a4c}{class {\bfseries Importer\-\_\-\-M\-A\-P\-\_\-int}}\label{classrepast_1_1_agent_request_af54ef3fa9be752e0bc2e86fc77d58a4c}
+
+\item 
+\hypertarget{classrepast_1_1_agent_request_ae9b3dceacb552223daaa71d44018d4b1}{std\-::ostream \& \hyperlink{classrepast_1_1_agent_request_ae9b3dceacb552223daaa71d44018d4b1}{operator$<$$<$} (std\-::ostream \&os, const \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} \&request)}\label{classrepast_1_1_agent_request_ae9b3dceacb552223daaa71d44018d4b1}
+
+\begin{DoxyCompactList}\small\item\em Prints the specified \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} to the specified ostream. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Encapsulates a request made by one process for agents in another. 
+
+Includes a list of requests and a list that represents cancellations of previous requests. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1_agent_request_a7fcf54013c3f90c22c52fe26b1f2e355}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!Agent\-Request@{Agent\-Request}}
+\index{Agent\-Request@{Agent\-Request}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{Agent\-Request}]{\setlength{\rightskip}{0pt plus 5cm}repast\-::\-Agent\-Request\-::\-Agent\-Request (
+\begin{DoxyParamCaption}
+\item[{int}]{source\-Process}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_agent_request_a7fcf54013c3f90c22c52fe26b1f2e355}
+
+
+Creates an \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} that comes from the specified process. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source\-Process} & the rank of the process making the request \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_agent_request_a1e302fac20c183af00fd12b669f4f973}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!Agent\-Request@{Agent\-Request}}
+\index{Agent\-Request@{Agent\-Request}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{Agent\-Request}]{\setlength{\rightskip}{0pt plus 5cm}repast\-::\-Agent\-Request\-::\-Agent\-Request (
+\begin{DoxyParamCaption}
+\item[{int}]{source\-Process, }
+\item[{int}]{target\-Process}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_agent_request_a1e302fac20c183af00fd12b669f4f973}
+
+
+Creates an \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} made from the source process to the target process. 
+
+This can be used when all the requested agents reside on the same process (i.\-e. the target process).
+
+
+\begin{DoxyParams}{Parameters}
+{\em source\-Process} & the rank of the source process \\
+\hline
+{\em target\-Process} & the rank of the target process \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_agent_request_a4ac5995bd89cc5fde63ac0aa5bfaafd2}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!add\-All@{add\-All}}
+\index{add\-All@{add\-All}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{add\-All}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Agent\-Request\-::add\-All (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Request} \&}]{req}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_agent_request_a4ac5995bd89cc5fde63ac0aa5bfaafd2}
+
+
+Adds all the agent ids (both requests and cancellations) in req to this \hyperlink{classrepast_1_1_agent_request}{Agent\-Request}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em req} & the \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} to add all the agent ids from \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_agent_request_a446efb284f4804f6d0123c71995237ee}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!add\-All\-Cancellations@{add\-All\-Cancellations}}
+\index{add\-All\-Cancellations@{add\-All\-Cancellations}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{add\-All\-Cancellations}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Agent\-Request\-::add\-All\-Cancellations (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Request} \&}]{req}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_agent_request_a446efb284f4804f6d0123c71995237ee}
+
+
+Adds all the agent ids in req to this request, including only the ids that are cancellations and not those that are requests. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em req} & the \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} to add all the agent ids from \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_agent_request_ac435adefd74246589b3028dc7aeef5a9}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!add\-All\-Requests@{add\-All\-Requests}}
+\index{add\-All\-Requests@{add\-All\-Requests}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{add\-All\-Requests}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Agent\-Request\-::add\-All\-Requests (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Request} \&}]{req}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_agent_request_ac435adefd74246589b3028dc7aeef5a9}
+
+
+Adds all the agent ids in req to this request, including only the ids that are requests and not those that are cancellations. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em req} & the \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} to add all the agent ids from \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_agent_request_a55316e3d48f9be97552701efd9b0bfea}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!add\-Cancellation@{add\-Cancellation}}
+\index{add\-Cancellation@{add\-Cancellation}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{add\-Cancellation}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Agent\-Request\-::add\-Cancellation (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{id}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_agent_request_a55316e3d48f9be97552701efd9b0bfea}
+
+
+Adds the specified agent to the collection of agents for which a previous request is being cancelled. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} of the agent for which the request is being cancelled \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_agent_request_a357e606a76f671ce603e151e3b3759cb}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!add\-Request@{add\-Request}}
+\index{add\-Request@{add\-Request}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{add\-Request}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Agent\-Request\-::add\-Request (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{id}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_agent_request_a357e606a76f671ce603e151e3b3759cb}
+
+
+Adds the specified agent to the collection agents being requested. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the requested agent \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_agent_request_aeb621d544c5a888b56407b21d1d37259}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!cancellations@{cancellations}}
+\index{cancellations@{cancellations}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{cancellations}]{\setlength{\rightskip}{0pt plus 5cm}const std\-::vector$<${\bf Agent\-Id}$>$\& repast\-::\-Agent\-Request\-::cancellations (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_agent_request_aeb621d544c5a888b56407b21d1d37259}
+
+
+Gets a reference to the vector of cancellations. 
+
+\begin{DoxyReturn}{Returns}
+a reference to the vector of Agent\-Ids representing cancellations. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_agent_request_aa2389d645973a361b97f4e7f5e1a0b86}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!contains@{contains}}
+\index{contains@{contains}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{contains}]{\setlength{\rightskip}{0pt plus 5cm}bool repast\-::\-Agent\-Request\-::contains (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{id}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_agent_request_aa2389d645973a361b97f4e7f5e1a0b86}
+
+
+Returns true if this \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} contains a request for the specified id (either a request or a cancellation), otherwise false. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the id sought in the lists of requests and cancellations\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if either the list of requests or the list of cancellations contains the specified id 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_agent_request_a680ccca02721405863693f29b2e29ced}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!contains\-In\-Cancellations@{contains\-In\-Cancellations}}
+\index{contains\-In\-Cancellations@{contains\-In\-Cancellations}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{contains\-In\-Cancellations}]{\setlength{\rightskip}{0pt plus 5cm}bool repast\-::\-Agent\-Request\-::contains\-In\-Cancellations (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{id}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_agent_request_a680ccca02721405863693f29b2e29ced}
+
+
+Returns true if the list of cancellations contains the specified id (the list of requests is ignored) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} sought\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the specified \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} is in the list of cancellations 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_agent_request_a31aac02439a7b368e92c65acc11f3bb7}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!contains\-In\-Requests@{contains\-In\-Requests}}
+\index{contains\-In\-Requests@{contains\-In\-Requests}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{contains\-In\-Requests}]{\setlength{\rightskip}{0pt plus 5cm}bool repast\-::\-Agent\-Request\-::contains\-In\-Requests (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{id}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_agent_request_a31aac02439a7b368e92c65acc11f3bb7}
+
+
+Returns true if the list of requests contains the specified id (the list of cancellations is ignored) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} sought\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the specified \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} is in the list of requests 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_agent_request_a2f984bd8eb8e2dc0ef83ad33de0b7785}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!remove@{remove}}
+\index{remove@{remove}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{remove}]{\setlength{\rightskip}{0pt plus 5cm}bool repast\-::\-Agent\-Request\-::remove (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{id, }
+\item[{bool}]{remove\-All\-Instances = {\ttfamily true}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_agent_request_a2f984bd8eb8e2dc0ef83ad33de0b7785}
+
+
+Removes the specified id from the lists of requested agents, including both requests and cancellations. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} to be removed \\
+\hline
+{\em remove\-All\-Instances} & if true (the default), all instances of the \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} are removed; if false, only the first instance found is removed\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the id was found (in either list) and removed, otherwise false. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_agent_request_a24c0912e47b149ee3aa24a5c6a5cff1a}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!remove\-Cancellation@{remove\-Cancellation}}
+\index{remove\-Cancellation@{remove\-Cancellation}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{remove\-Cancellation}]{\setlength{\rightskip}{0pt plus 5cm}bool repast\-::\-Agent\-Request\-::remove\-Cancellation (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{id, }
+\item[{bool}]{remove\-All\-Instances = {\ttfamily true}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_agent_request_a24c0912e47b149ee3aa24a5c6a5cff1a}
+
+
+Removes the specified id from the list of agent request cancellations; does not affect the list of requests. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} to be removed \\
+\hline
+{\em remove\-All\-Instances} & if true (the default), all instances of the \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} are removed; if false, only the first instance found is removed\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the id was found in the list of cancellations and removed, otherwise false 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_agent_request_a6c96d538e1018733866642978a83e509}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!remove\-Request@{remove\-Request}}
+\index{remove\-Request@{remove\-Request}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{remove\-Request}]{\setlength{\rightskip}{0pt plus 5cm}bool repast\-::\-Agent\-Request\-::remove\-Request (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{id, }
+\item[{bool}]{remove\-All\-Instances = {\ttfamily true}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_agent_request_a6c96d538e1018733866642978a83e509}
+
+
+Removes the specified id from the list of agent requests; does not affect the list of cancellations. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} to be removed \\
+\hline
+{\em remove\-All\-Instances} & if true (the default), all instances of the \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} are removed; if false, only the first instance found is removed\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the id was found in the list of requests and removed, otherwise false 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_agent_request_ab3b18ef9714e7c9cccddda1c91de64ac}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!request\-Count@{request\-Count}}
+\index{request\-Count@{request\-Count}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{request\-Count}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::\-Agent\-Request\-::request\-Count (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_agent_request_ab3b18ef9714e7c9cccddda1c91de64ac}
+
+
+Gets the number agents requested. 
+
+Includes both requests and cancellations; exactly equivalent to
+
+\hyperlink{classrepast_1_1_agent_request_a3cc36891325c34f23a074a816618fe81}{request\-Count\-Requested()} + \hyperlink{classrepast_1_1_agent_request_a3e842fbe34e47433f51066eed03983b4}{request\-Count\-Cancellations()}
+
+\begin{DoxyReturn}{Returns}
+the number agents requested. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_agent_request_a3e842fbe34e47433f51066eed03983b4}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!request\-Count\-Cancellations@{request\-Count\-Cancellations}}
+\index{request\-Count\-Cancellations@{request\-Count\-Cancellations}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{request\-Count\-Cancellations}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::\-Agent\-Request\-::request\-Count\-Cancellations (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_agent_request_a3e842fbe34e47433f51066eed03983b4}
+
+
+Gets the number of agents requested, counting only the cancellations and not the requests. 
+
+\begin{DoxyReturn}{Returns}
+the number of agents requested (cancellations only) 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_agent_request_a3cc36891325c34f23a074a816618fe81}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!request\-Count\-Requested@{request\-Count\-Requested}}
+\index{request\-Count\-Requested@{request\-Count\-Requested}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{request\-Count\-Requested}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::\-Agent\-Request\-::request\-Count\-Requested (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_agent_request_a3cc36891325c34f23a074a816618fe81}
+
+
+Gets the number of agents requested, counting only the requests and not the cancellations. 
+
+\begin{DoxyReturn}{Returns}
+the number of agents requested (requests only) 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_agent_request_a7961c3fda219def5e403ec610044524e}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!requested\-Agents@{requested\-Agents}}
+\index{requested\-Agents@{requested\-Agents}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{requested\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}const std\-::vector$<${\bf Agent\-Id}$>$\& repast\-::\-Agent\-Request\-::requested\-Agents (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_agent_request_a7961c3fda219def5e403ec610044524e}
+
+
+Gets a reference to the vector of requested agents. 
+
+\begin{DoxyReturn}{Returns}
+a reference to the vector of requested agents. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_agent_request_afd2499472864d7d8eb2780fd02baf372}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!source\-Process@{source\-Process}}
+\index{source\-Process@{source\-Process}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{source\-Process}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::\-Agent\-Request\-::source\-Process (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_agent_request_afd2499472864d7d8eb2780fd02baf372}
+
+
+Gets the source process of these requests, that is, the process making the request. 
+
+\begin{DoxyReturn}{Returns}
+the process making the request 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_agent_request_a19abc9909ceeb4870c07b638e19d6672}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!target\-Process@{target\-Process}}
+\index{target\-Process@{target\-Process}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{target\-Process}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::\-Agent\-Request\-::target\-Process (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_agent_request_a19abc9909ceeb4870c07b638e19d6672}
+
+
+If the requested agent ids are all on the same process then target process will identify that process. 
+
+Otherwise this will return -\/1. \hypertarget{classrepast_1_1_agent_request_a3b46d7118e7e9f4bcf2d4c973bb9ceef}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!targets@{targets}}
+\index{targets@{targets}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{targets}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Agent\-Request\-::targets (
+\begin{DoxyParamCaption}
+\item[{std\-::set$<$ int $>$ \&}]{targets}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_agent_request_a3b46d7118e7e9f4bcf2d4c973bb9ceef}
+
+
+Puts the targets of all the requests into the set. 
+
+Includes both the requests and the cancellations.
+
+
+\begin{DoxyParams}{Parameters}
+{\em targets} & set into which targets will be placed \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_agent_request_a158490663d112ae0100478ca71de4908}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!targets\-Of\-Cancellations@{targets\-Of\-Cancellations}}
+\index{targets\-Of\-Cancellations@{targets\-Of\-Cancellations}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{targets\-Of\-Cancellations}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Agent\-Request\-::targets\-Of\-Cancellations (
+\begin{DoxyParamCaption}
+\item[{std\-::set$<$ int $>$ \&}]{targets}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_agent_request_a158490663d112ae0100478ca71de4908}
+
+
+Puts the targets of all the requests into the set, including only the requests and not the cancellations. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em targets} & the set into which the targets will be placed \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_agent_request_af1bee79d13a5d15af1a00c9509b540ef}{\index{repast\-::\-Agent\-Request@{repast\-::\-Agent\-Request}!targets\-Of\-Requests@{targets\-Of\-Requests}}
+\index{targets\-Of\-Requests@{targets\-Of\-Requests}!repast::AgentRequest@{repast\-::\-Agent\-Request}}
+\subsubsection[{targets\-Of\-Requests}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Agent\-Request\-::targets\-Of\-Requests (
+\begin{DoxyParamCaption}
+\item[{std\-::set$<$ int $>$ \&}]{targets}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_agent_request_af1bee79d13a5d15af1a00c9509b540ef}
+
+
+Puts the targets of all the requests into the set, including only the requests and not the cancellations. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em targets} & the set into which the targets will be placed \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Agent\-Request.\-h\item 
+repast\-\_\-hpc/Agent\-Request.\-cpp\end{DoxyCompactItemize}

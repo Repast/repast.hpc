@@ -1,0 +1,71 @@
+\hypertarget{structrepast_1_1_shared_spaces}{\section{repast\-:\-:Shared\-Spaces$<$ T $>$ Struct Template Reference}
+\label{structrepast_1_1_shared_spaces}\index{repast\-::\-Shared\-Spaces$<$ T $>$@{repast\-::\-Shared\-Spaces$<$ T $>$}}
+}
+
+
+Struct within which multiple kinds of shared space are typedef-\/ed.  
+
+
+
+
+{\ttfamily \#include $<$Shared\-Spaces.\-h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef \hyperlink{classrepast_1_1_shared_discrete_space}{Shared\-Discrete\-Space}$<$ T, \\*
+\hyperlink{classrepast_1_1_wrap_around_borders}{Wrap\-Around\-Borders}, \hyperlink{classrepast_1_1_simple_adder}{Simple\-Adder}\\*
+$<$ T $>$ $>$ \hyperlink{structrepast_1_1_shared_spaces_a7e9474c0d17d53353b5e717986dd560f}{Shared\-Wrapped\-Discrete\-Space}
+\begin{DoxyCompactList}\small\item\em Discrete grid space with periodic (toroidal) borders. \end{DoxyCompactList}\item 
+typedef \hyperlink{classrepast_1_1_shared_discrete_space}{Shared\-Discrete\-Space}$<$ T, \\*
+\hyperlink{classrepast_1_1_strict_borders}{Strict\-Borders}, \hyperlink{classrepast_1_1_simple_adder}{Simple\-Adder}$<$ T $>$ $>$ \hyperlink{structrepast_1_1_shared_spaces_ad248b97883d6310a57ce5c644eb8aa11}{Shared\-Strict\-Discrete\-Space}
+\begin{DoxyCompactList}\small\item\em Discrete grid space with strict borders. \end{DoxyCompactList}\item 
+typedef \hyperlink{classrepast_1_1_shared_continuous_space}{Shared\-Continuous\-Space}\\*
+$<$ T, \hyperlink{classrepast_1_1_wrap_around_borders}{Wrap\-Around\-Borders}, \\*
+\hyperlink{classrepast_1_1_simple_adder}{Simple\-Adder}$<$ T $>$ $>$ \hyperlink{structrepast_1_1_shared_spaces_a2c0b9c9945a0f170f744be9002ff5921}{Shared\-Wrapped\-Continuous\-Space}
+\begin{DoxyCompactList}\small\item\em Continuous space with periodic (toroidal) borders. \end{DoxyCompactList}\item 
+typedef \hyperlink{classrepast_1_1_shared_continuous_space}{Shared\-Continuous\-Space}\\*
+$<$ T, \hyperlink{classrepast_1_1_strict_borders}{Strict\-Borders}, \\*
+\hyperlink{classrepast_1_1_simple_adder}{Simple\-Adder}$<$ T $>$ $>$ \hyperlink{structrepast_1_1_shared_spaces_ada3e584944f724336e2a74d99af6fc55}{Shared\-Strict\-Continuous\-Space}
+\begin{DoxyCompactList}\small\item\em Continuous space with strict borders. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$struct repast\-::\-Shared\-Spaces$<$ T $>$}
+
+Struct within which multiple kinds of shared space are typedef-\/ed. 
+
+\subsection{Member Typedef Documentation}
+\hypertarget{structrepast_1_1_shared_spaces_ada3e584944f724336e2a74d99af6fc55}{\index{repast\-::\-Shared\-Spaces@{repast\-::\-Shared\-Spaces}!Shared\-Strict\-Continuous\-Space@{Shared\-Strict\-Continuous\-Space}}
+\index{Shared\-Strict\-Continuous\-Space@{Shared\-Strict\-Continuous\-Space}!repast::SharedSpaces@{repast\-::\-Shared\-Spaces}}
+\subsubsection[{Shared\-Strict\-Continuous\-Space}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ typedef {\bf Shared\-Continuous\-Space}$<$T, {\bf Strict\-Borders}, {\bf Simple\-Adder}$<$T$>$ $>$ {\bf repast\-::\-Shared\-Spaces}$<$ T $>$\-::{\bf Shared\-Strict\-Continuous\-Space}}}\label{structrepast_1_1_shared_spaces_ada3e584944f724336e2a74d99af6fc55}
+
+
+Continuous space with strict borders. 
+
+Any added agents are not given a location, but are in \char`\"{}grid limbo\char`\"{} until moved via a grid move call. \hypertarget{structrepast_1_1_shared_spaces_ad248b97883d6310a57ce5c644eb8aa11}{\index{repast\-::\-Shared\-Spaces@{repast\-::\-Shared\-Spaces}!Shared\-Strict\-Discrete\-Space@{Shared\-Strict\-Discrete\-Space}}
+\index{Shared\-Strict\-Discrete\-Space@{Shared\-Strict\-Discrete\-Space}!repast::SharedSpaces@{repast\-::\-Shared\-Spaces}}
+\subsubsection[{Shared\-Strict\-Discrete\-Space}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ typedef {\bf Shared\-Discrete\-Space}$<$T, {\bf Strict\-Borders}, {\bf Simple\-Adder}$<$T$>$ $>$ {\bf repast\-::\-Shared\-Spaces}$<$ T $>$\-::{\bf Shared\-Strict\-Discrete\-Space}}}\label{structrepast_1_1_shared_spaces_ad248b97883d6310a57ce5c644eb8aa11}
+
+
+Discrete grid space with strict borders. 
+
+Any added agents are not given a location, but are in \char`\"{}grid limbo\char`\"{} until moved via a grid move call. \hypertarget{structrepast_1_1_shared_spaces_a2c0b9c9945a0f170f744be9002ff5921}{\index{repast\-::\-Shared\-Spaces@{repast\-::\-Shared\-Spaces}!Shared\-Wrapped\-Continuous\-Space@{Shared\-Wrapped\-Continuous\-Space}}
+\index{Shared\-Wrapped\-Continuous\-Space@{Shared\-Wrapped\-Continuous\-Space}!repast::SharedSpaces@{repast\-::\-Shared\-Spaces}}
+\subsubsection[{Shared\-Wrapped\-Continuous\-Space}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ typedef {\bf Shared\-Continuous\-Space}$<$T, {\bf Wrap\-Around\-Borders}, {\bf Simple\-Adder}$<$T$>$ $>$ {\bf repast\-::\-Shared\-Spaces}$<$ T $>$\-::{\bf Shared\-Wrapped\-Continuous\-Space}}}\label{structrepast_1_1_shared_spaces_a2c0b9c9945a0f170f744be9002ff5921}
+
+
+Continuous space with periodic (toroidal) borders. 
+
+Any added agents are not given a location, but are in \char`\"{}grid limbo\char`\"{} until moved via a grid move call. \hypertarget{structrepast_1_1_shared_spaces_a7e9474c0d17d53353b5e717986dd560f}{\index{repast\-::\-Shared\-Spaces@{repast\-::\-Shared\-Spaces}!Shared\-Wrapped\-Discrete\-Space@{Shared\-Wrapped\-Discrete\-Space}}
+\index{Shared\-Wrapped\-Discrete\-Space@{Shared\-Wrapped\-Discrete\-Space}!repast::SharedSpaces@{repast\-::\-Shared\-Spaces}}
+\subsubsection[{Shared\-Wrapped\-Discrete\-Space}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ typedef {\bf Shared\-Discrete\-Space}$<$T, {\bf Wrap\-Around\-Borders}, {\bf Simple\-Adder}$<$T$>$ $>$ {\bf repast\-::\-Shared\-Spaces}$<$ T $>$\-::{\bf Shared\-Wrapped\-Discrete\-Space}}}\label{structrepast_1_1_shared_spaces_a7e9474c0d17d53353b5e717986dd560f}
+
+
+Discrete grid space with periodic (toroidal) borders. 
+
+Any added agents are not given a location, but are in \char`\"{}grid limbo\char`\"{} until moved via a grid move call. 
+
+The documentation for this struct was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Shared\-Spaces.\-h\end{DoxyCompactItemize}

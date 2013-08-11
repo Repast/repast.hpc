@@ -1,0 +1,237 @@
+\hypertarget{classrepast_1_1relogo_1_1_relogo_agent}{\section{repast\-:\-:relogo\-:\-:Relogo\-Agent Class Reference}
+\label{classrepast_1_1relogo_1_1_relogo_agent}\index{repast\-::relogo\-::\-Relogo\-Agent@{repast\-::relogo\-::\-Relogo\-Agent}}
+}
+
+
+Base agent for Relogo.  
+
+
+
+
+{\ttfamily \#include $<$Relogo\-Agent.\-h$>$}
+
+Inheritance diagram for repast\-:\-:relogo\-:\-:Relogo\-Agent\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{classrepast_1_1relogo_1_1_relogo_agent}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classrepast_1_1relogo_1_1_relogo_agent_a3a105277ddc72f3087738ebec3cf68e2}{Relogo\-Agent} (repast\-::\-Agent\-Id id, \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer} $\ast$observer)
+\begin{DoxyCompactList}\small\item\em Creates a \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} with the specified id and managed by the specified \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. \end{DoxyCompactList}\item 
+virtual repast\-::\-Agent\-Id \& \hyperlink{classrepast_1_1relogo_1_1_relogo_agent_a9df24a6bd58408f501512ee5c0921969}{get\-Id} ()
+\begin{DoxyCompactList}\small\item\em Gets the id of this \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent}. \end{DoxyCompactList}\item 
+virtual const repast\-::\-Agent\-Id \& \hyperlink{classrepast_1_1relogo_1_1_relogo_agent_addc5c801304c04233158c731fffa6e0b}{get\-Id} () const 
+\begin{DoxyCompactList}\small\item\em Gets the const id of this \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent}. \end{DoxyCompactList}\item 
+Point$<$ double $>$ \hyperlink{classrepast_1_1relogo_1_1_relogo_agent_a12632fc6c21f34dc1552a1d46d7d1000}{location} () const 
+\begin{DoxyCompactList}\small\item\em Gets the location of this \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent}. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1relogo_1_1_relogo_agent_ad15d6628284018cf9d729a0d9953d5cb}{virtual void \hyperlink{classrepast_1_1relogo_1_1_relogo_agent_ad15d6628284018cf9d729a0d9953d5cb}{hatch\-Copy} ()}\label{classrepast_1_1relogo_1_1_relogo_agent_ad15d6628284018cf9d729a0d9953d5cb}
+
+\begin{DoxyCompactList}\small\item\em If this Re\-Logo agent is 'hatched', makes an appropriate copy, setting instance variables as appropriate. \end{DoxyCompactList}\item 
+double \hyperlink{classrepast_1_1relogo_1_1_relogo_agent_ad741eb80eea72c025089fc641cd6f9a5}{x\-Cor} () const 
+\begin{DoxyCompactList}\small\item\em Gets the x coordinate of the agent's location. \end{DoxyCompactList}\item 
+double \hyperlink{classrepast_1_1relogo_1_1_relogo_agent_ae9cff89b06acffb461a391ab4bd13206}{y\-Cor} () const 
+\begin{DoxyCompactList}\small\item\em Gets the y coordinate of the agent's location. \end{DoxyCompactList}\item 
+virtual int \hyperlink{classrepast_1_1relogo_1_1_relogo_agent_a8219a12f66709b4c86c547668235eda9}{px\-Cor} () const =0
+\begin{DoxyCompactList}\small\item\em Gets the patch x coordinate of the agent's location. \end{DoxyCompactList}\item 
+virtual int \hyperlink{classrepast_1_1relogo_1_1_relogo_agent_a4cf0eae31dc04149160dfd7b77044158}{py\-Cor} () const =0
+\begin{DoxyCompactList}\small\item\em Gets the patch y coordinate of the agent's location. \end{DoxyCompactList}\item 
+double \hyperlink{classrepast_1_1relogo_1_1_relogo_agent_a12a186ace28dcebf62faa6d3441f8a78}{distance} (\hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $\ast$obj) const 
+\begin{DoxyCompactList}\small\item\em Gets the distance from this \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} to the specified agent. \end{DoxyCompactList}\item 
+double \hyperlink{classrepast_1_1relogo_1_1_relogo_agent_a99dc8c0452c0fb699f7e807224e41d64}{distancexy} (double x, double y) const 
+\begin{DoxyCompactList}\small\item\em Gets the distance from this \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} to the specified point. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_relogo_agent_a1602e1180db11cdde666ac2beca0e0a2}{\hyperlink{classrepast_1_1relogo_1_1_observer}{Observer} $\ast$ {\bfseries \-\_\-observer}}\label{classrepast_1_1relogo_1_1_relogo_agent_a1602e1180db11cdde666ac2beca0e0a2}
+
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_relogo_agent_ab71970dcf25d263c02b58ad645406f6f}{Point$<$ double $>$ {\bfseries \-\_\-location}}\label{classrepast_1_1relogo_1_1_relogo_agent_ab71970dcf25d263c02b58ad645406f6f}
+
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_relogo_agent_a4745c9c678747f179ac788299da51983}{repast\-::\-Agent\-Id {\bfseries \-\_\-id}}\label{classrepast_1_1relogo_1_1_relogo_agent_a4745c9c678747f179ac788299da51983}
+
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_relogo_agent_a9357229e3d8becac7ea9ce4fc821c8b6}{class {\bfseries Relogo\-Continuous\-Space\-Adder}}\label{classrepast_1_1relogo_1_1_relogo_agent_a9357229e3d8becac7ea9ce4fc821c8b6}
+
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_relogo_agent_a8d256944f28ec0cd654da58d4dcff11c}{class {\bfseries World\-Creator}}\label{classrepast_1_1relogo_1_1_relogo_agent_a8d256944f28ec0cd654da58d4dcff11c}
+
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_relogo_agent_a36ecfaff22237c775324f8e1db5b5610}{{\footnotesize template$<$typename G\-P\-Transformer , typename Adder $>$ }\\class {\bfseries Relogo\-Shared\-Continuous\-Space}}\label{classrepast_1_1relogo_1_1_relogo_agent_a36ecfaff22237c775324f8e1db5b5610}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Base agent for Relogo. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1relogo_1_1_relogo_agent_a3a105277ddc72f3087738ebec3cf68e2}{\index{repast\-::relogo\-::\-Relogo\-Agent@{repast\-::relogo\-::\-Relogo\-Agent}!Relogo\-Agent@{Relogo\-Agent}}
+\index{Relogo\-Agent@{Relogo\-Agent}!repast::relogo::RelogoAgent@{repast\-::relogo\-::\-Relogo\-Agent}}
+\subsubsection[{Relogo\-Agent}]{\setlength{\rightskip}{0pt plus 5cm}repast\-::relogo\-::\-Relogo\-Agent\-::\-Relogo\-Agent (
+\begin{DoxyParamCaption}
+\item[{repast\-::\-Agent\-Id}]{id, }
+\item[{{\bf Observer} $\ast$}]{observer}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_relogo_agent_a3a105277ddc72f3087738ebec3cf68e2}
+
+
+Creates a \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} with the specified id and managed by the specified \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the id of this \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} \\
+\hline
+{\em observer} & the observer that will manage this agent. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1relogo_1_1_relogo_agent_a12a186ace28dcebf62faa6d3441f8a78}{\index{repast\-::relogo\-::\-Relogo\-Agent@{repast\-::relogo\-::\-Relogo\-Agent}!distance@{distance}}
+\index{distance@{distance}!repast::relogo::RelogoAgent@{repast\-::relogo\-::\-Relogo\-Agent}}
+\subsubsection[{distance}]{\setlength{\rightskip}{0pt plus 5cm}double repast\-::relogo\-::\-Relogo\-Agent\-::distance (
+\begin{DoxyParamCaption}
+\item[{{\bf Relogo\-Agent} $\ast$}]{obj}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_relogo_agent_a12a186ace28dcebf62faa6d3441f8a78}
+
+
+Gets the distance from this \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} to the specified agent. 
+
+\begin{DoxyReturn}{Returns}
+the distance from this \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} to the specified agent. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_relogo_agent_a99dc8c0452c0fb699f7e807224e41d64}{\index{repast\-::relogo\-::\-Relogo\-Agent@{repast\-::relogo\-::\-Relogo\-Agent}!distancexy@{distancexy}}
+\index{distancexy@{distancexy}!repast::relogo::RelogoAgent@{repast\-::relogo\-::\-Relogo\-Agent}}
+\subsubsection[{distancexy}]{\setlength{\rightskip}{0pt plus 5cm}double repast\-::relogo\-::\-Relogo\-Agent\-::distancexy (
+\begin{DoxyParamCaption}
+\item[{double}]{x, }
+\item[{double}]{y}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_relogo_agent_a99dc8c0452c0fb699f7e807224e41d64}
+
+
+Gets the distance from this \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} to the specified point. 
+
+\begin{DoxyReturn}{Returns}
+the distance from this \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} to the specified point. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_relogo_agent_a9df24a6bd58408f501512ee5c0921969}{\index{repast\-::relogo\-::\-Relogo\-Agent@{repast\-::relogo\-::\-Relogo\-Agent}!get\-Id@{get\-Id}}
+\index{get\-Id@{get\-Id}!repast::relogo::RelogoAgent@{repast\-::relogo\-::\-Relogo\-Agent}}
+\subsubsection[{get\-Id}]{\setlength{\rightskip}{0pt plus 5cm}virtual repast\-::\-Agent\-Id\& repast\-::relogo\-::\-Relogo\-Agent\-::get\-Id (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}}\label{classrepast_1_1relogo_1_1_relogo_agent_a9df24a6bd58408f501512ee5c0921969}
+
+
+Gets the id of this \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent}. 
+
+\begin{DoxyReturn}{Returns}
+the id of this \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_relogo_agent_addc5c801304c04233158c731fffa6e0b}{\index{repast\-::relogo\-::\-Relogo\-Agent@{repast\-::relogo\-::\-Relogo\-Agent}!get\-Id@{get\-Id}}
+\index{get\-Id@{get\-Id}!repast::relogo::RelogoAgent@{repast\-::relogo\-::\-Relogo\-Agent}}
+\subsubsection[{get\-Id}]{\setlength{\rightskip}{0pt plus 5cm}virtual const repast\-::\-Agent\-Id\& repast\-::relogo\-::\-Relogo\-Agent\-::get\-Id (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}}\label{classrepast_1_1relogo_1_1_relogo_agent_addc5c801304c04233158c731fffa6e0b}
+
+
+Gets the const id of this \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent}. 
+
+\begin{DoxyReturn}{Returns}
+the const id of this \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_relogo_agent_a12632fc6c21f34dc1552a1d46d7d1000}{\index{repast\-::relogo\-::\-Relogo\-Agent@{repast\-::relogo\-::\-Relogo\-Agent}!location@{location}}
+\index{location@{location}!repast::relogo::RelogoAgent@{repast\-::relogo\-::\-Relogo\-Agent}}
+\subsubsection[{location}]{\setlength{\rightskip}{0pt plus 5cm}Point$<$double$>$ repast\-::relogo\-::\-Relogo\-Agent\-::location (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_relogo_agent_a12632fc6c21f34dc1552a1d46d7d1000}
+
+
+Gets the location of this \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent}. 
+
+\begin{DoxyReturn}{Returns}
+the location of this \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_relogo_agent_a8219a12f66709b4c86c547668235eda9}{\index{repast\-::relogo\-::\-Relogo\-Agent@{repast\-::relogo\-::\-Relogo\-Agent}!px\-Cor@{px\-Cor}}
+\index{px\-Cor@{px\-Cor}!repast::relogo::RelogoAgent@{repast\-::relogo\-::\-Relogo\-Agent}}
+\subsubsection[{px\-Cor}]{\setlength{\rightskip}{0pt plus 5cm}virtual int repast\-::relogo\-::\-Relogo\-Agent\-::px\-Cor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1relogo_1_1_relogo_agent_a8219a12f66709b4c86c547668235eda9}
+
+
+Gets the patch x coordinate of the agent's location. 
+
+\begin{DoxyReturn}{Returns}
+the patch x coordinate of the agent's location. 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classrepast_1_1relogo_1_1_turtle_abeb7b773c8c9d403317587a7acdc1c1f}{repast\-::relogo\-::\-Turtle}, \hyperlink{classrepast_1_1relogo_1_1_patch_a410a47c2b1dc260d83c65ffb66b33a75}{repast\-::relogo\-::\-Patch}, and \hyperlink{classrepast_1_1relogo_1_1_abstract_relogo_agent_ae631f45eba5815470dea5a2059213c1b}{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}.
+
+\hypertarget{classrepast_1_1relogo_1_1_relogo_agent_a4cf0eae31dc04149160dfd7b77044158}{\index{repast\-::relogo\-::\-Relogo\-Agent@{repast\-::relogo\-::\-Relogo\-Agent}!py\-Cor@{py\-Cor}}
+\index{py\-Cor@{py\-Cor}!repast::relogo::RelogoAgent@{repast\-::relogo\-::\-Relogo\-Agent}}
+\subsubsection[{py\-Cor}]{\setlength{\rightskip}{0pt plus 5cm}virtual int repast\-::relogo\-::\-Relogo\-Agent\-::py\-Cor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1relogo_1_1_relogo_agent_a4cf0eae31dc04149160dfd7b77044158}
+
+
+Gets the patch y coordinate of the agent's location. 
+
+\begin{DoxyReturn}{Returns}
+the patch y coordinate of the agent's location. 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classrepast_1_1relogo_1_1_turtle_a378a3a80d2d33e389d8d78f0e0cae6d2}{repast\-::relogo\-::\-Turtle}, \hyperlink{classrepast_1_1relogo_1_1_patch_a9fe953832fa384a6fa19bd32511954fc}{repast\-::relogo\-::\-Patch}, and \hyperlink{classrepast_1_1relogo_1_1_abstract_relogo_agent_a38df42fbb6277fa62d0068fbd37e6595}{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}.
+
+\hypertarget{classrepast_1_1relogo_1_1_relogo_agent_ad741eb80eea72c025089fc641cd6f9a5}{\index{repast\-::relogo\-::\-Relogo\-Agent@{repast\-::relogo\-::\-Relogo\-Agent}!x\-Cor@{x\-Cor}}
+\index{x\-Cor@{x\-Cor}!repast::relogo::RelogoAgent@{repast\-::relogo\-::\-Relogo\-Agent}}
+\subsubsection[{x\-Cor}]{\setlength{\rightskip}{0pt plus 5cm}double repast\-::relogo\-::\-Relogo\-Agent\-::x\-Cor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_relogo_agent_ad741eb80eea72c025089fc641cd6f9a5}
+
+
+Gets the x coordinate of the agent's location. 
+
+\begin{DoxyReturn}{Returns}
+the x coordinate of the agent's location. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_relogo_agent_ae9cff89b06acffb461a391ab4bd13206}{\index{repast\-::relogo\-::\-Relogo\-Agent@{repast\-::relogo\-::\-Relogo\-Agent}!y\-Cor@{y\-Cor}}
+\index{y\-Cor@{y\-Cor}!repast::relogo::RelogoAgent@{repast\-::relogo\-::\-Relogo\-Agent}}
+\subsubsection[{y\-Cor}]{\setlength{\rightskip}{0pt plus 5cm}double repast\-::relogo\-::\-Relogo\-Agent\-::y\-Cor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_relogo_agent_ae9cff89b06acffb461a391ab4bd13206}
+
+
+Gets the y coordinate of the agent's location. 
+
+\begin{DoxyReturn}{Returns}
+the y coordinate of the agent's location. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/\-Users/murphy/work/\-Repast\-H\-P\-C\-\_\-\-G\-I\-T/repast.\-hpc/src/relogo/Relogo\-Agent.\-h\item 
+/\-Users/murphy/work/\-Repast\-H\-P\-C\-\_\-\-G\-I\-T/repast.\-hpc/src/relogo/Relogo\-Agent.\-cpp\end{DoxyCompactItemize}

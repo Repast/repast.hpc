@@ -59,8 +59,10 @@
 
 namespace repast {
 
-// Unary function used in the transform_iterator that allows context iterators
-// to return the agent maps values.
+/**
+ * Unary function used in the transform_iterator that allows context iterators
+ * to return the agent maps values.
+ */
 template<typename T>
 struct SecondElement: public std::unary_function<typename boost::unordered_map<AgentId, boost::shared_ptr<T> >::value_type, boost::shared_ptr<T> > {
   boost::shared_ptr<T> operator()(const typename boost::unordered_map<AgentId, boost::shared_ptr<T> >::value_type& value) const {

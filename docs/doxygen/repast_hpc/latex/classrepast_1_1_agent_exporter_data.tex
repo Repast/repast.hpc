@@ -1,0 +1,54 @@
+\hypertarget{classrepast_1_1_agent_exporter_data}{\section{repast\-:\-:Agent\-Exporter\-Data Class Reference}
+\label{classrepast_1_1_agent_exporter_data}\index{repast\-::\-Agent\-Exporter\-Data@{repast\-::\-Agent\-Exporter\-Data}}
+}
+
+
+Data structure for exporter data that is to be sent to other processes when the agents being exported are moved.  
+
+
+
+
+{\ttfamily \#include $<$Agent\-Importer\-Exporter.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_agent_exporter_data_a68c868fec5c36fa93a92a30dffaca831}{void \hyperlink{classrepast_1_1_agent_exporter_data_a68c868fec5c36fa93a92a30dffaca831}{add\-Data} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id, const int dest\-Proc, const int source\-Proc, const int number\-Of\-Copies=1)}\label{classrepast_1_1_agent_exporter_data_a68c868fec5c36fa93a92a30dffaca831}
+
+\begin{DoxyCompactList}\small\item\em Adds an agent I\-D to this list of data that is being exported to a specific processor (dest\-Proc), so that the agent's information will be exported to another processor (source\-Proc). \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_agent_exporter_data_a9fdf268329053c764be760549ccdd6d7}{Agent\-Exporter\-Info $\ast$ \hyperlink{classrepast_1_1_agent_exporter_data_a9fdf268329053c764be760549ccdd6d7}{data\-For\-Proc} (int dest\-Proc)}\label{classrepast_1_1_agent_exporter_data_a9fdf268329053c764be760549ccdd6d7}
+
+\begin{DoxyCompactList}\small\item\em Gets the packaged set of information to be sent to a specific processor. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_agent_exporter_data_a4b7e8a7d438345fdb9dc05adc81abbf3}{void \hyperlink{classrepast_1_1_agent_exporter_data_a4b7e8a7d438345fdb9dc05adc81abbf3}{clear} ()}\label{classrepast_1_1_agent_exporter_data_a4b7e8a7d438345fdb9dc05adc81abbf3}
+
+\begin{DoxyCompactList}\small\item\em Clears this data structure. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_agent_exporter_data_a24802b60c1947b1e3d76d027360c7263}{void \hyperlink{classrepast_1_1_agent_exporter_data_a24802b60c1947b1e3d76d027360c7263}{remove\-All\-Data\-For\-Agent} (\hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)}\label{classrepast_1_1_agent_exporter_data_a24802b60c1947b1e3d76d027360c7263}
+
+\begin{DoxyCompactList}\small\item\em Remove all the data for a specific agent; useful when the agent is removed. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_agent_exporter_data_a6b3ec37213eb4a2b76d485144e6bcc4c}{select\-Set} (std\-::string set\-Name)
+\begin{DoxyCompactList}\small\item\em Specifies that add and retrieve actions are to be performed on the subset of data identified by the given set name. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Data structure for exporter data that is to be sent to other processes when the agents being exported are moved. 
+
+Note that the internal data structure is protected; classes can use this data without knowing its actual internal structure. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_agent_exporter_data_a6b3ec37213eb4a2b76d485144e6bcc4c}{\index{repast\-::\-Agent\-Exporter\-Data@{repast\-::\-Agent\-Exporter\-Data}!select\-Set@{select\-Set}}
+\index{select\-Set@{select\-Set}!repast::AgentExporterData@{repast\-::\-Agent\-Exporter\-Data}}
+\subsubsection[{select\-Set}]{\setlength{\rightskip}{0pt plus 5cm}void Agent\-Exporter\-Data\-::select\-Set (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{set\-Name}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_agent_exporter_data_a6b3ec37213eb4a2b76d485144e6bcc4c}
+
+
+Specifies that add and retrieve actions are to be performed on the subset of data identified by the given set name. 
+
+(Does not affect 'clear' or 'remove\-All\-Data\-For\-Agent') 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Agent\-Importer\-Exporter.\-h\item 
+repast\-\_\-hpc/Agent\-Importer\-Exporter.\-cpp\end{DoxyCompactItemize}

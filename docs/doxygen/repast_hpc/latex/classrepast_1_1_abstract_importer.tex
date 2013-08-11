@@ -1,0 +1,79 @@
+\hypertarget{classrepast_1_1_abstract_importer}{\section{repast\-:\-:Abstract\-Importer Class Reference}
+\label{classrepast_1_1_abstract_importer}\index{repast\-::\-Abstract\-Importer@{repast\-::\-Abstract\-Importer}}
+}
+
+
+This class manages importing agent information; primarily this means constructing the appropriate mpi receives when agent information is to be exchanged.  
+
+
+
+
+{\ttfamily \#include $<$Agent\-Importer\-Exporter.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Abstract\-Importer\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.728395cm]{classrepast_1_1_abstract_importer}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_ac32aaff9cd5bc7d300921bdc077b617c}{virtual const std\-::set$<$ int $>$ \& \hyperlink{classrepast_1_1_abstract_importer_ac32aaff9cd5bc7d300921bdc077b617c}{get\-Exporting\-Processes} ()}\label{classrepast_1_1_abstract_importer_ac32aaff9cd5bc7d300921bdc077b617c}
+
+\begin{DoxyCompactList}\small\item\em Gets a const reference to the set of ints representing the processes that are sending this process agent information. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_abstract_importer_a1353cfde773ce5b3e7011571aff1f823}{register\-Outgoing\-Requests} (\hyperlink{classrepast_1_1_agent_request}{Agent\-Request} \&req)=0
+\begin{DoxyCompactList}\small\item\em Given an agent request (including requests for agents on multiple other processes), makes a record of the agents that are being requested by this process and will therefore be received from other processes. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_abstract_importer_a7fc3bf6bb7ee568fb93f03c296c3ea0e}{virtual void \hyperlink{classrepast_1_1_abstract_importer_a7fc3bf6bb7ee568fb93f03c296c3ea0e}{imported\-Agent\-Is\-Removed} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)=0}\label{classrepast_1_1_abstract_importer_a7fc3bf6bb7ee568fb93f03c296c3ea0e}
+
+\begin{DoxyCompactList}\small\item\em Notifies this importer that the agent that it (presumably) has been importing has been removed from the simulation on its home process, and the information for that agent will no longer be sent. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_abstract_importer_aba04688b4375bcc80278c4ec7ffdceb1}{virtual void \hyperlink{classrepast_1_1_abstract_importer_aba04688b4375bcc80278c4ec7ffdceb1}{imported\-Agent\-Is\-Moved} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id, int new\-Process)=0}\label{classrepast_1_1_abstract_importer_aba04688b4375bcc80278c4ec7ffdceb1}
+
+\begin{DoxyCompactList}\small\item\em Notifies this importer that the agent that it (presumably) has been importing from another process has been moved; its information will now be received from its new home process (unless the agent was moved to this process) \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_abstract_importer_a4797219171a2399745cab0a6e576c353}{void \hyperlink{classrepast_1_1_abstract_importer_a4797219171a2399745cab0a6e576c353}{imported\-Agent\-Is\-Now\-Local} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)}\label{classrepast_1_1_abstract_importer_a4797219171a2399745cab0a6e576c353}
+
+\begin{DoxyCompactList}\small\item\em Some semantic sugar; operationally this is the same as 'imported\-Agent\-Is\-Removed'. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_abstract_importer_a88f4cf004854b5586832e94346fd6f09}{virtual std\-::string \hyperlink{classrepast_1_1_abstract_importer_a88f4cf004854b5586832e94346fd6f09}{get\-Report} ()=0}\label{classrepast_1_1_abstract_importer_a88f4cf004854b5586832e94346fd6f09}
+
+\begin{DoxyCompactList}\small\item\em Get a printable indication of the data in this object. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_abstract_importer_a108ac85357128d13cab863d8d63c74d4}{virtual void {\bfseries get\-Set\-Of\-Agents\-Being\-Imported} (std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&set)=0}\label{classrepast_1_1_abstract_importer_a108ac85357128d13cab863d8d63c74d4}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_ad4effa8810c5bbe3f584d06283293a51}{virtual void {\bfseries clear} ()}\label{classrepast_1_1_abstract_importer_ad4effa8810c5bbe3f584d06283293a51}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_a80a457a09ccb2c2b0ac589d2fdaa4e81}{std\-::set$<$ int $>$ {\bfseries exporting\-Processes}}\label{classrepast_1_1_abstract_importer_a80a457a09ccb2c2b0ac589d2fdaa4e81}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This class manages importing agent information; primarily this means constructing the appropriate mpi receives when agent information is to be exchanged. 
+
+However, this class can also define specific semantics that can apply to agent requests-\/ what to do in the case that an agent is requested twice, for example. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_abstract_importer_a1353cfde773ce5b3e7011571aff1f823}{\index{repast\-::\-Abstract\-Importer@{repast\-::\-Abstract\-Importer}!register\-Outgoing\-Requests@{register\-Outgoing\-Requests}}
+\index{register\-Outgoing\-Requests@{register\-Outgoing\-Requests}!repast::AbstractImporter@{repast\-::\-Abstract\-Importer}}
+\subsubsection[{register\-Outgoing\-Requests}]{\setlength{\rightskip}{0pt plus 5cm}virtual void repast\-::\-Abstract\-Importer\-::register\-Outgoing\-Requests (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Request} \&}]{req}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1_abstract_importer_a1353cfde773ce5b3e7011571aff1f823}
+
+
+Given an agent request (including requests for agents on multiple other processes), makes a record of the agents that are being requested by this process and will therefore be received from other processes. 
+
+The record must at a minimum indicate which other processes are sending agent information, but may include other information, such as how many times a particular agent has been requested. 
+
+Implemented in \hyperlink{classrepast_1_1_importer___m_a_p__int_aa68061de5fd367ebac5e3b85d184a8e3}{repast\-::\-Importer\-\_\-\-M\-A\-P\-\_\-int}, \hyperlink{classrepast_1_1_importer___s_e_t_a129e0998455430f6036897ab209ef163}{repast\-::\-Importer\-\_\-\-S\-E\-T}, \hyperlink{classrepast_1_1_importer___l_i_s_t_a5be3bf4dda0a23db4727882511e2e224}{repast\-::\-Importer\-\_\-\-L\-I\-S\-T}, and \hyperlink{classrepast_1_1_importer___c_o_u_n_t_a37a926665920b7674009603f6512b40e}{repast\-::\-Importer\-\_\-\-C\-O\-U\-N\-T}.
+
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Agent\-Importer\-Exporter.\-h\item 
+repast\-\_\-hpc/Agent\-Importer\-Exporter.\-cpp\end{DoxyCompactItemize}

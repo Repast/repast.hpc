@@ -1,0 +1,151 @@
+\hypertarget{classrepast_1_1relogo_1_1_patch}{\section{repast\-:\-:relogo\-:\-:Patch Class Reference}
+\label{classrepast_1_1relogo_1_1_patch}\index{repast\-::relogo\-::\-Patch@{repast\-::relogo\-::\-Patch}}
+}
+
+
+A logo patch.  
+
+
+
+
+{\ttfamily \#include $<$Patch.\-h$>$}
+
+Inheritance diagram for repast\-:\-:relogo\-:\-:Patch\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{classrepast_1_1relogo_1_1_patch}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classrepast_1_1relogo_1_1_patch_aa866832379645e38ccd420e91c0fe7d0}{Patch} (repast\-::\-Agent\-Id id, \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer} $\ast$observer)
+\begin{DoxyCompactList}\small\item\em Creates a \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch} that will have the specified id and be managed by the specified \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1relogo_1_1_patch_a410a47c2b1dc260d83c65ffb66b33a75}{virtual int \hyperlink{classrepast_1_1relogo_1_1_patch_a410a47c2b1dc260d83c65ffb66b33a75}{px\-Cor} () const }\label{classrepast_1_1relogo_1_1_patch_a410a47c2b1dc260d83c65ffb66b33a75}
+
+\begin{DoxyCompactList}\small\item\em Gets the patch x coordinate of this patch's location. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1relogo_1_1_patch_a9fe953832fa384a6fa19bd32511954fc}{virtual int \hyperlink{classrepast_1_1relogo_1_1_patch_a9fe953832fa384a6fa19bd32511954fc}{py\-Cor} () const }\label{classrepast_1_1relogo_1_1_patch_a9fe953832fa384a6fa19bd32511954fc}
+
+\begin{DoxyCompactList}\small\item\em Gets the patch y coordinate of this patch's location. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Patch\-Type $>$ }\\\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Patch\-Type $>$ \hyperlink{classrepast_1_1relogo_1_1_patch_a932368812cacb950454ceec64bf621e1}{neighbors} ()
+\begin{DoxyCompactList}\small\item\em Gets the 8 (Moore neighborhood) neighboring Patches of this \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch}. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Patch\-Type $>$ }\\\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Patch\-Type $>$ \hyperlink{classrepast_1_1relogo_1_1_patch_a0e372725c27abb4e9b2b6ae61cfc4540}{neighbors4} ()
+\begin{DoxyCompactList}\small\item\em Gets the 4 (Von Neumann neighborhood) neighboring Patches of this \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch}. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Patch\-Type $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_patch_a23f5d9dbecd26acb74d71bd05c36ce77}{neighbors} (\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Patch\-Type $>$ \&out)
+\begin{DoxyCompactList}\small\item\em Gets the 8 (Moore neighborhood) neighboring Patches of this \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch} and puts them out. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Patch\-Type $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_patch_aa157e0a9f7028a911a7abde580889511}{neighbors4} (\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Patch\-Type $>$ \&out)
+\begin{DoxyCompactList}\small\item\em Gets the 4 (Von Neumann neighborhood) neighboring Patches of this \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A logo patch. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1relogo_1_1_patch_aa866832379645e38ccd420e91c0fe7d0}{\index{repast\-::relogo\-::\-Patch@{repast\-::relogo\-::\-Patch}!Patch@{Patch}}
+\index{Patch@{Patch}!repast::relogo::Patch@{repast\-::relogo\-::\-Patch}}
+\subsubsection[{Patch}]{\setlength{\rightskip}{0pt plus 5cm}repast\-::relogo\-::\-Patch\-::\-Patch (
+\begin{DoxyParamCaption}
+\item[{repast\-::\-Agent\-Id}]{id, }
+\item[{{\bf Observer} $\ast$}]{observer}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_patch_aa866832379645e38ccd420e91c0fe7d0}
+
+
+Creates a \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch} that will have the specified id and be managed by the specified \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & \\
+\hline
+{\em observer} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1relogo_1_1_patch_a932368812cacb950454ceec64bf621e1}{\index{repast\-::relogo\-::\-Patch@{repast\-::relogo\-::\-Patch}!neighbors@{neighbors}}
+\index{neighbors@{neighbors}!repast::relogo::Patch@{repast\-::relogo\-::\-Patch}}
+\subsubsection[{neighbors}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Patch\-Type $>$ {\bf Agent\-Set}$<$ Patch\-Type $>$ repast\-::relogo\-::\-Patch\-::neighbors (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_patch_a932368812cacb950454ceec64bf621e1}
+
+
+Gets the 8 (Moore neighborhood) neighboring Patches of this \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch}. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em the} & patch type \\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+the 8 (Moore neighborhood) neighboring Patches of this \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_patch_a23f5d9dbecd26acb74d71bd05c36ce77}{\index{repast\-::relogo\-::\-Patch@{repast\-::relogo\-::\-Patch}!neighbors@{neighbors}}
+\index{neighbors@{neighbors}!repast::relogo::Patch@{repast\-::relogo\-::\-Patch}}
+\subsubsection[{neighbors}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Patch\-Type $>$ void repast\-::relogo\-::\-Patch\-::neighbors (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Set}$<$ Patch\-Type $>$ \&}]{out}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_patch_a23f5d9dbecd26acb74d71bd05c36ce77}
+
+
+Gets the 8 (Moore neighborhood) neighboring Patches of this \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch} and puts them out. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em out} & the \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} to the neighbors in \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em the} & patch type \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_patch_a0e372725c27abb4e9b2b6ae61cfc4540}{\index{repast\-::relogo\-::\-Patch@{repast\-::relogo\-::\-Patch}!neighbors4@{neighbors4}}
+\index{neighbors4@{neighbors4}!repast::relogo::Patch@{repast\-::relogo\-::\-Patch}}
+\subsubsection[{neighbors4}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Patch\-Type $>$ {\bf Agent\-Set}$<$ Patch\-Type $>$ repast\-::relogo\-::\-Patch\-::neighbors4 (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_patch_a0e372725c27abb4e9b2b6ae61cfc4540}
+
+
+Gets the 4 (Von Neumann neighborhood) neighboring Patches of this \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch}. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em the} & patch type \\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+the 4 (Von Neumann neighborhood) neighboring Patches of this \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_patch_aa157e0a9f7028a911a7abde580889511}{\index{repast\-::relogo\-::\-Patch@{repast\-::relogo\-::\-Patch}!neighbors4@{neighbors4}}
+\index{neighbors4@{neighbors4}!repast::relogo::Patch@{repast\-::relogo\-::\-Patch}}
+\subsubsection[{neighbors4}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Patch\-Type $>$ void repast\-::relogo\-::\-Patch\-::neighbors4 (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Set}$<$ Patch\-Type $>$ \&}]{out}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_patch_aa157e0a9f7028a911a7abde580889511}
+
+
+Gets the 4 (Von Neumann neighborhood) neighboring Patches of this \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em out} & the \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} to put the neighbors in \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em the} & patch type \\
+\hline
+\end{DoxyTemplParams}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/\-Users/murphy/work/\-Repast\-H\-P\-C\-\_\-\-G\-I\-T/repast.\-hpc/src/relogo/Patch.\-h\item 
+/\-Users/murphy/work/\-Repast\-H\-P\-C\-\_\-\-G\-I\-T/repast.\-hpc/src/relogo/Patch.\-cpp\end{DoxyCompactItemize}

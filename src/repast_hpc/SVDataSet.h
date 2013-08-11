@@ -54,7 +54,7 @@ namespace repast {
 class SVDataSetBuilder;
 
 /**
- * Encapsualtes data recording to a single plain text file, separating the recorded
+ * Encapsulates data recording to a single plain text file, separating the recorded
  * values using a specified separator value. An SVDataSet uses rank 0 to
  * write to a single file from multiple pan-process data sources. A SVDataSet
  * should be built using a SVDataSetBuilder.

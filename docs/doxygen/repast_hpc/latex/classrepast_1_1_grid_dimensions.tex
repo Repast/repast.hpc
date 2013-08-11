@@ -1,0 +1,68 @@
+\hypertarget{classrepast_1_1_grid_dimensions}{\section{repast\-:\-:Grid\-Dimensions Class Reference}
+\label{classrepast_1_1_grid_dimensions}\index{repast\-::\-Grid\-Dimensions@{repast\-::\-Grid\-Dimensions}}
+}
+
+
+Basic structure for specifying grid dimenions.  
+
+
+
+
+{\ttfamily \#include $<$Grid\-Dimensions.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_grid_dimensions_adc34342afddc8f1c2c0267522d4594f4}{{\bfseries Grid\-Dimensions} (\hyperlink{classrepast_1_1_point}{Point}$<$ double $>$ extent)}\label{classrepast_1_1_grid_dimensions_adc34342afddc8f1c2c0267522d4594f4}
+
+\item 
+\hypertarget{classrepast_1_1_grid_dimensions_a91dde52d1be653a287307ba3c5293346}{\hyperlink{classrepast_1_1_grid_dimensions_a91dde52d1be653a287307ba3c5293346}{Grid\-Dimensions} (\hyperlink{classrepast_1_1_point}{Point}$<$ double $>$ \hyperlink{classrepast_1_1_grid_dimensions_a0ec32ce3994e9903af7068aa9fd3f0f6}{origin}, \hyperlink{classrepast_1_1_point}{Point}$<$ double $>$ extent)}\label{classrepast_1_1_grid_dimensions_a91dde52d1be653a287307ba3c5293346}
+
+\begin{DoxyCompactList}\small\item\em Creates a \hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} with the specified origin and extent. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_grid_dimensions_ae258f35627445ba18afeb302dde7f379}{bool {\bfseries contains} (const \hyperlink{classrepast_1_1_point}{Point}$<$ int $>$ \&pt) const }\label{classrepast_1_1_grid_dimensions_ae258f35627445ba18afeb302dde7f379}
+
+\item 
+\hypertarget{classrepast_1_1_grid_dimensions_a20572ae249735726419f0183cb2f41cd}{bool {\bfseries contains} (const std\-::vector$<$ int $>$ \&pt) const }\label{classrepast_1_1_grid_dimensions_a20572ae249735726419f0183cb2f41cd}
+
+\item 
+\hypertarget{classrepast_1_1_grid_dimensions_ac364611e0c8dd54b0df8ef753a1c3080}{bool {\bfseries contains} (const \hyperlink{classrepast_1_1_point}{Point}$<$ double $>$ \&pt) const }\label{classrepast_1_1_grid_dimensions_ac364611e0c8dd54b0df8ef753a1c3080}
+
+\item 
+\hypertarget{classrepast_1_1_grid_dimensions_ab1f3412888524fab6d6c3c517b27da85}{bool {\bfseries contains} (const std\-::vector$<$ double $>$ \&pt) const }\label{classrepast_1_1_grid_dimensions_ab1f3412888524fab6d6c3c517b27da85}
+
+\item 
+\hypertarget{classrepast_1_1_grid_dimensions_a0ec32ce3994e9903af7068aa9fd3f0f6}{const \hyperlink{classrepast_1_1_point}{Point}$<$ double $>$ \& \hyperlink{classrepast_1_1_grid_dimensions_a0ec32ce3994e9903af7068aa9fd3f0f6}{origin} () const }\label{classrepast_1_1_grid_dimensions_a0ec32ce3994e9903af7068aa9fd3f0f6}
+
+\begin{DoxyCompactList}\small\item\em Gets the origin. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_grid_dimensions_abd4875c315a9420c18f0c369f3a8af9a}{const \hyperlink{classrepast_1_1_point}{Point}$<$ double $>$ \& \hyperlink{classrepast_1_1_grid_dimensions_abd4875c315a9420c18f0c369f3a8af9a}{extents} () const }\label{classrepast_1_1_grid_dimensions_abd4875c315a9420c18f0c369f3a8af9a}
+
+\begin{DoxyCompactList}\small\item\em Gets the extents along each dimension. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_grid_dimensions_ac30a2660eff0158ca306fcff807f57a7}{const double \& {\bfseries origin} (int index) const }\label{classrepast_1_1_grid_dimensions_ac30a2660eff0158ca306fcff807f57a7}
+
+\item 
+\hypertarget{classrepast_1_1_grid_dimensions_ae7104e85e069a7108eba8db95ad11a54}{const double \& {\bfseries extents} (int index) const }\label{classrepast_1_1_grid_dimensions_ae7104e85e069a7108eba8db95ad11a54}
+
+\item 
+\hypertarget{classrepast_1_1_grid_dimensions_a7961c67064727f34d52045385517c024}{size\-\_\-t {\bfseries dimension\-Count} () const }\label{classrepast_1_1_grid_dimensions_a7961c67064727f34d52045385517c024}
+
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_grid_dimensions_aba42531b113bed80dcac86aac0377225}{bool {\bfseries operator==} (const \hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} \&one, const \hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} \&two)}\label{classrepast_1_1_grid_dimensions_aba42531b113bed80dcac86aac0377225}
+
+\item 
+\hypertarget{classrepast_1_1_grid_dimensions_aca04c2784205aba66e1478fdfdbb24db}{std\-::ostream \& {\bfseries operator$<$$<$} (std\-::ostream \&os, const \hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} \&dimensions)}\label{classrepast_1_1_grid_dimensions_aca04c2784205aba66e1478fdfdbb24db}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Basic structure for specifying grid dimenions. 
+
+Structure is to specify (using instances of \hyperlink{classrepast_1_1_point}{Point}) the origin and the extent, so that an origin of (-\/100, -\/100) and an extent of (200, 200) represents a rectangle with corners at (-\/100, -\/100), (-\/100, 100), (100, 100), and (100, -\/100). 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Grid\-Dimensions.\-h\item 
+repast\-\_\-hpc/Grid\-Dimensions.\-cpp\end{DoxyCompactItemize}

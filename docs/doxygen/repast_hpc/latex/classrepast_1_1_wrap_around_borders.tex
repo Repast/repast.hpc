@@ -1,0 +1,47 @@
+\hypertarget{classrepast_1_1_wrap_around_borders}{\section{repast\-:\-:Wrap\-Around\-Borders Class Reference}
+\label{classrepast_1_1_wrap_around_borders}\index{repast\-::\-Wrap\-Around\-Borders@{repast\-::\-Wrap\-Around\-Borders}}
+}
+
+
+Implements periodic wrap around style border semantics.  
+
+
+
+
+{\ttfamily \#include $<$Grid\-Components.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_wrap_around_borders_ac9a9d4a7ddd56ef5c3f58813f2670de5}{{\bfseries Wrap\-Around\-Borders} (\hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} dimensions)}\label{classrepast_1_1_wrap_around_borders_ac9a9d4a7ddd56ef5c3f58813f2670de5}
+
+\item 
+\hypertarget{classrepast_1_1_wrap_around_borders_afe9af2832844c2ea5a669239eb9e5f30}{void {\bfseries transform} (const std\-::vector$<$ int $>$ \&in, std\-::vector$<$ int $>$ \&out) const }\label{classrepast_1_1_wrap_around_borders_afe9af2832844c2ea5a669239eb9e5f30}
+
+\item 
+\hypertarget{classrepast_1_1_wrap_around_borders_ab8c3eb797b18c3be69287b186f031d98}{void {\bfseries transform} (const std\-::vector$<$ double $>$ \&in, std\-::vector$<$ double $>$ \&out) const }\label{classrepast_1_1_wrap_around_borders_ab8c3eb797b18c3be69287b186f031d98}
+
+\item 
+\hypertarget{classrepast_1_1_wrap_around_borders_a81e6ba6e99b8ea1b2765f4b64c36cf6c}{void {\bfseries translate} (const std\-::vector$<$ double $>$ \&old\-Pos, std\-::vector$<$ double $>$ \&new\-Pos, const std\-::vector$<$ double $>$ \&displacement) const }\label{classrepast_1_1_wrap_around_borders_a81e6ba6e99b8ea1b2765f4b64c36cf6c}
+
+\item 
+\hypertarget{classrepast_1_1_wrap_around_borders_ad5dc3d2f2501ace1017330b423e87a08}{void {\bfseries translate} (const std\-::vector$<$ int $>$ \&old\-Pos, std\-::vector$<$ int $>$ \&new\-Pos, const std\-::vector$<$ int $>$ \&displacement) const }\label{classrepast_1_1_wrap_around_borders_ad5dc3d2f2501ace1017330b423e87a08}
+
+\item 
+\hypertarget{classrepast_1_1_wrap_around_borders_a68748d5a4e148ee99ebc29e5e0009808}{void {\bfseries init} (const \hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} \&dimensions)}\label{classrepast_1_1_wrap_around_borders_a68748d5a4e148ee99ebc29e5e0009808}
+
+\item 
+\hypertarget{classrepast_1_1_wrap_around_borders_a69ffcf2cca2df6aac4f751739858345d}{bool {\bfseries is\-Periodic} () const }\label{classrepast_1_1_wrap_around_borders_a69ffcf2cca2df6aac4f751739858345d}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Implements periodic wrap around style border semantics. 
+
+Points that are outside the borders are wrapped until the point is inside the borders. 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Grid\-Components.\-h\item 
+repast\-\_\-hpc/Grid\-Components.\-cpp\end{DoxyCompactItemize}

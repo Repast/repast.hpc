@@ -47,6 +47,10 @@
 
 namespace repast {
 
+/**
+ * Data source for data to be written into separated-value
+ * data sets.
+ */
 class SVDataSource {
 
 protected:
@@ -66,9 +70,16 @@ public:
 	}
 };
 
+
+/**
+ * Base class for specialized int and double type classes
+ */
 template <typename T>
 struct data_type_traits {};
 
+/**
+ * Int data types for SVDataSource objects
+ */
 template <>
 struct data_type_traits<int> {
 	static inline SVDataSource::DataType data_type() {
@@ -76,6 +87,9 @@ struct data_type_traits<int> {
 	}
 };
 
+/**
+ * Double data types for SVDataSource objects
+ */
 template <>
 struct data_type_traits<double> {
 	static inline SVDataSource::DataType data_type() {

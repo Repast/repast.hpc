@@ -1,0 +1,323 @@
+\hypertarget{classrepast_1_1_repast_process}{\section{repast\-:\-:Repast\-Process Class Reference}
+\label{classrepast_1_1_repast_process}\index{repast\-::\-Repast\-Process@{repast\-::\-Repast\-Process}}
+}
+
+
+Encapsulates the process in which repast is running and manages interprocess communication etc.  
+
+
+
+
+{\ttfamily \#include $<$Repast\-Process.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Repast\-Process\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classrepast_1_1_repast_process}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum {\bfseries E\-X\-C\-H\-A\-N\-G\-E\-\_\-\-P\-A\-T\-T\-E\-R\-N} \{ {\bfseries P\-O\-L\-L}, 
+{\bfseries U\-S\-E\-\_\-\-C\-U\-R\-R\-E\-N\-T}, 
+{\bfseries U\-S\-E\-\_\-\-L\-A\-S\-T\-\_\-\-O\-R\-\_\-\-P\-O\-L\-L}, 
+{\bfseries U\-S\-E\-\_\-\-L\-A\-S\-T\-\_\-\-O\-R\-\_\-\-U\-S\-E\-\_\-\-C\-U\-R\-R\-E\-N\-T}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classrepast_1_1_repast_process_a20f9086d8f764dea44ddefd157279263}{agent\-Removed} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)
+\begin{DoxyCompactList}\small\item\em N\-O\-N U\-S\-E\-R A\-P\-I. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_repast_process_a87cced37db3a1810fa4a4beed5c83998}{move\-Agent} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id, int process)
+\begin{DoxyCompactList}\small\item\em N\-O\-N U\-S\-E\-R A\-P\-I. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_repast_process_ab155561fac49d5c7c21a14d385010321}{add\-Exported\-Agent} (int importing\-Process, \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} id)
+\begin{DoxyCompactList}\small\item\em N\-O\-N U\-S\-E\-R A\-P\-I. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_repast_process_a69b8c957acb0d9df24ea37a7d3755e0e}{add\-Imported\-Agent} (\hyperlink{classrepast_1_1_agent_id}{Agent\-Id} id)
+\begin{DoxyCompactList}\small\item\em N\-O\-N U\-S\-E\-R A\-P\-I. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1_repast_process_a13b9bbfd146fd534f71c9b7990bab347}{rank} () const 
+\begin{DoxyCompactList}\small\item\em Gets the rank of this process. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_repast_process_a7c2aecbb70e0f589d8c458f64f481939}{int \hyperlink{classrepast_1_1_repast_process_a7c2aecbb70e0f589d8c458f64f481939}{world\-Size} () const }\label{classrepast_1_1_repast_process_a7c2aecbb70e0f589d8c458f64f481939}
+
+\begin{DoxyCompactList}\small\item\em Gets the number of processes in the world. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_repast_process_a410045f31a523ee63f8646d6c7864f94}{done} ()
+\begin{DoxyCompactList}\small\item\em Notifes this \hyperlink{classrepast_1_1_repast_process}{Repast\-Process} that simulation has completed. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_schedule_runner}{Schedule\-Runner} \& \hyperlink{classrepast_1_1_repast_process_a056e9a9d3b8383ecd4e223ca30c06817}{get\-Schedule\-Runner} ()
+\begin{DoxyCompactList}\small\item\em Gets the \hyperlink{classrepast_1_1_schedule_runner}{Schedule\-Runner} used by this \hyperlink{classrepast_1_1_repast_process}{Repast\-Process}. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_repast_process_a14059c959e8a213bb30c7b414a750ab1}{boost\-::mpi\-::communicator $\ast$ {\bfseries get\-Communicator} ()}\label{classrepast_1_1_repast_process_a14059c959e8a213bb30c7b414a750ab1}
+
+\item 
+\hypertarget{classrepast_1_1_repast_process_ae7d551a0294b78c4ebef1de65d7c487e}{void {\bfseries drop\-Importer\-Exporter\-Set} (std\-::string set\-Name)}\label{classrepast_1_1_repast_process_ae7d551a0294b78c4ebef1de65d7c487e}
+
+\item 
+\hypertarget{classrepast_1_1_repast_process_a6669a34592bf26e54318bff225be0bc2}{std\-::string {\bfseries Importer\-Exporter\-Version} ()}\label{classrepast_1_1_repast_process_a6669a34592bf26e54318bff225be0bc2}
+
+\item 
+\hypertarget{classrepast_1_1_repast_process_a9d747e852bb67271b3d50b311d0ab57c}{std\-::string {\bfseries Importer\-Exporter\-Report} ()}\label{classrepast_1_1_repast_process_a9d747e852bb67271b3d50b311d0ab57c}
+
+\item 
+{\footnotesize template$<$typename T , typename Content , typename Provider , typename Updater , typename Agent\-Creator $>$ }\\void \hyperlink{classrepast_1_1_repast_process_af295e322c0902a49ce530fc907b698d3}{request\-Agents} (\hyperlink{classrepast_1_1_shared_context}{Shared\-Context}$<$ T $>$ \&context, \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} \&request, Provider \&provider, Updater \&updater, Agent\-Creator \&creator, std\-::string set\-Name=D\-E\-F\-A\-U\-L\-T\-\_\-\-A\-G\-E\-N\-T\-\_\-\-R\-E\-Q\-U\-E\-S\-T\-\_\-\-S\-E\-T, A\-G\-E\-N\-T\-\_\-\-I\-M\-P\-O\-R\-T\-E\-R\-\_\-\-E\-X\-P\-O\-R\-T\-E\-R\-\_\-\-T\-Y\-P\-E set\-Type=D\-E\-F\-A\-U\-L\-T\-\_\-\-E\-N\-U\-M\-\_\-\-S\-Y\-M\-B\-O\-L)
+\begin{DoxyCompactList}\small\item\em Request agents from other processes. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Content , typename Provider , typename Updater $>$ }\\void \hyperlink{classrepast_1_1_repast_process_a6bf1b59d9939755fedc53264fdb335db}{synchronize\-Agent\-States} (Provider \&provider, Updater \&updater, std\-::string set\-Name=R\-E\-Q\-U\-E\-S\-T\-\_\-\-A\-G\-E\-N\-T\-S\-\_\-\-A\-L\-L)
+\begin{DoxyCompactList}\small\item\em Synchronizes the state values of shared agents. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_repast_process_ac630e9787be913cb1101fcba3d6c60a7}{{\footnotesize template$<$typename T , typename Content , typename Provider , typename Updater , typename Agent\-Creator $>$ }\\void \hyperlink{classrepast_1_1_repast_process_ac630e9787be913cb1101fcba3d6c60a7}{synchronize\-Projection\-Info} (\hyperlink{classrepast_1_1_shared_context}{Shared\-Context}$<$ T $>$ \&context, Provider \&provider, Updater \&updater, Agent\-Creator \&creator, E\-X\-C\-H\-A\-N\-G\-E\-\_\-\-P\-A\-T\-T\-E\-R\-N exchange\-Pattern=P\-O\-L\-L, bool declare\-No\-Agents\-Kept\-On\-Any\-Process=false)}\label{classrepast_1_1_repast_process_ac630e9787be913cb1101fcba3d6c60a7}
+
+\begin{DoxyCompactList}\small\item\em Synchronizes the \hyperlink{classrepast_1_1_projection}{Projection} information for shared projections. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T , typename Content , typename Provider , typename Agent\-Creator , typename Updater $>$ }\\void \hyperlink{classrepast_1_1_repast_process_a243aed166431493c78de8f1f98713743}{synchronize\-Agent\-Status} (\hyperlink{classrepast_1_1_shared_context}{Shared\-Context}$<$ T $>$ \&context, Provider \&provider, Updater \&updater, Agent\-Creator \&creator, E\-X\-C\-H\-A\-N\-G\-E\-\_\-\-P\-A\-T\-T\-E\-R\-N exchange\-Pattern=P\-O\-L\-L)
+\begin{DoxyCompactList}\small\item\em Synchronizes the status (moved or died) of all agents across processes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{classrepast_1_1_repast_process}{Repast\-Process} $\ast$ \hyperlink{classrepast_1_1_repast_process_a157a6c1057a1b2fa1d37b8391509611c}{init} (std\-::string propsfile, boost\-::mpi\-::communicator $\ast$comm=0, int max\-Config\-File\-Size=M\-A\-X\-\_\-\-C\-O\-N\-F\-I\-G\-\_\-\-F\-I\-L\-E\-\_\-\-S\-I\-Z\-E)
+\begin{DoxyCompactList}\small\item\em Initialize this \hyperlink{classrepast_1_1_repast_process}{Repast\-Process}. \end{DoxyCompactList}\item 
+static \hyperlink{classrepast_1_1_repast_process}{Repast\-Process} $\ast$ \hyperlink{classrepast_1_1_repast_process_a8eed21e917ec5d66a11cde664938e92f}{instance} ()
+\begin{DoxyCompactList}\small\item\em Gets this \hyperlink{classrepast_1_1_repast_process}{Repast\-Process}. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_repast_process_a117dc528a5c1798163afab08dfdbe335}{static boost\-::mpi\-::communicator $\ast$ {\bfseries communicator} ()}\label{classrepast_1_1_repast_process_a117dc528a5c1798163afab08dfdbe335}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_repast_process_ac225915589d363067d8753dbe9554783}{{\bfseries Repast\-Process} (boost\-::mpi\-::communicator $\ast$comm=0)}\label{classrepast_1_1_repast_process_ac225915589d363067d8753dbe9554783}
+
+\item 
+\hypertarget{classrepast_1_1_repast_process_a731b20e6292df4bc8a2d66e9d8f7919d}{void {\bfseries save\-Proj\-Info\-S\-R\-Procs} (std\-::vector$<$ int $>$ \&sends, std\-::vector$<$ int $>$ \&recvs)}\label{classrepast_1_1_repast_process_a731b20e6292df4bc8a2d66e9d8f7919d}
+
+\item 
+\hypertarget{classrepast_1_1_repast_process_a57d4b598104de5ac4f9048770b0d86be}{void {\bfseries save\-Agent\-Status\-Info\-S\-R\-Procs} (std\-::vector$<$ int $>$ \&sends, std\-::vector$<$ int $>$ \&recvs)}\label{classrepast_1_1_repast_process_a57d4b598104de5ac4f9048770b0d86be}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Encapsulates the process in which repast is running and manages interprocess communication etc. 
+
+This is singleton to insure that there is one per actual process. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_repast_process_ab155561fac49d5c7c21a14d385010321}{\index{repast\-::\-Repast\-Process@{repast\-::\-Repast\-Process}!add\-Exported\-Agent@{add\-Exported\-Agent}}
+\index{add\-Exported\-Agent@{add\-Exported\-Agent}!repast::RepastProcess@{repast\-::\-Repast\-Process}}
+\subsubsection[{add\-Exported\-Agent}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Repast\-Process\-::add\-Exported\-Agent (
+\begin{DoxyParamCaption}
+\item[{int}]{importing\-Process, }
+\item[{{\bf Agent\-Id}}]{id}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_repast_process_ab155561fac49d5c7c21a14d385010321}
+
+
+N\-O\-N U\-S\-E\-R A\-P\-I. 
+
+Notifies this \hyperlink{classrepast_1_1_repast_process}{Repast\-Process} that it is exporting the specified agent to the specified process. This sort of notification is done automatically when requesting agents, but agents may get added in other ways. \hypertarget{classrepast_1_1_repast_process_a69b8c957acb0d9df24ea37a7d3755e0e}{\index{repast\-::\-Repast\-Process@{repast\-::\-Repast\-Process}!add\-Imported\-Agent@{add\-Imported\-Agent}}
+\index{add\-Imported\-Agent@{add\-Imported\-Agent}!repast::RepastProcess@{repast\-::\-Repast\-Process}}
+\subsubsection[{add\-Imported\-Agent}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Repast\-Process\-::add\-Imported\-Agent (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Id}}]{id}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_repast_process_a69b8c957acb0d9df24ea37a7d3755e0e}
+
+
+N\-O\-N U\-S\-E\-R A\-P\-I. 
+
+Notifies this \hyperlink{classrepast_1_1_repast_process}{Repast\-Process} that it is importing the specified agent. This sort of notification is normally done automatically when requesting agents, but imports can occur in other ways. \hypertarget{classrepast_1_1_repast_process_a20f9086d8f764dea44ddefd157279263}{\index{repast\-::\-Repast\-Process@{repast\-::\-Repast\-Process}!agent\-Removed@{agent\-Removed}}
+\index{agent\-Removed@{agent\-Removed}!repast::RepastProcess@{repast\-::\-Repast\-Process}}
+\subsubsection[{agent\-Removed}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Repast\-Process\-::agent\-Removed (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{id}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_repast_process_a20f9086d8f764dea44ddefd157279263}
+
+
+N\-O\-N U\-S\-E\-R A\-P\-I. 
+
+Notifies this \hyperlink{classrepast_1_1_repast_process}{Repast\-Process} that the specified agent has been removed (e.\-g. the agent \char`\"{}died\char`\"{}). \hypertarget{classrepast_1_1_repast_process_a410045f31a523ee63f8646d6c7864f94}{\index{repast\-::\-Repast\-Process@{repast\-::\-Repast\-Process}!done@{done}}
+\index{done@{done}!repast::RepastProcess@{repast\-::\-Repast\-Process}}
+\subsubsection[{done}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Repast\-Process\-::done (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_repast_process_a410045f31a523ee63f8646d6c7864f94}
+
+
+Notifes this \hyperlink{classrepast_1_1_repast_process}{Repast\-Process} that simulation has completed. 
+
+This should be called when the simulation has completed. \hypertarget{classrepast_1_1_repast_process_a056e9a9d3b8383ecd4e223ca30c06817}{\index{repast\-::\-Repast\-Process@{repast\-::\-Repast\-Process}!get\-Schedule\-Runner@{get\-Schedule\-Runner}}
+\index{get\-Schedule\-Runner@{get\-Schedule\-Runner}!repast::RepastProcess@{repast\-::\-Repast\-Process}}
+\subsubsection[{get\-Schedule\-Runner}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Schedule\-Runner}\& repast\-::\-Repast\-Process\-::get\-Schedule\-Runner (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_repast_process_a056e9a9d3b8383ecd4e223ca30c06817}
+
+
+Gets the \hyperlink{classrepast_1_1_schedule_runner}{Schedule\-Runner} used by this \hyperlink{classrepast_1_1_repast_process}{Repast\-Process}. 
+
+\begin{DoxyReturn}{Returns}
+the \hyperlink{classrepast_1_1_schedule_runner}{Schedule\-Runner} used by this \hyperlink{classrepast_1_1_repast_process}{Repast\-Process}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_repast_process_a157a6c1057a1b2fa1d37b8391509611c}{\index{repast\-::\-Repast\-Process@{repast\-::\-Repast\-Process}!init@{init}}
+\index{init@{init}!repast::RepastProcess@{repast\-::\-Repast\-Process}}
+\subsubsection[{init}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Repast\-Process} $\ast$ repast\-::\-Repast\-Process\-::init (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{propsfile, }
+\item[{boost\-::mpi\-::communicator $\ast$}]{comm = {\ttfamily 0}, }
+\item[{int}]{max\-Config\-File\-Size = {\ttfamily MAX\-\_\-CONFIG\-\_\-FILE\-\_\-SIZE}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}}\label{classrepast_1_1_repast_process_a157a6c1057a1b2fa1d37b8391509611c}
+
+
+Initialize this \hyperlink{classrepast_1_1_repast_process}{Repast\-Process}. 
+
+This must be called before the \hyperlink{classrepast_1_1_repast_process}{Repast\-Process} is used. If a configuration properties file is specified this properties file will be used to configure logging.
+
+
+\begin{DoxyParams}{Parameters}
+{\em propsfile} & a configuration properties file. This can be an empty string. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_repast_process_a8eed21e917ec5d66a11cde664938e92f}{\index{repast\-::\-Repast\-Process@{repast\-::\-Repast\-Process}!instance@{instance}}
+\index{instance@{instance}!repast::RepastProcess@{repast\-::\-Repast\-Process}}
+\subsubsection[{instance}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Repast\-Process} $\ast$ repast\-::\-Repast\-Process\-::instance (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}}\label{classrepast_1_1_repast_process_a8eed21e917ec5d66a11cde664938e92f}
+
+
+Gets this \hyperlink{classrepast_1_1_repast_process}{Repast\-Process}. 
+
+\begin{DoxyReturn}{Returns}
+this \hyperlink{classrepast_1_1_repast_process}{Repast\-Process} instance. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_repast_process_a87cced37db3a1810fa4a4beed5c83998}{\index{repast\-::\-Repast\-Process@{repast\-::\-Repast\-Process}!move\-Agent@{move\-Agent}}
+\index{move\-Agent@{move\-Agent}!repast::RepastProcess@{repast\-::\-Repast\-Process}}
+\subsubsection[{move\-Agent}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Repast\-Process\-::move\-Agent (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{id, }
+\item[{int}]{process}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_repast_process_a87cced37db3a1810fa4a4beed5c83998}
+
+
+N\-O\-N U\-S\-E\-R A\-P\-I. 
+
+Notifies this \hyperlink{classrepast_1_1_repast_process}{Repast\-Process} that the specified agent should be moved from this process to the specified process.
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the id of the agent to be moved \\
+\hline
+{\em process} & the process to move the agent to \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_repast_process_a13b9bbfd146fd534f71c9b7990bab347}{\index{repast\-::\-Repast\-Process@{repast\-::\-Repast\-Process}!rank@{rank}}
+\index{rank@{rank}!repast::RepastProcess@{repast\-::\-Repast\-Process}}
+\subsubsection[{rank}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::\-Repast\-Process\-::rank (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_repast_process_a13b9bbfd146fd534f71c9b7990bab347}
+
+
+Gets the rank of this process. 
+
+\begin{DoxyReturn}{Returns}
+the rank of this process. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_repast_process_af295e322c0902a49ce530fc907b698d3}{\index{repast\-::\-Repast\-Process@{repast\-::\-Repast\-Process}!request\-Agents@{request\-Agents}}
+\index{request\-Agents@{request\-Agents}!repast::RepastProcess@{repast\-::\-Repast\-Process}}
+\subsubsection[{request\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename Content , typename Provider , typename Updater , typename Agent\-Creator $>$ void repast\-::\-Repast\-Process\-::request\-Agents (
+\begin{DoxyParamCaption}
+\item[{{\bf Shared\-Context}$<$ T $>$ \&}]{context, }
+\item[{{\bf Agent\-Request} \&}]{request, }
+\item[{Provider \&}]{provider, }
+\item[{Updater \&}]{updater, }
+\item[{Agent\-Creator \&}]{creator, }
+\item[{std\-::string}]{set\-Name = {\ttfamily DEFAULT\-\_\-AGENT\-\_\-REQUEST\-\_\-SET}, }
+\item[{A\-G\-E\-N\-T\-\_\-\-I\-M\-P\-O\-R\-T\-E\-R\-\_\-\-E\-X\-P\-O\-R\-T\-E\-R\-\_\-\-T\-Y\-P\-E}]{set\-Type = {\ttfamily DEFAULT\-\_\-ENUM\-\_\-SYMBOL}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_repast_process_af295e322c0902a49ce530fc907b698d3}
+
+
+Request agents from other processes. 
+
+Requests agents from one process to others.
+
+Copies of the requested agents' Content are retrieved from their respective processes, created using the Agent\-Creator and added to the specified context.
+
+
+\begin{DoxyParams}{Parameters}
+{\em context} & the context to which the requested agents will be added \\
+\hline
+{\em request} & the \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} containing the ids of the requested agents \\
+\hline
+{\em provider} & provides Content for a given an \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} \\
+\hline
+{\em creator} & creates agents of type T given Content.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & the type of the agents in the context \\
+\hline
+{\em Content} & the serializable struct or class that describes the state of agents \\
+\hline
+{\em Provider} & given an \hyperlink{classrepast_1_1_agent_request}{Agent\-Request}, a Provider provides the Content for the requested agents, implementing void provide\-Content(const \hyperlink{classrepast_1_1_agent_request}{Agent\-Request}\&, std\-::vector$<$\-Content$>$\&) \\
+\hline
+{\em Agent\-Creator} & a class that can create agents from Content, implementing T$\ast$ create\-Agent(\-Content\&). \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_repast_process_a6bf1b59d9939755fedc53264fdb335db}{\index{repast\-::\-Repast\-Process@{repast\-::\-Repast\-Process}!synchronize\-Agent\-States@{synchronize\-Agent\-States}}
+\index{synchronize\-Agent\-States@{synchronize\-Agent\-States}!repast::RepastProcess@{repast\-::\-Repast\-Process}}
+\subsubsection[{synchronize\-Agent\-States}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Content , typename Provider , typename Updater $>$ void repast\-::\-Repast\-Process\-::synchronize\-Agent\-States (
+\begin{DoxyParamCaption}
+\item[{Provider \&}]{provider, }
+\item[{Updater \&}]{updater, }
+\item[{std\-::string}]{set\-Name = {\ttfamily REQUEST\-\_\-AGENTS\-\_\-ALL}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_repast_process_a6bf1b59d9939755fedc53264fdb335db}
+
+
+Synchronizes the state values of shared agents. 
+
+Does not change the \hyperlink{classrepast_1_1_projection}{Projection} information for those agents. \hypertarget{classrepast_1_1_repast_process_a243aed166431493c78de8f1f98713743}{\index{repast\-::\-Repast\-Process@{repast\-::\-Repast\-Process}!synchronize\-Agent\-Status@{synchronize\-Agent\-Status}}
+\index{synchronize\-Agent\-Status@{synchronize\-Agent\-Status}!repast::RepastProcess@{repast\-::\-Repast\-Process}}
+\subsubsection[{synchronize\-Agent\-Status}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename Content , typename Provider , typename Agent\-Creator , typename Updater $>$ void repast\-::\-Repast\-Process\-::synchronize\-Agent\-Status (
+\begin{DoxyParamCaption}
+\item[{{\bf Shared\-Context}$<$ T $>$ \&}]{context, }
+\item[{Provider \&}]{provider, }
+\item[{Updater \&}]{updater, }
+\item[{Agent\-Creator \&}]{creator, }
+\item[{E\-X\-C\-H\-A\-N\-G\-E\-\_\-\-P\-A\-T\-T\-E\-R\-N}]{exchange\-Pattern = {\ttfamily POLL}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_repast_process_a243aed166431493c78de8f1f98713743}
+
+
+Synchronizes the status (moved or died) of all agents across processes. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em context} & the \hyperlink{classrepast_1_1_shared_context}{Shared\-Context} that contains the agents on this proceses \\
+\hline
+{\em provider} & the class that provides agents given an \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} \\
+\hline
+{\em creator} & creates agents of type T given Content.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & the type of agents in the context \\
+\hline
+{\em Content} & the serializable struct or class that describes an agents state. \\
+\hline
+{\em Provider} & a class that provides Content, when given an \hyperlink{classrepast_1_1_agent_request}{Agent\-Request}, implementing void provide\-Content(const repast\-::\-Agent\-Request\&, std\-::vector$<$\-Content$>$\& out) \\
+\hline
+{\em Agent\-Creator} & a class that can create agents from Content, implementing T$\ast$ create\-Agent(\-Content\&). \\
+\hline
+\end{DoxyTemplParams}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Repast\-Process.\-h\item 
+repast\-\_\-hpc/Repast\-Process.\-cpp\end{DoxyCompactItemize}

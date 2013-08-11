@@ -1,0 +1,42 @@
+\hypertarget{classrepast_1_1_exporter___l_i_s_t}{\section{repast\-:\-:Exporter\-\_\-\-L\-I\-S\-T Class Reference}
+\label{classrepast_1_1_exporter___l_i_s_t}\index{repast\-::\-Exporter\-\_\-\-L\-I\-S\-T@{repast\-::\-Exporter\-\_\-\-L\-I\-S\-T}}
+}
+
+
+Maintains a list of agents being exported for each receiving process.  
+
+
+
+
+{\ttfamily \#include $<$Agent\-Importer\-Exporter.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Exporter\-\_\-\-L\-I\-S\-T\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classrepast_1_1_exporter___l_i_s_t}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_exporter___l_i_s_t_af3ef5c07f5a8d1eb38c5b97727f92c9e}{virtual void \hyperlink{classrepast_1_1_exporter___l_i_s_t_af3ef5c07f5a8d1eb38c5b97727f92c9e}{register\-Incoming\-Requests} (std\-::vector$<$ \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} $>$ \&requests)}\label{classrepast_1_1_exporter___l_i_s_t_af3ef5c07f5a8d1eb38c5b97727f92c9e}
+
+\begin{DoxyCompactList}\small\item\em Makes a record of the data receives (in the form of a vector of Agent\-Requests) so that the agents' data can be sent to the requesting processes. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_exporter___l_i_s_t_a2df4abe8a73a23ec17bd02ec05833ec4}{{\bfseries Exporter\-\_\-\-L\-I\-S\-T} (Status\-Map $\ast$outgoing\-Status\-Map, \hyperlink{classrepast_1_1_agent_exporter_data}{Agent\-Exporter\-Data} $\ast$outgoing\-Agent\-Exporter\-Info)}\label{classrepast_1_1_exporter___l_i_s_t_a2df4abe8a73a23ec17bd02ec05833ec4}
+
+\item 
+\hypertarget{classrepast_1_1_exporter___l_i_s_t_a6b868c012bd5547d510f862c8bce620d}{virtual std\-::string \hyperlink{classrepast_1_1_exporter___l_i_s_t_a6b868c012bd5547d510f862c8bce620d}{get\-Report} ()}\label{classrepast_1_1_exporter___l_i_s_t_a6b868c012bd5547d510f862c8bce620d}
+
+\begin{DoxyCompactList}\small\item\em Gets a printable report of the state of this object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Maintains a list of agents being exported for each receiving process. 
+
+An agent that is requested more than once will appear on this list more than once; canceling an agent just once removes only one of its appearances on this list. A 'send' will be created for a receiving process only if that process has entries in the list. 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Agent\-Importer\-Exporter.\-h\item 
+repast\-\_\-hpc/Agent\-Importer\-Exporter.\-cpp\end{DoxyCompactItemize}

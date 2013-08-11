@@ -1,0 +1,373 @@
+\hypertarget{classrepast_1_1_point}{\section{repast\-:\-:Point$<$ T $>$ Class Template Reference}
+\label{classrepast_1_1_point}\index{repast\-::\-Point$<$ T $>$@{repast\-::\-Point$<$ T $>$}}
+}
+
+
+A N-\/dimensional \hyperlink{classrepast_1_1_point}{Point} representation.  
+
+
+
+
+{\ttfamily \#include $<$Point.\-h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_point_a5b7b0786c5ac836e6ddfcda1dec866dc}{typedef std\-::vector$<$ T $>$\\*
+\-::const\-\_\-iterator {\bfseries const\-\_\-iterator}}\label{classrepast_1_1_point_a5b7b0786c5ac836e6ddfcda1dec866dc}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classrepast_1_1_point_ab873dcd5fc9b62c27f9f75a602077d0b}{Point} (T x)
+\begin{DoxyCompactList}\small\item\em Creates a one dimensional point with the specified value. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_point_abed6f095fe52bf4c72b3142563db9bc7}{Point} (T x, T y)
+\begin{DoxyCompactList}\small\item\em Creates a two dimensional point with the specified values. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_point_a05d9583817d89b4347ab7d764212a1b1}{Point} (T x, T y, T z)
+\begin{DoxyCompactList}\small\item\em Creates a three dimensional point with the specified values. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_point_a9dadb20bf3ca390851a8df68850d2be5}{Point} (std\-::vector$<$ T $>$ coordinates)
+\begin{DoxyCompactList}\small\item\em Creates a multi-\/dimensional point with the specified values. \end{DoxyCompactList}\item 
+T \hyperlink{classrepast_1_1_point_af985d58e3c8ccd00e54dd46fc71b41b2}{get\-X} () const 
+\begin{DoxyCompactList}\small\item\em Gets the x coordinate of the point. \end{DoxyCompactList}\item 
+T \hyperlink{classrepast_1_1_point_ac4c09bef3c9be3b69432da55da2c7c57}{get\-Y} () const 
+\begin{DoxyCompactList}\small\item\em Gets the y coordinate of the point. \end{DoxyCompactList}\item 
+T \hyperlink{classrepast_1_1_point_a2abcd532878f05b30961306b790664e3}{get\-Z} () const 
+\begin{DoxyCompactList}\small\item\em Gets the z coordinate of the point. \end{DoxyCompactList}\item 
+T \hyperlink{classrepast_1_1_point_a22a3eab287df785225791d1d1a75c89c}{get\-Coordinate} (int coord\-Index) const 
+\begin{DoxyCompactList}\small\item\em Gets the coodinate of the point in the specified dimension. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_point_a8b7e9df41c4aa2d7387138a404fc3982}{add} (const \hyperlink{classrepast_1_1_point}{Point}$<$ T $>$ \&pt)
+\begin{DoxyCompactList}\small\item\em Adds the specified Grid\-Point to this Grid\-Point. \end{DoxyCompactList}\item 
+size\-\_\-t \hyperlink{classrepast_1_1_point_ac872326f55cdbfa5106d430bea6d959c}{dimension\-Count} () const 
+\begin{DoxyCompactList}\small\item\em Gets the number of dimensions of this point. \end{DoxyCompactList}\item 
+const T \& \hyperlink{classrepast_1_1_point_a0ac1a3a42fc61f022d706a05238e98f1}{operator\mbox{[}$\,$\mbox{]}} (size\-\_\-t index) const 
+\begin{DoxyCompactList}\small\item\em Gets the coordinate value at the specified index. \end{DoxyCompactList}\item 
+T \& \hyperlink{classrepast_1_1_point_a1214b8f5293b222ff2bb115fe30127c2}{operator\mbox{[}$\,$\mbox{]}} (size\-\_\-t index)
+\begin{DoxyCompactList}\small\item\em Gets the coordinate value at the specified index. \end{DoxyCompactList}\item 
+const std\-::vector$<$ T $>$ \& \hyperlink{classrepast_1_1_point_ac821ebc5c69d6bf8ab132babddcbb864}{coords} () const 
+\begin{DoxyCompactList}\small\item\em Gets the coordinates of this point as a vector. \end{DoxyCompactList}\item 
+const\-\_\-iterator \hyperlink{classrepast_1_1_point_aec55ad9f0415bfa707daf019328514ed}{begin} () const 
+\begin{DoxyCompactList}\small\item\em Gets the start of an iterator over the coordinates of this point. \end{DoxyCompactList}\item 
+const\-\_\-iterator \hyperlink{classrepast_1_1_point_a4859ae010bfd59c8c37283d8af58b160}{end} () const 
+\begin{DoxyCompactList}\small\item\em Gets the end of an iterator over the coordinates of this point. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_point_a6c7ba452e7c41d28216ed7a7abfb623a}{copy} (std\-::vector$<$ T $>$ \&out) const 
+\begin{DoxyCompactList}\small\item\em Copies the point into the specified vector. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_point_a75395e59eeb036931f89fc247e44910e}{struct {\bfseries Hash\-Grid\-Point$<$ T $>$}}\label{classrepast_1_1_point_a75395e59eeb036931f89fc247e44910e}
+
+\item 
+\hypertarget{classrepast_1_1_point_ac98d07dd8f7b70e16ccb9a01abf56b9c}{class {\bfseries boost\-::serialization\-::access}}\label{classrepast_1_1_point_ac98d07dd8f7b70e16ccb9a01abf56b9c}
+
+\item 
+\hypertarget{classrepast_1_1_point_a2438176b2bab962e952bbeb309af3497}{bool {\bfseries operator==} (const \hyperlink{classrepast_1_1_point}{Point}$<$ T $>$ \&one, const \hyperlink{classrepast_1_1_point}{Point}$<$ T $>$ \&two)}\label{classrepast_1_1_point_a2438176b2bab962e952bbeb309af3497}
+
+\item 
+\hypertarget{classrepast_1_1_point_abf6f92c0466e14e91f78c562ea44cfef}{std\-::ostream \& {\bfseries operator$<$$<$} (std\-::ostream \&os, const \hyperlink{classrepast_1_1_point}{Point}$<$ T $>$ \&pt)}\label{classrepast_1_1_point_abf6f92c0466e14e91f78c562ea44cfef}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$class repast\-::\-Point$<$ T $>$}
+
+A N-\/dimensional \hyperlink{classrepast_1_1_point}{Point} representation. 
+
+N dimensional point for addressing matrix locations.
+
+
+\begin{DoxyParams}{Parameters}
+{\em T} & a numeric type. In repast and relogo these are limited to int and double. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1_point_ab873dcd5fc9b62c27f9f75a602077d0b}{\index{repast\-::\-Point@{repast\-::\-Point}!Point@{Point}}
+\index{Point@{Point}!repast::Point@{repast\-::\-Point}}
+\subsubsection[{Point}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ {\bf repast\-::\-Point}$<$ T $>$\-::{\bf Point} (
+\begin{DoxyParamCaption}
+\item[{T}]{x}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [explicit]}}}\label{classrepast_1_1_point_ab873dcd5fc9b62c27f9f75a602077d0b}
+
+
+Creates a one dimensional point with the specified value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & the x coordinate of the point \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_point_abed6f095fe52bf4c72b3142563db9bc7}{\index{repast\-::\-Point@{repast\-::\-Point}!Point@{Point}}
+\index{Point@{Point}!repast::Point@{repast\-::\-Point}}
+\subsubsection[{Point}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ {\bf repast\-::\-Point}$<$ T $>$\-::{\bf Point} (
+\begin{DoxyParamCaption}
+\item[{T}]{x, }
+\item[{T}]{y}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_point_abed6f095fe52bf4c72b3142563db9bc7}
+
+
+Creates a two dimensional point with the specified values. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & the x coordinate of the point \\
+\hline
+{\em y} & the y coordinate of the point \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_point_a05d9583817d89b4347ab7d764212a1b1}{\index{repast\-::\-Point@{repast\-::\-Point}!Point@{Point}}
+\index{Point@{Point}!repast::Point@{repast\-::\-Point}}
+\subsubsection[{Point}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ {\bf repast\-::\-Point}$<$ T $>$\-::{\bf Point} (
+\begin{DoxyParamCaption}
+\item[{T}]{x, }
+\item[{T}]{y, }
+\item[{T}]{z}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_point_a05d9583817d89b4347ab7d764212a1b1}
+
+
+Creates a three dimensional point with the specified values. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & the x coordinate of the point \\
+\hline
+{\em y} & the y coordinate of the point \\
+\hline
+{\em z} & the z coordinate of the point \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_point_a9dadb20bf3ca390851a8df68850d2be5}{\index{repast\-::\-Point@{repast\-::\-Point}!Point@{Point}}
+\index{Point@{Point}!repast::Point@{repast\-::\-Point}}
+\subsubsection[{Point}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ {\bf repast\-::\-Point}$<$ T $>$\-::{\bf Point} (
+\begin{DoxyParamCaption}
+\item[{std\-::vector$<$ T $>$}]{coordinates}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_point_a9dadb20bf3ca390851a8df68850d2be5}
+
+
+Creates a multi-\/dimensional point with the specified values. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em coordinates} & the coordinate values of the point. The first element will be x, the second y and so on. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_point_a8b7e9df41c4aa2d7387138a404fc3982}{\index{repast\-::\-Point@{repast\-::\-Point}!add@{add}}
+\index{add@{add}!repast::Point@{repast\-::\-Point}}
+\subsubsection[{add}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ void {\bf repast\-::\-Point}$<$ T $>$\-::add (
+\begin{DoxyParamCaption}
+\item[{const {\bf Point}$<$ T $>$ \&}]{pt}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_point_a8b7e9df41c4aa2d7387138a404fc3982}
+
+
+Adds the specified Grid\-Point to this Grid\-Point. 
+
+This Grid\-Point contains the result.
+
+
+\begin{DoxyExceptions}{Exceptions}
+{\em invalid\-\_\-argument} & exception if the pt doesn't have the same number of dimensions as this Grid\-Point. \\
+\hline
+\end{DoxyExceptions}
+\hypertarget{classrepast_1_1_point_aec55ad9f0415bfa707daf019328514ed}{\index{repast\-::\-Point@{repast\-::\-Point}!begin@{begin}}
+\index{begin@{begin}!repast::Point@{repast\-::\-Point}}
+\subsubsection[{begin}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ const\-\_\-iterator {\bf repast\-::\-Point}$<$ T $>$\-::begin (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_point_aec55ad9f0415bfa707daf019328514ed}
+
+
+Gets the start of an iterator over the coordinates of this point. 
+
+\begin{DoxyReturn}{Returns}
+the start of an iterator over the coordinates of this point. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_point_ac821ebc5c69d6bf8ab132babddcbb864}{\index{repast\-::\-Point@{repast\-::\-Point}!coords@{coords}}
+\index{coords@{coords}!repast::Point@{repast\-::\-Point}}
+\subsubsection[{coords}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ const std\-::vector$<$T$>$\& {\bf repast\-::\-Point}$<$ T $>$\-::coords (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_point_ac821ebc5c69d6bf8ab132babddcbb864}
+
+
+Gets the coordinates of this point as a vector. 
+
+\begin{DoxyReturn}{Returns}
+a vector containing the coordinates of this point. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_point_a6c7ba452e7c41d28216ed7a7abfb623a}{\index{repast\-::\-Point@{repast\-::\-Point}!copy@{copy}}
+\index{copy@{copy}!repast::Point@{repast\-::\-Point}}
+\subsubsection[{copy}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ void {\bf repast\-::\-Point}$<$ T $>$\-::copy (
+\begin{DoxyParamCaption}
+\item[{std\-::vector$<$ T $>$ \&}]{out}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1_point_a6c7ba452e7c41d28216ed7a7abfb623a}
+
+
+Copies the point into the specified vector. 
+
+Assumes the array is the same length as this Grid\-Point.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt out}  & {\em the} & vector to copy the point coordinates into \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_point_ac872326f55cdbfa5106d430bea6d959c}{\index{repast\-::\-Point@{repast\-::\-Point}!dimension\-Count@{dimension\-Count}}
+\index{dimension\-Count@{dimension\-Count}!repast::Point@{repast\-::\-Point}}
+\subsubsection[{dimension\-Count}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ size\-\_\-t {\bf repast\-::\-Point}$<$ T $>$\-::dimension\-Count (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_point_ac872326f55cdbfa5106d430bea6d959c}
+
+
+Gets the number of dimensions of this point. 
+
+\begin{DoxyReturn}{Returns}
+the number of dimensions of this point. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_point_a4859ae010bfd59c8c37283d8af58b160}{\index{repast\-::\-Point@{repast\-::\-Point}!end@{end}}
+\index{end@{end}!repast::Point@{repast\-::\-Point}}
+\subsubsection[{end}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ const\-\_\-iterator {\bf repast\-::\-Point}$<$ T $>$\-::end (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_point_a4859ae010bfd59c8c37283d8af58b160}
+
+
+Gets the end of an iterator over the coordinates of this point. 
+
+\begin{DoxyReturn}{Returns}
+the end of an iterator over the coordinates of this point. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_point_a22a3eab287df785225791d1d1a75c89c}{\index{repast\-::\-Point@{repast\-::\-Point}!get\-Coordinate@{get\-Coordinate}}
+\index{get\-Coordinate@{get\-Coordinate}!repast::Point@{repast\-::\-Point}}
+\subsubsection[{get\-Coordinate}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T {\bf repast\-::\-Point}$<$ T $>$\-::get\-Coordinate (
+\begin{DoxyParamCaption}
+\item[{int}]{coord\-Index}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1_point_a22a3eab287df785225791d1d1a75c89c}
+
+
+Gets the coodinate of the point in the specified dimension. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em coord\-Index} & the dimension of the point to get the coordinate for. X is the first, y is the second and so on.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the coordinate of the point in the specified dimension.
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em an} & out\-\_\-of\-\_\-range exception if this Grid\-Point has doesn't have the specified dimension. \\
+\hline
+\end{DoxyExceptions}
+\hypertarget{classrepast_1_1_point_af985d58e3c8ccd00e54dd46fc71b41b2}{\index{repast\-::\-Point@{repast\-::\-Point}!get\-X@{get\-X}}
+\index{get\-X@{get\-X}!repast::Point@{repast\-::\-Point}}
+\subsubsection[{get\-X}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T {\bf repast\-::\-Point}$<$ T $>$\-::get\-X (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1_point_af985d58e3c8ccd00e54dd46fc71b41b2}
+
+
+Gets the x coordinate of the point. 
+
+\begin{DoxyReturn}{Returns}
+the x coordinate of the point. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_point_ac4c09bef3c9be3b69432da55da2c7c57}{\index{repast\-::\-Point@{repast\-::\-Point}!get\-Y@{get\-Y}}
+\index{get\-Y@{get\-Y}!repast::Point@{repast\-::\-Point}}
+\subsubsection[{get\-Y}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T {\bf repast\-::\-Point}$<$ T $>$\-::get\-Y (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1_point_ac4c09bef3c9be3b69432da55da2c7c57}
+
+
+Gets the y coordinate of the point. 
+
+\begin{DoxyReturn}{Returns}
+the y coordinate of the point.
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em an} & out\-\_\-of\-\_\-range exception if this Grid\-Point has less than 2 dimensions. \\
+\hline
+\end{DoxyExceptions}
+\hypertarget{classrepast_1_1_point_a2abcd532878f05b30961306b790664e3}{\index{repast\-::\-Point@{repast\-::\-Point}!get\-Z@{get\-Z}}
+\index{get\-Z@{get\-Z}!repast::Point@{repast\-::\-Point}}
+\subsubsection[{get\-Z}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T {\bf repast\-::\-Point}$<$ T $>$\-::get\-Z (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1_point_a2abcd532878f05b30961306b790664e3}
+
+
+Gets the z coordinate of the point. 
+
+\begin{DoxyReturn}{Returns}
+the z coordinate of the point.
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em an} & out\-\_\-of\-\_\-range exception if this Grid\-Point has less than 3 dimensions. \\
+\hline
+\end{DoxyExceptions}
+\hypertarget{classrepast_1_1_point_a0ac1a3a42fc61f022d706a05238e98f1}{\index{repast\-::\-Point@{repast\-::\-Point}!operator\mbox{[}$\,$\mbox{]}@{operator[]}}
+\index{operator\mbox{[}$\,$\mbox{]}@{operator[]}!repast::Point@{repast\-::\-Point}}
+\subsubsection[{operator[]}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ const T\& {\bf repast\-::\-Point}$<$ T $>$\-::operator\mbox{[}$\,$\mbox{]} (
+\begin{DoxyParamCaption}
+\item[{size\-\_\-t}]{index}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_point_a0ac1a3a42fc61f022d706a05238e98f1}
+
+
+Gets the coordinate value at the specified index. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & the dimension of the point to get the coordinate for. X is the first, y is the second and so on.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the coordinate of the point in the specified dimension. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_point_a1214b8f5293b222ff2bb115fe30127c2}{\index{repast\-::\-Point@{repast\-::\-Point}!operator\mbox{[}$\,$\mbox{]}@{operator[]}}
+\index{operator\mbox{[}$\,$\mbox{]}@{operator[]}!repast::Point@{repast\-::\-Point}}
+\subsubsection[{operator[]}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ T\& {\bf repast\-::\-Point}$<$ T $>$\-::operator\mbox{[}$\,$\mbox{]} (
+\begin{DoxyParamCaption}
+\item[{size\-\_\-t}]{index}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_point_a1214b8f5293b222ff2bb115fe30127c2}
+
+
+Gets the coordinate value at the specified index. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & the dimension of the point to get the coordinate for. X is the first, y is the second and so on.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the coordinate of the point in the specified dimension. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Point.\-h\end{DoxyCompactItemize}

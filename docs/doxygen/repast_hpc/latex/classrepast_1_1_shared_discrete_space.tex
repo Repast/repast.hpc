@@ -1,0 +1,117 @@
+\hypertarget{classrepast_1_1_shared_discrete_space}{\section{repast\-:\-:Shared\-Discrete\-Space$<$ T, G\-P\-Transformer, Adder $>$ Class Template Reference}
+\label{classrepast_1_1_shared_discrete_space}\index{repast\-::\-Shared\-Discrete\-Space$<$ T, G\-P\-Transformer, Adder $>$@{repast\-::\-Shared\-Discrete\-Space$<$ T, G\-P\-Transformer, Adder $>$}}
+}
+
+
+Discrete matrix-\/like \hyperlink{classrepast_1_1_shared_base_grid}{Shared\-Base\-Grid} implementation.  
+
+
+
+
+{\ttfamily \#include $<$Shared\-Discrete\-Space.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Shared\-Discrete\-Space$<$ T, G\-P\-Transformer, Adder $>$\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=6.000000cm]{classrepast_1_1_shared_discrete_space}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_shared_discrete_space_a18f05b05de925096015b5279a92a7737}{{\bfseries Shared\-Discrete\-Space} (std\-::string \hyperlink{classrepast_1_1_projection_ab60a0ab4f584685780307d7431b61800}{name}, \hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} grid\-Dims, std\-::vector$<$ int $>$ process\-Dims, int buffer, boost\-::mpi\-::communicator $\ast$world)}\label{classrepast_1_1_shared_discrete_space_a18f05b05de925096015b5279a92a7737}
+
+\item 
+{\footnotesize template$<$typename Agent\-Content , typename Provider , typename Agents\-Creator $>$ }\\void \hyperlink{classrepast_1_1_shared_discrete_space_aadd9357f2c149899b06eea5bf0a73192}{synch\-Buffer} (\hyperlink{classrepast_1_1_shared_context}{Shared\-Context}$<$ T $>$ \&context, Provider \&provider, Agents\-Creator \&creator)
+\begin{DoxyCompactList}\small\item\em Synchronize the buffer area of this \hyperlink{classrepast_1_1_shared_discrete_space}{Shared\-Discrete\-Space} with its neighbors. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_shared_discrete_space_a1f690e82e6b7ea6a279db020e12b4d21}{get\-Agents\-To\-Push} (std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&agents\-To\-Test, std\-::map$<$ int, std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ $>$ \&agents\-To\-Push)
+\begin{DoxyCompactList}\small\item\em Given a set of agents, gets the agents that this projection implementation must 'push' to other processes. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_shared_discrete_space_a0ece724d63d94ee99c3f4312cef656ff}{{\footnotesize template$<$typename Agent\-Content , typename Content\-Provider , typename Content\-Receiver $>$ }\\void {\bfseries synch\-Buffer} (\hyperlink{classrepast_1_1_shared_context}{Shared\-Context}$<$ T $>$ \&context, Content\-Provider \&provider, Content\-Receiver \&receiver)}\label{classrepast_1_1_shared_discrete_space_a0ece724d63d94ee99c3f4312cef656ff}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_shared_discrete_space_a76b6b3583d899b77eb1f78b46c268db2}{virtual void {\bfseries synch\-Move\-To} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id, const \hyperlink{classrepast_1_1_point}{Point}$<$ int $>$ \&pt)}\label{classrepast_1_1_shared_discrete_space_a76b6b3583d899b77eb1f78b46c268db2}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T, typename G\-P\-Transformer, typename Adder$>$class repast\-::\-Shared\-Discrete\-Space$<$ T, G\-P\-Transformer, Adder $>$}
+
+Discrete matrix-\/like \hyperlink{classrepast_1_1_shared_base_grid}{Shared\-Base\-Grid} implementation. 
+
+This primarily adds the buffer synchronization appropriate for this type. Default templated typical Shared\-Grid types are defined in Shared\-Grids.
+
+\begin{DoxySeeAlso}{See Also}
+\hyperlink{classrepast_1_1_shared_base_grid}{Shared\-Base\-Grid} for more details.
+\end{DoxySeeAlso}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & the type of objects contained by this \hyperlink{classrepast_1_1_base_grid}{Base\-Grid} \\
+\hline
+{\em G\-P\-Transformer} & transforms cell points according to the topology (e.\-g. periodic) of the \hyperlink{classrepast_1_1_base_grid}{Base\-Grid}. \\
+\hline
+{\em Adder} & determines how objects are added to the grid from its associated context. \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_shared_discrete_space_a1f690e82e6b7ea6a279db020e12b4d21}{\index{repast\-::\-Shared\-Discrete\-Space@{repast\-::\-Shared\-Discrete\-Space}!get\-Agents\-To\-Push@{get\-Agents\-To\-Push}}
+\index{get\-Agents\-To\-Push@{get\-Agents\-To\-Push}!repast::SharedDiscreteSpace@{repast\-::\-Shared\-Discrete\-Space}}
+\subsubsection[{get\-Agents\-To\-Push}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename G\-P\-Transformer , typename Adder $>$ void {\bf repast\-::\-Shared\-Discrete\-Space}$<$ T, G\-P\-Transformer, Adder $>$\-::get\-Agents\-To\-Push (
+\begin{DoxyParamCaption}
+\item[{std\-::set$<$ {\bf Agent\-Id} $>$ \&}]{agents\-To\-Test, }
+\item[{std\-::map$<$ int, std\-::set$<$ {\bf Agent\-Id} $>$ $>$ \&}]{agents\-To\-Push}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_shared_discrete_space_a1f690e82e6b7ea6a279db020e12b4d21}
+
+
+Given a set of agents, gets the agents that this projection implementation must 'push' to other processes. 
+
+Generally spaces must push agents that are in 'buffer zones' and graphs must push local agents that are vertices to master edges where the other vertex is non-\/ local. The results are returned per-\/process in the agents\-To\-Push map. 
+
+Reimplemented from \hyperlink{classrepast_1_1_shared_base_grid_ab1486e7698288efc1218653d4e5e1e15}{repast\-::\-Shared\-Base\-Grid$<$ T, G\-P\-Transformer, Adder, int $>$}.
+
+\hypertarget{classrepast_1_1_shared_discrete_space_aadd9357f2c149899b06eea5bf0a73192}{\index{repast\-::\-Shared\-Discrete\-Space@{repast\-::\-Shared\-Discrete\-Space}!synch\-Buffer@{synch\-Buffer}}
+\index{synch\-Buffer@{synch\-Buffer}!repast::SharedDiscreteSpace@{repast\-::\-Shared\-Discrete\-Space}}
+\subsubsection[{synch\-Buffer}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename G\-P\-Transformer , typename Adder $>$ template$<$typename Agent\-Content , typename Provider , typename Agents\-Creator $>$ void {\bf repast\-::\-Shared\-Discrete\-Space}$<$ T, G\-P\-Transformer, Adder $>$\-::synch\-Buffer (
+\begin{DoxyParamCaption}
+\item[{{\bf Shared\-Context}$<$ T $>$ \&}]{context, }
+\item[{Provider \&}]{provider, }
+\item[{Agents\-Creator \&}]{creator}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_discrete_space_aadd9357f2c149899b06eea5bf0a73192}
+
+
+Synchronize the buffer area of this \hyperlink{classrepast_1_1_shared_discrete_space}{Shared\-Discrete\-Space} with its neighbors. 
+
+This will copy the buffer area from the neighbors into this \hyperlink{classrepast_1_1_shared_discrete_space}{Shared\-Discrete\-Space}. This should be called immediately after init\-Synch\-Buffer.
+
+
+\begin{DoxyParams}{Parameters}
+{\em context} & the \hyperlink{classrepast_1_1_shared_context}{Shared\-Context} that contains the agents in this \hyperlink{classrepast_1_1_shared_discrete_space}{Shared\-Discrete\-Space}. \\
+\hline
+{\em provider} & a class that provides Agent\-Content for the agents being buffered in neighboring grids. \\
+\hline
+{\em creator} & a class that creates a agents of type T when given Agent\-Content.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & the type of agent in this \hyperlink{classrepast_1_1_shared_discrete_space}{Shared\-Discrete\-Space} \\
+\hline
+{\em Agent\-Content} & the serializable struct or class that describes the state of agents. \\
+\hline
+{\em Provider} & a class that provides Agent\-Content for aagents, implementing void provide\-Content(\-T$\ast$ agent, std\-::vector$<$\-Agent\-Content$>$\& out) \\
+\hline
+{\em Agents\-Creator} & a class that creates agents given Agent\-Content, implementing void create\-Agents(std\-::vector$<$\-Agent\-Content$>$\& contents, std\-::vector$<$\-T$\ast$$>$\& out). Creating agents from the vector of content and placing them in out. \\
+\hline
+\end{DoxyTemplParams}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Shared\-Discrete\-Space.\-h\end{DoxyCompactItemize}

@@ -352,6 +352,15 @@ public:
 
 #if !defined OMIT_IMPORTER_EXPORTER_COUNT_LIST || \
     !defined OMIT_IMPORTER_EXPORTER_COUNT_SET
+
+/**
+ * Importer that maintains a simple count of the agents being sent
+ * from each sending process. When the count for a given process is
+ * zero no mpi 'receive' is created for that process; when the count is
+ * nonzero, a 'receive' is created. Note that no record
+ * of which agents are requested is kept, only the count of
+ * agents requested is kept.
+ */
 class Importer_COUNT: public AbstractImporter{
 
 private:
@@ -373,6 +382,21 @@ public:
 #endif
 
 #ifndef OMIT_IMPORTER_EXPORTER_LIST
+
+/**
+ * Importer that maintains a list of the agents being sent from
+ * each sending process. If there are no agents being sent the
+ * size of the list will be zero and no mpi 'receive' will be
+ * created; for non-zero-length lists a single mpi 'receiver'
+ * is created. An agent that is requested twice is
+ * placed in the list twice. Semantically this means that an
+ * agent cancellation will remove the agent from the list exactly
+ * once, but also that removing an agent from the list who is
+ * not found in the list will not reduce the list size (c.f. the
+ * 'count' version, where every cancellation reduces the count
+ * whether the specific agent being canceled was ever requested
+ * at all).
+ */
 class Importer_LIST: public AbstractImporter{
 
 private:
@@ -420,6 +444,17 @@ public:
 
 
 #ifndef OMIT_IMPORTER_EXPORTER_SET
+
+/**
+ * Importer that maintains a set of agents being sent from
+ * each sending process. Note that because this is a set,
+ * an agent may appear in it only once, no matter how many
+ * times it is requested. Canceling the agent will remove
+ * it from the set, even if the agent was requested multiple
+ * duplicate times. If the set for a given process is size
+ * zero, no mpi 'receive' will be created; if the set has any
+ * elements, an mpi 'receive' will be created.
+ */
 class Importer_SET: public AbstractImporter{
 private:
   std::map<int, std::set<AgentId>* > sources;
@@ -460,6 +495,18 @@ public:
 
 
 #ifndef OMIT_IMPORTER_EXPORTER_MAP_int
+/**
+ * Importer that maintains a map of agents being sent from
+ * each sending process and a count of the number of times
+ * that agent was requested. This is semantically equivalent
+ * to a 'LIST' type, but may be more or less appropriate
+ * in specific contexts based on performance. Duplicate
+ * requests for an agent increment the count associated with
+ * that agent; canceling a request reduces that count.
+ * If a given sending process has no agents being shared, no
+ * mpi 'receive' will be created, but if there are agents
+ * being shared, a 'receive' will be created.
+ */
 class Importer_MAP_int: public AbstractImporter{
 private:
   std::map<int, std::map<AgentId, int>* > sources;
@@ -523,10 +570,9 @@ public:
 static std::vector<AgentStatus>    emptyStatus;
 
 /**
- * The 'Exporter' class is responsible for keeping a list
- * of the agents that have been requested by other processes
- * and whose data is to be sent to them when agents' states
- * are synchronized, and for packaging and sending
+ * Responsible for keeping a list of the agents that have
+ * been requested by other processes for which data is to be sent
+ * when agents' states are synchronized, and for packaging and sending
  * that data during synchronization. It is also responsible
  * for exchanging this 'export' information when any of the
  * agents that it is exporting are being moved to other
@@ -659,6 +705,15 @@ public:
     !defined OMIT_IMPORTER_EXPORTER_LIST       || \
     !defined OMIT_IMPORTER_EXPORTER_SET        || \
     !defined OMIT_IMPORTER_EXPORTER_MAP_int
+
+/**
+ * Maintains a list of agents being exported for each receiving
+ * process. An agent that is requested more than once will
+ * appear on this list more than once; canceling an agent just
+ * once removes only one of its appearances on this list.
+ * A 'send' will be created for a receiving process only if that
+ * process has entries in the list.
+ */
 class Exporter_LIST: public AbstractExporter{
 private:
 
@@ -679,6 +734,15 @@ public:
 
 
 #ifndef OMIT_IMPORTER_EXPORTER_COUNT_SET
+
+/**
+ * Maintains a set of agents being exported for each receiving
+ * process. An agent that is requested more than once will
+ * appear in this set only once; canceling an agent just
+ * once removes it from this set. A 'send' will be created
+ * for a receiving process only if that process has entries in
+ * the list.
+ */
 class Exporter_SET: public AbstractExporter{
 
 public:
@@ -698,6 +762,13 @@ public:
 
 
 /* Importer and Exporter */
+
+/**
+ * Wraps and Importer and an Exporter so that both use
+ * commensurate semantics and all imports and exports
+ * are balanced. Most methods are pass-through to the underlying
+ * importer or exporter.
+ */
 class AbstractImporterExporter{
 
 protected:
@@ -738,7 +809,9 @@ public:
   virtual void exchangeAgentStatusUpdates(boost::mpi::communicator world, std::vector<std::vector<AgentStatus>* >& statusUpdates);
 
   /**
-   * Returns the version of this AbstractImporterExporter
+   * Returns the version of this AbstractImporterExporter. The version is a string
+   * that indicates the semantic version of the importer and the exporter (e.g.
+   * "COUNT_LIST")
    */
   virtual std::string version() = 0;
 
@@ -765,6 +838,12 @@ public:
 /* Normal variants, with semantics defined by which importer/exporter combination is used */
 
 #ifndef OMIT_IMPORTER_EXPORTER_COUNT_LIST
+
+/**
+ * An implementation of AbstractImporterExporter that uses
+ * an importer of type 'Importer_COUNT' and an exporter of
+ * type 'Exporter_LIST'.
+ */
 class ImporterExporter_COUNT_LIST: public AbstractImporterExporter{
 public:
   ImporterExporter_COUNT_LIST();
@@ -781,6 +860,11 @@ public:
 #endif
 
 #ifndef OMIT_IMPORTER_EXPORTER_COUNT_SET
+/**
+ * An implementation of AbstractImporterExporter that uses
+ * an importer of type 'Importer_COUNT' and an exporter of
+ * type 'Exporter_SET'.
+ */
 class ImporterExporter_COUNT_SET: public AbstractImporterExporter{
 public:
   ImporterExporter_COUNT_SET();
@@ -796,6 +880,12 @@ public:
 #endif
 
 #ifndef OMIT_IMPORTER_EXPORTER_LIST
+
+/**
+ * An implementation of AbstractImporterExporter that uses
+ * an importer of type 'Importer_LIST' and an exporter of
+ * type 'Exporter_LIST'.
+ */
 class ImporterExporter_LIST: public AbstractImporterExporter{
 public:
   ImporterExporter_LIST();
@@ -811,6 +901,11 @@ public:
 #endif
 
 #ifndef OMIT_IMPORTER_EXPORTER_SET
+/**
+ * An implementation of AbstractImporterExporter that uses
+ * an importer of type 'Importer_SET' and an exporter of
+ * type 'Exporter_LIST'.
+ */
 class ImporterExporter_SET: public AbstractImporterExporter{
 public:
   ImporterExporter_SET();
@@ -826,6 +921,11 @@ public:
 #endif
 
 #ifndef OMIT_IMPORTER_EXPORTER_MAP_int
+/**
+ * An implementation of AbstractImporterExporter that uses
+ * an importer of type 'Importer_MAP_int' and an exporter of
+ * type 'Exporter_LIST'.
+ */
 class ImporterExporter_MAP_int: public AbstractImporterExporter{
 public:
   ImporterExporter_MAP_int();
@@ -844,6 +944,15 @@ public:
 /* "BY SET" variant; allows multiple sets of shared agents to be managed independently */
 
 #ifdef SHARE_AGENTS_BY_SET
+
+/**
+ * Implementation of the AbstractImporterExporter class that wraps a
+ * collection of AbstractImporterExporter objects that can be referenced
+ * by name. Each object can contain a different collection of agents,
+ * which were requested with an associated name for the importer/exporter
+ * to be used. They can then be updated separately, allowing for improved
+ * performance under certain circumstances.
+ */
 class ImporterExporter_BY_SET: public AbstractImporterExporter{
 
 private:

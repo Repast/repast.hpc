@@ -1,0 +1,144 @@
+\hypertarget{classrepast_1_1_edge_exporter}{\section{repast\-:\-:Edge\-Exporter$<$ E $>$ Class Template Reference}
+\label{classrepast_1_1_edge_exporter}\index{repast\-::\-Edge\-Exporter$<$ E $>$@{repast\-::\-Edge\-Exporter$<$ E $>$}}
+}
+
+
+{\itshape D\-E\-P\-R\-E\-C\-A\-T\-E\-D} Handles exporting edges created locally between one or more non-\/local agents.  
+
+
+
+
+{\ttfamily \#include $<$Shared\-Network.\-h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_edge_exporter_a035179ca3839797ba3b3dec950e5f029}{typedef std\-::map$<$ int, \\*
+std\-::vector$<$ boost\-::shared\-\_\-ptr\\*
+$<$ E $>$ $>$ $\ast$ $>$\-::iterator {\bfseries Edge\-Map\-Iterator}}\label{classrepast_1_1_edge_exporter_a035179ca3839797ba3b3dec950e5f029}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_edge_exporter_ae987c31a445fcbee65ec409ae6f4306c}{void {\bfseries add\-Agent\-Export\-Request} (int export\-To, const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)}\label{classrepast_1_1_edge_exporter_ae987c31a445fcbee65ec409ae6f4306c}
+
+\item 
+\hypertarget{classrepast_1_1_edge_exporter_a4d60a45bb6ea9de3ba989f7708fdedb8}{void \hyperlink{classrepast_1_1_edge_exporter_a4d60a45bb6ea9de3ba989f7708fdedb8}{edge\-Removed} (boost\-::shared\-\_\-ptr$<$ E $>$ edge, std\-::map$<$ int, std\-::vector$<$ std\-::pair$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}, \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ $>$ $>$ \&remove\-Map)}\label{classrepast_1_1_edge_exporter_a4d60a45bb6ea9de3ba989f7708fdedb8}
+
+\begin{DoxyCompactList}\small\item\em Whether or not this is exported the specified edge. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_edge_exporter_a1799f762f412c81d2c60cc0337474e09}{void \hyperlink{classrepast_1_1_edge_exporter_a1799f762f412c81d2c60cc0337474e09}{add\-Edge} (boost\-::shared\-\_\-ptr$<$ E $>$ edge)}\label{classrepast_1_1_edge_exporter_a1799f762f412c81d2c60cc0337474e09}
+
+\begin{DoxyCompactList}\small\item\em Tests if the edge needs to be exported and if so adds it to the collection of edges to be exported. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_edge_exporter_ab748591b5dccdda31042a8ba989fd1a2}{gather\-Receivers} (std\-::vector$<$ int $>$ \&out)
+\begin{DoxyCompactList}\small\item\em Gathers the receivers into out. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_edge_exporter_a14848eca966380f353a30792bc79fab9}{void \hyperlink{classrepast_1_1_edge_exporter_a14848eca966380f353a30792bc79fab9}{gather\-Exporters} (std\-::vector$<$ int $>$ \&out)}\label{classrepast_1_1_edge_exporter_a14848eca966380f353a30792bc79fab9}
+
+\begin{DoxyCompactList}\small\item\em Gathers the procs that this will send export requests to into out. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_edge_exporter_a8c4c03a3c019fddfbdd50a0f18720da0}{send\-Export\-Requests} (boost\-::mpi\-::communicator \&comm, std\-::vector$<$ boost\-::mpi\-::request $>$ \&requests)
+\begin{DoxyCompactList}\small\item\em Send the export requests. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_edge_exporter_af90d243e08c23ac3c54d285e43cf3610}{std\-::map$<$ int, std\-::vector\\*
+$<$ boost\-::shared\-\_\-ptr$<$ E $>$ $>$ $\ast$ $>$ \& \hyperlink{classrepast_1_1_edge_exporter_af90d243e08c23ac3c54d285e43cf3610}{get\-Edges\-To\-Export} ()}\label{classrepast_1_1_edge_exporter_af90d243e08c23ac3c54d285e43cf3610}
+
+\begin{DoxyCompactList}\small\item\em Gets the edges to export. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_edge_exporter_af5938ec2539d124780a95064b109a96b}{std\-::map$<$ int, std\-::vector\\*
+$<$ boost\-::shared\-\_\-ptr$<$ E $>$ $>$ $\ast$ $>$ \& \hyperlink{classrepast_1_1_edge_exporter_af5938ec2539d124780a95064b109a96b}{get\-Exported\-Edges} ()}\label{classrepast_1_1_edge_exporter_af5938ec2539d124780a95064b109a96b}
+
+\begin{DoxyCompactList}\small\item\em Gets the edges this process is exporting. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_edge_exporter_a3ced9c3a093fe4666f9c82d4bd2c6d83}{void \hyperlink{classrepast_1_1_edge_exporter_a3ced9c3a093fe4666f9c82d4bd2c6d83}{clean\-Up} ()}\label{classrepast_1_1_edge_exporter_a3ced9c3a093fe4666f9c82d4bd2c6d83}
+
+\begin{DoxyCompactList}\small\item\em Cleans up after exported edges have been sent and received. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename Vertex , typename Edge , typename Agent\-Content , typename Edge\-Content , typename Edge\-Manager , typename Agent\-Creator $>$ }\\void \hyperlink{classrepast_1_1_edge_exporter_aab38d29bc953ebb66d39ecb27f392acf}{create\-Complementary\-Edges} (\hyperlink{classrepast_1_1_shared_network}{Shared\-Network}$<$ \hyperlink{classrepast_1_1_vertex}{Vertex}, Edge, Edge\-Content, Edge\-Manager $>$ $\ast$net, \hyperlink{classrepast_1_1_shared_context}{Shared\-Context}$<$ \hyperlink{classrepast_1_1_vertex}{Vertex} $>$ \&context, Edge\-Manager \&edge\-Manager, Agent\-Creator \&creator)
+\begin{DoxyCompactList}\small\item\em Notifies other processes of any edges that have been created between nodes on this process and imported nodes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename E$>$class repast\-::\-Edge\-Exporter$<$ E $>$}
+
+{\itshape D\-E\-P\-R\-E\-C\-A\-T\-E\-D} Handles exporting edges created locally between one or more non-\/local agents. 
+
+This also coordinates notification of which processes should be exporting to which in the case of edges where a node is foreign to the sending and receiving process.
+
+All this is done internally in the \hyperlink{classrepast_1_1_shared_network}{Shared\-Network}.
+
+\begin{DoxyRefDesc}{Deprecated}
+\item[\hyperlink{deprecated__deprecated000005}{Deprecated}]As of Version 2.\-0 replaced by \hyperlink{classrepast_1_1_projection_info_packet}{Projection\-Info\-Packet} \end{DoxyRefDesc}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_edge_exporter_ab748591b5dccdda31042a8ba989fd1a2}{\index{repast\-::\-Edge\-Exporter@{repast\-::\-Edge\-Exporter}!gather\-Receivers@{gather\-Receivers}}
+\index{gather\-Receivers@{gather\-Receivers}!repast::EdgeExporter@{repast\-::\-Edge\-Exporter}}
+\subsubsection[{gather\-Receivers}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename E $>$ void {\bf repast\-::\-Edge\-Exporter}$<$ E $>$\-::gather\-Receivers (
+\begin{DoxyParamCaption}
+\item[{std\-::vector$<$ int $>$ \&}]{out}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_edge_exporter_ab748591b5dccdda31042a8ba989fd1a2}
+
+
+Gathers the receivers into out. 
+
+A receiver is a process this \hyperlink{classrepast_1_1_edge_exporter}{Edge\-Exporter} should send an edge to. \hypertarget{classrepast_1_1_edge_exporter_a8c4c03a3c019fddfbdd50a0f18720da0}{\index{repast\-::\-Edge\-Exporter@{repast\-::\-Edge\-Exporter}!send\-Export\-Requests@{send\-Export\-Requests}}
+\index{send\-Export\-Requests@{send\-Export\-Requests}!repast::EdgeExporter@{repast\-::\-Edge\-Exporter}}
+\subsubsection[{send\-Export\-Requests}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename E $>$ void {\bf repast\-::\-Edge\-Exporter}$<$ E $>$\-::send\-Export\-Requests (
+\begin{DoxyParamCaption}
+\item[{boost\-::mpi\-::communicator \&}]{comm, }
+\item[{std\-::vector$<$ boost\-::mpi\-::request $>$ \&}]{requests}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_edge_exporter_a8c4c03a3c019fddfbdd50a0f18720da0}
+
+
+Send the export requests. 
+
+This does an isend and the resulting requests are placed in the specified vector. 
+
+\subsection{Friends And Related Function Documentation}
+\hypertarget{classrepast_1_1_edge_exporter_aab38d29bc953ebb66d39ecb27f392acf}{\index{repast\-::\-Edge\-Exporter@{repast\-::\-Edge\-Exporter}!create\-Complementary\-Edges@{create\-Complementary\-Edges}}
+\index{create\-Complementary\-Edges@{create\-Complementary\-Edges}!repast::EdgeExporter@{repast\-::\-Edge\-Exporter}}
+\subsubsection[{create\-Complementary\-Edges}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename E$>$ template$<$typename Vertex , typename Edge , typename Agent\-Content , typename Edge\-Content , typename Edge\-Manager , typename Agent\-Creator $>$ void create\-Complementary\-Edges (
+\begin{DoxyParamCaption}
+\item[{{\bf Shared\-Network}$<$ {\bf Vertex}, Edge, Edge\-Content, Edge\-Manager $>$ $\ast$}]{net, }
+\item[{{\bf Shared\-Context}$<$ {\bf Vertex} $>$ \&}]{context, }
+\item[{Edge\-Manager \&}]{edge\-Manager, }
+\item[{Agent\-Creator \&}]{creator}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [friend]}}}\label{classrepast_1_1_edge_exporter_aab38d29bc953ebb66d39ecb27f392acf}
+
+
+Notifies other processes of any edges that have been created between nodes on this process and imported nodes. 
+
+The other process will then create the complimentary edge. For example, if P1 creates an edge between A and B where B resides on P2, then this method will notify P2 to create the incoming edge A-\/$>$B on its copy of B. Any unknown agents will be added to the context. For example, if P2 didn't have a reference to A, then A will be added to P2's context.
+
+
+\begin{DoxyParams}{Parameters}
+{\em net} & the network in which to create the complementary edges or from which to send complementary edges \\
+\hline
+{\em context} & the context that contains the agents in the process \\
+\hline
+{\em edge\-Manager} & creates edges from Edge\-Content and creates Edge\-Content from an edge and a context. \\
+\hline
+{\em creator} & creates agents from Agent\-Content.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em \hyperlink{classrepast_1_1_vertex}{Vertex}} & the vertex (agent) type \\
+\hline
+{\em Edge} & the edge type \\
+\hline
+{\em Agent\-Content} & the serializable struct or class that describes the agent state. It must contain a get\-Id() method that returns the \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} of the agent it describes. \\
+\hline
+{\em Edge\-Content} & the serializable struct or class that describes edge state. At the very least Edge\-Content must contain two public fields source\-Content and target\-Content of type Agent\-Content. These represent the source and target of the edge. \\
+\hline
+{\em Edge\-Manager} & create edges from Edge\-Content and provides Edge\-Content given a context and an edge of type Edge. It must implement void provide\-Edge\-Content(const\-Edge$\ast$ edge, std\-::vector$<$\-Edge\-Content$>$\& edge\-Content) and Edge$\ast$ create\-Edge(repast\-::\-Context$<$\-Vertex$>$\& context, Edge\-Content\& edge); \\
+\hline
+{\em Agent\-Creator} & creates agents from Agent\-Content, implementing the following method Vertex$\ast$ create\-Agent(const\-Agent\-Content\& content); \\
+\hline
+\end{DoxyTemplParams}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Shared\-Network.\-h\end{DoxyCompactItemize}

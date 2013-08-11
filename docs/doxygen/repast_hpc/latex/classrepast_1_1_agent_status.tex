@@ -1,0 +1,154 @@
+\hypertarget{classrepast_1_1_agent_status}{\section{repast\-:\-:Agent\-Status Class Reference}
+\label{classrepast_1_1_agent_status}\index{repast\-::\-Agent\-Status@{repast\-::\-Agent\-Status}}
+}
+
+
+Encapsulates the status (moved or removed) of agent in order to synchronize that status across processes.  
+
+
+
+
+{\ttfamily \#include $<$Agent\-Status.\-h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{classrepast_1_1_agent_status_ab0ec44d1ec040df129f324d0014a743c}{Status} \{ {\bfseries R\-E\-M\-O\-V\-E\-D}, 
+{\bfseries M\-O\-V\-E\-D}
+ \}
+\begin{DoxyCompactList}\small\item\em Enum indicating the status of th agent. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_agent_status_a93ede09e4d9a23cabf104aee32fe8173}{\hyperlink{classrepast_1_1_agent_status_a93ede09e4d9a23cabf104aee32fe8173}{Agent\-Status} ()}\label{classrepast_1_1_agent_status_a93ede09e4d9a23cabf104aee32fe8173}
+
+\begin{DoxyCompactList}\small\item\em No-\/arg constructor for serialization. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_agent_status_a1d03f6ea52fac7810ae1ec022a9a3f63}{Agent\-Status} (\hyperlink{classrepast_1_1_agent_id}{Agent\-Id} id)
+\begin{DoxyCompactList}\small\item\em Creates an \hyperlink{classrepast_1_1_agent_status}{Agent\-Status} indicating the status for the specified agent. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_agent_status_af05d4fd8798e721224f8f5f1ed39dced}{Agent\-Status} (\hyperlink{classrepast_1_1_agent_id}{Agent\-Id} old, \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} new\-Id)
+\begin{DoxyCompactList}\small\item\em Creates an \hyperlink{classrepast_1_1_agent_status}{Agent\-Status} indicating the status for the specified agent and the new id of that agent as result from the change in status. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_agent_status_ab0ec44d1ec040df129f324d0014a743c}{Status} \hyperlink{classrepast_1_1_agent_status_af1a1d334b69e53bdf0d2eb6f36358a15}{get\-Status} () const 
+\begin{DoxyCompactList}\small\item\em Gets the status. \end{DoxyCompactList}\item 
+const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \& \hyperlink{classrepast_1_1_agent_status_af4fd9fa19b3197ac357723c3e6239a38}{get\-Id} () const 
+\begin{DoxyCompactList}\small\item\em Gets the id of the agent that this is the status for. \end{DoxyCompactList}\item 
+const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \& \hyperlink{classrepast_1_1_agent_status_a45538390cbcea380e1389c028fb02df4}{get\-Old\-Id} () const 
+\begin{DoxyCompactList}\small\item\em Gets the old id of the agent that this is the status for, if this contains an old and updated \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. \end{DoxyCompactList}\item 
+const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \& \hyperlink{classrepast_1_1_agent_status_a5cb34086aa619a091038b2ee73fb5e49}{get\-New\-Id} () const 
+\begin{DoxyCompactList}\small\item\em Gets the new updated id of the agent that this is the status for, if this contains an old and updated \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_agent_status_ac98d07dd8f7b70e16ccb9a01abf56b9c}{class {\bfseries boost\-::serialization\-::access}}\label{classrepast_1_1_agent_status_ac98d07dd8f7b70e16ccb9a01abf56b9c}
+
+\item 
+\hypertarget{classrepast_1_1_agent_status_a7c205f6edb7670c044f5bde072b80470}{bool \hyperlink{classrepast_1_1_agent_status_a7c205f6edb7670c044f5bde072b80470}{operator$<$} (const \hyperlink{classrepast_1_1_agent_status}{Agent\-Status} \&one, const \hyperlink{classrepast_1_1_agent_status}{Agent\-Status} \&two)}\label{classrepast_1_1_agent_status_a7c205f6edb7670c044f5bde072b80470}
+
+\begin{DoxyCompactList}\small\item\em Comparison operator that can be used in sorts, etc. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Encapsulates the status (moved or removed) of agent in order to synchronize that status across processes. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1_agent_status_a1d03f6ea52fac7810ae1ec022a9a3f63}{\index{repast\-::\-Agent\-Status@{repast\-::\-Agent\-Status}!Agent\-Status@{Agent\-Status}}
+\index{Agent\-Status@{Agent\-Status}!repast::AgentStatus@{repast\-::\-Agent\-Status}}
+\subsubsection[{Agent\-Status}]{\setlength{\rightskip}{0pt plus 5cm}repast\-::\-Agent\-Status\-::\-Agent\-Status (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Id}}]{id}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_agent_status_a1d03f6ea52fac7810ae1ec022a9a3f63}
+
+
+Creates an \hyperlink{classrepast_1_1_agent_status}{Agent\-Status} indicating the status for the specified agent. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the id of the agent whose status this represents \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_agent_status_af05d4fd8798e721224f8f5f1ed39dced}{\index{repast\-::\-Agent\-Status@{repast\-::\-Agent\-Status}!Agent\-Status@{Agent\-Status}}
+\index{Agent\-Status@{Agent\-Status}!repast::AgentStatus@{repast\-::\-Agent\-Status}}
+\subsubsection[{Agent\-Status}]{\setlength{\rightskip}{0pt plus 5cm}repast\-::\-Agent\-Status\-::\-Agent\-Status (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Id}}]{old, }
+\item[{{\bf Agent\-Id}}]{new\-Id}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_agent_status_af05d4fd8798e721224f8f5f1ed39dced}
+
+
+Creates an \hyperlink{classrepast_1_1_agent_status}{Agent\-Status} indicating the status for the specified agent and the new id of that agent as result from the change in status. 
+
+When an agent moves between processes its current rank may change and thus the current rank part of its id will change.
+
+
+\begin{DoxyParams}{Parameters}
+{\em old} & the id of the agent whose status this represents \\
+\hline
+{\em new\-Id} & the new id of the agent that results from its status change \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_agent_status_af4fd9fa19b3197ac357723c3e6239a38}{\index{repast\-::\-Agent\-Status@{repast\-::\-Agent\-Status}!get\-Id@{get\-Id}}
+\index{get\-Id@{get\-Id}!repast::AgentStatus@{repast\-::\-Agent\-Status}}
+\subsubsection[{get\-Id}]{\setlength{\rightskip}{0pt plus 5cm}const {\bf Agent\-Id}\& repast\-::\-Agent\-Status\-::get\-Id (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_agent_status_af4fd9fa19b3197ac357723c3e6239a38}
+
+
+Gets the id of the agent that this is the status for. 
+
+\begin{DoxyReturn}{Returns}
+the id of the agent that this is the status for. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_agent_status_a5cb34086aa619a091038b2ee73fb5e49}{\index{repast\-::\-Agent\-Status@{repast\-::\-Agent\-Status}!get\-New\-Id@{get\-New\-Id}}
+\index{get\-New\-Id@{get\-New\-Id}!repast::AgentStatus@{repast\-::\-Agent\-Status}}
+\subsubsection[{get\-New\-Id}]{\setlength{\rightskip}{0pt plus 5cm}const {\bf Agent\-Id}\& repast\-::\-Agent\-Status\-::get\-New\-Id (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_agent_status_a5cb34086aa619a091038b2ee73fb5e49}
+
+
+Gets the new updated id of the agent that this is the status for, if this contains an old and updated \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. 
+
+\begin{DoxyReturn}{Returns}
+Gets the new id of the agent that this is the status for, if this contains an old and updated \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_agent_status_a45538390cbcea380e1389c028fb02df4}{\index{repast\-::\-Agent\-Status@{repast\-::\-Agent\-Status}!get\-Old\-Id@{get\-Old\-Id}}
+\index{get\-Old\-Id@{get\-Old\-Id}!repast::AgentStatus@{repast\-::\-Agent\-Status}}
+\subsubsection[{get\-Old\-Id}]{\setlength{\rightskip}{0pt plus 5cm}const {\bf Agent\-Id}\& repast\-::\-Agent\-Status\-::get\-Old\-Id (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_agent_status_a45538390cbcea380e1389c028fb02df4}
+
+
+Gets the old id of the agent that this is the status for, if this contains an old and updated \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. 
+
+\begin{DoxyReturn}{Returns}
+Gets the old id of the agent that this is the status for, if this contains an old and updated \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_agent_status_af1a1d334b69e53bdf0d2eb6f36358a15}{\index{repast\-::\-Agent\-Status@{repast\-::\-Agent\-Status}!get\-Status@{get\-Status}}
+\index{get\-Status@{get\-Status}!repast::AgentStatus@{repast\-::\-Agent\-Status}}
+\subsubsection[{get\-Status}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Status} repast\-::\-Agent\-Status\-::get\-Status (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_agent_status_af1a1d334b69e53bdf0d2eb6f36358a15}
+
+
+Gets the status. 
+
+\begin{DoxyReturn}{Returns}
+the status 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Agent\-Status.\-h\item 
+repast\-\_\-hpc/Agent\-Status.\-cpp\end{DoxyCompactItemize}

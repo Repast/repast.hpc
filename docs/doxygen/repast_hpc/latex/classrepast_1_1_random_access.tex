@@ -1,0 +1,82 @@
+\hypertarget{classrepast_1_1_random_access}{\section{repast\-:\-:Random\-Access$<$ I $>$ Class Template Reference}
+\label{classrepast_1_1_random_access}\index{repast\-::\-Random\-Access$<$ I $>$@{repast\-::\-Random\-Access$<$ I $>$}}
+}
+
+
+Given an iterator and a number of elements, creates a data structure that allows efficient access to those elements.  
+
+
+
+
+{\ttfamily \#include $<$Random.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classrepast_1_1_random_access_a44b227e4aabb796ca349fd01e533855b}{Random\-Access} (I beginning, int size)
+\begin{DoxyCompactList}\small\item\em Constructs a \hyperlink{classrepast_1_1_random_access}{Random\-Access} instance for this iterator. \end{DoxyCompactList}\item 
+I \hyperlink{classrepast_1_1_random_access_a8964a8f07e2efcc26ecf3df1a1ad59b9}{get} (int index)
+\begin{DoxyCompactList}\small\item\em Gets the element at the specified index. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename I$>$class repast\-::\-Random\-Access$<$ I $>$}
+
+Given an iterator and a number of elements, creates a data structure that allows efficient access to those elements. 
+
+Is only valid as long as the iterator is valid.
+
+The basic implementation creates a vector of ordered pairs linking an integer and an iterator pointing to an element in the original iteration set. To find the nth element, the algorithm searches backwards through the list of 'landmarks', finds the highest landmark lower than n, chooses the iterator associated with that landmark, and steps forward until n is reached, adding new landmarks if appropriate. So given landmarks\-:
+
+0 -\/ pointer to element 0 100 -\/ pointer to element 100 200 -\/ pointer to element 200
+
+if the request for element 438 is given, the algorithm will search backward and find landmark 200; it will then step forward, adding landmarks for 300 and 400, until element 438 is reached and returned.
+
+Assuming that requests are evenly distributed, optimum interval for landmarks is the square root of the size of the list, and performance for the algorithm will be in log(size) time.
+
+Note that other implementations are possible-\/ for example, checking if enough memory would allow a completely indexed list. A long-\/term possibility is allowing the user to specify (for example, specify that the algorithm with lowest memory cost be used even though memory is initially available, perhaps because other routines will be filling that memory while this object is in use). 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1_random_access_a44b227e4aabb796ca349fd01e533855b}{\index{repast\-::\-Random\-Access@{repast\-::\-Random\-Access}!Random\-Access@{Random\-Access}}
+\index{Random\-Access@{Random\-Access}!repast::RandomAccess@{repast\-::\-Random\-Access}}
+\subsubsection[{Random\-Access}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename I $>$ {\bf repast\-::\-Random\-Access}$<$ I $>$\-::{\bf Random\-Access} (
+\begin{DoxyParamCaption}
+\item[{I}]{beginning, }
+\item[{int}]{size}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_random_access_a44b227e4aabb796ca349fd01e533855b}
+
+
+Constructs a \hyperlink{classrepast_1_1_random_access}{Random\-Access} instance for this iterator. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em beginning} & \\
+\hline
+{\em size} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_random_access_a8964a8f07e2efcc26ecf3df1a1ad59b9}{\index{repast\-::\-Random\-Access@{repast\-::\-Random\-Access}!get@{get}}
+\index{get@{get}!repast::RandomAccess@{repast\-::\-Random\-Access}}
+\subsubsection[{get}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename I $>$ I {\bf repast\-::\-Random\-Access}$<$ I $>$\-::get (
+\begin{DoxyParamCaption}
+\item[{int}]{index}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_random_access_a8964a8f07e2efcc26ecf3df1a1ad59b9}
+
+
+Gets the element at the specified index. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Random.\-h\end{DoxyCompactItemize}

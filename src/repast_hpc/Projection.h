@@ -56,7 +56,11 @@
 namespace repast {
 
 
-
+/**
+ * Serializable packet that can contain projection
+ * information regardless of the type of projection
+ * (network or spatial).
+ */
 class ProjectionInfoPacket{
   friend class boost::serialization::access;
 
@@ -78,6 +82,10 @@ public:
 
 BOOST_SERIALIZATION_ASSUME_ABSTRACT(ProjectionInfoPacket);
 
+/**
+ * Serializable packet that can contain projection information
+ * of a specific kind using the template parameter.
+ */
 template<typename Datum>
 class SpecializedProjectionInfoPacket: public ProjectionInfoPacket{
   friend class boost::serialization::access;
@@ -111,7 +119,7 @@ template<typename T>
 class Context;
 
 /**
- * Abstract base class for Projections.
+ * Abstract base class for all Projections.
  */
 template<typename T>
 class Projection : public boost::noncopyable {

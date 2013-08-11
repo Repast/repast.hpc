@@ -1,0 +1,123 @@
+\hypertarget{classrepast_1_1_multiple_occupancy}{\section{repast\-:\-:Multiple\-Occupancy$<$ T, G\-P\-Type $>$ Class Template Reference}
+\label{classrepast_1_1_multiple_occupancy}\index{repast\-::\-Multiple\-Occupancy$<$ T, G\-P\-Type $>$@{repast\-::\-Multiple\-Occupancy$<$ T, G\-P\-Type $>$}}
+}
+
+
+Multiple Occupancy cell accessor for accessing the occupants of locations in a \hyperlink{classrepast_1_1_grid}{Grid}.  
+
+
+
+
+{\ttfamily \#include $<$Multiple\-Occupancy.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+T $\ast$ \hyperlink{classrepast_1_1_multiple_occupancy_a114ed9e8e0707ec58c59e00a19c91120}{get} (const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&location) const 
+\begin{DoxyCompactList}\small\item\em Gets the first object found at the specified location. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_multiple_occupancy_a31bc44963d75d962c2bcd19bf35372b4}{get\-All} (const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&location, std\-::vector$<$ T $\ast$ $>$ \&out) const 
+\begin{DoxyCompactList}\small\item\em Gets all the items found at the specified location. \end{DoxyCompactList}\item 
+bool \hyperlink{classrepast_1_1_multiple_occupancy_a693c2e8f70c75aa8f9da75585f3a7d0c}{put} (boost\-::shared\-\_\-ptr$<$ T $>$ \&agent, const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&location)
+\begin{DoxyCompactList}\small\item\em Puts the specified item at the specified location. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_multiple_occupancy_ac22c02d438f233e55b695cf704bfe521}{remove} (boost\-::shared\-\_\-ptr$<$ T $>$ \&agent, const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&location)
+\begin{DoxyCompactList}\small\item\em Removes the specified item from the specified location. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T, typename G\-P\-Type$>$class repast\-::\-Multiple\-Occupancy$<$ T, G\-P\-Type $>$}
+
+Multiple Occupancy cell accessor for accessing the occupants of locations in a \hyperlink{classrepast_1_1_grid}{Grid}. 
+
+Each locations can have multiple occupants.
+
+
+\begin{DoxyParams}{Parameters}
+{\em T} & the type of object in the \hyperlink{classrepast_1_1_grid}{Grid} \\
+\hline
+{\em G\-P\-Type} & the coordinate type of the grid point locations. This must be an int or a double. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_multiple_occupancy_a114ed9e8e0707ec58c59e00a19c91120}{\index{repast\-::\-Multiple\-Occupancy@{repast\-::\-Multiple\-Occupancy}!get@{get}}
+\index{get@{get}!repast::MultipleOccupancy@{repast\-::\-Multiple\-Occupancy}}
+\subsubsection[{get}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename G\-P\-Type$>$ T $\ast$ {\bf repast\-::\-Multiple\-Occupancy}$<$ T, G\-P\-Type $>$\-::get (
+\begin{DoxyParamCaption}
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{location}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1_multiple_occupancy_a114ed9e8e0707ec58c59e00a19c91120}
+
+
+Gets the first object found at the specified location. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em location} & the location to get the object at \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the first object found at the specified location or 0 if there are no objects at the specified location. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_multiple_occupancy_a31bc44963d75d962c2bcd19bf35372b4}{\index{repast\-::\-Multiple\-Occupancy@{repast\-::\-Multiple\-Occupancy}!get\-All@{get\-All}}
+\index{get\-All@{get\-All}!repast::MultipleOccupancy@{repast\-::\-Multiple\-Occupancy}}
+\subsubsection[{get\-All}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename G\-P\-Type$>$ void {\bf repast\-::\-Multiple\-Occupancy}$<$ T, G\-P\-Type $>$\-::get\-All (
+\begin{DoxyParamCaption}
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{location, }
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{out}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1_multiple_occupancy_a31bc44963d75d962c2bcd19bf35372b4}
+
+
+Gets all the items found at the specified location. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em location} & the location to get the items at \\
+\hline
+\mbox{\tt out}  & {\em the} & found items will be returned in this vector \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_multiple_occupancy_a693c2e8f70c75aa8f9da75585f3a7d0c}{\index{repast\-::\-Multiple\-Occupancy@{repast\-::\-Multiple\-Occupancy}!put@{put}}
+\index{put@{put}!repast::MultipleOccupancy@{repast\-::\-Multiple\-Occupancy}}
+\subsubsection[{put}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename G\-P\-Type$>$ bool {\bf repast\-::\-Multiple\-Occupancy}$<$ T, G\-P\-Type $>$\-::put (
+\begin{DoxyParamCaption}
+\item[{boost\-::shared\-\_\-ptr$<$ T $>$ \&}]{agent, }
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{location}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_multiple_occupancy_a693c2e8f70c75aa8f9da75585f3a7d0c}
+
+
+Puts the specified item at the specified location. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em agent} & the item to put \\
+\hline
+{\em location} & the location to put the item at \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_multiple_occupancy_ac22c02d438f233e55b695cf704bfe521}{\index{repast\-::\-Multiple\-Occupancy@{repast\-::\-Multiple\-Occupancy}!remove@{remove}}
+\index{remove@{remove}!repast::MultipleOccupancy@{repast\-::\-Multiple\-Occupancy}}
+\subsubsection[{remove}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T, typename G\-P\-Type$>$ void {\bf repast\-::\-Multiple\-Occupancy}$<$ T, G\-P\-Type $>$\-::remove (
+\begin{DoxyParamCaption}
+\item[{boost\-::shared\-\_\-ptr$<$ T $>$ \&}]{agent, }
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{location}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_multiple_occupancy_ac22c02d438f233e55b695cf704bfe521}
+
+
+Removes the specified item from the specified location. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em agent} & the item to remove \\
+\hline
+{\em location} & the location to remove the item from \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Multiple\-Occupancy.\-h\end{DoxyCompactItemize}

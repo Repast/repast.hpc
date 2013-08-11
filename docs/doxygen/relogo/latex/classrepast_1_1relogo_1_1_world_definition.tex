@@ -1,0 +1,256 @@
+\hypertarget{classrepast_1_1relogo_1_1_world_definition}{\section{repast\-:\-:relogo\-:\-:World\-Definition Class Reference}
+\label{classrepast_1_1relogo_1_1_world_definition}\index{repast\-::relogo\-::\-World\-Definition@{repast\-::relogo\-::\-World\-Definition}}
+}
+
+
+Defines a Relogo world.  
+
+
+
+
+{\ttfamily \#include $<$World\-Definition.\-h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_world_definition_ab1e044b19b6cb8c2e00110e48882afcc}{typedef std\-::vector\\*
+$<$ Projection$<$ \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $>$\\*
+ $\ast$ $>$\-::const\-\_\-iterator \hyperlink{classrepast_1_1relogo_1_1_world_definition_ab1e044b19b6cb8c2e00110e48882afcc}{proj\-\_\-iter}}\label{classrepast_1_1relogo_1_1_world_definition_ab1e044b19b6cb8c2e00110e48882afcc}
+
+\begin{DoxyCompactList}\small\item\em An iterator over pointers to Projection$<$\-Relogo\-Agent$>$. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classrepast_1_1relogo_1_1_world_definition_a6652b63cad8c22f1ad7aac7e5be87587}{World\-Definition} (int \hyperlink{classrepast_1_1relogo_1_1_world_definition_a952ccd4e18c655e3242bdc7d32e062d1}{min\-X}, int \hyperlink{classrepast_1_1relogo_1_1_world_definition_a225c0ad83e73e13e5e5a55226ffa1dbb}{min\-Y}, int \hyperlink{classrepast_1_1relogo_1_1_world_definition_a08eb3fa1fd9d6aed840f713d23b9ff48}{max\-X}, int \hyperlink{classrepast_1_1relogo_1_1_world_definition_a3395109e5074f8bacbbd0bb0fa36f089}{max\-Y}, bool wrapped, int \hyperlink{classrepast_1_1relogo_1_1_world_definition_aa02082d00b9badcf1e3894dbdc08b586}{buffer})
+\begin{DoxyCompactList}\small\item\em Creates a world definition with the specified parameters. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_world_definition_af0dbe714030627a4274831f9bfe7f847}{define\-Network} (std\-::string name, bool directed, \hyperlink{classrepast_1_1relogo_1_1_relogo_link_content_manager}{Relogo\-Link\-Content\-Manager} $\ast$rlcm)
+\begin{DoxyCompactList}\small\item\em Defines a network with the specified name and whether or not the network is directed. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_world_definition_a99d9ec41613be3c9ac9c9604b5030225}{define\-Network} (bool directed, \hyperlink{classrepast_1_1relogo_1_1_relogo_link_content_manager}{Relogo\-Link\-Content\-Manager} $\ast$rlcm)
+\begin{DoxyCompactList}\small\item\em Defines the default network and whether or not the network is directed. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1relogo_1_1_world_definition_ab1e044b19b6cb8c2e00110e48882afcc}{proj\-\_\-iter} \hyperlink{classrepast_1_1relogo_1_1_world_definition_a6e5b0f7af7876b41a5e5a8a69e43f615}{networks\-\_\-begin} () const 
+\begin{DoxyCompactList}\small\item\em Gets the start of an iterator over the network Projections defined in this \hyperlink{classrepast_1_1relogo_1_1_world_definition}{World\-Definition}. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1relogo_1_1_world_definition_ab1e044b19b6cb8c2e00110e48882afcc}{proj\-\_\-iter} \hyperlink{classrepast_1_1relogo_1_1_world_definition_a0bd3c542fb88b54f4c0c821fbf6008c4}{networks\-\_\-end} () const 
+\begin{DoxyCompactList}\small\item\em Gets the end of an iterator over the network Projections defined in this \hyperlink{classrepast_1_1relogo_1_1_world_definition}{World\-Definition}. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1relogo_1_1_world_definition_a952ccd4e18c655e3242bdc7d32e062d1}{min\-X} () const 
+\begin{DoxyCompactList}\small\item\em Gets the minimum x coordinate of the world. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1relogo_1_1_world_definition_a225c0ad83e73e13e5e5a55226ffa1dbb}{min\-Y} () const 
+\begin{DoxyCompactList}\small\item\em Gets the minimum y coordinate of the world. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1relogo_1_1_world_definition_a08eb3fa1fd9d6aed840f713d23b9ff48}{max\-X} () const 
+\begin{DoxyCompactList}\small\item\em Gets the maximum x coordinate of the world. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1relogo_1_1_world_definition_a3395109e5074f8bacbbd0bb0fa36f089}{max\-Y} () const 
+\begin{DoxyCompactList}\small\item\em Gets the maximum y coordinate of the world. \end{DoxyCompactList}\item 
+const Grid\-Dimensions \hyperlink{classrepast_1_1relogo_1_1_world_definition_a9fe209e15771261f76b7b793477e896f}{dimensions} () const 
+\begin{DoxyCompactList}\small\item\em Gets the dimensions of the world expressed as a Grid\-Dimensions. \end{DoxyCompactList}\item 
+bool \hyperlink{classrepast_1_1relogo_1_1_world_definition_a86887fe5eb38619d16388c27aa2688f2}{is\-Wrapped} () const 
+\begin{DoxyCompactList}\small\item\em Gets whether or not the world wraps. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1relogo_1_1_world_definition_aa02082d00b9badcf1e3894dbdc08b586}{buffer} () const 
+\begin{DoxyCompactList}\small\item\em Gets the size of the grid / space buffer. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Defines a Relogo world. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1relogo_1_1_world_definition_a6652b63cad8c22f1ad7aac7e5be87587}{\index{repast\-::relogo\-::\-World\-Definition@{repast\-::relogo\-::\-World\-Definition}!World\-Definition@{World\-Definition}}
+\index{World\-Definition@{World\-Definition}!repast::relogo::WorldDefinition@{repast\-::relogo\-::\-World\-Definition}}
+\subsubsection[{World\-Definition}]{\setlength{\rightskip}{0pt plus 5cm}repast\-::relogo\-::\-World\-Definition\-::\-World\-Definition (
+\begin{DoxyParamCaption}
+\item[{int}]{min\-X, }
+\item[{int}]{min\-Y, }
+\item[{int}]{max\-X, }
+\item[{int}]{max\-Y, }
+\item[{bool}]{wrapped, }
+\item[{int}]{buffer}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_world_definition_a6652b63cad8c22f1ad7aac7e5be87587}
+
+
+Creates a world definition with the specified parameters. 
+
+These parameter will be applied when the world is created using a \hyperlink{classrepast_1_1relogo_1_1_world_creator}{World\-Creator}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em min\-X} & the minimum x coordinate of the world \\
+\hline
+{\em min\-Y} & the minimum y coordinate of the world \\
+\hline
+{\em max\-X} & the maximum x coordinate of the world \\
+\hline
+{\em max\-Y} & the maximum y coordinate of the world \\
+\hline
+{\em wrapped} & whether or not the space is periodic, wrapped as a torus \\
+\hline
+{\em buffer} & the size of the grid and space buffer between process grid and space representations \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1relogo_1_1_world_definition_aa02082d00b9badcf1e3894dbdc08b586}{\index{repast\-::relogo\-::\-World\-Definition@{repast\-::relogo\-::\-World\-Definition}!buffer@{buffer}}
+\index{buffer@{buffer}!repast::relogo::WorldDefinition@{repast\-::relogo\-::\-World\-Definition}}
+\subsubsection[{buffer}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::relogo\-::\-World\-Definition\-::buffer (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_world_definition_aa02082d00b9badcf1e3894dbdc08b586}
+
+
+Gets the size of the grid / space buffer. 
+
+\begin{DoxyReturn}{Returns}
+the size of the grid / space buffer. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_world_definition_af0dbe714030627a4274831f9bfe7f847}{\index{repast\-::relogo\-::\-World\-Definition@{repast\-::relogo\-::\-World\-Definition}!define\-Network@{define\-Network}}
+\index{define\-Network@{define\-Network}!repast::relogo::WorldDefinition@{repast\-::relogo\-::\-World\-Definition}}
+\subsubsection[{define\-Network}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-World\-Definition\-::define\-Network (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{name, }
+\item[{bool}]{directed, }
+\item[{{\bf Relogo\-Link\-Content\-Manager} $\ast$}]{rlcm}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_world_definition_af0dbe714030627a4274831f9bfe7f847}
+
+
+Defines a network with the specified name and whether or not the network is directed. 
+
+The network will use the default Relogo\-Edge.
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & the name of the network \\
+\hline
+{\em directed} & if true, the network will be directed, otherwise it will be undirected \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_world_definition_a99d9ec41613be3c9ac9c9604b5030225}{\index{repast\-::relogo\-::\-World\-Definition@{repast\-::relogo\-::\-World\-Definition}!define\-Network@{define\-Network}}
+\index{define\-Network@{define\-Network}!repast::relogo::WorldDefinition@{repast\-::relogo\-::\-World\-Definition}}
+\subsubsection[{define\-Network}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-World\-Definition\-::define\-Network (
+\begin{DoxyParamCaption}
+\item[{bool}]{directed, }
+\item[{{\bf Relogo\-Link\-Content\-Manager} $\ast$}]{rlcm}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_world_definition_a99d9ec41613be3c9ac9c9604b5030225}
+
+
+Defines the default network and whether or not the network is directed. 
+
+Any network related calls that don't specify a name will use this network. The network will use Relogo\-Edge-\/s by default
+
+
+\begin{DoxyParams}{Parameters}
+{\em directed} & if true, the network will be directed, otherwise it will be undirected \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_world_definition_a9fe209e15771261f76b7b793477e896f}{\index{repast\-::relogo\-::\-World\-Definition@{repast\-::relogo\-::\-World\-Definition}!dimensions@{dimensions}}
+\index{dimensions@{dimensions}!repast::relogo::WorldDefinition@{repast\-::relogo\-::\-World\-Definition}}
+\subsubsection[{dimensions}]{\setlength{\rightskip}{0pt plus 5cm}const Grid\-Dimensions repast\-::relogo\-::\-World\-Definition\-::dimensions (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_world_definition_a9fe209e15771261f76b7b793477e896f}
+
+
+Gets the dimensions of the world expressed as a Grid\-Dimensions. 
+
+\begin{DoxyReturn}{Returns}
+the dimensions of the world expressed as a Grid\-Dimensions. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_world_definition_a86887fe5eb38619d16388c27aa2688f2}{\index{repast\-::relogo\-::\-World\-Definition@{repast\-::relogo\-::\-World\-Definition}!is\-Wrapped@{is\-Wrapped}}
+\index{is\-Wrapped@{is\-Wrapped}!repast::relogo::WorldDefinition@{repast\-::relogo\-::\-World\-Definition}}
+\subsubsection[{is\-Wrapped}]{\setlength{\rightskip}{0pt plus 5cm}bool repast\-::relogo\-::\-World\-Definition\-::is\-Wrapped (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_world_definition_a86887fe5eb38619d16388c27aa2688f2}
+
+
+Gets whether or not the world wraps. 
+
+\begin{DoxyReturn}{Returns}
+true if the world wraps, otherwise false. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_world_definition_a08eb3fa1fd9d6aed840f713d23b9ff48}{\index{repast\-::relogo\-::\-World\-Definition@{repast\-::relogo\-::\-World\-Definition}!max\-X@{max\-X}}
+\index{max\-X@{max\-X}!repast::relogo::WorldDefinition@{repast\-::relogo\-::\-World\-Definition}}
+\subsubsection[{max\-X}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::relogo\-::\-World\-Definition\-::max\-X (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_world_definition_a08eb3fa1fd9d6aed840f713d23b9ff48}
+
+
+Gets the maximum x coordinate of the world. 
+
+\begin{DoxyReturn}{Returns}
+the maximum x coordinate of the world. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_world_definition_a3395109e5074f8bacbbd0bb0fa36f089}{\index{repast\-::relogo\-::\-World\-Definition@{repast\-::relogo\-::\-World\-Definition}!max\-Y@{max\-Y}}
+\index{max\-Y@{max\-Y}!repast::relogo::WorldDefinition@{repast\-::relogo\-::\-World\-Definition}}
+\subsubsection[{max\-Y}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::relogo\-::\-World\-Definition\-::max\-Y (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_world_definition_a3395109e5074f8bacbbd0bb0fa36f089}
+
+
+Gets the maximum y coordinate of the world. 
+
+\begin{DoxyReturn}{Returns}
+the maximum y coordinate of the world. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_world_definition_a952ccd4e18c655e3242bdc7d32e062d1}{\index{repast\-::relogo\-::\-World\-Definition@{repast\-::relogo\-::\-World\-Definition}!min\-X@{min\-X}}
+\index{min\-X@{min\-X}!repast::relogo::WorldDefinition@{repast\-::relogo\-::\-World\-Definition}}
+\subsubsection[{min\-X}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::relogo\-::\-World\-Definition\-::min\-X (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_world_definition_a952ccd4e18c655e3242bdc7d32e062d1}
+
+
+Gets the minimum x coordinate of the world. 
+
+\begin{DoxyReturn}{Returns}
+the minimum x coordinate of the world. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_world_definition_a225c0ad83e73e13e5e5a55226ffa1dbb}{\index{repast\-::relogo\-::\-World\-Definition@{repast\-::relogo\-::\-World\-Definition}!min\-Y@{min\-Y}}
+\index{min\-Y@{min\-Y}!repast::relogo::WorldDefinition@{repast\-::relogo\-::\-World\-Definition}}
+\subsubsection[{min\-Y}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::relogo\-::\-World\-Definition\-::min\-Y (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_world_definition_a225c0ad83e73e13e5e5a55226ffa1dbb}
+
+
+Gets the minimum y coordinate of the world. 
+
+\begin{DoxyReturn}{Returns}
+the minimum y coordinate of the world. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_world_definition_a6e5b0f7af7876b41a5e5a8a69e43f615}{\index{repast\-::relogo\-::\-World\-Definition@{repast\-::relogo\-::\-World\-Definition}!networks\-\_\-begin@{networks\-\_\-begin}}
+\index{networks\-\_\-begin@{networks\-\_\-begin}!repast::relogo::WorldDefinition@{repast\-::relogo\-::\-World\-Definition}}
+\subsubsection[{networks\-\_\-begin}]{\setlength{\rightskip}{0pt plus 5cm}{\bf proj\-\_\-iter} repast\-::relogo\-::\-World\-Definition\-::networks\-\_\-begin (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_world_definition_a6e5b0f7af7876b41a5e5a8a69e43f615}
+
+
+Gets the start of an iterator over the network Projections defined in this \hyperlink{classrepast_1_1relogo_1_1_world_definition}{World\-Definition}. 
+
+The iterator returns a pointer to a Projection$<$\-Relogo\-Agent$>$$\ast$. \hypertarget{classrepast_1_1relogo_1_1_world_definition_a0bd3c542fb88b54f4c0c821fbf6008c4}{\index{repast\-::relogo\-::\-World\-Definition@{repast\-::relogo\-::\-World\-Definition}!networks\-\_\-end@{networks\-\_\-end}}
+\index{networks\-\_\-end@{networks\-\_\-end}!repast::relogo::WorldDefinition@{repast\-::relogo\-::\-World\-Definition}}
+\subsubsection[{networks\-\_\-end}]{\setlength{\rightskip}{0pt plus 5cm}{\bf proj\-\_\-iter} repast\-::relogo\-::\-World\-Definition\-::networks\-\_\-end (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_world_definition_a0bd3c542fb88b54f4c0c821fbf6008c4}
+
+
+Gets the end of an iterator over the network Projections defined in this \hyperlink{classrepast_1_1relogo_1_1_world_definition}{World\-Definition}. 
+
+The iterator returns a pointer to a Projection$<$\-Relogo\-Agent$>$$\ast$. 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/\-Users/murphy/work/\-Repast\-H\-P\-C\-\_\-\-G\-I\-T/repast.\-hpc/src/relogo/World\-Definition.\-h\item 
+/\-Users/murphy/work/\-Repast\-H\-P\-C\-\_\-\-G\-I\-T/repast.\-hpc/src/relogo/World\-Definition.\-cpp\end{DoxyCompactItemize}

@@ -1,0 +1,335 @@
+\hypertarget{classrepast_1_1_vertex}{\section{repast\-:\-:Vertex$<$ V, E $>$ Class Template Reference}
+\label{classrepast_1_1_vertex}\index{repast\-::\-Vertex$<$ V, E $>$@{repast\-::\-Vertex$<$ V, E $>$}}
+}
+
+
+Used internally by repast graphs / networks to encapsulate Vertices.  
+
+
+
+
+{\ttfamily \#include $<$Vertex.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Vertex$<$ V, E $>$\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classrepast_1_1_vertex}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{classrepast_1_1_vertex_a8b4819d648c7c0dd8b0622beea77cc14}{Edge\-Type} \{ {\bfseries I\-N\-C\-O\-M\-I\-N\-G}, 
+{\bfseries O\-U\-T\-G\-O\-I\-N\-G}
+ \}
+\begin{DoxyCompactList}\small\item\em Enum the identifies whether an edge is incoming or outgoing. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_vertex_a87cfe13bd6b9bd535e6f3d08329908f6}{typedef boost\-::unordered\-\_\-map\\*
+$<$ \hyperlink{classrepast_1_1_vertex}{Vertex}$<$ V, E $>$\\*
+ $\ast$, boost\-::shared\-\_\-ptr$<$ E $>$\\*
+, \hyperlink{structrepast_1_1_hash_vertex}{Hash\-Vertex}$<$ V, E $>$ $>$ \hyperlink{classrepast_1_1_vertex_a87cfe13bd6b9bd535e6f3d08329908f6}{Adj\-List\-Map}}\label{classrepast_1_1_vertex_a87cfe13bd6b9bd535e6f3d08329908f6}
+
+\begin{DoxyCompactList}\small\item\em Typedef for the adjacency list map that contains the other Vertices that this \hyperlink{classrepast_1_1_vertex}{Vertex} links to. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_vertex_acc25f7ed53dd094627684be18ae9b015}{typedef Adj\-List\-Map\-::iterator {\bfseries Adj\-List\-Map\-Iterator}}\label{classrepast_1_1_vertex_acc25f7ed53dd094627684be18ae9b015}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classrepast_1_1_vertex_a4db3eb1bc334255db3e1c5256013d0aa}{Vertex} (boost\-::shared\-\_\-ptr$<$ V $>$ \hyperlink{classrepast_1_1_vertex_a55749dbe0d9f79bb39dfea7733070305}{item})
+\begin{DoxyCompactList}\small\item\em Creates a \hyperlink{classrepast_1_1_vertex}{Vertex} that contains the specified item. \end{DoxyCompactList}\item 
+virtual boost\-::shared\-\_\-ptr$<$ E $>$ \hyperlink{classrepast_1_1_vertex_ac3ac362e00073965fc501b2671e908eb}{remove\-Edge} (\hyperlink{classrepast_1_1_vertex}{Vertex} $\ast$other, \hyperlink{classrepast_1_1_vertex_a8b4819d648c7c0dd8b0622beea77cc14}{Edge\-Type} type)=0
+\begin{DoxyCompactList}\small\item\em Removes the edge of the specified type between this \hyperlink{classrepast_1_1_vertex}{Vertex} and the specified \hyperlink{classrepast_1_1_vertex}{Vertex}. \end{DoxyCompactList}\item 
+virtual boost\-::shared\-\_\-ptr$<$ E $>$ \hyperlink{classrepast_1_1_vertex_ad649f278be3161b0ee3609019341fe64}{find\-Edge} (\hyperlink{classrepast_1_1_vertex}{Vertex} $\ast$other, \hyperlink{classrepast_1_1_vertex_a8b4819d648c7c0dd8b0622beea77cc14}{Edge\-Type} type)=0
+\begin{DoxyCompactList}\small\item\em Finds the edge of the specified type between this \hyperlink{classrepast_1_1_vertex}{Vertex} and the specified vertex. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_vertex_a16e732188e59b29be343b96a5377533c}{add\-Edge} (\hyperlink{classrepast_1_1_vertex}{Vertex}$<$ V, E $>$ $\ast$other, boost\-::shared\-\_\-ptr$<$ E $>$ edge, \hyperlink{classrepast_1_1_vertex_a8b4819d648c7c0dd8b0622beea77cc14}{Edge\-Type} type)=0
+\begin{DoxyCompactList}\small\item\em Adds an edge of the specified type between this \hyperlink{classrepast_1_1_vertex}{Vertex} and the specified vertex. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_vertex_a0e3a2812db0b42ca344bd577076002d0}{successors} (std\-::vector$<$ V $\ast$ $>$ \&out)=0
+\begin{DoxyCompactList}\small\item\em Gets the successors of this \hyperlink{classrepast_1_1_vertex}{Vertex}. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_vertex_ad27c48d86502b4e73aba445de07c084c}{predecessors} (std\-::vector$<$ V $\ast$ $>$ \&out)=0
+\begin{DoxyCompactList}\small\item\em Gets the predecessors of this \hyperlink{classrepast_1_1_vertex}{Vertex}. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_vertex_ac0952ef9c988dc4792900ded7d033667}{adjacent} (std\-::vector$<$ V $\ast$ $>$ \&out)=0
+\begin{DoxyCompactList}\small\item\em Gets the Vertices adjacent to this \hyperlink{classrepast_1_1_vertex}{Vertex}. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_vertex_af652dbbcd2b328685cdd2bb34a7d9240}{edges} (\hyperlink{classrepast_1_1_vertex_a8b4819d648c7c0dd8b0622beea77cc14}{Edge\-Type} type, std\-::vector$<$ boost\-::shared\-\_\-ptr$<$ E $>$ $>$ \&out)=0
+\begin{DoxyCompactList}\small\item\em Gets all the edges of the specified type in which this \hyperlink{classrepast_1_1_vertex}{Vertex} participates and return them in out. \end{DoxyCompactList}\item 
+virtual int \hyperlink{classrepast_1_1_vertex_a14a787ee4d9ad1069c483b454b8a0004}{in\-Degree} ()=0
+\begin{DoxyCompactList}\small\item\em Gets the in degree of this \hyperlink{classrepast_1_1_vertex}{Vertex}. \end{DoxyCompactList}\item 
+virtual int \hyperlink{classrepast_1_1_vertex_a47e058f671914d7c65553bbe20138f33}{out\-Degree} ()=0
+\begin{DoxyCompactList}\small\item\em Gets the out degree of this \hyperlink{classrepast_1_1_vertex}{Vertex}. \end{DoxyCompactList}\item 
+boost\-::shared\-\_\-ptr$<$ V $>$ \hyperlink{classrepast_1_1_vertex_a55749dbe0d9f79bb39dfea7733070305}{item} () const 
+\begin{DoxyCompactList}\small\item\em Gets the item that this \hyperlink{classrepast_1_1_vertex}{Vertex} contains. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_vertex_a0f9b617f21236fa05f28b1c84096be44}{boost\-::shared\-\_\-ptr$<$ E $>$ {\bfseries remove\-Edge} (\hyperlink{classrepast_1_1_vertex}{Vertex}$<$ V, E $>$ $\ast$other, \hyperlink{classrepast_1_1_vertex_a87cfe13bd6b9bd535e6f3d08329908f6}{Adj\-List\-Map} $\ast$adj\-Map)}\label{classrepast_1_1_vertex_a0f9b617f21236fa05f28b1c84096be44}
+
+\item 
+\hypertarget{classrepast_1_1_vertex_a494e33db33ecb44c23f8977c1f7bf3d1}{void {\bfseries get\-Items} (\hyperlink{classrepast_1_1_vertex_a87cfe13bd6b9bd535e6f3d08329908f6}{Adj\-List\-Map} $\ast$adj\-Map, std\-::vector$<$ V $\ast$ $>$ \&out)}\label{classrepast_1_1_vertex_a494e33db33ecb44c23f8977c1f7bf3d1}
+
+\item 
+\hypertarget{classrepast_1_1_vertex_afe678af8ef0f798093f5aa627cb7330f}{void {\bfseries edges} (\hyperlink{classrepast_1_1_vertex_a87cfe13bd6b9bd535e6f3d08329908f6}{Adj\-List\-Map} $\ast$adj\-Map, std\-::vector$<$ boost\-::shared\-\_\-ptr$<$ E $>$ $>$ \&out)}\label{classrepast_1_1_vertex_afe678af8ef0f798093f5aa627cb7330f}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_vertex_a193ef2428a4546a0c23cc659c0511992}{boost\-::shared\-\_\-ptr$<$ V $>$ {\bfseries ptr}}\label{classrepast_1_1_vertex_a193ef2428a4546a0c23cc659c0511992}
+
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_vertex_aa1b5df339bdaa90753152ddbbb44cdde}{struct {\bfseries Node\-Getter$<$ V, E $>$}}\label{classrepast_1_1_vertex_aa1b5df339bdaa90753152ddbbb44cdde}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename V, typename E$>$class repast\-::\-Vertex$<$ V, E $>$}
+
+Used internally by repast graphs / networks to encapsulate Vertices. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em V} & the type of object stored by in a \hyperlink{classrepast_1_1_vertex}{Vertex}. \\
+\hline
+{\em E} & the edge type of the network. \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1_vertex_a4db3eb1bc334255db3e1c5256013d0aa}{\index{repast\-::\-Vertex@{repast\-::\-Vertex}!Vertex@{Vertex}}
+\index{Vertex@{Vertex}!repast::Vertex@{repast\-::\-Vertex}}
+\subsubsection[{Vertex}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E $>$ {\bf repast\-::\-Vertex}$<$ V, E $>$\-::{\bf Vertex} (
+\begin{DoxyParamCaption}
+\item[{boost\-::shared\-\_\-ptr$<$ V $>$}]{item}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_vertex_a4db3eb1bc334255db3e1c5256013d0aa}
+
+
+Creates a \hyperlink{classrepast_1_1_vertex}{Vertex} that contains the specified item. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em item} & the item the \hyperlink{classrepast_1_1_vertex}{Vertex} should contain \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_vertex_a16e732188e59b29be343b96a5377533c}{\index{repast\-::\-Vertex@{repast\-::\-Vertex}!add\-Edge@{add\-Edge}}
+\index{add\-Edge@{add\-Edge}!repast::Vertex@{repast\-::\-Vertex}}
+\subsubsection[{add\-Edge}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E$>$ virtual void {\bf repast\-::\-Vertex}$<$ V, E $>$\-::add\-Edge (
+\begin{DoxyParamCaption}
+\item[{{\bf Vertex}$<$ V, E $>$ $\ast$}]{other, }
+\item[{boost\-::shared\-\_\-ptr$<$ E $>$}]{edge, }
+\item[{{\bf Edge\-Type}}]{type}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1_vertex_a16e732188e59b29be343b96a5377533c}
+
+
+Adds an edge of the specified type between this \hyperlink{classrepast_1_1_vertex}{Vertex} and the specified vertex. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em edge} & the edge to add \\
+\hline
+{\em other} & the other end of the edge \\
+\hline
+{\em type} & the type of edge to add \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \hyperlink{classrepast_1_1_directed_vertex_a6ff5f259f8e4087479bb37156b841ab2}{repast\-::\-Directed\-Vertex$<$ V, E $>$}, and \hyperlink{classrepast_1_1_undirected_vertex_a8c7f13540d90e05a5e3f2f9d1a8b5c08}{repast\-::\-Undirected\-Vertex$<$ V, E $>$}.
+
+\hypertarget{classrepast_1_1_vertex_ac0952ef9c988dc4792900ded7d033667}{\index{repast\-::\-Vertex@{repast\-::\-Vertex}!adjacent@{adjacent}}
+\index{adjacent@{adjacent}!repast::Vertex@{repast\-::\-Vertex}}
+\subsubsection[{adjacent}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E$>$ virtual void {\bf repast\-::\-Vertex}$<$ V, E $>$\-::adjacent (
+\begin{DoxyParamCaption}
+\item[{std\-::vector$<$ V $\ast$ $>$ \&}]{out}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1_vertex_ac0952ef9c988dc4792900ded7d033667}
+
+
+Gets the Vertices adjacent to this \hyperlink{classrepast_1_1_vertex}{Vertex}. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt out}  & {\em the} & vector where the adjacent vectors will be put \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \hyperlink{classrepast_1_1_directed_vertex_aded5ff0954773ccc6d0e621950e61659}{repast\-::\-Directed\-Vertex$<$ V, E $>$}, and \hyperlink{classrepast_1_1_undirected_vertex_ae3637a55efcc146a09d58edc5b3beb28}{repast\-::\-Undirected\-Vertex$<$ V, E $>$}.
+
+\hypertarget{classrepast_1_1_vertex_af652dbbcd2b328685cdd2bb34a7d9240}{\index{repast\-::\-Vertex@{repast\-::\-Vertex}!edges@{edges}}
+\index{edges@{edges}!repast::Vertex@{repast\-::\-Vertex}}
+\subsubsection[{edges}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E$>$ virtual void {\bf repast\-::\-Vertex}$<$ V, E $>$\-::edges (
+\begin{DoxyParamCaption}
+\item[{{\bf Edge\-Type}}]{type, }
+\item[{std\-::vector$<$ boost\-::shared\-\_\-ptr$<$ E $>$ $>$ \&}]{out}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1_vertex_af652dbbcd2b328685cdd2bb34a7d9240}
+
+
+Gets all the edges of the specified type in which this \hyperlink{classrepast_1_1_vertex}{Vertex} participates and return them in out. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em type} & the type of edges to get \\
+\hline
+\mbox{\tt out}  & {\em where} & the edges will be put. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \hyperlink{classrepast_1_1_directed_vertex_abdfdf5f45ddd9026017a2ce62e3c5b7e}{repast\-::\-Directed\-Vertex$<$ V, E $>$}, and \hyperlink{classrepast_1_1_undirected_vertex_a3b87912676b53a0352dff58cfa1222fe}{repast\-::\-Undirected\-Vertex$<$ V, E $>$}.
+
+\hypertarget{classrepast_1_1_vertex_ad649f278be3161b0ee3609019341fe64}{\index{repast\-::\-Vertex@{repast\-::\-Vertex}!find\-Edge@{find\-Edge}}
+\index{find\-Edge@{find\-Edge}!repast::Vertex@{repast\-::\-Vertex}}
+\subsubsection[{find\-Edge}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E$>$ virtual boost\-::shared\-\_\-ptr$<$E$>$ {\bf repast\-::\-Vertex}$<$ V, E $>$\-::find\-Edge (
+\begin{DoxyParamCaption}
+\item[{{\bf Vertex}$<$ V, E $>$ $\ast$}]{other, }
+\item[{{\bf Edge\-Type}}]{type}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1_vertex_ad649f278be3161b0ee3609019341fe64}
+
+
+Finds the edge of the specified type between this \hyperlink{classrepast_1_1_vertex}{Vertex} and the specified vertex. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em other} & the other end of the edge \\
+\hline
+{\em type} & the type of edge to remove\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the found edge, or 0. 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classrepast_1_1_directed_vertex_a1d366144c84a033448fbc0e5f67f8cdb}{repast\-::\-Directed\-Vertex$<$ V, E $>$}, and \hyperlink{classrepast_1_1_undirected_vertex_aa0ec238951147d6ae9677375af54c740}{repast\-::\-Undirected\-Vertex$<$ V, E $>$}.
+
+\hypertarget{classrepast_1_1_vertex_a14a787ee4d9ad1069c483b454b8a0004}{\index{repast\-::\-Vertex@{repast\-::\-Vertex}!in\-Degree@{in\-Degree}}
+\index{in\-Degree@{in\-Degree}!repast::Vertex@{repast\-::\-Vertex}}
+\subsubsection[{in\-Degree}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E$>$ virtual int {\bf repast\-::\-Vertex}$<$ V, E $>$\-::in\-Degree (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1_vertex_a14a787ee4d9ad1069c483b454b8a0004}
+
+
+Gets the in degree of this \hyperlink{classrepast_1_1_vertex}{Vertex}. 
+
+\begin{DoxyReturn}{Returns}
+the in degree of this \hyperlink{classrepast_1_1_vertex}{Vertex}. 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classrepast_1_1_directed_vertex_afd409d365742f1b247734c1283cc059a}{repast\-::\-Directed\-Vertex$<$ V, E $>$}, and \hyperlink{classrepast_1_1_undirected_vertex_a6bb8fff1b36c0363306aa86615cf48f4}{repast\-::\-Undirected\-Vertex$<$ V, E $>$}.
+
+\hypertarget{classrepast_1_1_vertex_a55749dbe0d9f79bb39dfea7733070305}{\index{repast\-::\-Vertex@{repast\-::\-Vertex}!item@{item}}
+\index{item@{item}!repast::Vertex@{repast\-::\-Vertex}}
+\subsubsection[{item}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E$>$ boost\-::shared\-\_\-ptr$<$V$>$ {\bf repast\-::\-Vertex}$<$ V, E $>$\-::item (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_vertex_a55749dbe0d9f79bb39dfea7733070305}
+
+
+Gets the item that this \hyperlink{classrepast_1_1_vertex}{Vertex} contains. 
+
+\begin{DoxyReturn}{Returns}
+the item. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_vertex_a47e058f671914d7c65553bbe20138f33}{\index{repast\-::\-Vertex@{repast\-::\-Vertex}!out\-Degree@{out\-Degree}}
+\index{out\-Degree@{out\-Degree}!repast::Vertex@{repast\-::\-Vertex}}
+\subsubsection[{out\-Degree}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E$>$ virtual int {\bf repast\-::\-Vertex}$<$ V, E $>$\-::out\-Degree (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1_vertex_a47e058f671914d7c65553bbe20138f33}
+
+
+Gets the out degree of this \hyperlink{classrepast_1_1_vertex}{Vertex}. 
+
+\begin{DoxyReturn}{Returns}
+the out degree of this \hyperlink{classrepast_1_1_vertex}{Vertex}. 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classrepast_1_1_directed_vertex_a2debe4c699a8cafd8e7bad11f15deca8}{repast\-::\-Directed\-Vertex$<$ V, E $>$}, and \hyperlink{classrepast_1_1_undirected_vertex_a262a52d25ccf1f7f6e2433c01f1fb8e8}{repast\-::\-Undirected\-Vertex$<$ V, E $>$}.
+
+\hypertarget{classrepast_1_1_vertex_ad27c48d86502b4e73aba445de07c084c}{\index{repast\-::\-Vertex@{repast\-::\-Vertex}!predecessors@{predecessors}}
+\index{predecessors@{predecessors}!repast::Vertex@{repast\-::\-Vertex}}
+\subsubsection[{predecessors}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E$>$ virtual void {\bf repast\-::\-Vertex}$<$ V, E $>$\-::predecessors (
+\begin{DoxyParamCaption}
+\item[{std\-::vector$<$ V $\ast$ $>$ \&}]{out}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1_vertex_ad27c48d86502b4e73aba445de07c084c}
+
+
+Gets the predecessors of this \hyperlink{classrepast_1_1_vertex}{Vertex}. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt out}  & {\em the} & vector where any predecessors will be put \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \hyperlink{classrepast_1_1_directed_vertex_a2b8af860460fa13b4c5e248e266d2ee2}{repast\-::\-Directed\-Vertex$<$ V, E $>$}, and \hyperlink{classrepast_1_1_undirected_vertex_ab1c49c0e2c934c6e4a85c52ed54f4da7}{repast\-::\-Undirected\-Vertex$<$ V, E $>$}.
+
+\hypertarget{classrepast_1_1_vertex_ac3ac362e00073965fc501b2671e908eb}{\index{repast\-::\-Vertex@{repast\-::\-Vertex}!remove\-Edge@{remove\-Edge}}
+\index{remove\-Edge@{remove\-Edge}!repast::Vertex@{repast\-::\-Vertex}}
+\subsubsection[{remove\-Edge}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E$>$ virtual boost\-::shared\-\_\-ptr$<$E$>$ {\bf repast\-::\-Vertex}$<$ V, E $>$\-::remove\-Edge (
+\begin{DoxyParamCaption}
+\item[{{\bf Vertex}$<$ V, E $>$ $\ast$}]{other, }
+\item[{{\bf Edge\-Type}}]{type}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1_vertex_ac3ac362e00073965fc501b2671e908eb}
+
+
+Removes the edge of the specified type between this \hyperlink{classrepast_1_1_vertex}{Vertex} and the specified \hyperlink{classrepast_1_1_vertex}{Vertex}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em other} & the other end of the edge \\
+\hline
+{\em type} & the type of edge to remove\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the removed edge if such an edge was found, otherwise 0. 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classrepast_1_1_directed_vertex_ac70277c05d9dbad7bd4d876fd4c4cf5b}{repast\-::\-Directed\-Vertex$<$ V, E $>$}, and \hyperlink{classrepast_1_1_undirected_vertex_a7e6c99d00630df8ddcf416024d907766}{repast\-::\-Undirected\-Vertex$<$ V, E $>$}.
+
+\hypertarget{classrepast_1_1_vertex_a0e3a2812db0b42ca344bd577076002d0}{\index{repast\-::\-Vertex@{repast\-::\-Vertex}!successors@{successors}}
+\index{successors@{successors}!repast::Vertex@{repast\-::\-Vertex}}
+\subsubsection[{successors}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V, typename E$>$ virtual void {\bf repast\-::\-Vertex}$<$ V, E $>$\-::successors (
+\begin{DoxyParamCaption}
+\item[{std\-::vector$<$ V $\ast$ $>$ \&}]{out}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1_vertex_a0e3a2812db0b42ca344bd577076002d0}
+
+
+Gets the successors of this \hyperlink{classrepast_1_1_vertex}{Vertex}. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt out}  & {\em the} & vector where any successors will be put \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \hyperlink{classrepast_1_1_directed_vertex_a40dc1f60f518eda0ccbf20622ea82839}{repast\-::\-Directed\-Vertex$<$ V, E $>$}, and \hyperlink{classrepast_1_1_undirected_vertex_a56412695224db7050d7221b5c714d826}{repast\-::\-Undirected\-Vertex$<$ V, E $>$}.
+
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Vertex.\-h\end{DoxyCompactItemize}

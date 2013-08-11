@@ -1,0 +1,90 @@
+\hypertarget{classrepast_1_1_n_c_data_set_builder}{\section{repast\-:\-:N\-C\-Data\-Set\-Builder Class Reference}
+\label{classrepast_1_1_n_c_data_set_builder}\index{repast\-::\-N\-C\-Data\-Set\-Builder@{repast\-::\-N\-C\-Data\-Set\-Builder}}
+}
+
+
+Used to build N\-C\-Data\-Sets to record data in Net\-C\-D\-F format.  
+
+
+
+
+{\ttfamily \#include $<$N\-C\-Data\-Set\-Builder.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classrepast_1_1_n_c_data_set_builder_a59f6a34ad2c29c55d9d817e1ad24434c}{N\-C\-Data\-Set\-Builder} (std\-::string file, const \hyperlink{classrepast_1_1_schedule}{Schedule} \&schedule)
+\begin{DoxyCompactList}\small\item\em Creates an \hyperlink{classrepast_1_1_n_c_data_set_builder}{N\-C\-Data\-Set\-Builder} that will write to the specified file and get its tick counts from the specified schedule. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_n_c_data_set_builder}{N\-C\-Data\-Set\-Builder} \& \hyperlink{classrepast_1_1_n_c_data_set_builder_aafe67957e9e7fd5eb306c351a7f28c54}{add\-Data\-Source} (\hyperlink{classrepast_1_1_n_c_data_source}{N\-C\-Data\-Source} $\ast$source)
+\begin{DoxyCompactList}\small\item\em Adds a \hyperlink{classrepast_1_1_n_c_data_source}{N\-C\-Data\-Source} to this \hyperlink{classrepast_1_1_n_c_data_set_builder}{N\-C\-Data\-Set\-Builder}. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_n_c_data_set}{N\-C\-Data\-Set} $\ast$ \hyperlink{classrepast_1_1_n_c_data_set_builder_a6674abbc1f28e0141a6f59a618fd0e62}{create\-Data\-Set} ()
+\begin{DoxyCompactList}\small\item\em Creates the \hyperlink{classrepast_1_1_n_c_data_set}{N\-C\-Data\-Set} defined by this \hyperlink{classrepast_1_1_n_c_data_set_builder}{N\-C\-Data\-Set\-Builder}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Used to build N\-C\-Data\-Sets to record data in Net\-C\-D\-F format. 
+
+Steps for use are\-: 
+\begin{DoxyEnumerate}
+\item Create a \hyperlink{classrepast_1_1_n_c_data_set_builder}{N\-C\-Data\-Set\-Builder}. 
+\item Add N\-C\-Data\-Sources to the builder using the create\-N\-C\-Data\-Source functions. Each Data\-Source defines a variable and where the data for that variable will be retrieved. Recording data on the \hyperlink{classrepast_1_1_n_c_data_set}{N\-C\-Data\-Set} produced by the builder will record this data for each variable. 
+\item Call create\-Data\-Set to create the \hyperlink{classrepast_1_1_n_c_data_set}{N\-C\-Data\-Set}. 
+\item \hyperlink{classrepast_1_1_schedule}{Schedule} calls to record and write on the \hyperlink{classrepast_1_1_n_c_data_set}{N\-C\-Data\-Set}. 
+\end{DoxyEnumerate}
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1_n_c_data_set_builder_a59f6a34ad2c29c55d9d817e1ad24434c}{\index{repast\-::\-N\-C\-Data\-Set\-Builder@{repast\-::\-N\-C\-Data\-Set\-Builder}!N\-C\-Data\-Set\-Builder@{N\-C\-Data\-Set\-Builder}}
+\index{N\-C\-Data\-Set\-Builder@{N\-C\-Data\-Set\-Builder}!repast::NCDataSetBuilder@{repast\-::\-N\-C\-Data\-Set\-Builder}}
+\subsubsection[{N\-C\-Data\-Set\-Builder}]{\setlength{\rightskip}{0pt plus 5cm}repast\-::\-N\-C\-Data\-Set\-Builder\-::\-N\-C\-Data\-Set\-Builder (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{file, }
+\item[{const {\bf Schedule} \&}]{schedule}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_n_c_data_set_builder_a59f6a34ad2c29c55d9d817e1ad24434c}
+
+
+Creates an \hyperlink{classrepast_1_1_n_c_data_set_builder}{N\-C\-Data\-Set\-Builder} that will write to the specified file and get its tick counts from the specified schedule. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & the name of the file to write to. Only rank 0 will actually write to this file. \\
+\hline
+{\em schedule} & the schedule to get tick counts from \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_n_c_data_set_builder_aafe67957e9e7fd5eb306c351a7f28c54}{\index{repast\-::\-N\-C\-Data\-Set\-Builder@{repast\-::\-N\-C\-Data\-Set\-Builder}!add\-Data\-Source@{add\-Data\-Source}}
+\index{add\-Data\-Source@{add\-Data\-Source}!repast::NCDataSetBuilder@{repast\-::\-N\-C\-Data\-Set\-Builder}}
+\subsubsection[{add\-Data\-Source}]{\setlength{\rightskip}{0pt plus 5cm}{\bf N\-C\-Data\-Set\-Builder} \& repast\-::\-N\-C\-Data\-Set\-Builder\-::add\-Data\-Source (
+\begin{DoxyParamCaption}
+\item[{{\bf N\-C\-Data\-Source} $\ast$}]{source}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_n_c_data_set_builder_aafe67957e9e7fd5eb306c351a7f28c54}
+
+
+Adds a \hyperlink{classrepast_1_1_n_c_data_source}{N\-C\-Data\-Source} to this \hyperlink{classrepast_1_1_n_c_data_set_builder}{N\-C\-Data\-Set\-Builder}. 
+
+The added \hyperlink{classrepast_1_1_n_c_data_source}{N\-C\-Data\-Source} defines a variable and where the data for that variable will be retrieved. Recording data on the \hyperlink{classrepast_1_1_n_c_data_set}{N\-C\-Data\-Set} produced by this builder will record this data for each variable. \hypertarget{classrepast_1_1_n_c_data_set_builder_a6674abbc1f28e0141a6f59a618fd0e62}{\index{repast\-::\-N\-C\-Data\-Set\-Builder@{repast\-::\-N\-C\-Data\-Set\-Builder}!create\-Data\-Set@{create\-Data\-Set}}
+\index{create\-Data\-Set@{create\-Data\-Set}!repast::NCDataSetBuilder@{repast\-::\-N\-C\-Data\-Set\-Builder}}
+\subsubsection[{create\-Data\-Set}]{\setlength{\rightskip}{0pt plus 5cm}{\bf N\-C\-Data\-Set} $\ast$ repast\-::\-N\-C\-Data\-Set\-Builder\-::create\-Data\-Set (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_n_c_data_set_builder_a6674abbc1f28e0141a6f59a618fd0e62}
+
+
+Creates the \hyperlink{classrepast_1_1_n_c_data_set}{N\-C\-Data\-Set} defined by this \hyperlink{classrepast_1_1_n_c_data_set_builder}{N\-C\-Data\-Set\-Builder}. 
+
+The caller is responsible for properly deleting the returned pointer.
+
+\begin{DoxyReturn}{Returns}
+the created \hyperlink{classrepast_1_1_n_c_data_set}{N\-C\-Data\-Set}. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/N\-C\-Data\-Set\-Builder.\-h\item 
+repast\-\_\-hpc/N\-C\-Data\-Set\-Builder.\-cpp\end{DoxyCompactItemize}

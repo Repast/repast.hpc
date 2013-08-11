@@ -50,6 +50,9 @@ namespace repast {
 
 // Some useful typedefs for standard grid types:
 
+/**
+ * Struct within which multiple kinds of space are typedef-ed.
+ */
 template<typename T>
 struct Spaces {
 

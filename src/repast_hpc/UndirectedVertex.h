@@ -46,8 +46,6 @@
 namespace repast {
 
 /**
- * NON USER API.
- *
  * A vertex in an undirected network.
  *
  * @tparam V the vertex type

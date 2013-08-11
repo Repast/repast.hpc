@@ -1,0 +1,140 @@
+\hypertarget{classrepast_1_1_abstract_importer_exporter}{\section{repast\-:\-:Abstract\-Importer\-Exporter Class Reference}
+\label{classrepast_1_1_abstract_importer_exporter}\index{repast\-::\-Abstract\-Importer\-Exporter@{repast\-::\-Abstract\-Importer\-Exporter}}
+}
+
+
+Wraps and Importer and an Exporter so that both use commensurate semantics and all imports and exports are balanced.  
+
+
+
+
+{\ttfamily \#include $<$Agent\-Importer\-Exporter.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Abstract\-Importer\-Exporter\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=0.787623cm]{classrepast_1_1_abstract_importer_exporter}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_ac873303b2cf649afd26ea93b790494a8}{{\bfseries Abstract\-Importer\-Exporter} (\hyperlink{classrepast_1_1_abstract_importer}{Abstract\-Importer} $\ast$i, \hyperlink{classrepast_1_1_abstract_exporter}{Abstract\-Exporter} $\ast$e)}\label{classrepast_1_1_abstract_importer_exporter_ac873303b2cf649afd26ea93b790494a8}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_a6d77b384448820417925f286a9cf21ea}{virtual const std\-::set$<$ int $>$ \& {\bfseries get\-Exporting\-Processes} ()}\label{classrepast_1_1_abstract_importer_exporter_a6d77b384448820417925f286a9cf21ea}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_a599da36e52d78fbabfd3709d9f68a188}{virtual void {\bfseries register\-Outgoing\-Requests} (\hyperlink{classrepast_1_1_agent_request}{Agent\-Request} \&req)}\label{classrepast_1_1_abstract_importer_exporter_a599da36e52d78fbabfd3709d9f68a188}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_a37f4c70de603140adb08b31097cad4f2}{virtual void {\bfseries imported\-Agent\-Is\-Removed} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)}\label{classrepast_1_1_abstract_importer_exporter_a37f4c70de603140adb08b31097cad4f2}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_a78e60fce871101a398153fa5d8b724f7}{virtual void {\bfseries imported\-Agent\-Is\-Moved} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id, int new\-Process)}\label{classrepast_1_1_abstract_importer_exporter_a78e60fce871101a398153fa5d8b724f7}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_abdbc81ef948b0f332acb99fc4cc9d73a}{virtual void {\bfseries imported\-Agent\-Is\-Now\-Local} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)}\label{classrepast_1_1_abstract_importer_exporter_abdbc81ef948b0f332acb99fc4cc9d73a}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_a16060c7a93655595503f58570d41f49d}{virtual void {\bfseries get\-Set\-Of\-Agents\-Being\-Imported} (std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&set)}\label{classrepast_1_1_abstract_importer_exporter_a16060c7a93655595503f58570d41f49d}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_a85f8dc96a48418f591745d360c513b5c}{virtual const \\*
+Abstract\-Exporter\-::\-Status\-Map $\ast$ {\bfseries get\-Outgoing\-Status\-Changes} ()}\label{classrepast_1_1_abstract_importer_exporter_a85f8dc96a48418f591745d360c513b5c}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_adc150d387a323d81470344d11996b321}{virtual const std\-::set$<$ int $>$ \& {\bfseries get\-Processes\-Exported\-To} ()}\label{classrepast_1_1_abstract_importer_exporter_adc150d387a323d81470344d11996b321}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_af42a1139f782278898edc7ab0250be8c}{virtual void {\bfseries register\-Incoming\-Requests} (std\-::vector$<$ \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} $>$ \&requests)}\label{classrepast_1_1_abstract_importer_exporter_af42a1139f782278898edc7ab0250be8c}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_aaf387c8453d07233e0aa00f128378bd9}{virtual void {\bfseries agent\-Removed} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)}\label{classrepast_1_1_abstract_importer_exporter_aaf387c8453d07233e0aa00f128378bd9}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_a17611d6966c083c3fe23a44e74284e9a}{virtual void {\bfseries agent\-Moved} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id, int process)}\label{classrepast_1_1_abstract_importer_exporter_a17611d6966c083c3fe23a44e74284e9a}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_ac8dff9fe69a412ed9ff662952f9fc5b7}{virtual void {\bfseries incorporate\-Agent\-Exporter\-Info} (std\-::map$<$ int, \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} $\ast$ $>$ info)}\label{classrepast_1_1_abstract_importer_exporter_ac8dff9fe69a412ed9ff662952f9fc5b7}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_a007e8c17c3fa161f7ad1439074ed56d2}{virtual void {\bfseries clear\-Status\-Map} ()}\label{classrepast_1_1_abstract_importer_exporter_a007e8c17c3fa161f7ad1439074ed56d2}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_a402a82879f25681477af4d3665aa5f6d}{virtual Agent\-Exporter\-Info $\ast$ {\bfseries get\-Agent\-Export\-Info} (int dest\-Proc)}\label{classrepast_1_1_abstract_importer_exporter_a402a82879f25681477af4d3665aa5f6d}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_af83c0409da5354cb6a48641517e174f5}{virtual void {\bfseries clear\-Agent\-Export\-Info} ()}\label{classrepast_1_1_abstract_importer_exporter_af83c0409da5354cb6a48641517e174f5}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_aa88970b511ae80858bb67a9d825a5ba6}{virtual const std\-::map$<$ int, \\*
+\hyperlink{classrepast_1_1_agent_request}{Agent\-Request} $>$ \& {\bfseries get\-Agents\-To\-Export} ()}\label{classrepast_1_1_abstract_importer_exporter_aa88970b511ae80858bb67a9d825a5ba6}
+
+\item 
+virtual void \hyperlink{classrepast_1_1_abstract_importer_exporter_a545aebe534629acb3061449351da289a}{exchange\-Agent\-Status\-Updates} (boost\-::mpi\-::communicator world, std\-::vector$<$ std\-::vector$<$ \hyperlink{classrepast_1_1_agent_status}{Agent\-Status} $>$ $\ast$ $>$ \&status\-Updates)
+\begin{DoxyCompactList}\small\item\em Exchanges the contents of the 'status\-Map' with the destination processes, updating the status (moved or removed) for all agents being exported. \end{DoxyCompactList}\item 
+virtual std\-::string \hyperlink{classrepast_1_1_abstract_importer_exporter_a27a52b5ec4ec41e3ed6bf1c8819c25fc}{version} ()=0
+\begin{DoxyCompactList}\small\item\em Returns the version of this \hyperlink{classrepast_1_1_abstract_importer_exporter}{Abstract\-Importer\-Exporter}. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_ab9cf2ceec7a25942ad964ae426c906c0}{virtual std\-::string \hyperlink{classrepast_1_1_abstract_importer_exporter_ab9cf2ceec7a25942ad964ae426c906c0}{get\-Report} ()}\label{classrepast_1_1_abstract_importer_exporter_ab9cf2ceec7a25942ad964ae426c906c0}
+
+\begin{DoxyCompactList}\small\item\em Gets a printable report of the state of this object. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_ab57eba622eb30e4ba582e34ffc824e75}{virtual void {\bfseries clear} ()}\label{classrepast_1_1_abstract_importer_exporter_ab57eba622eb30e4ba582e34ffc824e75}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_a9354b5573205709463f3eedecc764545}{virtual void {\bfseries clear\-Exporter} ()}\label{classrepast_1_1_abstract_importer_exporter_a9354b5573205709463f3eedecc764545}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_ad5166b403fde572938f4785b6609b59d}{virtual void {\bfseries clear\-Export\-To\-Specific\-Proc} (int rank)}\label{classrepast_1_1_abstract_importer_exporter_ad5166b403fde572938f4785b6609b59d}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_ad987855240b21c39cdfb0f0ffc2b4af1}{\hyperlink{classrepast_1_1_abstract_importer}{Abstract\-Importer} $\ast$ {\bfseries importer}}\label{classrepast_1_1_abstract_importer_exporter_ad987855240b21c39cdfb0f0ffc2b4af1}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_importer_exporter_a3090b10b2021c25aeb73c879b0979b75}{\hyperlink{classrepast_1_1_abstract_exporter}{Abstract\-Exporter} $\ast$ {\bfseries exporter}}\label{classrepast_1_1_abstract_importer_exporter_a3090b10b2021c25aeb73c879b0979b75}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Wraps and Importer and an Exporter so that both use commensurate semantics and all imports and exports are balanced. 
+
+Most methods are pass-\/through to the underlying importer or exporter. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_abstract_importer_exporter_a545aebe534629acb3061449351da289a}{\index{repast\-::\-Abstract\-Importer\-Exporter@{repast\-::\-Abstract\-Importer\-Exporter}!exchange\-Agent\-Status\-Updates@{exchange\-Agent\-Status\-Updates}}
+\index{exchange\-Agent\-Status\-Updates@{exchange\-Agent\-Status\-Updates}!repast::AbstractImporterExporter@{repast\-::\-Abstract\-Importer\-Exporter}}
+\subsubsection[{exchange\-Agent\-Status\-Updates}]{\setlength{\rightskip}{0pt plus 5cm}void Abstract\-Importer\-Exporter\-::exchange\-Agent\-Status\-Updates (
+\begin{DoxyParamCaption}
+\item[{boost\-::mpi\-::communicator}]{world, }
+\item[{std\-::vector$<$ std\-::vector$<$ {\bf Agent\-Status} $>$ $\ast$ $>$ \&}]{status\-Updates}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_abstract_importer_exporter_a545aebe534629acb3061449351da289a}
+
+
+Exchanges the contents of the 'status\-Map' with the destination processes, updating the status (moved or removed) for all agents being exported. 
+
+Returns this information in the status\-Updates vector. \hypertarget{classrepast_1_1_abstract_importer_exporter_a27a52b5ec4ec41e3ed6bf1c8819c25fc}{\index{repast\-::\-Abstract\-Importer\-Exporter@{repast\-::\-Abstract\-Importer\-Exporter}!version@{version}}
+\index{version@{version}!repast::AbstractImporterExporter@{repast\-::\-Abstract\-Importer\-Exporter}}
+\subsubsection[{version}]{\setlength{\rightskip}{0pt plus 5cm}virtual std\-::string repast\-::\-Abstract\-Importer\-Exporter\-::version (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1_abstract_importer_exporter_a27a52b5ec4ec41e3ed6bf1c8819c25fc}
+
+
+Returns the version of this \hyperlink{classrepast_1_1_abstract_importer_exporter}{Abstract\-Importer\-Exporter}. 
+
+The version is a string that indicates the semantic version of the importer and the exporter (e.\-g. \char`\"{}\-C\-O\-U\-N\-T\-\_\-\-L\-I\-S\-T\char`\"{}) 
+
+Implemented in \hyperlink{classrepast_1_1_importer_exporter___b_y___s_e_t_a440dc78901d8811ba6046d769df298d9}{repast\-::\-Importer\-Exporter\-\_\-\-B\-Y\-\_\-\-S\-E\-T}, \hyperlink{classrepast_1_1_importer_exporter___m_a_p__int_a801fce0ea8f65aa5b23cc9b1cc9dd818}{repast\-::\-Importer\-Exporter\-\_\-\-M\-A\-P\-\_\-int}, \hyperlink{classrepast_1_1_importer_exporter___s_e_t_a94bcc5a0cb77c6550927663b04410ca2}{repast\-::\-Importer\-Exporter\-\_\-\-S\-E\-T}, \hyperlink{classrepast_1_1_importer_exporter___l_i_s_t_a548c16411acb6e380e9e27139148e294}{repast\-::\-Importer\-Exporter\-\_\-\-L\-I\-S\-T}, \hyperlink{classrepast_1_1_importer_exporter___c_o_u_n_t___s_e_t_a4feec2dc77e01798f1331381198ce3e7}{repast\-::\-Importer\-Exporter\-\_\-\-C\-O\-U\-N\-T\-\_\-\-S\-E\-T}, and \hyperlink{classrepast_1_1_importer_exporter___c_o_u_n_t___l_i_s_t_a576d3dc96aa00bab8a4f0bbe6e64981c}{repast\-::\-Importer\-Exporter\-\_\-\-C\-O\-U\-N\-T\-\_\-\-L\-I\-S\-T}.
+
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Agent\-Importer\-Exporter.\-h\item 
+repast\-\_\-hpc/Agent\-Importer\-Exporter.\-cpp\end{DoxyCompactItemize}

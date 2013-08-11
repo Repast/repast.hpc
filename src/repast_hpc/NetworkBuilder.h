@@ -50,6 +50,10 @@
 
 namespace repast {
 
+/**
+ * Helper class for calculating outcomes based on
+ * a set of probabilities that sum to 1.
+ */
 class ProbItem {
 private:
 	int _index;

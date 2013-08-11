@@ -1,0 +1,93 @@
+\hypertarget{classrepast_1_1relogo_1_1_world_creator}{\section{repast\-:\-:relogo\-:\-:World\-Creator Class Reference}
+\label{classrepast_1_1relogo_1_1_world_creator}\index{repast\-::relogo\-::\-World\-Creator@{repast\-::relogo\-::\-World\-Creator}}
+}
+
+
+Creates a the relogo world given some parameters.  
+
+
+
+
+{\ttfamily \#include $<$World\-Creator.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_world_creator_ad664f192bb1909995b5df1b195487266}{{\bfseries World\-Creator} (boost\-::mpi\-::communicator $\ast$world)}\label{classrepast_1_1relogo_1_1_world_creator_ad664f192bb1909995b5df1b195487266}
+
+\item 
+{\footnotesize template$<$typename Obs\-Type , typename Patch\-Type , typename Patch\-Creator $>$ }\\Obs\-Type $\ast$ \hyperlink{classrepast_1_1relogo_1_1_world_creator_a61ef4601065168dfc0fc7fbf4d47e181}{create\-World} (const \hyperlink{classrepast_1_1relogo_1_1_world_definition}{World\-Definition} \&world\-Def, const std\-::vector$<$ int $>$ \&p\-Config, Patch\-Creator \&patch\-Creator)
+\begin{DoxyCompactList}\small\item\em Creates the Relogo world using the specified parameters and returns an \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer} of Obs\-Type. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Obs\-Type , typename Patch\-Type $>$ }\\Obs\-Type $\ast$ \hyperlink{classrepast_1_1relogo_1_1_world_creator_aaceddc663139a0fda80b3022e0cd0d08}{create\-World} (const \hyperlink{classrepast_1_1relogo_1_1_world_definition}{World\-Definition} \&world\-Def, const std\-::vector$<$ int $>$ \&p\-Config)
+\begin{DoxyCompactList}\small\item\em Creates an observer of the specified type. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Creates a the relogo world given some parameters. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1relogo_1_1_world_creator_a61ef4601065168dfc0fc7fbf4d47e181}{\index{repast\-::relogo\-::\-World\-Creator@{repast\-::relogo\-::\-World\-Creator}!create\-World@{create\-World}}
+\index{create\-World@{create\-World}!repast::relogo::WorldCreator@{repast\-::relogo\-::\-World\-Creator}}
+\subsubsection[{create\-World}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Obs\-Type , typename Patch\-Type , typename Patch\-Creator $>$ Obs\-Type $\ast$ repast\-::relogo\-::\-World\-Creator\-::create\-World (
+\begin{DoxyParamCaption}
+\item[{const {\bf World\-Definition} \&}]{world\-Def, }
+\item[{const std\-::vector$<$ int $>$ \&}]{p\-Config, }
+\item[{Patch\-Creator \&}]{patch\-Creator}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_world_creator_a61ef4601065168dfc0fc7fbf4d47e181}
+
+
+Creates the Relogo world using the specified parameters and returns an \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer} of Obs\-Type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em world\-Def} & the world definition \\
+\hline
+{\em p\-Config} & a two element vector describing the number of processes along the x and y dimensions \\
+\hline
+{\em patch\-Creator} & used to create the Patches.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Obs\-Type} & the type of \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer} to create. This must extend \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. \\
+\hline
+{\em Patch\-Type} & the type of Patches to create. This must either be or extend \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch}. \\
+\hline
+{\em Patch\-Creator} & a function or functor with the following signature Patch\-Type$\ast$ (Agent\-Id id, Observer$\ast$ obs). \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_world_creator_aaceddc663139a0fda80b3022e0cd0d08}{\index{repast\-::relogo\-::\-World\-Creator@{repast\-::relogo\-::\-World\-Creator}!create\-World@{create\-World}}
+\index{create\-World@{create\-World}!repast::relogo::WorldCreator@{repast\-::relogo\-::\-World\-Creator}}
+\subsubsection[{create\-World}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Obs\-Type , typename Patch\-Type $>$ Obs\-Type $\ast$ repast\-::relogo\-::\-World\-Creator\-::create\-World (
+\begin{DoxyParamCaption}
+\item[{const {\bf World\-Definition} \&}]{world\-Def, }
+\item[{const std\-::vector$<$ int $>$ \&}]{p\-Config}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_world_creator_aaceddc663139a0fda80b3022e0cd0d08}
+
+
+Creates an observer of the specified type. 
+
+The observer will contain a world defined by world\-Def and p\-Config.
+
+
+\begin{DoxyParams}{Parameters}
+{\em world\-Def} & the world definition \\
+\hline
+{\em p\-Config} & a 2\-D vector containing the number of processes per grid dimension\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Obs\-Type} & the type of \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer} to create. This must extend \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. \\
+\hline
+{\em Patch\-Type} & the type of Patches to create. This must either be or extend \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch}. \\
+\hline
+\end{DoxyTemplParams}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/\-Users/murphy/work/\-Repast\-H\-P\-C\-\_\-\-G\-I\-T/repast.\-hpc/src/relogo/World\-Creator.\-h\item 
+/\-Users/murphy/work/\-Repast\-H\-P\-C\-\_\-\-G\-I\-T/repast.\-hpc/src/relogo/World\-Creator.\-cpp\end{DoxyCompactItemize}

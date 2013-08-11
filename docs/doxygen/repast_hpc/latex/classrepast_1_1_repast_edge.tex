@@ -1,0 +1,212 @@
+\hypertarget{classrepast_1_1_repast_edge}{\section{repast\-:\-:Repast\-Edge$<$ V $>$ Class Template Reference}
+\label{classrepast_1_1_repast_edge}\index{repast\-::\-Repast\-Edge$<$ V $>$@{repast\-::\-Repast\-Edge$<$ V $>$}}
+}
+
+
+Default graph / network edge implementation.  
+
+
+
+
+{\ttfamily \#include $<$Edge.\-h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum {\bfseries M\-A\-S\-T\-E\-R\-\_\-\-N\-O\-D\-E} \{ {\bfseries D\-E\-F\-A\-U\-L\-T}, 
+{\bfseries S\-O\-U\-R\-C\-E}, 
+{\bfseries T\-A\-R\-G\-E\-T}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classrepast_1_1_repast_edge_ac0205e3ee8478344fba85730fcacae14}{Repast\-Edge} (V $\ast$\hyperlink{classrepast_1_1_repast_edge_a9b8886cb5295f847eccf9743a5f5b0a1}{source}, V $\ast$\hyperlink{classrepast_1_1_repast_edge_a971ec6e45b597d2068ac42125f1b4657}{target}, M\-A\-S\-T\-E\-R\-\_\-\-N\-O\-D\-E use\-Target\-As\-Master=D\-E\-F\-A\-U\-L\-T)
+\begin{DoxyCompactList}\small\item\em Creates a \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge} with the specified source and target and a default weight of 1. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_repast_edge_a7aaad47c69b124500c6e75e631805825}{Repast\-Edge} (V $\ast$\hyperlink{classrepast_1_1_repast_edge_a9b8886cb5295f847eccf9743a5f5b0a1}{source}, V $\ast$\hyperlink{classrepast_1_1_repast_edge_a971ec6e45b597d2068ac42125f1b4657}{target}, double \hyperlink{classrepast_1_1_repast_edge_a6402b40ba110f9f531edf345399a8e74}{weight}, M\-A\-S\-T\-E\-R\-\_\-\-N\-O\-D\-E use\-Target\-As\-Master=D\-E\-F\-A\-U\-L\-T)
+\begin{DoxyCompactList}\small\item\em Creates a \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge} with the specified source, target, and weight. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_repast_edge_a3dbb0517855e4e69ec46da6f956b879f}{Repast\-Edge} (boost\-::shared\-\_\-ptr$<$ V $>$ \hyperlink{classrepast_1_1_repast_edge_a9b8886cb5295f847eccf9743a5f5b0a1}{source}, boost\-::shared\-\_\-ptr$<$ V $>$ \hyperlink{classrepast_1_1_repast_edge_a971ec6e45b597d2068ac42125f1b4657}{target}, M\-A\-S\-T\-E\-R\-\_\-\-N\-O\-D\-E use\-Target\-As\-Master=D\-E\-F\-A\-U\-L\-T)
+\begin{DoxyCompactList}\small\item\em Creates a \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge} with the specified source and target and a default weight of 1. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_repast_edge_ab0a726b1f69af0a1c3a22b9e53a3aead}{Repast\-Edge} (boost\-::shared\-\_\-ptr$<$ V $>$ \hyperlink{classrepast_1_1_repast_edge_a9b8886cb5295f847eccf9743a5f5b0a1}{source}, boost\-::shared\-\_\-ptr$<$ V $>$ \hyperlink{classrepast_1_1_repast_edge_a971ec6e45b597d2068ac42125f1b4657}{target}, double \hyperlink{classrepast_1_1_repast_edge_a6402b40ba110f9f531edf345399a8e74}{weight}, M\-A\-S\-T\-E\-R\-\_\-\-N\-O\-D\-E use\-Target\-As\-Master=D\-E\-F\-A\-U\-L\-T)
+\begin{DoxyCompactList}\small\item\em Creates a \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge} with the specified source, target, and weight. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_repast_edge_aad7896812a552f85f70993c136b50f22}{\hyperlink{classrepast_1_1_repast_edge_aad7896812a552f85f70993c136b50f22}{Repast\-Edge} (const \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge} \&edge)}\label{classrepast_1_1_repast_edge_aad7896812a552f85f70993c136b50f22}
+
+\begin{DoxyCompactList}\small\item\em Copy constructor that creates a \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge} from another \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge}. \end{DoxyCompactList}\item 
+V $\ast$ \hyperlink{classrepast_1_1_repast_edge_a9b8886cb5295f847eccf9743a5f5b0a1}{source} () const 
+\begin{DoxyCompactList}\small\item\em Gets the source of this \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge}. \end{DoxyCompactList}\item 
+V $\ast$ \hyperlink{classrepast_1_1_repast_edge_a971ec6e45b597d2068ac42125f1b4657}{target} () const 
+\begin{DoxyCompactList}\small\item\em Gets the target of this \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge}. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_repast_edge_a6b9889dbf6373654471c555c23dda130}{void {\bfseries target} (V $\ast$target)}\label{classrepast_1_1_repast_edge_a6b9889dbf6373654471c555c23dda130}
+
+\item 
+\hypertarget{classrepast_1_1_repast_edge_a1d4230ade56d772c452497a79d096adb}{void {\bfseries source} (V $\ast$source)}\label{classrepast_1_1_repast_edge_a1d4230ade56d772c452497a79d096adb}
+
+\item 
+double \hyperlink{classrepast_1_1_repast_edge_a6402b40ba110f9f531edf345399a8e74}{weight} () const 
+\begin{DoxyCompactList}\small\item\em Gets the weight of this \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge}. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_repast_edge_aa620175d8226f8d19049e1f6a91560b6}{void {\bfseries weight} (double wt)}\label{classrepast_1_1_repast_edge_aa620175d8226f8d19049e1f6a91560b6}
+
+\item 
+\hypertarget{classrepast_1_1_repast_edge_a626a0ef621f1fe10f1e9856b6381e4a4}{bool {\bfseries uses\-Target\-As\-Master} ()}\label{classrepast_1_1_repast_edge_a626a0ef621f1fe10f1e9856b6381e4a4}
+
+\item 
+\hypertarget{classrepast_1_1_repast_edge_adab73488a17231796e3183b2020a5e1b}{void {\bfseries mark\-Conflicted} ()}\label{classrepast_1_1_repast_edge_adab73488a17231796e3183b2020a5e1b}
+
+\item 
+\hypertarget{classrepast_1_1_repast_edge_aa1ed6c4b123a34f30e9ac8fa70a389e0}{void {\bfseries clear\-Conflicted} ()}\label{classrepast_1_1_repast_edge_aa1ed6c4b123a34f30e9ac8fa70a389e0}
+
+\item 
+\hypertarget{classrepast_1_1_repast_edge_a9eca0c3224444d706ecac2715146701c}{bool {\bfseries is\-Conflicted} ()}\label{classrepast_1_1_repast_edge_a9eca0c3224444d706ecac2715146701c}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename V$>$class repast\-::\-Repast\-Edge$<$ V $>$}
+
+Default graph / network edge implementation. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em V} & agent type that is the source and target of the edge \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1_repast_edge_ac0205e3ee8478344fba85730fcacae14}{\index{repast\-::\-Repast\-Edge@{repast\-::\-Repast\-Edge}!Repast\-Edge@{Repast\-Edge}}
+\index{Repast\-Edge@{Repast\-Edge}!repast::RepastEdge@{repast\-::\-Repast\-Edge}}
+\subsubsection[{Repast\-Edge}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V $>$ {\bf repast\-::\-Repast\-Edge}$<$ V $>$\-::{\bf Repast\-Edge} (
+\begin{DoxyParamCaption}
+\item[{V $\ast$}]{source, }
+\item[{V $\ast$}]{target, }
+\item[{M\-A\-S\-T\-E\-R\-\_\-\-N\-O\-D\-E}]{use\-Target\-As\-Master = {\ttfamily DEFAULT}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_repast_edge_ac0205e3ee8478344fba85730fcacae14}
+
+
+Creates a \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge} with the specified source and target and a default weight of 1. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & the edge source \\
+\hline
+{\em target} & the edge target \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_repast_edge_a7aaad47c69b124500c6e75e631805825}{\index{repast\-::\-Repast\-Edge@{repast\-::\-Repast\-Edge}!Repast\-Edge@{Repast\-Edge}}
+\index{Repast\-Edge@{Repast\-Edge}!repast::RepastEdge@{repast\-::\-Repast\-Edge}}
+\subsubsection[{Repast\-Edge}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V $>$ {\bf repast\-::\-Repast\-Edge}$<$ V $>$\-::{\bf Repast\-Edge} (
+\begin{DoxyParamCaption}
+\item[{V $\ast$}]{source, }
+\item[{V $\ast$}]{target, }
+\item[{double}]{weight, }
+\item[{M\-A\-S\-T\-E\-R\-\_\-\-N\-O\-D\-E}]{use\-Target\-As\-Master = {\ttfamily DEFAULT}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_repast_edge_a7aaad47c69b124500c6e75e631805825}
+
+
+Creates a \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge} with the specified source, target, and weight. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & the edge source \\
+\hline
+{\em target} & the edge target \\
+\hline
+{\em weight} & the edge weight \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_repast_edge_a3dbb0517855e4e69ec46da6f956b879f}{\index{repast\-::\-Repast\-Edge@{repast\-::\-Repast\-Edge}!Repast\-Edge@{Repast\-Edge}}
+\index{Repast\-Edge@{Repast\-Edge}!repast::RepastEdge@{repast\-::\-Repast\-Edge}}
+\subsubsection[{Repast\-Edge}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V $>$ {\bf repast\-::\-Repast\-Edge}$<$ V $>$\-::{\bf Repast\-Edge} (
+\begin{DoxyParamCaption}
+\item[{boost\-::shared\-\_\-ptr$<$ V $>$}]{source, }
+\item[{boost\-::shared\-\_\-ptr$<$ V $>$}]{target, }
+\item[{M\-A\-S\-T\-E\-R\-\_\-\-N\-O\-D\-E}]{use\-Target\-As\-Master = {\ttfamily DEFAULT}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_repast_edge_a3dbb0517855e4e69ec46da6f956b879f}
+
+
+Creates a \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge} with the specified source and target and a default weight of 1. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & the edge source \\
+\hline
+{\em target} & the edge target \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_repast_edge_ab0a726b1f69af0a1c3a22b9e53a3aead}{\index{repast\-::\-Repast\-Edge@{repast\-::\-Repast\-Edge}!Repast\-Edge@{Repast\-Edge}}
+\index{Repast\-Edge@{Repast\-Edge}!repast::RepastEdge@{repast\-::\-Repast\-Edge}}
+\subsubsection[{Repast\-Edge}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V $>$ {\bf repast\-::\-Repast\-Edge}$<$ V $>$\-::{\bf Repast\-Edge} (
+\begin{DoxyParamCaption}
+\item[{boost\-::shared\-\_\-ptr$<$ V $>$}]{source, }
+\item[{boost\-::shared\-\_\-ptr$<$ V $>$}]{target, }
+\item[{double}]{weight, }
+\item[{M\-A\-S\-T\-E\-R\-\_\-\-N\-O\-D\-E}]{use\-Target\-As\-Master = {\ttfamily DEFAULT}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_repast_edge_ab0a726b1f69af0a1c3a22b9e53a3aead}
+
+
+Creates a \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge} with the specified source, target, and weight. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & the edge source \\
+\hline
+{\em target} & the edge target \\
+\hline
+{\em weight} & the edge weight \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_repast_edge_a9b8886cb5295f847eccf9743a5f5b0a1}{\index{repast\-::\-Repast\-Edge@{repast\-::\-Repast\-Edge}!source@{source}}
+\index{source@{source}!repast::RepastEdge@{repast\-::\-Repast\-Edge}}
+\subsubsection[{source}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V$>$ V$\ast$ {\bf repast\-::\-Repast\-Edge}$<$ V $>$\-::source (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_repast_edge_a9b8886cb5295f847eccf9743a5f5b0a1}
+
+
+Gets the source of this \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge}. 
+
+\begin{DoxyReturn}{Returns}
+the source of this \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_repast_edge_a971ec6e45b597d2068ac42125f1b4657}{\index{repast\-::\-Repast\-Edge@{repast\-::\-Repast\-Edge}!target@{target}}
+\index{target@{target}!repast::RepastEdge@{repast\-::\-Repast\-Edge}}
+\subsubsection[{target}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V$>$ V$\ast$ {\bf repast\-::\-Repast\-Edge}$<$ V $>$\-::target (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_repast_edge_a971ec6e45b597d2068ac42125f1b4657}
+
+
+Gets the target of this \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge}. 
+
+\begin{DoxyReturn}{Returns}
+the target of this \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_repast_edge_a6402b40ba110f9f531edf345399a8e74}{\index{repast\-::\-Repast\-Edge@{repast\-::\-Repast\-Edge}!weight@{weight}}
+\index{weight@{weight}!repast::RepastEdge@{repast\-::\-Repast\-Edge}}
+\subsubsection[{weight}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V$>$ double {\bf repast\-::\-Repast\-Edge}$<$ V $>$\-::weight (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_repast_edge_a6402b40ba110f9f531edf345399a8e74}
+
+
+Gets the weight of this \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge}. 
+
+\begin{DoxyReturn}{Returns}
+the weight of this \hyperlink{classrepast_1_1_repast_edge}{Repast\-Edge}. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Edge.\-h\end{DoxyCompactItemize}

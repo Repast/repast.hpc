@@ -72,8 +72,10 @@ struct GridPointHolder {
 	}
 };
 
-// Unary function used in the transform_iterator that allows context iterators
-// to return the agent maps values.
+/**
+ *  Unary function used in the transform_iterator that allows context iterators
+ *  to return the agent maps values.
+ */
 template<typename T, typename GPType>
 struct AgentFromGridPoint: public std::unary_function<typename boost::unordered_map<AgentId,
 		GridPointHolder<T, GPType>*>::value_type, boost::shared_ptr<T> > {
@@ -90,12 +92,12 @@ struct AgentFromGridPoint: public std::unary_function<typename boost::unordered_
  * Standard grid and space types that provide defaults for the various template parameters
  * can be found in Space in Space.h
  *
- * @tparam T the type of objects contained by this BaseGrid
+ * @tparam T the type of objects contained by this BaseGrid (generally the type of agents)
  * @tparam CellAccessor implements the actual storage for the grid.
  * @tparam GPTransformer transforms cell points according to the topology (e.g. periodic)
  * of the BaseGrid.
  * @tparam Adder determines how objects are added to the grid from its associated context.
- * @tparam GPType the coordinate type of the grid point locations. This must
+ * @tparam GPType the coordinate type of the grid point locations; this must
  * be an int or a double.
  */
 template<typename T, typename CellAccessor, typename GPTransformer, typename Adder, typename GPType>

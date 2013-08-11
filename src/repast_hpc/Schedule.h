@@ -84,8 +84,7 @@ public:
 };
 
 /**
- * NON USER API.
- *
+ * General class linking a function pointer to a specific tick.
  */
 class RepastEvent {
 
@@ -100,10 +99,7 @@ public:
 class EventCompare;
 
 /**
- * NON USER API
- *
- * The actual object that is scheduled the priority queue
- * for execution.
+ * The object that is placed (scheduled) in the priority queue for execution.
  */
 class ScheduledEvent {
 
@@ -130,8 +126,6 @@ public:
 };
 
 /**
- * NON USER API.
- *
  * ScheduledEvent that will only execute only once.
  */
 class OneTimeEvent: public ScheduledEvent {
@@ -146,8 +140,6 @@ public:
 };
 
 /**
- * NON USER API.
- *
  * ScheduledEvent that executes repeatedly. This will
  * reschedule itself repeatedly at the appropriate interval.
  */
@@ -163,8 +155,6 @@ public:
 };
 
 /**
- * NON USER API.
- *
  * Compares ScheduledEvents based on their tick times.
  */
 class EventCompare {
@@ -177,9 +167,7 @@ public:
 };
 
 /**
- * NON USER API.
- *
- * The simulation schedule queue. This wraps priority queue
+ * The simulation schedule queue. This wraps a priority queue
  * to schedule repast ScheduledEvents.
  */
 class Schedule {
@@ -242,8 +230,8 @@ public:
 };
 
 /**
- * Runs the Schedule by poping events off of the Schedule and executing them.
- * Also provides methods for scheduling events. Simulation events should be
+ * Runs the Schedule by popping events off of the Schedule and executing them;
+ * also provides methods for scheduling events. Simulation events should be
  * scheduled for execution using this class which is accessible via
  * RepastProcess::instance()->getScheduleRunner()
  */

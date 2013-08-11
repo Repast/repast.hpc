@@ -1,0 +1,76 @@
+\hypertarget{classrepast_1_1relogo_1_1_simulation_runner}{\section{repast\-:\-:relogo\-:\-:Simulation\-Runner Class Reference}
+\label{classrepast_1_1relogo_1_1_simulation_runner}\index{repast\-::relogo\-::\-Simulation\-Runner@{repast\-::relogo\-::\-Simulation\-Runner}}
+}
+
+
+Runs a Relogo simulation.  
+
+
+
+
+{\ttfamily \#include $<$Simulation\-Runner.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_simulation_runner_a728e64ef637008c47017cd351b8b067e}{\hyperlink{classrepast_1_1relogo_1_1_simulation_runner_a728e64ef637008c47017cd351b8b067e}{Simulation\-Runner} (boost\-::mpi\-::communicator $\ast$world)}\label{classrepast_1_1relogo_1_1_simulation_runner_a728e64ef637008c47017cd351b8b067e}
+
+\begin{DoxyCompactList}\small\item\em Creates a \hyperlink{classrepast_1_1relogo_1_1_simulation_runner}{Simulation\-Runner}. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Observer\-Type , typename Patch\-Type $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_simulation_runner_ac5e8c7119f3278f5c64190e6686e59d0}{run} (Properties \&props)
+\begin{DoxyCompactList}\small\item\em Creates and runs the simulation using the properties defined in props. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_simulation_runner_a4d616014a9f755de2d32784e449629cf}{boost\-::mpi\-::communicator $\ast$ {\bfseries comm}}\label{classrepast_1_1relogo_1_1_simulation_runner_a4d616014a9f755de2d32784e449629cf}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Runs a Relogo simulation. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1relogo_1_1_simulation_runner_ac5e8c7119f3278f5c64190e6686e59d0}{\index{repast\-::relogo\-::\-Simulation\-Runner@{repast\-::relogo\-::\-Simulation\-Runner}!run@{run}}
+\index{run@{run}!repast::relogo::SimulationRunner@{repast\-::relogo\-::\-Simulation\-Runner}}
+\subsubsection[{run}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Observer\-Type , typename Patch\-Type $>$ void repast\-::relogo\-::\-Simulation\-Runner\-::run (
+\begin{DoxyParamCaption}
+\item[{Properties \&}]{props}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_simulation_runner_ac5e8c7119f3278f5c64190e6686e59d0}
+
+
+Creates and runs the simulation using the properties defined in props. 
+
+The properties file must have the following properties defined\-:
+
+
+\begin{DoxyItemize}
+\item min.\-x the minimum integer x coordinate of the world 
+\item min.\-y the minimum integer y coordinate of the world 
+\item max.\-x the maximum integer x coordinate of the world 
+\item max.\-h the maximum integer y coordinate of the world 
+\item grid.\-buffer the size of the grid and space buffers 
+\item proc.\-per.\-x the number of processes to assign to the world's x dimension. proc.\-per.\-x multiplied by proc.\-per.\-y must equal the number processes that the simulation will run on 
+\item proc.\-per.\-y the number of processes to assign to the world's y dimension. proc.\-per.\-x multiplied by proc.\-per.\-y must equal the number processes that the simulation will run on 
+\item stop.\-at the tick at which to stop the simulation
+
+This will create an \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer} of the specified type and populate the world with Patches of the specified type. It will then call setup(props) on that \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer} implementation and start the simulation schedule which will call the \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}'s go method each tick.
+
+
+\begin{DoxyParams}{Parameters}
+{\em props} & a properties file containing the properties mentioned above \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Observer\-Type} & the type of \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer} to create. This type must extend \hyperlink{classrepast_1_1relogo_1_1_observer}{relogo\-::\-Observer}. \\
+\hline
+{\em Patch\-Type} & the type of Patches to create. This must extend \hyperlink{classrepast_1_1relogo_1_1_patch}{relogo\-::\-Patch}. \\
+\hline
+\end{DoxyTemplParams}
+
+\end{DoxyItemize}
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+/\-Users/murphy/work/\-Repast\-H\-P\-C\-\_\-\-G\-I\-T/repast.\-hpc/src/relogo/Simulation\-Runner.\-h\end{DoxyCompactItemize}

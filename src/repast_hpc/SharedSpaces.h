@@ -46,6 +46,9 @@
 
 namespace repast {
 
+/**
+ * Struct within which multiple kinds of shared space are typedef-ed.
+ */
 template<typename T>
 struct SharedSpaces {
 

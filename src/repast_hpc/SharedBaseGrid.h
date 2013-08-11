@@ -70,10 +70,11 @@ const int GRID_BUFFER_SYNC6 = 3006;
 const int GRID_BUFFER_SYNC7 = 3007;
 
 /**
- * NON USER API.
- *
- * Encapsulates the contents of a grid / space location
+ * _DEPRECATED_ Encapsulates the contents of a grid / space location
  * so that it can be sent between processes.
+ *
+ * \deprecated
+ * Replaced by ProjectionInfoPacket as of Version 2.0
  */
 template<typename AgentContent, typename GPType>
 class CellContents {
@@ -105,9 +106,9 @@ CellContents<AgentContent, GPType>::CellContents(Point<GPType> pt) :
 }
 
 /**
- * NON USER API.
- *
- * A grid topology process neighbor.
+ * Contains the rank and boundaries of a semantically adjacent
+ * process (that is, a process that manages the space that is
+ * adjacent to the simulation space managed by this process).
  */
 class Neighbor {
 
@@ -125,9 +126,7 @@ public:
 
 
 /**
- * NON USER API.
- *
- * Provides look up grid topology process neighbors given
+ * Provides lookup of grid topology process neighbors given
  * a point in the pan process grid.
  */
 class Neighbors {
@@ -189,10 +188,11 @@ std::ostream& operator<<(std::ostream& os, const Neighbors& nghs);
 
 
 /**
- * NON USER API.
- *
- * Helper class that provides support for synchronizing a
+ * _DEPRECATED_ Helper class that provides support for synchronizing a
  * grid / space buffer.
+ *
+ * \deprecated
+ * As of Version 2.0
  */
 template<typename T, typename GPType>
 class GridBufferSyncher {
@@ -258,7 +258,10 @@ GridBufferSyncher<T, GPType>::~GridBufferSyncher() {
 }
 
 
-
+/**
+ * Allows retrieval of the position of this process within the
+ * MPI Cartesian Topology into which it is placed.
+ */
 class CartTopology {
 
 private:

@@ -1,0 +1,261 @@
+\hypertarget{classrepast_1_1_directed_vertex}{\section{repast\-:\-:Directed\-Vertex$<$ V, E $>$ Class Template Reference}
+\label{classrepast_1_1_directed_vertex}\index{repast\-::\-Directed\-Vertex$<$ V, E $>$@{repast\-::\-Directed\-Vertex$<$ V, E $>$}}
+}
+
+
+Used internally by repast graphs / networks to encapsulate the vertices of a directed graph.  
+
+
+
+
+{\ttfamily \#include $<$Directed\-Vertex.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Directed\-Vertex$<$ V, E $>$\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classrepast_1_1_directed_vertex}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_directed_vertex_a2f3b536bc1ffa83364808390a19706b7}{\hyperlink{classrepast_1_1_directed_vertex_a2f3b536bc1ffa83364808390a19706b7}{Directed\-Vertex} (boost\-::shared\-\_\-ptr$<$ V $>$ \hyperlink{classrepast_1_1_vertex_a55749dbe0d9f79bb39dfea7733070305}{item})}\label{classrepast_1_1_directed_vertex_a2f3b536bc1ffa83364808390a19706b7}
+
+\begin{DoxyCompactList}\small\item\em Creates a \hyperlink{classrepast_1_1_directed_vertex}{Directed\-Vertex} that will contain the specified item. \end{DoxyCompactList}\item 
+virtual boost\-::shared\-\_\-ptr$<$ E $>$ \hyperlink{classrepast_1_1_directed_vertex_ac70277c05d9dbad7bd4d876fd4c4cf5b}{remove\-Edge} (\hyperlink{classrepast_1_1_vertex}{Vertex}$<$ V, E $>$ $\ast$other, \hyperlink{classrepast_1_1_vertex_a8b4819d648c7c0dd8b0622beea77cc14}{Edge\-Type} type)
+\begin{DoxyCompactList}\small\item\em Removes the edge of the specified type between this \hyperlink{classrepast_1_1_vertex}{Vertex} and the specified \hyperlink{classrepast_1_1_vertex}{Vertex}. \end{DoxyCompactList}\item 
+virtual boost\-::shared\-\_\-ptr$<$ E $>$ \hyperlink{classrepast_1_1_directed_vertex_a1d366144c84a033448fbc0e5f67f8cdb}{find\-Edge} (\hyperlink{classrepast_1_1_vertex}{Vertex}$<$ V, E $>$ $\ast$other, \hyperlink{classrepast_1_1_vertex_a8b4819d648c7c0dd8b0622beea77cc14}{Edge\-Type} type)
+\begin{DoxyCompactList}\small\item\em Finds the edge of the specified type between this \hyperlink{classrepast_1_1_vertex}{Vertex} and the specified vertex. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_directed_vertex_a6ff5f259f8e4087479bb37156b841ab2}{add\-Edge} (\hyperlink{classrepast_1_1_vertex}{Vertex}$<$ V, E $>$ $\ast$other, boost\-::shared\-\_\-ptr$<$ E $>$ edge, \hyperlink{classrepast_1_1_vertex_a8b4819d648c7c0dd8b0622beea77cc14}{Edge\-Type} type)
+\begin{DoxyCompactList}\small\item\em Adds an edge of the specified type between this \hyperlink{classrepast_1_1_vertex}{Vertex} and the specified vertex. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_directed_vertex_a40dc1f60f518eda0ccbf20622ea82839}{successors} (std\-::vector$<$ V $\ast$ $>$ \&out)
+\begin{DoxyCompactList}\small\item\em Gets the successors of this \hyperlink{classrepast_1_1_vertex}{Vertex}. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_directed_vertex_a2b8af860460fa13b4c5e248e266d2ee2}{predecessors} (std\-::vector$<$ V $\ast$ $>$ \&out)
+\begin{DoxyCompactList}\small\item\em Gets the predecessors of this \hyperlink{classrepast_1_1_vertex}{Vertex}. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_directed_vertex_aded5ff0954773ccc6d0e621950e61659}{adjacent} (std\-::vector$<$ V $\ast$ $>$ \&out)
+\begin{DoxyCompactList}\small\item\em Gets the Vertices adjacent to this \hyperlink{classrepast_1_1_vertex}{Vertex}. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_directed_vertex_abdfdf5f45ddd9026017a2ce62e3c5b7e}{edges} (\hyperlink{classrepast_1_1_vertex_a8b4819d648c7c0dd8b0622beea77cc14}{Edge\-Type} type, std\-::vector$<$ boost\-::shared\-\_\-ptr$<$ E $>$ $>$ \&out)
+\begin{DoxyCompactList}\small\item\em Gets all the edges of the specified type in which this \hyperlink{classrepast_1_1_vertex}{Vertex} participates and return them in out. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1_directed_vertex_afd409d365742f1b247734c1283cc059a}{in\-Degree} ()
+\begin{DoxyCompactList}\small\item\em Gets the in degree of this \hyperlink{classrepast_1_1_vertex}{Vertex}. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1_directed_vertex_a2debe4c699a8cafd8e7bad11f15deca8}{out\-Degree} ()
+\begin{DoxyCompactList}\small\item\em Gets the out degree of this \hyperlink{classrepast_1_1_vertex}{Vertex}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename V, typename E$>$class repast\-::\-Directed\-Vertex$<$ V, E $>$}
+
+Used internally by repast graphs / networks to encapsulate the vertices of a directed graph. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em V} & the type of object stored by in a \hyperlink{classrepast_1_1_vertex}{Vertex}. \\
+\hline
+{\em E} & the Edge\-Type of the network. \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_directed_vertex_a6ff5f259f8e4087479bb37156b841ab2}{\index{repast\-::\-Directed\-Vertex@{repast\-::\-Directed\-Vertex}!add\-Edge@{add\-Edge}}
+\index{add\-Edge@{add\-Edge}!repast::DirectedVertex@{repast\-::\-Directed\-Vertex}}
+\subsubsection[{add\-Edge}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E $>$ void {\bf repast\-::\-Directed\-Vertex}$<$ V, E $>$\-::add\-Edge (
+\begin{DoxyParamCaption}
+\item[{{\bf Vertex}$<$ V, E $>$ $\ast$}]{other, }
+\item[{boost\-::shared\-\_\-ptr$<$ E $>$}]{edge, }
+\item[{{\bf Edge\-Type}}]{type}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_directed_vertex_a6ff5f259f8e4087479bb37156b841ab2}
+
+
+Adds an edge of the specified type between this \hyperlink{classrepast_1_1_vertex}{Vertex} and the specified vertex. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em edge} & the edge to add \\
+\hline
+{\em other} & the other end of the edge \\
+\hline
+{\em type} & the type of edge to add \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{classrepast_1_1_vertex_a16e732188e59b29be343b96a5377533c}{repast\-::\-Vertex$<$ V, E $>$}.
+
+\hypertarget{classrepast_1_1_directed_vertex_aded5ff0954773ccc6d0e621950e61659}{\index{repast\-::\-Directed\-Vertex@{repast\-::\-Directed\-Vertex}!adjacent@{adjacent}}
+\index{adjacent@{adjacent}!repast::DirectedVertex@{repast\-::\-Directed\-Vertex}}
+\subsubsection[{adjacent}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E $>$ void {\bf repast\-::\-Directed\-Vertex}$<$ V, E $>$\-::adjacent (
+\begin{DoxyParamCaption}
+\item[{std\-::vector$<$ V $\ast$ $>$ \&}]{out}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_directed_vertex_aded5ff0954773ccc6d0e621950e61659}
+
+
+Gets the Vertices adjacent to this \hyperlink{classrepast_1_1_vertex}{Vertex}. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt out}  & {\em the} & vector where the adjacent vectors will be put \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{classrepast_1_1_vertex_ac0952ef9c988dc4792900ded7d033667}{repast\-::\-Vertex$<$ V, E $>$}.
+
+\hypertarget{classrepast_1_1_directed_vertex_abdfdf5f45ddd9026017a2ce62e3c5b7e}{\index{repast\-::\-Directed\-Vertex@{repast\-::\-Directed\-Vertex}!edges@{edges}}
+\index{edges@{edges}!repast::DirectedVertex@{repast\-::\-Directed\-Vertex}}
+\subsubsection[{edges}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E $>$ void {\bf repast\-::\-Directed\-Vertex}$<$ V, E $>$\-::edges (
+\begin{DoxyParamCaption}
+\item[{{\bf Edge\-Type}}]{type, }
+\item[{std\-::vector$<$ boost\-::shared\-\_\-ptr$<$ E $>$ $>$ \&}]{out}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_directed_vertex_abdfdf5f45ddd9026017a2ce62e3c5b7e}
+
+
+Gets all the edges of the specified type in which this \hyperlink{classrepast_1_1_vertex}{Vertex} participates and return them in out. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em type} & the type of edges to get \\
+\hline
+\mbox{\tt out}  & {\em where} & the edges will be put. \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{classrepast_1_1_vertex_af652dbbcd2b328685cdd2bb34a7d9240}{repast\-::\-Vertex$<$ V, E $>$}.
+
+\hypertarget{classrepast_1_1_directed_vertex_a1d366144c84a033448fbc0e5f67f8cdb}{\index{repast\-::\-Directed\-Vertex@{repast\-::\-Directed\-Vertex}!find\-Edge@{find\-Edge}}
+\index{find\-Edge@{find\-Edge}!repast::DirectedVertex@{repast\-::\-Directed\-Vertex}}
+\subsubsection[{find\-Edge}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E $>$ boost\-::shared\-\_\-ptr$<$ E $>$ {\bf repast\-::\-Directed\-Vertex}$<$ V, E $>$\-::find\-Edge (
+\begin{DoxyParamCaption}
+\item[{{\bf Vertex}$<$ V, E $>$ $\ast$}]{other, }
+\item[{{\bf Edge\-Type}}]{type}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_directed_vertex_a1d366144c84a033448fbc0e5f67f8cdb}
+
+
+Finds the edge of the specified type between this \hyperlink{classrepast_1_1_vertex}{Vertex} and the specified vertex. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em other} & the other end of the edge \\
+\hline
+{\em type} & the type of edge to remove\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the found edge, or 0. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1_vertex_ad649f278be3161b0ee3609019341fe64}{repast\-::\-Vertex$<$ V, E $>$}.
+
+\hypertarget{classrepast_1_1_directed_vertex_afd409d365742f1b247734c1283cc059a}{\index{repast\-::\-Directed\-Vertex@{repast\-::\-Directed\-Vertex}!in\-Degree@{in\-Degree}}
+\index{in\-Degree@{in\-Degree}!repast::DirectedVertex@{repast\-::\-Directed\-Vertex}}
+\subsubsection[{in\-Degree}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E $>$ int {\bf repast\-::\-Directed\-Vertex}$<$ V, E $>$\-::in\-Degree (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_directed_vertex_afd409d365742f1b247734c1283cc059a}
+
+
+Gets the in degree of this \hyperlink{classrepast_1_1_vertex}{Vertex}. 
+
+\begin{DoxyReturn}{Returns}
+the in degree of this \hyperlink{classrepast_1_1_vertex}{Vertex}. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1_vertex_a14a787ee4d9ad1069c483b454b8a0004}{repast\-::\-Vertex$<$ V, E $>$}.
+
+\hypertarget{classrepast_1_1_directed_vertex_a2debe4c699a8cafd8e7bad11f15deca8}{\index{repast\-::\-Directed\-Vertex@{repast\-::\-Directed\-Vertex}!out\-Degree@{out\-Degree}}
+\index{out\-Degree@{out\-Degree}!repast::DirectedVertex@{repast\-::\-Directed\-Vertex}}
+\subsubsection[{out\-Degree}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E $>$ int {\bf repast\-::\-Directed\-Vertex}$<$ V, E $>$\-::out\-Degree (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_directed_vertex_a2debe4c699a8cafd8e7bad11f15deca8}
+
+
+Gets the out degree of this \hyperlink{classrepast_1_1_vertex}{Vertex}. 
+
+\begin{DoxyReturn}{Returns}
+the out degree of this \hyperlink{classrepast_1_1_vertex}{Vertex}. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1_vertex_a47e058f671914d7c65553bbe20138f33}{repast\-::\-Vertex$<$ V, E $>$}.
+
+\hypertarget{classrepast_1_1_directed_vertex_a2b8af860460fa13b4c5e248e266d2ee2}{\index{repast\-::\-Directed\-Vertex@{repast\-::\-Directed\-Vertex}!predecessors@{predecessors}}
+\index{predecessors@{predecessors}!repast::DirectedVertex@{repast\-::\-Directed\-Vertex}}
+\subsubsection[{predecessors}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E $>$ void {\bf repast\-::\-Directed\-Vertex}$<$ V, E $>$\-::predecessors (
+\begin{DoxyParamCaption}
+\item[{std\-::vector$<$ V $\ast$ $>$ \&}]{out}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_directed_vertex_a2b8af860460fa13b4c5e248e266d2ee2}
+
+
+Gets the predecessors of this \hyperlink{classrepast_1_1_vertex}{Vertex}. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt out}  & {\em the} & vector where any predecessors will be put \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{classrepast_1_1_vertex_ad27c48d86502b4e73aba445de07c084c}{repast\-::\-Vertex$<$ V, E $>$}.
+
+\hypertarget{classrepast_1_1_directed_vertex_ac70277c05d9dbad7bd4d876fd4c4cf5b}{\index{repast\-::\-Directed\-Vertex@{repast\-::\-Directed\-Vertex}!remove\-Edge@{remove\-Edge}}
+\index{remove\-Edge@{remove\-Edge}!repast::DirectedVertex@{repast\-::\-Directed\-Vertex}}
+\subsubsection[{remove\-Edge}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E $>$ boost\-::shared\-\_\-ptr$<$ E $>$ {\bf repast\-::\-Directed\-Vertex}$<$ V, E $>$\-::remove\-Edge (
+\begin{DoxyParamCaption}
+\item[{{\bf Vertex}$<$ V, E $>$ $\ast$}]{other, }
+\item[{{\bf Edge\-Type}}]{type}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_directed_vertex_ac70277c05d9dbad7bd4d876fd4c4cf5b}
+
+
+Removes the edge of the specified type between this \hyperlink{classrepast_1_1_vertex}{Vertex} and the specified \hyperlink{classrepast_1_1_vertex}{Vertex}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em other} & the other end of the edge \\
+\hline
+{\em type} & the type of edge to remove\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the removed edge if such an edge was found, otherwise 0. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1_vertex_ac3ac362e00073965fc501b2671e908eb}{repast\-::\-Vertex$<$ V, E $>$}.
+
+\hypertarget{classrepast_1_1_directed_vertex_a40dc1f60f518eda0ccbf20622ea82839}{\index{repast\-::\-Directed\-Vertex@{repast\-::\-Directed\-Vertex}!successors@{successors}}
+\index{successors@{successors}!repast::DirectedVertex@{repast\-::\-Directed\-Vertex}}
+\subsubsection[{successors}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E $>$ void {\bf repast\-::\-Directed\-Vertex}$<$ V, E $>$\-::successors (
+\begin{DoxyParamCaption}
+\item[{std\-::vector$<$ V $\ast$ $>$ \&}]{out}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_directed_vertex_a40dc1f60f518eda0ccbf20622ea82839}
+
+
+Gets the successors of this \hyperlink{classrepast_1_1_vertex}{Vertex}. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt out}  & {\em the} & vector where any successors will be put \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{classrepast_1_1_vertex_a0e3a2812db0b42ca344bd577076002d0}{repast\-::\-Vertex$<$ V, E $>$}.
+
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Directed\-Vertex.\-h\end{DoxyCompactItemize}

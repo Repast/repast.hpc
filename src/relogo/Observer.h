@@ -58,6 +58,19 @@
 #include "relogo.h"
 #include "agent_set_functions.h"
 
+/**
+ * \mainpage Repast HPC- ReLogo Logo-Like Semantics for Repast HPC
+ *
+ * By Argonne National Laboratory, 2009-2013
+ *
+ * \section intro_sec What is ReLogo
+ *
+ * ReLogo is a collection of classes and methods that allow Repast HPC
+ * simulations (agent-based simulations for high-performance computing
+ * environments) to be built using simple and easily apprehensible
+ * semantics.
+ */
+
 namespace repast {
 
 namespace relogo {
@@ -66,6 +79,9 @@ class Patch;
 class WorldCreator;
 class DataSet;
 
+/**
+ * Compare two elements of type std::type_info using 'before'
+ */
 struct TypeInfoCmp {
 	bool operator()(const std::type_info* one, const std::type_info* two) const {
 		return one->before(*two) != 0;
@@ -74,8 +90,10 @@ struct TypeInfoCmp {
 
 class Turtle;
 
-// Unary function used in the transform_iterator that allows context iterators
-// to return the agent maps values.
+/**
+ * Unary function used in the transform_iterator that allows context iterators
+ * to return the agent maps values.
+ */
 template<typename TargetType>
 struct Caster: public std::unary_function<boost::shared_ptr<RelogoAgent>, TargetType*> {
 

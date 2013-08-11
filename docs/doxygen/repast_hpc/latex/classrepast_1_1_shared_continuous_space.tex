@@ -1,0 +1,99 @@
+\hypertarget{classrepast_1_1_shared_continuous_space}{\section{repast\-:\-:Shared\-Continuous\-Space$<$ T, G\-P\-Transformer, Adder $>$ Class Template Reference}
+\label{classrepast_1_1_shared_continuous_space}\index{repast\-::\-Shared\-Continuous\-Space$<$ T, G\-P\-Transformer, Adder $>$@{repast\-::\-Shared\-Continuous\-Space$<$ T, G\-P\-Transformer, Adder $>$}}
+}
+
+
+Continuous space \hyperlink{classrepast_1_1_shared_base_grid}{Shared\-Base\-Grid} implementation.  
+
+
+
+
+{\ttfamily \#include $<$Shared\-Continuous\-Space.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Shared\-Continuous\-Space$<$ T, G\-P\-Transformer, Adder $>$\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=6.000000cm]{classrepast_1_1_shared_continuous_space}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_shared_continuous_space_a4ef3b8e7673c6bb967b9aa4ea90bf902}{{\bfseries Shared\-Continuous\-Space} (std\-::string \hyperlink{classrepast_1_1_projection_ab60a0ab4f584685780307d7431b61800}{name}, \hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} grid\-Dims, std\-::vector$<$ int $>$ process\-Dims, int buffer, boost\-::mpi\-::communicator $\ast$world)}\label{classrepast_1_1_shared_continuous_space_a4ef3b8e7673c6bb967b9aa4ea90bf902}
+
+\item 
+{\footnotesize template$<$typename Agent\-Content , typename Provider , typename Agents\-Creator $>$ }\\void \hyperlink{classrepast_1_1_shared_continuous_space_aadc5ded18049649d752ac9ab267566dc}{synch\-Buffer} (\hyperlink{classrepast_1_1_shared_context}{Shared\-Context}$<$ T $>$ \&context, Provider \&provider, Agents\-Creator \&creator)
+\begin{DoxyCompactList}\small\item\em Synchronize the buffer area of this Shared\-Grid with its neighbors. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_shared_continuous_space_a843f532b2e1c305c8b95591380b8ccfa}{{\footnotesize template$<$typename Agent\-Content , typename Content\-Provider , typename Content\-Receiver $>$ }\\void {\bfseries synch\-Buffer} (\hyperlink{classrepast_1_1_shared_context}{Shared\-Context}$<$ T $>$ \&context, Content\-Provider \&provider, Content\-Receiver \&receiver)}\label{classrepast_1_1_shared_continuous_space_a843f532b2e1c305c8b95591380b8ccfa}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_shared_continuous_space_afcec67affcb216e1d1e0d558acfc3557}{virtual void {\bfseries synch\-Move\-To} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id, const \hyperlink{classrepast_1_1_point}{Point}$<$ double $>$ \&pt)}\label{classrepast_1_1_shared_continuous_space_afcec67affcb216e1d1e0d558acfc3557}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T, typename G\-P\-Transformer, typename Adder$>$class repast\-::\-Shared\-Continuous\-Space$<$ T, G\-P\-Transformer, Adder $>$}
+
+Continuous space \hyperlink{classrepast_1_1_shared_base_grid}{Shared\-Base\-Grid} implementation. 
+
+This primarily adds the buffer synchronization appropriate for this type. Default templated typical Shared\-Continuous\-Spaces are defined in Shared\-Grids.
+
+\begin{DoxySeeAlso}{See Also}
+\hyperlink{classrepast_1_1_shared_base_grid}{Shared\-Base\-Grid} for more details.
+\end{DoxySeeAlso}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & the type of objects contained by this \hyperlink{classrepast_1_1_base_grid}{Base\-Grid} \\
+\hline
+{\em G\-P\-Transformer} & transforms cell points according to the topology (e.\-g. periodic) of the \hyperlink{classrepast_1_1_base_grid}{Base\-Grid}. \\
+\hline
+{\em Adder} & determines how objects are added to the grid from its associated context. \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_shared_continuous_space_aadc5ded18049649d752ac9ab267566dc}{\index{repast\-::\-Shared\-Continuous\-Space@{repast\-::\-Shared\-Continuous\-Space}!synch\-Buffer@{synch\-Buffer}}
+\index{synch\-Buffer@{synch\-Buffer}!repast::SharedContinuousSpace@{repast\-::\-Shared\-Continuous\-Space}}
+\subsubsection[{synch\-Buffer}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename G\-P\-Transformer , typename Adder $>$ template$<$typename Agent\-Content , typename Provider , typename Agents\-Creator $>$ void {\bf repast\-::\-Shared\-Continuous\-Space}$<$ T, G\-P\-Transformer, Adder $>$\-::synch\-Buffer (
+\begin{DoxyParamCaption}
+\item[{{\bf Shared\-Context}$<$ T $>$ \&}]{context, }
+\item[{Provider \&}]{provider, }
+\item[{Agents\-Creator \&}]{creator}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_continuous_space_aadc5ded18049649d752ac9ab267566dc}
+
+
+Synchronize the buffer area of this Shared\-Grid with its neighbors. 
+
+This will copy the buffer area from the neighbors into this Shared\-Grid. This should be called immediately after init\-Synch\-Buffer.
+
+
+\begin{DoxyParams}{Parameters}
+{\em context} & the \hyperlink{classrepast_1_1_shared_context}{Shared\-Context} that contains the agents in this Shared\-Grid. \\
+\hline
+{\em provider} & a class that provides Agent\-Content for the agents being buffered in neighboring grids. \\
+\hline
+{\em creator} & a class that creates a agents of type T when given Agent\-Content.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & the type of agent in this Shared\-Grid \\
+\hline
+{\em Agent\-Content} & the serializable struct or class that describes the state of agents. \\
+\hline
+{\em Provider} & a class that provides Agent\-Content for aagents, implementing void provide\-Content(\-T$\ast$ agent, std\-::vector$<$\-Agent\-Content$>$\& out) \\
+\hline
+{\em Agents\-Creator} & a class that creates agents given Agent\-Content, implementing void create\-Agents(std\-::vector$<$\-Agent\-Content$>$\& contents, std\-::vector$<$\-T$\ast$$>$\& out). Creating agents from the vector of content and placing them in out. \\
+\hline
+\end{DoxyTemplParams}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Shared\-Continuous\-Space.\-h\end{DoxyCompactItemize}

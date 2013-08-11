@@ -52,7 +52,7 @@ const int GRID_MOVE_SYNC_PACKETS = 3011;
 
 
 /**
- * Encapsulates a info about an agent moving off the grid:
+ * Encapsulates info about an agent moving off the grid:
  * the rank it moved to, its grid location, and the
  * agent id.
  */
@@ -74,6 +74,10 @@ struct GridMovePacket {
 	int _rank;
 };
 
+/**
+ * A collection of GridMovePacket objects, kept in a map
+ * per destination process.
+ */
 template <typename PtType>
 class GridMovePackets {
 

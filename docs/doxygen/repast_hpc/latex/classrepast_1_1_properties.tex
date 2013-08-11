@@ -1,0 +1,378 @@
+\hypertarget{classrepast_1_1_properties}{\section{repast\-:\-:Properties Class Reference}
+\label{classrepast_1_1_properties}\index{repast\-::\-Properties@{repast\-::\-Properties}}
+}
+
+
+Map type object that contains key, value(string) properties.  
+
+
+
+
+{\ttfamily \#include $<$Properties.\-h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_properties_a033e3e16f3cfb8579fa09973ea3a53da}{typedef \\*
+boost\-::transform\-\_\-iterator\\*
+$<$ \hyperlink{structrepast_1_1_key_getter}{Key\-Getter}, std\-::map\\*
+$<$ std\-::string, std\-::string $>$\\*
+\-::const\-\_\-iterator $>$ {\bfseries key\-\_\-iterator}}\label{classrepast_1_1_properties_a033e3e16f3cfb8579fa09973ea3a53da}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_properties_ab34048edde5f078749499e54ae33b092}{\hyperlink{classrepast_1_1_properties_ab34048edde5f078749499e54ae33b092}{Properties} ()}\label{classrepast_1_1_properties_ab34048edde5f078749499e54ae33b092}
+
+\begin{DoxyCompactList}\small\item\em Creates an empty \hyperlink{classrepast_1_1_properties}{Properties}. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_properties_a23c9d9635eb8cf61b877692abf4d94b8}{Properties} (const std\-::string \&file, boost\-::mpi\-::communicator $\ast$comm=0, int max\-Prop\-File\-Size=M\-A\-X\-\_\-\-P\-R\-O\-P\-\_\-\-F\-I\-L\-E\-\_\-\-S\-I\-Z\-E)
+\begin{DoxyCompactList}\small\item\em Creates a new \hyperlink{classrepast_1_1_properties}{Properties} using the properties defined in the specified file. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_properties_a15f789bec63f21941cd4d88a77c327c3}{Properties} (const std\-::string \&file, int argc, char $\ast$$\ast$argv, boost\-::mpi\-::communicator $\ast$comm=0, int max\-Prop\-File\-Size=M\-A\-X\-\_\-\-P\-R\-O\-P\-\_\-\-F\-I\-L\-E\-\_\-\-S\-I\-Z\-E)
+\begin{DoxyCompactList}\small\item\em Creates a new \hyperlink{classrepast_1_1_properties}{Properties} using the properties defined in the specified file and any properties specified in Key=Val format in the argument array. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_properties_ab4edc85145fddc5d6dbd3dbf4d074ef7}{Properties} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em Creates a new \hyperlink{classrepast_1_1_properties}{Properties} using the properties specified in Key=Val format in the argument. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_properties_a9008647e3045dbd18356d43c9f343fe0}{put\-Property} (const std\-::string \&key, std\-::string value)
+\begin{DoxyCompactList}\small\item\em Puts a property into this \hyperlink{classrepast_1_1_properties}{Properties} with the specified key and value. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_properties_ae11bdd22268c15934237acc3cdfa1e91}{put\-Property} (const std\-::string \&key, long double value)
+\begin{DoxyCompactList}\small\item\em Puts a property into this \hyperlink{classrepast_1_1_properties}{Properties} with the specified key and value. \end{DoxyCompactList}\item 
+std\-::string \hyperlink{classrepast_1_1_properties_a10845b8c51a4f23b9fe8e4bb3b2402e7}{get\-Property} (const std\-::string \&key) const 
+\begin{DoxyCompactList}\small\item\em Gets the property with the specified key. \end{DoxyCompactList}\item 
+bool \hyperlink{classrepast_1_1_properties_a00995681d4adf3abcd8910a6a1bb72ee}{contains} (const std\-::string \&key) const 
+\begin{DoxyCompactList}\small\item\em Gets whether or not this \hyperlink{classrepast_1_1_properties}{Properties} contains the specified key. \end{DoxyCompactList}\item 
+key\-\_\-iterator \hyperlink{classrepast_1_1_properties_aa3ec0c363bc6ccdc033aa6dc7cc29f70}{keys\-\_\-begin} () const 
+\begin{DoxyCompactList}\small\item\em Gets the start of an iterator over this \hyperlink{classrepast_1_1_properties}{Properties}' keys. \end{DoxyCompactList}\item 
+key\-\_\-iterator \hyperlink{classrepast_1_1_properties_a0b2a76982e541649e237ed8c59c86de6}{keys\-\_\-end} () const 
+\begin{DoxyCompactList}\small\item\em Gets the end of an iterator over this \hyperlink{classrepast_1_1_properties}{Properties}' keys. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_properties_a85536ec978c9077c3447bcc4a9422608}{read\-File} (const std\-::string \&file, boost\-::mpi\-::communicator $\ast$comm=0, int max\-Prop\-File\-Size=M\-A\-X\-\_\-\-P\-R\-O\-P\-\_\-\-F\-I\-L\-E\-\_\-\-S\-I\-Z\-E)
+\begin{DoxyCompactList}\small\item\em Adds any properties defined in the specified file. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_properties_a8fb65d329a032b1c21c77e60d9a54a85}{process\-Command\-Line\-Arguments} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em Processes a char$\ast$$\ast$ array of the given size; any component that has an equals sign is entered as a property value, overriding any previous entry read from the properies file. \end{DoxyCompactList}\item 
+int \hyperlink{classrepast_1_1_properties_afa2c5157a67086937da071b2ecbc6f86}{size} () const 
+\begin{DoxyCompactList}\small\item\em Gets the number of properties in this \hyperlink{classrepast_1_1_properties}{Properties}. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_properties_ae0ad23f9e0ac85943969847fb4372f9d}{log} (std\-::string log\-Name, std\-::vector$<$ std\-::string $>$ $\ast$keys\-To\-Write=0)
+\begin{DoxyCompactList}\small\item\em Writes the contents of the properties file to the specified repast log (at 'I\-N\-F\-O' log level) \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_properties_a82b48502a6403ad5c929ae30d0470c9d}{write\-To\-S\-V\-File} (std\-::string file\-Name, std\-::string separator=\char`\"{},\char`\"{})
+\begin{DoxyCompactList}\small\item\em Writes the contents of the properties file to the specified separated-\/value file. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_properties_ad7f85154fb7f657e5bfaee197fc391c4}{write\-To\-S\-V\-File} (std\-::string file\-Name, std\-::vector$<$ std\-::string $>$ \&keys\-To\-Write, std\-::string separator=\char`\"{},\char`\"{})
+\begin{DoxyCompactList}\small\item\em Writes the contents of the properties file to the specified separated-\/value file. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Map type object that contains key, value(string) properties. 
+
+A \hyperlink{classrepast_1_1_properties}{Properties} instance can be constructed from a file. Each line is a property with the key and value separated by =. For example,
+
+some.\-property = 3\par
+ another.\-property = hello 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1_properties_a23c9d9635eb8cf61b877692abf4d94b8}{\index{repast\-::\-Properties@{repast\-::\-Properties}!Properties@{Properties}}
+\index{Properties@{Properties}!repast::Properties@{repast\-::\-Properties}}
+\subsubsection[{Properties}]{\setlength{\rightskip}{0pt plus 5cm}repast\-::\-Properties\-::\-Properties (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{file, }
+\item[{boost\-::mpi\-::communicator $\ast$}]{comm = {\ttfamily 0}, }
+\item[{int}]{max\-Prop\-File\-Size = {\ttfamily MAX\-\_\-PROP\-\_\-FILE\-\_\-SIZE}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_properties_a23c9d9635eb8cf61b877692abf4d94b8}
+
+
+Creates a new \hyperlink{classrepast_1_1_properties}{Properties} using the properties defined in the specified file. 
+
+Each line is a property with the key and value separated by =. For example,
+
+some.\-property = 3\par
+ another.\-property = hello
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & the properties file path \\
+\hline
+{\em comm} & pointer to a communicator; if null (the default), all processes read the properties file separately. If a communicator is provided, rank 0 reads the file and broadcasts it to all other ranks. \\
+\hline
+{\em max\-Prop\-File\-Size} & optional parameter; if the properties file is larger than the default M\-A\-X\-\_\-\-P\-R\-O\-P\-\_\-\-F\-I\-L\-E\-\_\-\-S\-I\-Z\-E, the new size can be passed here. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_properties_a15f789bec63f21941cd4d88a77c327c3}{\index{repast\-::\-Properties@{repast\-::\-Properties}!Properties@{Properties}}
+\index{Properties@{Properties}!repast::Properties@{repast\-::\-Properties}}
+\subsubsection[{Properties}]{\setlength{\rightskip}{0pt plus 5cm}repast\-::\-Properties\-::\-Properties (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{file, }
+\item[{int}]{argc, }
+\item[{char $\ast$$\ast$}]{argv, }
+\item[{boost\-::mpi\-::communicator $\ast$}]{comm = {\ttfamily 0}, }
+\item[{int}]{max\-Prop\-File\-Size = {\ttfamily MAX\-\_\-PROP\-\_\-FILE\-\_\-SIZE}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_properties_a15f789bec63f21941cd4d88a77c327c3}
+
+
+Creates a new \hyperlink{classrepast_1_1_properties}{Properties} using the properties defined in the specified file and any properties specified in Key=Val format in the argument array. 
+
+\hyperlink{classrepast_1_1_properties}{Properties} in the argument array will supersede any in the properties file.
+
+Each line in the properties file is a property with the key and value separated by =. For example,
+
+some.\-property = 3\par
+ another.\-property = hello
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & the properties file path \\
+\hline
+{\em argc} & count of the elements in the argv array \\
+\hline
+{\em array} & of char$\ast$ that may include Key=Value pairs. Elements with no '=' are ignored. \\
+\hline
+{\em comm} & pointer to a communicator; if null (the default), all processes read the properties file separately. If a communicator is provided, rank 0 reads the file and broadcasts it to all other ranks. \\
+\hline
+{\em max\-Prop\-File\-Size} & optional parameter; if the properties file is larger than the default M\-A\-X\-\_\-\-P\-R\-O\-P\-\_\-\-F\-I\-L\-E\-\_\-\-S\-I\-Z\-E, the new size can be passed here. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_properties_ab4edc85145fddc5d6dbd3dbf4d074ef7}{\index{repast\-::\-Properties@{repast\-::\-Properties}!Properties@{Properties}}
+\index{Properties@{Properties}!repast::Properties@{repast\-::\-Properties}}
+\subsubsection[{Properties}]{\setlength{\rightskip}{0pt plus 5cm}repast\-::\-Properties\-::\-Properties (
+\begin{DoxyParamCaption}
+\item[{int}]{argc, }
+\item[{char $\ast$$\ast$}]{argv}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_properties_ab4edc85145fddc5d6dbd3dbf4d074ef7}
+
+
+Creates a new \hyperlink{classrepast_1_1_properties}{Properties} using the properties specified in Key=Val format in the argument. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em argc} & count of the elements in the argv array \\
+\hline
+{\em array} & of char$\ast$ that may include Key=Value pairs. Elements with no '=' are ignored. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_properties_a00995681d4adf3abcd8910a6a1bb72ee}{\index{repast\-::\-Properties@{repast\-::\-Properties}!contains@{contains}}
+\index{contains@{contains}!repast::Properties@{repast\-::\-Properties}}
+\subsubsection[{contains}]{\setlength{\rightskip}{0pt plus 5cm}bool repast\-::\-Properties\-::contains (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{key}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1_properties_a00995681d4adf3abcd8910a6a1bb72ee}
+
+
+Gets whether or not this \hyperlink{classrepast_1_1_properties}{Properties} contains the specified key. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & the property key \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_properties_a10845b8c51a4f23b9fe8e4bb3b2402e7}{\index{repast\-::\-Properties@{repast\-::\-Properties}!get\-Property@{get\-Property}}
+\index{get\-Property@{get\-Property}!repast::Properties@{repast\-::\-Properties}}
+\subsubsection[{get\-Property}]{\setlength{\rightskip}{0pt plus 5cm}string repast\-::\-Properties\-::get\-Property (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{key}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1_properties_a10845b8c51a4f23b9fe8e4bb3b2402e7}
+
+
+Gets the property with the specified key. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & the property key\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the value for that key, or an empty string if the property is not found. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_properties_aa3ec0c363bc6ccdc033aa6dc7cc29f70}{\index{repast\-::\-Properties@{repast\-::\-Properties}!keys\-\_\-begin@{keys\-\_\-begin}}
+\index{keys\-\_\-begin@{keys\-\_\-begin}!repast::Properties@{repast\-::\-Properties}}
+\subsubsection[{keys\-\_\-begin}]{\setlength{\rightskip}{0pt plus 5cm}key\-\_\-iterator repast\-::\-Properties\-::keys\-\_\-begin (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_properties_aa3ec0c363bc6ccdc033aa6dc7cc29f70}
+
+
+Gets the start of an iterator over this \hyperlink{classrepast_1_1_properties}{Properties}' keys. 
+
+\begin{DoxyReturn}{Returns}
+the start of an iterator over this \hyperlink{classrepast_1_1_properties}{Properties}' keys. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_properties_a0b2a76982e541649e237ed8c59c86de6}{\index{repast\-::\-Properties@{repast\-::\-Properties}!keys\-\_\-end@{keys\-\_\-end}}
+\index{keys\-\_\-end@{keys\-\_\-end}!repast::Properties@{repast\-::\-Properties}}
+\subsubsection[{keys\-\_\-end}]{\setlength{\rightskip}{0pt plus 5cm}key\-\_\-iterator repast\-::\-Properties\-::keys\-\_\-end (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_properties_a0b2a76982e541649e237ed8c59c86de6}
+
+
+Gets the end of an iterator over this \hyperlink{classrepast_1_1_properties}{Properties}' keys. 
+
+\begin{DoxyReturn}{Returns}
+the end of an iterator over this \hyperlink{classrepast_1_1_properties}{Properties}' keys. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_properties_ae0ad23f9e0ac85943969847fb4372f9d}{\index{repast\-::\-Properties@{repast\-::\-Properties}!log@{log}}
+\index{log@{log}!repast::Properties@{repast\-::\-Properties}}
+\subsubsection[{log}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Properties\-::log (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{log\-Name, }
+\item[{std\-::vector$<$ std\-::string $>$ $\ast$}]{keys\-To\-Write = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_properties_ae0ad23f9e0ac85943969847fb4372f9d}
+
+
+Writes the contents of the properties file to the specified repast log (at 'I\-N\-F\-O' log level) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em log\-Name} & name of the log to use \\
+\hline
+{\em keys\-To\-Write} & optional; if included, writes only the keys included in the vector and their values, in the order they appear in the vector. Will write blank values for any key name in the vector that is not in the properties file. If not included, all properties and their values are written, in map order. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_properties_a8fb65d329a032b1c21c77e60d9a54a85}{\index{repast\-::\-Properties@{repast\-::\-Properties}!process\-Command\-Line\-Arguments@{process\-Command\-Line\-Arguments}}
+\index{process\-Command\-Line\-Arguments@{process\-Command\-Line\-Arguments}!repast::Properties@{repast\-::\-Properties}}
+\subsubsection[{process\-Command\-Line\-Arguments}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Properties\-::process\-Command\-Line\-Arguments (
+\begin{DoxyParamCaption}
+\item[{int}]{argc, }
+\item[{char $\ast$$\ast$}]{argv}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_properties_a8fb65d329a032b1c21c77e60d9a54a85}
+
+
+Processes a char$\ast$$\ast$ array of the given size; any component that has an equals sign is entered as a property value, overriding any previous entry read from the properies file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em argc} & the number of entries in the array \\
+\hline
+{\em argv} & the array of char values to be mapped \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_properties_a9008647e3045dbd18356d43c9f343fe0}{\index{repast\-::\-Properties@{repast\-::\-Properties}!put\-Property@{put\-Property}}
+\index{put\-Property@{put\-Property}!repast::Properties@{repast\-::\-Properties}}
+\subsubsection[{put\-Property}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Properties\-::put\-Property (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{key, }
+\item[{std\-::string}]{value}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_properties_a9008647e3045dbd18356d43c9f343fe0}
+
+
+Puts a property into this \hyperlink{classrepast_1_1_properties}{Properties} with the specified key and value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & the property key \\
+\hline
+{\em value} & the property value \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_properties_ae11bdd22268c15934237acc3cdfa1e91}{\index{repast\-::\-Properties@{repast\-::\-Properties}!put\-Property@{put\-Property}}
+\index{put\-Property@{put\-Property}!repast::Properties@{repast\-::\-Properties}}
+\subsubsection[{put\-Property}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Properties\-::put\-Property (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{key, }
+\item[{long double}]{value}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_properties_ae11bdd22268c15934237acc3cdfa1e91}
+
+
+Puts a property into this \hyperlink{classrepast_1_1_properties}{Properties} with the specified key and value. 
+
+Note that even though the second argument can be passed as a numeric value, it is stored as a string
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & the property key \\
+\hline
+{\em value} & the property value \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_properties_a85536ec978c9077c3447bcc4a9422608}{\index{repast\-::\-Properties@{repast\-::\-Properties}!read\-File@{read\-File}}
+\index{read\-File@{read\-File}!repast::Properties@{repast\-::\-Properties}}
+\subsubsection[{read\-File}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Properties\-::read\-File (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{file, }
+\item[{boost\-::mpi\-::communicator $\ast$}]{comm = {\ttfamily 0}, }
+\item[{int}]{max\-Prop\-File\-Size = {\ttfamily MAX\-\_\-PROP\-\_\-FILE\-\_\-SIZE}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_properties_a85536ec978c9077c3447bcc4a9422608}
+
+
+Adds any properties defined in the specified file. 
+
+Each line is a property with the key and value separated by =. For example,
+
+some.\-property = 3\par
+ another.\-property = hello
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & the properties file path \\
+\hline
+{\em comm} & pointer to a communicator; if null (the default), all processes read the properties file separately. If a communicator is provided, rank 0 reads the file and broadcasts it to all other ranks. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_properties_afa2c5157a67086937da071b2ecbc6f86}{\index{repast\-::\-Properties@{repast\-::\-Properties}!size@{size}}
+\index{size@{size}!repast::Properties@{repast\-::\-Properties}}
+\subsubsection[{size}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::\-Properties\-::size (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_properties_afa2c5157a67086937da071b2ecbc6f86}
+
+
+Gets the number of properties in this \hyperlink{classrepast_1_1_properties}{Properties}. 
+
+\begin{DoxyReturn}{Returns}
+the number of properties in this \hyperlink{classrepast_1_1_properties}{Properties}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_properties_a82b48502a6403ad5c929ae30d0470c9d}{\index{repast\-::\-Properties@{repast\-::\-Properties}!write\-To\-S\-V\-File@{write\-To\-S\-V\-File}}
+\index{write\-To\-S\-V\-File@{write\-To\-S\-V\-File}!repast::Properties@{repast\-::\-Properties}}
+\subsubsection[{write\-To\-S\-V\-File}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Properties\-::write\-To\-S\-V\-File (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{file\-Name, }
+\item[{std\-::string}]{separator = {\ttfamily \char`\"{},\char`\"{}}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_properties_a82b48502a6403ad5c929ae30d0470c9d}
+
+
+Writes the contents of the properties file to the specified separated-\/value file. 
+
+If the file does not exist it is created and a header line is written with the key values.
+
+
+\begin{DoxyParams}{Parameters}
+{\em file\-Name} & name \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_properties_ad7f85154fb7f657e5bfaee197fc391c4}{\index{repast\-::\-Properties@{repast\-::\-Properties}!write\-To\-S\-V\-File@{write\-To\-S\-V\-File}}
+\index{write\-To\-S\-V\-File@{write\-To\-S\-V\-File}!repast::Properties@{repast\-::\-Properties}}
+\subsubsection[{write\-To\-S\-V\-File}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Properties\-::write\-To\-S\-V\-File (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{file\-Name, }
+\item[{std\-::vector$<$ std\-::string $>$ \&}]{keys\-To\-Write, }
+\item[{std\-::string}]{separator = {\ttfamily \char`\"{},\char`\"{}}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_properties_ad7f85154fb7f657e5bfaee197fc391c4}
+
+
+Writes the contents of the properties file to the specified separated-\/value file. 
+
+If the file does not exist it is created and a header line is written with the key values.
+
+
+\begin{DoxyParams}{Parameters}
+{\em file\-Name} & name \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Properties.\-h\item 
+repast\-\_\-hpc/Properties.\-cpp\end{DoxyCompactItemize}

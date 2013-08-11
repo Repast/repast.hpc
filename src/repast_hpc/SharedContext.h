@@ -49,10 +49,8 @@
 
 namespace repast {
 
-// used in a filter iterator to
-// filter on local agents only
 /**
- * NON USER API
+ * Used in a filter iterator to filter on local agents only
  */
 template<typename T>
 struct IsLocalAgent {
@@ -66,8 +64,8 @@ struct IsLocalAgent {
 };
 
 /**
- * NON USER API
- */	
+ * Used in a filter iterator to filter on local or non-local agents only
+ */
 template<typename T>
 struct AgentStateFilter{
 	int rank;
@@ -100,8 +98,6 @@ struct AgentStateFilter{
 //
 	
 /**
- * NON USER API.
- *
  * Used to remove agents.
  */
 void rpRemoveAgent(const AgentId& id);

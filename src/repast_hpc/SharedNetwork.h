@@ -72,7 +72,9 @@ const int NET_EDGE_SYNC = 2006;
 const int NET_EDGE_REMOVE_SYNC = 2007;
 
 /**
- * NON USER API
+ * _DEPRECATED_ Used to send a request for agent information from another process
+ * \deprecated
+ * As of Version 2.0
  */
 class ExportRequest {
 
@@ -105,9 +107,10 @@ public:
 };
 
 /**
- * NON USER API.
- *
- * Receipt for edges
+ * _DEPRECATED_ Receipt for edges
+ * Class used to receive edges being sent.
+ * \deprecated
+ * As of Version 2.0 replaced by ProjectionInfoPacket objects.
  */
 template<typename E>
 class ItemReceipt {
@@ -131,15 +134,16 @@ class SharedNetwork;
 
 /**
  *
- * NON USER API.
- *
- * Handles exporting edges created locally between
+ * _DEPRECATED_ Handles exporting edges created locally between
  * one or more non-local agents. This also coordinates
  * notification of which processes should be exporting
  * to which in the case of edges where a node is
  * foreign to the sending and receiving process.
  *
  * All this is done internally in the SharedNetwork.
+ *
+ * \deprecated
+ * As of Version 2.0 replaced by ProjectionInfoPacket
  */
 template<typename E>
 class EdgeExporter {

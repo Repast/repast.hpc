@@ -1,0 +1,51 @@
+\hypertarget{classrepast_1_1_grid_buffer_syncher}{\section{repast\-:\-:Grid\-Buffer\-Syncher$<$ T, G\-P\-Type $>$ Class Template Reference}
+\label{classrepast_1_1_grid_buffer_syncher}\index{repast\-::\-Grid\-Buffer\-Syncher$<$ T, G\-P\-Type $>$@{repast\-::\-Grid\-Buffer\-Syncher$<$ T, G\-P\-Type $>$}}
+}
+
+
+{\itshape D\-E\-P\-R\-E\-C\-A\-T\-E\-D} Helper class that provides support for synchronizing a grid / space buffer.  
+
+
+
+
+{\ttfamily \#include $<$Shared\-Base\-Grid.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_grid_buffer_syncher_aaf711d6b9a5f8b750bb38fc760ee7e65}{{\bfseries Grid\-Buffer\-Syncher} (boost\-::mpi\-::communicator $\ast$world)}\label{classrepast_1_1_grid_buffer_syncher_aaf711d6b9a5f8b750bb38fc760ee7e65}
+
+\item 
+\hypertarget{classrepast_1_1_grid_buffer_syncher_a5a88d5fff52263ed26570b802f4e2e52}{std\-::vector$<$ \hyperlink{classrepast_1_1_cell_contents}{Cell\-Contents}$<$ T, \\*
+G\-P\-Type $>$ $>$ $\ast$ {\bfseries received} (size\-\_\-t index)}\label{classrepast_1_1_grid_buffer_syncher_a5a88d5fff52263ed26570b802f4e2e52}
+
+\item 
+\hypertarget{classrepast_1_1_grid_buffer_syncher_a3c75891d740c7ffdb106acd0c6a3e18a}{int {\bfseries ngh\-Rank} (size\-\_\-t index)}\label{classrepast_1_1_grid_buffer_syncher_a3c75891d740c7ffdb106acd0c6a3e18a}
+
+\item 
+\hypertarget{classrepast_1_1_grid_buffer_syncher_a1feaa3f70fc5db8ce2fccad2c5bee27c}{size\-\_\-t {\bfseries vecs\-Size} ()}\label{classrepast_1_1_grid_buffer_syncher_a1feaa3f70fc5db8ce2fccad2c5bee27c}
+
+\item 
+\hypertarget{classrepast_1_1_grid_buffer_syncher_a1a59baa51352a07463176273b1c95901}{void \hyperlink{classrepast_1_1_grid_buffer_syncher_a1a59baa51352a07463176273b1c95901}{send} (int rank, std\-::vector$<$ \hyperlink{classrepast_1_1_cell_contents}{Cell\-Contents}$<$ T, G\-P\-Type $>$ $>$ \&contents, int tag)}\label{classrepast_1_1_grid_buffer_syncher_a1a59baa51352a07463176273b1c95901}
+
+\begin{DoxyCompactList}\small\item\em Sends the contents to the rank. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_grid_buffer_syncher_a2041ea31696f1c0922958f3f09e487b0}{void {\bfseries receive} (\hyperlink{classrepast_1_1_neighbor}{Neighbor} $\ast$ngh, int tag)}\label{classrepast_1_1_grid_buffer_syncher_a2041ea31696f1c0922958f3f09e487b0}
+
+\item 
+\hypertarget{classrepast_1_1_grid_buffer_syncher_a5e27b0d4c39471d000bcafb5e5c0fae4}{void {\bfseries wait} ()}\label{classrepast_1_1_grid_buffer_syncher_a5e27b0d4c39471d000bcafb5e5c0fae4}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T, typename G\-P\-Type$>$class repast\-::\-Grid\-Buffer\-Syncher$<$ T, G\-P\-Type $>$}
+
+{\itshape D\-E\-P\-R\-E\-C\-A\-T\-E\-D} Helper class that provides support for synchronizing a grid / space buffer. 
+
+\begin{DoxyRefDesc}{Deprecated}
+\item[\hyperlink{deprecated__deprecated000002}{Deprecated}]As of Version 2.\-0 \end{DoxyRefDesc}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Shared\-Base\-Grid.\-h\end{DoxyCompactItemize}

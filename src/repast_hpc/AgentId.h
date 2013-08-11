@@ -48,8 +48,14 @@
 namespace repast {
 
 /**
- * Agent identity information. Each agent should be uniquely identified by an
- * AgentId.
+ * Agent identity information. An Agent ID consists of four values:
+ * 1) a numerical identifier; 2) the process on which the agent
+ * was created; 3) a numerical identifier that indicates the
+ * agent's type (in simulation semantic terms, not a software object
+ * type); and 4) the process on which the agent is a local agent.
+ * Each agent should be uniquely identified by an AgentId using the
+ * first three of the four values, which should be immutable. The
+ * fourth value can change throughout the simulation.
  */
 class AgentId {
 
@@ -80,12 +86,13 @@ public:
 	}
 
 	/**
-	 * Creates an AgentId. The combination of the
+	 * Creates an AgentId. The combination of the first
 	 * three parameters should uniquely identify the agent.
 	 *
 	 * @param id the agent's id
 	 * @param startProc the rank of the agent's starting process
 	 * @param agentType the agent's type (user defined)
+	 * @param currentProc the rank where the agent is a local agent
 	 */
 	AgentId(int id, int startProc, int agentType, int currentProc = -1);
 

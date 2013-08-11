@@ -1,0 +1,111 @@
+\hypertarget{classrepast_1_1_matrix}{\section{repast\-:\-:Matrix$<$ T $>$ Class Template Reference}
+\label{classrepast_1_1_matrix}\index{repast\-::\-Matrix$<$ T $>$@{repast\-::\-Matrix$<$ T $>$}}
+}
+
+
+Base class for matrix implementations.  
+
+
+
+
+{\ttfamily \#include $<$matrix.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Matrix$<$ T $>$\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classrepast_1_1_matrix}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classrepast_1_1_matrix_a65c52c43c430b1a78c56c006b4559ce3}{Matrix} (const \hyperlink{classrepast_1_1_point}{Point}$<$ int $>$ \&size, const T \&\hyperlink{classrepast_1_1_matrix_ab7d7c37233ead4a6a68feaf344b3ff38}{default\-Value}=T())
+\begin{DoxyCompactList}\small\item\em Creates a matrix of the specified size and with the specified default value. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_matrix_a865d67868c32af9e4944c84431ec29a2}{virtual T \& \hyperlink{classrepast_1_1_matrix_a865d67868c32af9e4944c84431ec29a2}{get} (const \hyperlink{classrepast_1_1_point}{Point}$<$ int $>$ \&index)=0}\label{classrepast_1_1_matrix_a865d67868c32af9e4944c84431ec29a2}
+
+\begin{DoxyCompactList}\small\item\em Gets the value at the specified index. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_matrix_a5c7735a078a35f0b9deca407e546ab55}{virtual void \hyperlink{classrepast_1_1_matrix_a5c7735a078a35f0b9deca407e546ab55}{set} (const T \&value, const \hyperlink{classrepast_1_1_point}{Point}$<$ int $>$ \&index)=0}\label{classrepast_1_1_matrix_a5c7735a078a35f0b9deca407e546ab55}
+
+\begin{DoxyCompactList}\small\item\em Sets the value at the specified index. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_matrix_a9cb528d30b1d646d6ca742c3b76a9285}{T \& {\bfseries operator\mbox{[}$\,$\mbox{]}} (const \hyperlink{classrepast_1_1_point}{Point}$<$ int $>$ \&index)}\label{classrepast_1_1_matrix_a9cb528d30b1d646d6ca742c3b76a9285}
+
+\item 
+\hypertarget{classrepast_1_1_matrix_a63932af327a9cb1e0501dc183fc034b3}{const T \& {\bfseries operator\mbox{[}$\,$\mbox{]}} (const \hyperlink{classrepast_1_1_point}{Point}$<$ int $>$ \&index) const }\label{classrepast_1_1_matrix_a63932af327a9cb1e0501dc183fc034b3}
+
+\item 
+\hypertarget{classrepast_1_1_matrix_ab7d7c37233ead4a6a68feaf344b3ff38}{const T \& \hyperlink{classrepast_1_1_matrix_ab7d7c37233ead4a6a68feaf344b3ff38}{default\-Value} () const }\label{classrepast_1_1_matrix_ab7d7c37233ead4a6a68feaf344b3ff38}
+
+\begin{DoxyCompactList}\small\item\em Gets the default value of any unset matrix cell. \end{DoxyCompactList}\item 
+const \hyperlink{classrepast_1_1_point}{Point}$<$ int $>$ \hyperlink{classrepast_1_1_matrix_aa81d61acab94e9de748a647ed3ef535f}{shape} () const 
+\begin{DoxyCompactList}\small\item\em Gets the shape (i.\-e. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_matrix_af7dd562d3d48904888c131ce3b53e4fd}{int {\bfseries calc\-Index} (const \hyperlink{classrepast_1_1_point}{Point}$<$ int $>$ \&index)}\label{classrepast_1_1_matrix_af7dd562d3d48904888c131ce3b53e4fd}
+
+\item 
+\hypertarget{classrepast_1_1_matrix_ae5b989256328e66805b51bb7b27edc53}{void {\bfseries bounds\-Check} (const \hyperlink{classrepast_1_1_point}{Point}$<$ int $>$ \&index)}\label{classrepast_1_1_matrix_ae5b989256328e66805b51bb7b27edc53}
+
+\item 
+\hypertarget{classrepast_1_1_matrix_a21922251aaa359c5a853640f60e4a0fc}{void {\bfseries create} ()}\label{classrepast_1_1_matrix_a21922251aaa359c5a853640f60e4a0fc}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_matrix_ad63eee84ab11e3d46e45efad8d7e842f}{int $\ast$ {\bfseries stride}}\label{classrepast_1_1_matrix_ad63eee84ab11e3d46e45efad8d7e842f}
+
+\item 
+\hypertarget{classrepast_1_1_matrix_a7163c6a75fdb8615a5cc1f6f0d801317}{T {\bfseries def\-Value}}\label{classrepast_1_1_matrix_a7163c6a75fdb8615a5cc1f6f0d801317}
+
+\item 
+\hypertarget{classrepast_1_1_matrix_a7e14526c496b2c3b6969efe762064010}{\hyperlink{classrepast_1_1_point}{Point}$<$ int $>$ {\bfseries \-\_\-size}}\label{classrepast_1_1_matrix_a7e14526c496b2c3b6969efe762064010}
+
+\item 
+\hypertarget{classrepast_1_1_matrix_aebf77b607e15cefe4189d3c3e6f50ef0}{int {\bfseries d\-Count}}\label{classrepast_1_1_matrix_aebf77b607e15cefe4189d3c3e6f50ef0}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$class repast\-::\-Matrix$<$ T $>$}
+
+Base class for matrix implementations. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1_matrix_a65c52c43c430b1a78c56c006b4559ce3}{\index{repast\-::\-Matrix@{repast\-::\-Matrix}!Matrix@{Matrix}}
+\index{Matrix@{Matrix}!repast::Matrix@{repast\-::\-Matrix}}
+\subsubsection[{Matrix}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ {\bf repast\-::\-Matrix}$<$ T $>$\-::{\bf Matrix} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Point}$<$ int $>$ \&}]{size, }
+\item[{const T \&}]{default\-Value = {\ttfamily T()}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [explicit]}}}\label{classrepast_1_1_matrix_a65c52c43c430b1a78c56c006b4559ce3}
+
+
+Creates a matrix of the specified size and with the specified default value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em size} & the size of the matrix in each dimension \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_matrix_aa81d61acab94e9de748a647ed3ef535f}{\index{repast\-::\-Matrix@{repast\-::\-Matrix}!shape@{shape}}
+\index{shape@{shape}!repast::Matrix@{repast\-::\-Matrix}}
+\subsubsection[{shape}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ const {\bf Point}$<$int$>$ {\bf repast\-::\-Matrix}$<$ T $>$\-::shape (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_matrix_aa81d61acab94e9de748a647ed3ef535f}
+
+
+Gets the shape (i.\-e. 
+
+the length of each dimensions) of the matrix. 
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/matrix.\-h\end{DoxyCompactItemize}

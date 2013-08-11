@@ -48,6 +48,10 @@
 
 namespace repast {
 
+
+/**
+ * Unary function that allows retrieving the occupants of locations.
+ */
 template<typename T>
 struct ExtractPtrs: public std::unary_function<
 		typename boost::unordered_map<AgentId, boost::shared_ptr<T> >::value_type, T*> {

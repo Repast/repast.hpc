@@ -49,7 +49,7 @@ namespace repast {
 namespace relogo {
 
 /**
- * Repast SharedSpace specialized for Relogo. This overrides synchMoveTo.
+ * Repast SharedContinuousSpace specialized for Relogo. This overrides synchMoveTo.
  */
 template<typename GPTransformer, typename Adder>
 class RelogoSharedContinuousSpace: public repast::SharedContinuousSpace<RelogoAgent, GPTransformer, Adder> {

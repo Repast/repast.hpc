@@ -1,0 +1,110 @@
+\hypertarget{classrepast_1_1_neighbors}{\section{repast\-:\-:Neighbors Class Reference}
+\label{classrepast_1_1_neighbors}\index{repast\-::\-Neighbors@{repast\-::\-Neighbors}}
+}
+
+
+Provides lookup of grid topology process neighbors given a point in the pan process grid.  
+
+
+
+
+{\ttfamily \#include $<$Shared\-Base\-Grid.\-h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{classrepast_1_1_neighbors_a7a695a73b614b849f12fd943329b8bdc}{Location} \{ \\*
+{\bfseries E}, 
+{\bfseries W}, 
+{\bfseries N}, 
+{\bfseries S}, 
+\\*
+{\bfseries N\-E}, 
+{\bfseries N\-W}, 
+{\bfseries S\-E}, 
+{\bfseries S\-W}
+ \}
+\begin{DoxyCompactList}\small\item\em Describes the relative location of grid topology process neighbors. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_neighbors_acebe1c38c1b9a6492c2bd819aa315640}{void \hyperlink{classrepast_1_1_neighbors_acebe1c38c1b9a6492c2bd819aa315640}{add\-Neighbor} (\hyperlink{classrepast_1_1_neighbor}{Neighbor} $\ast$ngh, \hyperlink{classrepast_1_1_neighbors_a7a695a73b614b849f12fd943329b8bdc}{Neighbors\-::\-Location} location)}\label{classrepast_1_1_neighbors_acebe1c38c1b9a6492c2bd819aa315640}
+
+\begin{DoxyCompactList}\small\item\em Adds a neighbor at the specified location. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_neighbor}{Neighbor} $\ast$ \hyperlink{classrepast_1_1_neighbors_adbcad09f1909177b08c195f64b818c85}{neighbor} (\hyperlink{classrepast_1_1_neighbors_a7a695a73b614b849f12fd943329b8bdc}{Neighbors\-::\-Location} location) const 
+\begin{DoxyCompactList}\small\item\em Gets the neighbor at the specified location. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_neighbor}{Neighbor} $\ast$ \hyperlink{classrepast_1_1_neighbors_a745a848c9e0bdc4270dca7cb7d232259}{find\-Neighbor} (const std\-::vector$<$ int $>$ \&pt)
+\begin{DoxyCompactList}\small\item\em Finds the neighbor that contains the specified point. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_neighbor}{Neighbor} $\ast$ \hyperlink{classrepast_1_1_neighbors_a6ce8456088582c39eb99d9497e2f4ea0}{find\-Neighbor} (const std\-::vector$<$ double $>$ \&pt)
+\begin{DoxyCompactList}\small\item\em Finds the neighbor that contains the specified point. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_neighbors_a51169973f80e7b98147aefd15a217fa9}{void {\bfseries get\-Neighbor\-Ranks} (std\-::set$<$ int $>$ \&ranks)}\label{classrepast_1_1_neighbors_a51169973f80e7b98147aefd15a217fa9}
+
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_neighbors_a906f5117fa96c4402fa39878340fed95}{static const int {\bfseries L\-O\-C\-A\-T\-I\-O\-N\-\_\-\-S\-I\-Z\-E} = 8}\label{classrepast_1_1_neighbors_a906f5117fa96c4402fa39878340fed95}
+
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_neighbors_a8d0ac1cbe643f03e741e0747cb3931a2}{std\-::ostream \& {\bfseries operator$<$$<$} (std\-::ostream \&os, const \hyperlink{classrepast_1_1_neighbors}{Neighbors} \&nghs)}\label{classrepast_1_1_neighbors_a8d0ac1cbe643f03e741e0747cb3931a2}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Provides lookup of grid topology process neighbors given a point in the pan process grid. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_neighbors_a745a848c9e0bdc4270dca7cb7d232259}{\index{repast\-::\-Neighbors@{repast\-::\-Neighbors}!find\-Neighbor@{find\-Neighbor}}
+\index{find\-Neighbor@{find\-Neighbor}!repast::Neighbors@{repast\-::\-Neighbors}}
+\subsubsection[{find\-Neighbor}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Neighbor} $\ast$ repast\-::\-Neighbors\-::find\-Neighbor (
+\begin{DoxyParamCaption}
+\item[{const std\-::vector$<$ int $>$ \&}]{pt}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_neighbors_a745a848c9e0bdc4270dca7cb7d232259}
+
+
+Finds the neighbor that contains the specified point. 
+
+\begin{DoxyReturn}{Returns}
+the found neighbor 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_neighbors_a6ce8456088582c39eb99d9497e2f4ea0}{\index{repast\-::\-Neighbors@{repast\-::\-Neighbors}!find\-Neighbor@{find\-Neighbor}}
+\index{find\-Neighbor@{find\-Neighbor}!repast::Neighbors@{repast\-::\-Neighbors}}
+\subsubsection[{find\-Neighbor}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Neighbor} $\ast$ repast\-::\-Neighbors\-::find\-Neighbor (
+\begin{DoxyParamCaption}
+\item[{const std\-::vector$<$ double $>$ \&}]{pt}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_neighbors_a6ce8456088582c39eb99d9497e2f4ea0}
+
+
+Finds the neighbor that contains the specified point. 
+
+\begin{DoxyReturn}{Returns}
+the found neighbor 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_neighbors_adbcad09f1909177b08c195f64b818c85}{\index{repast\-::\-Neighbors@{repast\-::\-Neighbors}!neighbor@{neighbor}}
+\index{neighbor@{neighbor}!repast::Neighbors@{repast\-::\-Neighbors}}
+\subsubsection[{neighbor}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Neighbor} $\ast$ repast\-::\-Neighbors\-::neighbor (
+\begin{DoxyParamCaption}
+\item[{{\bf Neighbors\-::\-Location}}]{location}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1_neighbors_adbcad09f1909177b08c195f64b818c85}
+
+
+Gets the neighbor at the specified location. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em location} & the location of the neighbor. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Shared\-Base\-Grid.\-h\item 
+repast\-\_\-hpc/Shared\-Base\-Grid.\-cpp\end{DoxyCompactItemize}

@@ -1,0 +1,1129 @@
+\hypertarget{classrepast_1_1_context}{\section{repast\-:\-:Context$<$ T $>$ Class Template Reference}
+\label{classrepast_1_1_context}\index{repast\-::\-Context$<$ T $>$@{repast\-::\-Context$<$ T $>$}}
+}
+
+
+Collection of agents of type T with set semantics.  
+
+
+
+
+{\ttfamily \#include $<$Context.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Context$<$ T $>$\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classrepast_1_1_context}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_context_a94c26538a555d9d781034b89cfa1cc8a}{typedef \\*
+boost\-::transform\-\_\-iterator\\*
+$<$ \hyperlink{structrepast_1_1_second_element}{Second\-Element}$<$ T $>$, typename \\*
+Agent\-Map\-::const\-\_\-iterator $>$ {\bfseries const\-\_\-iterator}}\label{classrepast_1_1_context_a94c26538a555d9d781034b89cfa1cc8a}
+
+\item 
+\hypertarget{classrepast_1_1_context_ac27ec9bbfb365044a5088e1cdedc3ad1}{typedef boost\-::filter\-\_\-iterator\\*
+$<$ \hyperlink{structrepast_1_1_is_agent_type}{Is\-Agent\-Type}$<$ T $>$, typename \\*
+\hyperlink{classrepast_1_1_context}{Context}$<$ T $>$\-::const\-\_\-iterator $>$ {\bfseries const\-\_\-bytype\-\_\-iterator}}\label{classrepast_1_1_context_ac27ec9bbfb365044a5088e1cdedc3ad1}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_context_ab86028066396e40cc29cfff8d54ee581}{virtual \hyperlink{classrepast_1_1_context_ab86028066396e40cc29cfff8d54ee581}{$\sim$\-Context} ()}\label{classrepast_1_1_context_ab86028066396e40cc29cfff8d54ee581}
+
+\begin{DoxyCompactList}\small\item\em Destroys this context and the projections it contains. \end{DoxyCompactList}\item 
+T $\ast$ \hyperlink{classrepast_1_1_context_ad0bc4b142fe7154c03d4e4bd2f6836ed}{add\-Agent} (T $\ast$agent)
+\begin{DoxyCompactList}\small\item\em Adds the agent to the context. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_context_a96d41e5246dc2940be3ea45f2a233487}{add\-Projection} (\hyperlink{classrepast_1_1_projection}{Projection}$<$ T $>$ $\ast$projection)
+\begin{DoxyCompactList}\small\item\em Adds the specified projection to this context. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_projection}{Projection}$<$ T $>$ $\ast$ \hyperlink{classrepast_1_1_context_a10b60609163a2906e23d0b02bf76d7ac}{get\-Projection} (const std\-::string \&name)
+\begin{DoxyCompactList}\small\item\em Get the named \hyperlink{classrepast_1_1_projection}{Projection}. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_context_a7ef4c1e4a5f789b6402574fb2d8bd8ef}{remove\-Agent} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} id)
+\begin{DoxyCompactList}\small\item\em Removes the specified agent from this context. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_context_a1ad64ba451c47e2364f33e73b482a3a4}{void \hyperlink{classrepast_1_1_context_a1ad64ba451c47e2364f33e73b482a3a4}{remove\-Agent} (T $\ast$agent)}\label{classrepast_1_1_context_a1ad64ba451c47e2364f33e73b482a3a4}
+
+\begin{DoxyCompactList}\small\item\em Removes the specified agent from this context. \end{DoxyCompactList}\item 
+T $\ast$ \hyperlink{classrepast_1_1_context_a72ec330f6e930b4c83929a70df993b43}{get\-Agent} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)
+\begin{DoxyCompactList}\small\item\em Gets the specified agent. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_context_a543dcc0f3ea4ecbe054232eaaa9c72e4}{get\-Random\-Agents} (const int count, std\-::vector$<$ T $\ast$ $>$ \&agents)
+\begin{DoxyCompactList}\small\item\em Gets at random the specified count of agents and returns them in the agents vector. \end{DoxyCompactList}\item 
+const\-\_\-iterator \hyperlink{classrepast_1_1_context_a0c69277c868b42ee0bb0d3b90a1df46d}{begin} () const 
+\begin{DoxyCompactList}\small\item\em Gets the start of iterator over the agents in this context. \end{DoxyCompactList}\item 
+const\-\_\-iterator \hyperlink{classrepast_1_1_context_af584236067222d8c1a2aa51b5e396da4}{end} () const 
+\begin{DoxyCompactList}\small\item\em Gets the end of an iterator over the agents in this context. \end{DoxyCompactList}\item 
+const\-\_\-bytype\-\_\-iterator \hyperlink{classrepast_1_1_context_a2b77a55622dcdce4b82e8c2864642544}{by\-Type\-Begin} (int type\-Id) const 
+\begin{DoxyCompactList}\small\item\em Gets the start of an iterator over agents in this context of the specified type. \end{DoxyCompactList}\item 
+const\-\_\-bytype\-\_\-iterator \hyperlink{classrepast_1_1_context_aa7e427063cdbfc5e37764291df2b2b53}{by\-Type\-End} (int type\-Id) const 
+\begin{DoxyCompactList}\small\item\em Gets the end of an iterator over agents in this context of the specified type. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_context_a579cde2d1318e073f9fd068a7b0ed1a5}{bool \hyperlink{classrepast_1_1_context_a579cde2d1318e073f9fd068a7b0ed1a5}{contains} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)}\label{classrepast_1_1_context_a579cde2d1318e073f9fd068a7b0ed1a5}
+
+\begin{DoxyCompactList}\small\item\em Returns true if the specified agent is in this context, otherwise false. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_context_aa86fbff836e4066f98c893157c76db88}{int \hyperlink{classrepast_1_1_context_aa86fbff836e4066f98c893157c76db88}{size} () const }\label{classrepast_1_1_context_aa86fbff836e4066f98c893157c76db88}
+
+\begin{DoxyCompactList}\small\item\em Gets the size (number of agents) in this context. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_context_a9120a6aac361baa92d6dbd83410ff576}{add\-Value\-Layer} (\hyperlink{classrepast_1_1_base_value_layer}{Base\-Value\-Layer} $\ast$value\-Layer)
+\begin{DoxyCompactList}\small\item\em Adds a value layer to this context. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Value\-Type , typename Borders $>$ }\\\hyperlink{classrepast_1_1_discrete_value_layer}{Discrete\-Value\-Layer}$<$ Value\-Type, \\*
+\hyperlink{classrepast_1_1_borders}{Borders} $>$ $\ast$ \hyperlink{classrepast_1_1_context_ac4e06221e76065ae8ee50815bb1a7a41}{get\-Discrete\-Value\-Layer} (const std\-::string \&value\-Layer\-Name)
+\begin{DoxyCompactList}\small\item\em Gets the named discrete value layer from this \hyperlink{classrepast_1_1_context}{Context}. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Value\-Type , typename Borders $>$ }\\\hyperlink{classrepast_1_1_continuous_value_layer}{Continuous\-Value\-Layer}\\*
+$<$ Value\-Type, \hyperlink{classrepast_1_1_borders}{Borders} $>$ $\ast$ \hyperlink{classrepast_1_1_context_a9ac760826f1f535b474af50dec727e9f}{get\-Continuous\-Value\-Layer} (const std\-::string \&value\-Layer\-Name)
+\begin{DoxyCompactList}\small\item\em Gets the named continuous value layer from this \hyperlink{classrepast_1_1_context}{Context}. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\boost\-::filter\-\_\-iterator\\*
+$<$ filter\-Struct, typename \\*
+\hyperlink{classrepast_1_1_context}{Context}$<$ T $>$\-::const\-\_\-iterator $>$ \hyperlink{classrepast_1_1_context_ab54a094afb5834a34be46e732465ff30}{filtered\-Begin} (const filter\-Struct \&f\-Struct)
+\begin{DoxyCompactList}\small\item\em Creates a filtered iterator over the set of agents in this context and returns it with a value equal to the beginning of the list. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\boost\-::filter\-\_\-iterator\\*
+$<$ filter\-Struct, typename \\*
+\hyperlink{classrepast_1_1_context}{Context}$<$ T $>$\-::const\-\_\-iterator $>$ \hyperlink{classrepast_1_1_context_ad12bb3d7e2578bf80ebbd0dd1b1a7ebd}{filtered\-End} (const filter\-Struct \&f\-Struct)
+\begin{DoxyCompactList}\small\item\em Creates a filtered iterator over the set of agents in this context and returns it with a value equal to one step past end of the list. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\boost\-::filter\-\_\-iterator\\*
+$<$ filter\-Struct, typename \\*
+\hyperlink{classrepast_1_1_context}{Context}$<$ T $>$\\*
+\-::const\-\_\-bytype\-\_\-iterator $>$ \hyperlink{classrepast_1_1_context_aa7abe8aefbda43b0b35fcbd3589b465c}{by\-Type\-Filtered\-Begin} (const int type, const filter\-Struct \&f\-Struct)
+\begin{DoxyCompactList}\small\item\em Creates a filtered iterator over the set of agents in this context of the specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values), and returns it with a value equal to the beginning of the list. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\boost\-::filter\-\_\-iterator\\*
+$<$ filter\-Struct, typename \\*
+\hyperlink{classrepast_1_1_context}{Context}$<$ T $>$\\*
+\-::const\-\_\-bytype\-\_\-iterator $>$ \hyperlink{classrepast_1_1_context_a94cee2bd8c4325a7fe79048c0f12a5b6}{by\-Type\-Filtered\-End} (const int type, const filter\-Struct \&f\-Struct)
+\begin{DoxyCompactList}\small\item\em Creates a filtered iterator over the set of agents in this context of the specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values), and returns it with a value equal to one past the end of the list. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_context_a6f389ebd5bea672d5d7d14ffba5b710f}{select\-Agents} (std\-::set$<$ T $\ast$ $>$ \&selected\-Agents, bool remove=false)
+\begin{DoxyCompactList}\small\item\em Gets a set of pointers to all agents in this context. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_context_aacc9180a8ff5e079ca37edb08a434ff9}{select\-Agents} (std\-::vector$<$ T $\ast$ $>$ \&selected\-Agents, bool remove=false)
+\begin{DoxyCompactList}\small\item\em Gets a randomly ordered vector of pointers to all agents in this context. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_context_a305bd5cfc509be346842567fdf72f97d}{select\-Agents} (int count, std\-::set$<$ T $\ast$ $>$ \&selected\-Agents, bool remove=false)
+\begin{DoxyCompactList}\small\item\em Gets a set of pointers to a specified number of randomly selected agents. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_context_acba9351838355a0cfe3dff074448bbc5}{select\-Agents} (int count, std\-::vector$<$ T $\ast$ $>$ \&selected\-Agents, bool remove=false)
+\begin{DoxyCompactList}\small\item\em Gets a randomly ordered vector of pointers to a specified number of randomly selected agents. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_context_abf2012f09fb75bfdeb798431e63edfde}{select\-Agents} (std\-::set$<$ T $\ast$ $>$ \&selected\-Agents, int type, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a set of pointers to all agents in this context of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values). \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_context_af8ca3deb5e820bf84df1dd83fdd14f2d}{select\-Agents} (std\-::vector$<$ T $\ast$ $>$ \&selected\-Agents, int type, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a randomly ordered vector of pointers to all agents in this context of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values). \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_context_a8961d3bd4575afac3ef571166739ac39}{select\-Agents} (int count, std\-::set$<$ T $\ast$ $>$ \&selected\-Agents, int type, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a set of pointers to a specified number of randomly selected agents of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values). \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_context_aae94abf702a7223aaadc74da4f1fd639}{select\-Agents} (int count, std\-::vector$<$ T $\ast$ $>$ \&selected\-Agents, int type, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a randomly ordered vector of pointers to a specified number of randomly selected agents of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values). \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\void \hyperlink{classrepast_1_1_context_a926168c2e765e58473d901f56a6a42f7}{select\-Agents} (std\-::set$<$ T $\ast$ $>$ \&selected\-Agents, filter\-Struct \&filter, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a set of pointers to all agents in this context matching a user-\/defined filter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\void \hyperlink{classrepast_1_1_context_a5011ce09dc44040c235b176261defcf3}{select\-Agents} (std\-::vector$<$ T $\ast$ $>$ \&selected\-Agents, filter\-Struct \&filter, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a randomly ordered vector of pointers to all agents in this context matching a user-\/defined filter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\void \hyperlink{classrepast_1_1_context_a10218ffcf74884be4e12c49a26106878}{select\-Agents} (int count, std\-::set$<$ T $\ast$ $>$ \&selected\-Agents, filter\-Struct \&filter, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a set of pointers to a specified number of randomly selected agents matching a user-\/defined filter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\void \hyperlink{classrepast_1_1_context_a41673cd1e0623849d505884afaaf2581}{select\-Agents} (int count, std\-::vector$<$ T $\ast$ $>$ \&selected\-Agents, filter\-Struct \&filter, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a randomly ordered vector of pointers to a specified number of randomly selected agents matching a user-\/defined filter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\void \hyperlink{classrepast_1_1_context_a2d678fd5e8a320db144d17fb863ee91a}{select\-Agents} (std\-::set$<$ T $\ast$ $>$ \&selected\-Agents, int type, filter\-Struct \&filter, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a set of pointers to all agents in this context of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values) and matching a user-\/defined filter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\void \hyperlink{classrepast_1_1_context_a07cf00b1c5a00b676c5de83e8db438aa}{select\-Agents} (std\-::vector$<$ T $\ast$ $>$ \&selected\-Agents, int type, filter\-Struct \&filter, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a randomly ordered vector of pointers to all agents in this context of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values) and matching a user-\/defined filter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\void \hyperlink{classrepast_1_1_context_afe8f496266275c9edb065c06c6574fc1}{select\-Agents} (int count, std\-::set$<$ T $\ast$ $>$ \&selected\-Agents, int type, filter\-Struct \&filter, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a set of pointers to a specified number of randomly selected agents of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values) and matching a user-\/defined filter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\void \hyperlink{classrepast_1_1_context_ab4aea4be7eaf1c4be741a371e90057a9}{select\-Agents} (int count, std\-::vector$<$ T $\ast$ $>$ \&selected\-Agents, int type, filter\-Struct \&filter, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a randomly ordered vector of pointers to a specified number of randomly selected agents of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values) and matching a user-\/defined filter. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_context_a8a420350cd434f4e0f30a3d41c93298f}{get\-Projection\-Info} (\hyperlink{classrepast_1_1_agent_request}{Agent\-Request} req, std\-::map$<$ std\-::string, std\-::vector$<$ \hyperlink{classrepast_1_1_projection_info_packet}{repast\-::\-Projection\-Info\-Packet} $\ast$ $>$ $>$ \&map, bool secondary\-Info=false, std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ $\ast$secondary\-Ids=0, int dest\-Proc=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets the projection information for all projections in this context, for all agents whose I\-Ds are listed in the \hyperlink{classrepast_1_1_agent_request}{Agent\-Request}. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_context_a9470dbe20a0b4243d52edea86c213feb}{set\-Projection\-Info} (std\-::map$<$ std\-::string, std\-::vector$<$ \hyperlink{classrepast_1_1_projection_info_packet}{repast\-::\-Projection\-Info\-Packet} $\ast$ $>$ $>$ \&proj\-Info)
+\begin{DoxyCompactList}\small\item\em Sets the projection information as specified. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_context_a88097fca27376b1fc460bb75f47869bb}{void {\bfseries clean\-Projection\-Info} (std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&agents\-To\-Keep)}\label{classrepast_1_1_context_a88097fca27376b1fc460bb75f47869bb}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_context_aed0c509cff2035ca99c2b2fc299dcca0}{std\-::vector$<$ \hyperlink{classrepast_1_1_projection}{Projection}$<$ T $>$ $\ast$ $>$ {\bfseries projections}}\label{classrepast_1_1_context_aed0c509cff2035ca99c2b2fc299dcca0}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$class repast\-::\-Context$<$ T $>$}
+
+Collection of agents of type T with set semantics. 
+
+Object identity and equality is determined by their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}.
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em the} & type objects contained by the \hyperlink{classrepast_1_1_context}{Context}. The T must extends \hyperlink{classrepast_1_1_agent}{repast\-::\-Agent}. \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_context_ad0bc4b142fe7154c03d4e4bd2f6836ed}{\index{repast\-::\-Context@{repast\-::\-Context}!add\-Agent@{add\-Agent}}
+\index{add\-Agent@{add\-Agent}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{add\-Agent}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T $\ast$ {\bf repast\-::\-Context}$<$ T $>$\-::add\-Agent (
+\begin{DoxyParamCaption}
+\item[{T $\ast$}]{agent}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_ad0bc4b142fe7154c03d4e4bd2f6836ed}
+
+
+Adds the agent to the context. 
+
+Performs a check to ensure that no agent with the same I\-D (presumably the 'same' agent) has previously been added. If a matching I\-D is found, the new agent is not added, and the address of the pre-\/existing agent is returned. If no match is found, the agent is added and the return value is the same as the value passed
+
+
+\begin{DoxyParams}{Parameters}
+{\em agent} & the agent to add\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the address of the agent in the context; will be the same as the address passed if the agent was successfully added, but if there was already an agent with the same I\-D the address returned will be that of the pre-\/existing agent, which is not replaced. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_context_a96d41e5246dc2940be3ea45f2a233487}{\index{repast\-::\-Context@{repast\-::\-Context}!add\-Projection@{add\-Projection}}
+\index{add\-Projection@{add\-Projection}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{add\-Projection}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::add\-Projection (
+\begin{DoxyParamCaption}
+\item[{{\bf Projection}$<$ T $>$ $\ast$}]{projection}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_context_a96d41e5246dc2940be3ea45f2a233487}
+
+
+Adds the specified projection to this context. 
+
+All the agents in this context will be added to the \hyperlink{classrepast_1_1_projection}{Projection}. Any agents subsequently added to this context will also be added to the \hyperlink{classrepast_1_1_projection}{Projection}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em projection} & the projection to add \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \hyperlink{classrepast_1_1_shared_context_af8f235d4d8e4b1efc548ea8a5b1ab75d}{repast\-::\-Shared\-Context$<$ T $>$}.
+
+\hypertarget{classrepast_1_1_context_a9120a6aac361baa92d6dbd83410ff576}{\index{repast\-::\-Context@{repast\-::\-Context}!add\-Value\-Layer@{add\-Value\-Layer}}
+\index{add\-Value\-Layer@{add\-Value\-Layer}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{add\-Value\-Layer}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::add\-Value\-Layer (
+\begin{DoxyParamCaption}
+\item[{{\bf Base\-Value\-Layer} $\ast$}]{value\-Layer}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_a9120a6aac361baa92d6dbd83410ff576}
+
+
+Adds a value layer to this context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em value\-Layer} & the value layer to add \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_context_a0c69277c868b42ee0bb0d3b90a1df46d}{\index{repast\-::\-Context@{repast\-::\-Context}!begin@{begin}}
+\index{begin@{begin}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{begin}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ const\-\_\-iterator {\bf repast\-::\-Context}$<$ T $>$\-::begin (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_context_a0c69277c868b42ee0bb0d3b90a1df46d}
+
+
+Gets the start of iterator over the agents in this context. 
+
+The iterator derefrences into shared\-\_\-ptr$<$\-T$>$. The actual agent can be accessed by derefrenceing the iter\-: ($\ast$iter)-\/$>$get\-Id() for example.
+
+\begin{DoxyReturn}{Returns}
+the start of iterator over the agents in this context. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_context_a2b77a55622dcdce4b82e8c2864642544}{\index{repast\-::\-Context@{repast\-::\-Context}!by\-Type\-Begin@{by\-Type\-Begin}}
+\index{by\-Type\-Begin@{by\-Type\-Begin}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{by\-Type\-Begin}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ const\-\_\-bytype\-\_\-iterator {\bf repast\-::\-Context}$<$ T $>$\-::by\-Type\-Begin (
+\begin{DoxyParamCaption}
+\item[{int}]{type\-Id}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_context_a2b77a55622dcdce4b82e8c2864642544}
+
+
+Gets the start of an iterator over agents in this context of the specified type. 
+
+The type corresponds to the type component of an agent's \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em type\-Id} & the type of the agent. Only Agents whose agent\-Id.\-agent\-Type() is equal to this type\-Id will be included in the iterator\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the start of an iterator over agents in this context of the specified type. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_context_aa7e427063cdbfc5e37764291df2b2b53}{\index{repast\-::\-Context@{repast\-::\-Context}!by\-Type\-End@{by\-Type\-End}}
+\index{by\-Type\-End@{by\-Type\-End}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{by\-Type\-End}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ const\-\_\-bytype\-\_\-iterator {\bf repast\-::\-Context}$<$ T $>$\-::by\-Type\-End (
+\begin{DoxyParamCaption}
+\item[{int}]{type\-Id}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_context_aa7e427063cdbfc5e37764291df2b2b53}
+
+
+Gets the end of an iterator over agents in this context of the specified type. 
+
+The type corresponds to the type component of an agent's \hyperlink{classrepast_1_1_agent_id}{Agent\-Id}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em type\-Id} & the type of the agent. Only Agents whose agent\-Id.\-agent\-Type() is equal to this type\-Id will be included in the iterator\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the end of an iterator over agents in this context of the specified type. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_context_aa7abe8aefbda43b0b35fcbd3589b465c}{\index{repast\-::\-Context@{repast\-::\-Context}!by\-Type\-Filtered\-Begin@{by\-Type\-Filtered\-Begin}}
+\index{by\-Type\-Filtered\-Begin@{by\-Type\-Filtered\-Begin}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{by\-Type\-Filtered\-Begin}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ boost\-::filter\-\_\-iterator$<$ filter\-Struct, typename {\bf Context}$<$ T $>$\-::const\-\_\-bytype\-\_\-iterator $>$ {\bf repast\-::\-Context}$<$ T $>$\-::by\-Type\-Filtered\-Begin (
+\begin{DoxyParamCaption}
+\item[{const int}]{type, }
+\item[{const filter\-Struct \&}]{f\-Struct}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_aa7abe8aefbda43b0b35fcbd3589b465c}
+
+
+Creates a filtered iterator over the set of agents in this context of the specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values), and returns it with a value equal to the beginning of the list. 
+
+The struct can be any user-\/defined structure that implements a unary operator (see \hyperlink{structrepast_1_1_is_agent_type}{Is\-Agent\-Type}) that can be passed and which will become a filter to sort across the agent list, e.\-g.\-:
+
+struct filter \{ bool operator()(const boost\-::shared\-\_\-ptr$<$\-T$>$\& ptr)\{ return (ptr-\/$>$get\-Agent\-Value() == target\-Value;) \} \}
+
+This should allow filtering of agents by type and on any attribute.
+
+
+\begin{DoxyParams}{Parameters}
+{\em f\-Struct} & an instance of the struct to be used as the filter \\
+\hline
+{\em type} & the numeric type of agents to be included in the list\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the type of the filter to be applied to the agents\\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+an iterator positioned at the beginning of the list of agents meeting the filter's criteria 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_context_a94cee2bd8c4325a7fe79048c0f12a5b6}{\index{repast\-::\-Context@{repast\-::\-Context}!by\-Type\-Filtered\-End@{by\-Type\-Filtered\-End}}
+\index{by\-Type\-Filtered\-End@{by\-Type\-Filtered\-End}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{by\-Type\-Filtered\-End}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ boost\-::filter\-\_\-iterator$<$ filter\-Struct, typename {\bf Context}$<$ T $>$\-::const\-\_\-bytype\-\_\-iterator $>$ {\bf repast\-::\-Context}$<$ T $>$\-::by\-Type\-Filtered\-End (
+\begin{DoxyParamCaption}
+\item[{const int}]{type, }
+\item[{const filter\-Struct \&}]{f\-Struct}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_a94cee2bd8c4325a7fe79048c0f12a5b6}
+
+
+Creates a filtered iterator over the set of agents in this context of the specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values), and returns it with a value equal to one past the end of the list. 
+
+The struct can be any user-\/defined structure that implements a unary operator (see \hyperlink{structrepast_1_1_is_agent_type}{Is\-Agent\-Type}) that can be passed and which will become a filter to sort across the agent list, e.\-g.\-:
+
+struct filter \{ bool operator()(const boost\-::shared\-\_\-ptr$<$\-T$>$\& ptr)\{ return (ptr-\/$>$get\-Agent\-Value() == target\-Value;) \} \}
+
+This should allow filtering of agents by type and on any attribute.
+
+
+\begin{DoxyParams}{Parameters}
+{\em f\-Struct} & an instance of the struct to be used as the filter \\
+\hline
+{\em type} & the numeric type of agents to be included in the list\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the type of the filter to be applied to the agents\\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+an iterator positioned at one past the end of the list of agents meeting the filter's criteria 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_context_af584236067222d8c1a2aa51b5e396da4}{\index{repast\-::\-Context@{repast\-::\-Context}!end@{end}}
+\index{end@{end}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{end}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ const\-\_\-iterator {\bf repast\-::\-Context}$<$ T $>$\-::end (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_context_af584236067222d8c1a2aa51b5e396da4}
+
+
+Gets the end of an iterator over the agents in this context. 
+
+The iterator derefrences into shared\-\_\-ptr$<$\-T$>$. The actual agent can be accessed by derefrenceing the iter\-: ($\ast$iter)-\/$>$get\-Id() for example.
+
+\begin{DoxyReturn}{Returns}
+the end of an iterator over the agents in this context 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_context_ab54a094afb5834a34be46e732465ff30}{\index{repast\-::\-Context@{repast\-::\-Context}!filtered\-Begin@{filtered\-Begin}}
+\index{filtered\-Begin@{filtered\-Begin}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{filtered\-Begin}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ boost\-::filter\-\_\-iterator$<$ filter\-Struct, typename {\bf Context}$<$ T $>$\-::const\-\_\-iterator $>$ {\bf repast\-::\-Context}$<$ T $>$\-::filtered\-Begin (
+\begin{DoxyParamCaption}
+\item[{const filter\-Struct \&}]{f\-Struct}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_ab54a094afb5834a34be46e732465ff30}
+
+
+Creates a filtered iterator over the set of agents in this context and returns it with a value equal to the beginning of the list. 
+
+The struct can be any user-\/defined structure that implements a unary operator (see \hyperlink{structrepast_1_1_is_agent_type}{Is\-Agent\-Type}) that can be passed and which will become a filter to sort across the agent list, e.\-g.\-:
+
+struct filter \{ bool operator()(const boost\-::shared\-\_\-ptr$<$\-T$>$\& ptr)\{ return (ptr-\/$>$get\-Agent\-Value() == target\-Value;) \} \}
+
+This should allow filtering of agents by any attribute.
+
+
+\begin{DoxyParams}{Parameters}
+{\em f\-Struct} & an instance of the struct to be used as the filter\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the type of the filter to be applied to the agents\\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+an iterator positioned at the beginning of the list of agents meeting the filter's criteria 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_context_ad12bb3d7e2578bf80ebbd0dd1b1a7ebd}{\index{repast\-::\-Context@{repast\-::\-Context}!filtered\-End@{filtered\-End}}
+\index{filtered\-End@{filtered\-End}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{filtered\-End}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ boost\-::filter\-\_\-iterator$<$ filter\-Struct, typename {\bf Context}$<$ T $>$\-::const\-\_\-iterator $>$ {\bf repast\-::\-Context}$<$ T $>$\-::filtered\-End (
+\begin{DoxyParamCaption}
+\item[{const filter\-Struct \&}]{f\-Struct}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_ad12bb3d7e2578bf80ebbd0dd1b1a7ebd}
+
+
+Creates a filtered iterator over the set of agents in this context and returns it with a value equal to one step past end of the list. 
+
+The struct can be any user-\/defined structure that implements a unary operator (see \hyperlink{structrepast_1_1_is_agent_type}{Is\-Agent\-Type}) that can be passed and which will become a filter to sort across the agent list, e.\-g.\-:
+
+struct filter \{ bool operator()(const boost\-::shared\-\_\-ptr$<$\-T$>$\& ptr)\{ return (ptr-\/$>$get\-Agent\-Value() == target\-Value;) \} \}
+
+This should allow filtering of agents by any attribute.
+
+
+\begin{DoxyParams}{Parameters}
+{\em f\-Struct} & an instance of the struct to be used as the filter\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the type of the filter to be applied to the agents\\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+an iterator positioned at one past the end of the list of agents meeting the filter's criteria 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_context_a72ec330f6e930b4c83929a70df993b43}{\index{repast\-::\-Context@{repast\-::\-Context}!get\-Agent@{get\-Agent}}
+\index{get\-Agent@{get\-Agent}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{get\-Agent}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T $\ast$ {\bf repast\-::\-Context}$<$ T $>$\-::get\-Agent (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{id}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_a72ec330f6e930b4c83929a70df993b43}
+
+
+Gets the specified agent. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em the} & id of the agent to get. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_context_a9ac760826f1f535b474af50dec727e9f}{\index{repast\-::\-Context@{repast\-::\-Context}!get\-Continuous\-Value\-Layer@{get\-Continuous\-Value\-Layer}}
+\index{get\-Continuous\-Value\-Layer@{get\-Continuous\-Value\-Layer}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{get\-Continuous\-Value\-Layer}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename Value\-Type , typename Borders $>$ {\bf Continuous\-Value\-Layer}$<$ Value\-Type, {\bf Borders} $>$ $\ast$ {\bf repast\-::\-Context}$<$ T $>$\-::get\-Continuous\-Value\-Layer (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{value\-Layer\-Name}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_a9ac760826f1f535b474af50dec727e9f}
+
+
+Gets the named continuous value layer from this \hyperlink{classrepast_1_1_context}{Context}. 
+
+The value layer must have been previously added.
+
+
+\begin{DoxyParams}{Parameters}
+{\em value\-Layer\-Name} & the name of the value layer to get\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Value\-Type} & the numeric type contained by the value layer \\
+\hline
+{\em \hyperlink{classrepast_1_1_borders}{Borders}} & the Border type of the value layer\\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+the named continuous value layer from this \hyperlink{classrepast_1_1_context}{Context}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_context_ac4e06221e76065ae8ee50815bb1a7a41}{\index{repast\-::\-Context@{repast\-::\-Context}!get\-Discrete\-Value\-Layer@{get\-Discrete\-Value\-Layer}}
+\index{get\-Discrete\-Value\-Layer@{get\-Discrete\-Value\-Layer}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{get\-Discrete\-Value\-Layer}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename Value\-Type , typename Borders $>$ {\bf Discrete\-Value\-Layer}$<$ Value\-Type, {\bf Borders} $>$ $\ast$ {\bf repast\-::\-Context}$<$ T $>$\-::get\-Discrete\-Value\-Layer (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{value\-Layer\-Name}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_ac4e06221e76065ae8ee50815bb1a7a41}
+
+
+Gets the named discrete value layer from this \hyperlink{classrepast_1_1_context}{Context}. 
+
+The value layer must have been previously added.
+
+
+\begin{DoxyParams}{Parameters}
+{\em value\-Layer\-Name} & the name of the value layer to get\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Value\-Type} & the numeric type contained by the value layer \\
+\hline
+{\em \hyperlink{classrepast_1_1_borders}{Borders}} & the Border type of the value layer\\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+the named discrete value layer from this \hyperlink{classrepast_1_1_context}{Context}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_context_a10b60609163a2906e23d0b02bf76d7ac}{\index{repast\-::\-Context@{repast\-::\-Context}!get\-Projection@{get\-Projection}}
+\index{get\-Projection@{get\-Projection}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{get\-Projection}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ {\bf Projection}$<$ T $>$ $\ast$ {\bf repast\-::\-Context}$<$ T $>$\-::get\-Projection (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{name}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_a10b60609163a2906e23d0b02bf76d7ac}
+
+
+Get the named \hyperlink{classrepast_1_1_projection}{Projection}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em the} & name of the projection to get\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the named \hyperlink{classrepast_1_1_projection}{Projection} or 0 if no such \hyperlink{classrepast_1_1_projection}{Projection} is found. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_context_a8a420350cd434f4e0f30a3d41c93298f}{\index{repast\-::\-Context@{repast\-::\-Context}!get\-Projection\-Info@{get\-Projection\-Info}}
+\index{get\-Projection\-Info@{get\-Projection\-Info}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{get\-Projection\-Info}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::get\-Projection\-Info (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Request}}]{req, }
+\item[{std\-::map$<$ std\-::string, std\-::vector$<$ {\bf repast\-::\-Projection\-Info\-Packet} $\ast$ $>$ $>$ \&}]{map, }
+\item[{bool}]{secondary\-Info = {\ttfamily false}, }
+\item[{std\-::set$<$ {\bf Agent\-Id} $>$ $\ast$}]{secondary\-Ids = {\ttfamily 0}, }
+\item[{int}]{dest\-Proc = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_a8a420350cd434f4e0f30a3d41c93298f}
+
+
+Gets the projection information for all projections in this context, for all agents whose I\-Ds are listed in the \hyperlink{classrepast_1_1_agent_request}{Agent\-Request}. 
+
+The general sense of this method can be easily understood\-: given a list of agents, get the projection information for all of those agents. But there are some subtleties that should be kept in mind.
+
+\char`\"{}\-The projection information for an agent\char`\"{} is misleading. In fact, the projection information that is needed can vary depending on the context and on the kind of projection.
+
+Generally speaking, spaces return only one kind projection information\-: coordinate locations for the agent specified. This is the simplest case.
+
+The more complicated case is given by graphs. A graph projection can return different sets of information depending on how that information will have to be used. The basic issue is that a graph projection returns sets of edges, and edges must be connected to other agents; this means that a mechanism must be in place for ensuring that the projection info that arrives can be used, which means that for a given 'ego' agent, all 'alter' agents that are connected to it by edges must also be on the receiving process. (Note\-: Repast H\-P\-C 1.\-0 versions sent all of the alter agents' content along with the edge send; this version does not do this, partly to minimize the amount of information being packaged and sent but also because the alternative method used is integrated with the normal bookkeeping for sharing agent information across processes (Agent\-Requests).) In different circumstances, different assumptions can be made about what information will be available on the receiving process. Note that the coordinate information is generally referred to as 'Primary' information, while edge information is 'secondary'; in a third category ('secondary I\-Ds') are the I\-Ds of the alter agents, which can be packaged separately.
+
+The impact of this is that this function is generally called in the following ways\-:
+
+1) When requesting agents\-: in this case, a copy of the agent will be sent from one process to another. No secondary information will be sent at all. This is because it is assumed that if an agent participated in a graph on the receiving process, it would already be present on that process and would not be being requested.
+
+2) When synchronizing \hyperlink{classrepast_1_1_projection}{Projection} Information\-: in this case, some secondary information (edges) is needed\-: the edges that connect the specified ego agent with edges on the receiving process. No secondary I\-Ds are needed, because the only edges being sent are those that connect to agents on the receiving process, which will be assumed to already be available on that process.
+
+3) When synchronizing \hyperlink{classrepast_1_1_agent}{Agent} Status (moving agents from process to process)\-: in this case, the full collection of projection information is needed, including all of the edges in which the specified agent participates and all of the secondary I\-Ds. (The secondary I\-Ds of agents that are already on the receiving process can be omitted, at least theoretically.) This allows the full reconstruction of \hyperlink{classrepast_1_1_projection}{Projection} Information on the receiving process.
+
+
+\begin{DoxyParams}{Parameters}
+{\em req} & List of I\-Ds for agents whose information is requested \\
+\hline
+{\em map} & A map into which the projection information will be placed. Key values represent the names of the projections in this context. \\
+\hline
+{\em secondary\-Info} & true if the 'secondary' projection info must also be returned \\
+\hline
+{\em secondary\-Ids} & A set of I\-Ds for agents who are referred to by the projection informaton being returned (may be null) \\
+\hline
+{\em dest\-Proc} & The Process that will be receiving this information (the information sent may be customized depending on the destination process). If not specified a larger set of information will be sent. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_context_a543dcc0f3ea4ecbe054232eaaa9c72e4}{\index{repast\-::\-Context@{repast\-::\-Context}!get\-Random\-Agents@{get\-Random\-Agents}}
+\index{get\-Random\-Agents@{get\-Random\-Agents}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{get\-Random\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::get\-Random\-Agents (
+\begin{DoxyParamCaption}
+\item[{const int}]{count, }
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{agents}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_a543dcc0f3ea4ecbe054232eaaa9c72e4}
+
+
+Gets at random the specified count of agents and returns them in the agents vector. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em count} & the number of agents to get \\
+\hline
+\mbox{\tt out}  & {\em agents} & a vector where the agents will be returned \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_context_a7ef4c1e4a5f789b6402574fb2d8bd8ef}{\index{repast\-::\-Context@{repast\-::\-Context}!remove\-Agent@{remove\-Agent}}
+\index{remove\-Agent@{remove\-Agent}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{remove\-Agent}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::remove\-Agent (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id}}]{id}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_a7ef4c1e4a5f789b6402574fb2d8bd8ef}
+
+
+Removes the specified agent from this context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the id of the agent to remove \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_context_a6f389ebd5bea672d5d7d14ffba5b710f}{\index{repast\-::\-Context@{repast\-::\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{std\-::set$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{bool}]{remove = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_a6f389ebd5bea672d5d7d14ffba5b710f}
+
+
+Gets a set of pointers to all agents in this context. 
+
+If the 'remove' parameter is set to true, any elements in the original set will be removed before the method returns.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt out}  & {\em selected\-Agents} & a set into which the pointers to the agents will be placed \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_context_aacc9180a8ff5e079ca37edb08a434ff9}{\index{repast\-::\-Context@{repast\-::\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{bool}]{remove = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_aacc9180a8ff5e079ca37edb08a434ff9}
+
+
+Gets a randomly ordered vector of pointers to all agents in this context. 
+
+If the 'remove' parameter is set to true, any elements in the original vector will be removed before the method returns.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt out}  & {\em selected\-Agents} & a vector into which the pointers to the agents will be placed \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_context_a305bd5cfc509be346842567fdf72f97d}{\index{repast\-::\-Context@{repast\-::\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{int}]{count, }
+\item[{std\-::set$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{bool}]{remove = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_a305bd5cfc509be346842567fdf72f97d}
+
+
+Gets a set of pointers to a specified number of randomly selected agents. 
+
+If the set passed contains any elements when this method is called, the agents pointed to by those elements will be omitted from the selection.
+
+If the 'remove' parameter is set to true, any elements in the original set will be removed before the method returns.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em count} & the number of agents to be selected. If this exceeds the number that can possibly be selected, all possible agents will be selected \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a set into which the pointers to the agents will be placed \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_context_acba9351838355a0cfe3dff074448bbc5}{\index{repast\-::\-Context@{repast\-::\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{int}]{count, }
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{bool}]{remove = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_acba9351838355a0cfe3dff074448bbc5}
+
+
+Gets a randomly ordered vector of pointers to a specified number of randomly selected agents. 
+
+If the vector passed contains any elements when this method is called, the agents pointed to by those elements will be omitted from the selection.
+
+If the 'remove' parameter is set to true, any elements in the original vector will be removed before the method returns.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em count} & the number of agents to be selected. If this exceeds the number that can possibly be selected, all possible agents will be selected \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a vector into which the pointers to the agents will be placed \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_context_abf2012f09fb75bfdeb798431e63edfde}{\index{repast\-::\-Context@{repast\-::\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{std\-::set$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{int}]{type, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_abf2012f09fb75bfdeb798431e63edfde}
+
+
+Gets a set of pointers to all agents in this context of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values). 
+
+If the 'remove' parameter is set to true, any elements in the original set will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt out}  & {\em selected\-Agents} & a set into which the pointers to the agents will be placed \\
+\hline
+ & {\em type} & numeric type of agent to be selected \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_context_af8ca3deb5e820bf84df1dd83fdd14f2d}{\index{repast\-::\-Context@{repast\-::\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{int}]{type, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_af8ca3deb5e820bf84df1dd83fdd14f2d}
+
+
+Gets a randomly ordered vector of pointers to all agents in this context of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values). 
+
+If the 'remove' parameter is set to true, any elements in the original vector will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt out}  & {\em selected\-Agents} & a vector into which the pointers to the agents will be placed \\
+\hline
+ & {\em type} & numeric type of agent to be selected \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_context_a8961d3bd4575afac3ef571166739ac39}{\index{repast\-::\-Context@{repast\-::\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{int}]{count, }
+\item[{std\-::set$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{int}]{type, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_a8961d3bd4575afac3ef571166739ac39}
+
+
+Gets a set of pointers to a specified number of randomly selected agents of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values). 
+
+If the set passed contains any elements when this method is called, the agents pointed to by those elements will be omitted from the selection.
+
+If the 'remove' parameter is set to true, any elements in the original set will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em count} & the number of agents to be selected. If this exceeds the number that can possibly be selected, all possible agents will be selected \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a set into which the pointers to the agents will be placed \\
+\hline
+ & {\em type} & numeric type of agent to be selected \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_context_aae94abf702a7223aaadc74da4f1fd639}{\index{repast\-::\-Context@{repast\-::\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{int}]{count, }
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{int}]{type, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_aae94abf702a7223aaadc74da4f1fd639}
+
+
+Gets a randomly ordered vector of pointers to a specified number of randomly selected agents of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values). 
+
+If the vector passed contains any elements when this method is called, the agents pointed to by those elements will be omitted from the selection.
+
+If the 'remove' parameter is set to true, any elements in the original vector will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em count} & the number of agents to be selected. If this exceeds the number that can possibly be selected, all possible agents will be selected \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a vector into which the pointers to the agents will be placed \\
+\hline
+ & {\em type} & numeric type of agent to be selected \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_context_a926168c2e765e58473d901f56a6a42f7}{\index{repast\-::\-Context@{repast\-::\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{std\-::set$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{filter\-Struct \&}]{filter, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_a926168c2e765e58473d901f56a6a42f7}
+
+
+Gets a set of pointers to all agents in this context matching a user-\/defined filter. 
+
+If the 'remove' parameter is set to true, any elements in the original set will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+that can possibly be selected, all possible agents will be selected 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt out}  & {\em selected\-Agents} & a set into which the pointers to the agents will be placed \\
+\hline
+ & {\em filter} & user-\/defined filter specifying any criteria agents to be selected must meet \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the type of the filter to be applied to the agents \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_context_a5011ce09dc44040c235b176261defcf3}{\index{repast\-::\-Context@{repast\-::\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{filter\-Struct \&}]{filter, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_a5011ce09dc44040c235b176261defcf3}
+
+
+Gets a randomly ordered vector of pointers to all agents in this context matching a user-\/defined filter. 
+
+If the 'remove' parameter is set to true, any elements in the original vector will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt out}  & {\em selected\-Agents} & a vector into which the pointers to the agents will be placed \\
+\hline
+ & {\em filter} & user-\/defined filter specifying any criteria agents to be selected must meet \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the type of the filter to be applied to the agents \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_context_a10218ffcf74884be4e12c49a26106878}{\index{repast\-::\-Context@{repast\-::\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{int}]{count, }
+\item[{std\-::set$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{filter\-Struct \&}]{filter, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_a10218ffcf74884be4e12c49a26106878}
+
+
+Gets a set of pointers to a specified number of randomly selected agents matching a user-\/defined filter. 
+
+If the set passed contains any elements when this method is called, the agents pointed to by those elements will be omitted from the selection.
+
+If the 'remove' parameter is set to true, any elements in the original set will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em count} & the number of agents to be selected. If this exceeds the number that can possibly be selected, all possible agents will be selected \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a set into which the pointers to the agents will be placed \\
+\hline
+ & {\em filter} & user-\/defined filter specifying any criteria agents to be selected must meet \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the type of the filter to be applied to the agents \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_context_a41673cd1e0623849d505884afaaf2581}{\index{repast\-::\-Context@{repast\-::\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{int}]{count, }
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{filter\-Struct \&}]{filter, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_a41673cd1e0623849d505884afaaf2581}
+
+
+Gets a randomly ordered vector of pointers to a specified number of randomly selected agents matching a user-\/defined filter. 
+
+If the vector passed contains any elements when this method is called, the agents pointed to by those elements will be omitted from the selection.
+
+If the 'remove' parameter is set to true, any elements in the original vector will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em count} & the number of agents to be selected. If this exceeds the number that can possibly be selected, all possible agents will be selected \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a vector into which the pointers to the agents will be placed \\
+\hline
+ & {\em filter} & user-\/defined filter specifying any criteria agents to be selected must meet \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the type of the filter to be applied to the agents \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_context_a2d678fd5e8a320db144d17fb863ee91a}{\index{repast\-::\-Context@{repast\-::\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{std\-::set$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{int}]{type, }
+\item[{filter\-Struct \&}]{filter, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_a2d678fd5e8a320db144d17fb863ee91a}
+
+
+Gets a set of pointers to all agents in this context of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values) and matching a user-\/defined filter. 
+
+If the 'remove' parameter is set to true, any elements in the original set will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt out}  & {\em selected\-Agents} & a set into which the pointers to the agents will be placed \\
+\hline
+ & {\em type} & numeric type of agent to be selected \\
+\hline
+ & {\em filter} & user-\/defined filter specifying any criteria agents to be selected must meet \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the type of the filter to be applied to the agents \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_context_a07cf00b1c5a00b676c5de83e8db438aa}{\index{repast\-::\-Context@{repast\-::\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{int}]{type, }
+\item[{filter\-Struct \&}]{filter, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_a07cf00b1c5a00b676c5de83e8db438aa}
+
+
+Gets a randomly ordered vector of pointers to all agents in this context of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values) and matching a user-\/defined filter. 
+
+If the 'remove' parameter is set to true, any elements in the original vector will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt out}  & {\em selected\-Agents} & a vector into which the pointers to the agents will be placed \\
+\hline
+ & {\em type} & numeric type of agent to be selected \\
+\hline
+ & {\em filter} & user-\/defined filter specifying any criteria agents to be selected must meet \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the type of the filter to be applied to the agents \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_context_afe8f496266275c9edb065c06c6574fc1}{\index{repast\-::\-Context@{repast\-::\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{int}]{count, }
+\item[{std\-::set$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{int}]{type, }
+\item[{filter\-Struct \&}]{filter, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_afe8f496266275c9edb065c06c6574fc1}
+
+
+Gets a set of pointers to a specified number of randomly selected agents of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values) and matching a user-\/defined filter. 
+
+If the set passed contains any elements when this method is called, the agents pointed to by those elements will be omitted from the selection.
+
+If the 'remove' parameter is set to true, any elements in the original set will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em count} & the number of agents to be selected. If this exceeds the number that can possibly be selected, all possible agents will be selected \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a set into which the pointers to the agents will be placed \\
+\hline
+ & {\em type} & numeric type of agent to be selected \\
+\hline
+ & {\em filter} & user-\/defined filter specifying any criteria agents to be selected must meet \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the type of the filter to be applied to the agents \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_context_ab4aea4be7eaf1c4be741a371e90057a9}{\index{repast\-::\-Context@{repast\-::\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{int}]{count, }
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{int}]{type, }
+\item[{filter\-Struct \&}]{filter, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_ab4aea4be7eaf1c4be741a371e90057a9}
+
+
+Gets a randomly ordered vector of pointers to a specified number of randomly selected agents of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values) and matching a user-\/defined filter. 
+
+If the vector passed contains any elements when this method is called, the agents pointed to by those elements will be omitted from the selection.
+
+If the 'remove' parameter is set to true, any elements in the original vector will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em count} & the number of agents to be selected. If this exceeds the number that can possibly be selected, all possible agents will be selected \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a vector into which the pointers to the agents will be placed \\
+\hline
+ & {\em type} & numeric type of agent to be selected \\
+\hline
+ & {\em filter} & user-\/defined filter specifying any criteria agents to be selected must meet \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the type of the filter to be applied to the agents \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_context_a9470dbe20a0b4243d52edea86c213feb}{\index{repast\-::\-Context@{repast\-::\-Context}!set\-Projection\-Info@{set\-Projection\-Info}}
+\index{set\-Projection\-Info@{set\-Projection\-Info}!repast::Context@{repast\-::\-Context}}
+\subsubsection[{set\-Projection\-Info}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Context}$<$ T $>$\-::set\-Projection\-Info (
+\begin{DoxyParamCaption}
+\item[{std\-::map$<$ std\-::string, std\-::vector$<$ {\bf repast\-::\-Projection\-Info\-Packet} $\ast$ $>$ $>$ \&}]{proj\-Info}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_context_a9470dbe20a0b4243d52edea86c213feb}
+
+
+Sets the projection information as specified. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em proj\-Info} & map where keys represent projections in this context and the values represent collections of projection information content that will be used to specify the relationships among the agents. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Context.\-h\end{DoxyCompactItemize}

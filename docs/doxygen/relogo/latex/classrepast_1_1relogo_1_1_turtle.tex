@@ -1,0 +1,1336 @@
+\hypertarget{classrepast_1_1relogo_1_1_turtle}{\section{repast\-:\-:relogo\-:\-:Turtle Class Reference}
+\label{classrepast_1_1relogo_1_1_turtle}\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}}
+}
+
+
+Relogo \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} implementation.  
+
+
+
+
+{\ttfamily \#include $<$Turtle.\-h$>$}
+
+Inheritance diagram for repast\-:\-:relogo\-:\-:Turtle\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{classrepast_1_1relogo_1_1_turtle}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_turtle_aaa772cfde975ea37fa795c1cafdbb0df}{\hyperlink{classrepast_1_1relogo_1_1_turtle_aaa772cfde975ea37fa795c1cafdbb0df}{Turtle} (repast\-::\-Agent\-Id id, \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer} $\ast$observer)}\label{classrepast_1_1relogo_1_1_turtle_aaa772cfde975ea37fa795c1cafdbb0df}
+
+\begin{DoxyCompactList}\small\item\em Creates a \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} that will have the specified id, and be managed by the specified \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer}. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a0995104470db5a506b8e5d5a2e29c45c}{virtual void {\bfseries hatch\-Copy} (\hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $\ast$parent)}\label{classrepast_1_1relogo_1_1_turtle_a0995104470db5a506b8e5d5a2e29c45c}
+
+\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_ad2fbb3478a37d234450362d8384fb457}{x\-Cor} (double x)
+\begin{DoxyCompactList}\small\item\em Sets the x coordinate of the \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle}'s location. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_a37b35041e28355a00a994fad94db0f0a}{y\-Cor} (double y)
+\begin{DoxyCompactList}\small\item\em Sets the y coordinate of the \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle}'s location. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_ab11fc0e94cfd9f414bd7c84022c9e4cd}{setxy} (double x, double y)
+\begin{DoxyCompactList}\small\item\em Sets the x and y coordinate of the \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle}'s location. \end{DoxyCompactList}\item 
+virtual int \hyperlink{classrepast_1_1relogo_1_1_turtle_abeb7b773c8c9d403317587a7acdc1c1f}{px\-Cor} () const 
+\begin{DoxyCompactList}\small\item\em Gets the \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch} x coordinate of this \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle}. \end{DoxyCompactList}\item 
+virtual int \hyperlink{classrepast_1_1relogo_1_1_turtle_a378a3a80d2d33e389d8d78f0e0cae6d2}{py\-Cor} () const 
+\begin{DoxyCompactList}\small\item\em Gets the \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch} x coordinate of this \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle}. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_aab4d6acd4379da5bcb778930403edcce}{die} ()
+\begin{DoxyCompactList}\small\item\em Removes this turtle from the world. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_a9eb0244977fa479a1ddab9edf9cc7d96}{create\-Link\-With} (\hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} $\ast$turtle, const std\-::string \&network=D\-E\-F\-A\-U\-L\-T\-\_\-\-U\-N\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Creates a link between this turtle and the specified turtle in the specified undirected network. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Link\-Creator $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_turtle_ab55c56347809251aa45ec3a3c4d34e62}{create\-Link\-With\-L\-C} (\hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} $\ast$turtle, Link\-Creator \&creator, const std\-::string \&network=D\-E\-F\-A\-U\-L\-T\-\_\-\-U\-N\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Creates a link between this turtle and the specified turtle in the specified undirected network, using the specified linke creator. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_turtle_ab96df4a267218d86195330a826402053}{create\-Links\-With} (\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \&agents, const std\-::string \&network=D\-E\-F\-A\-U\-L\-T\-\_\-\-U\-N\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Creates links between this turtle and all the agents in the \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} in the named network. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type , typename Link\-Creator $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_turtle_a322d98e98979872597a8d6fac5e07284}{create\-Links\-With\-L\-C} (\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \&agents, Link\-Creator \&creator, const std\-::string \&network=D\-E\-F\-A\-U\-L\-T\-\_\-\-U\-N\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Creates links between this turtle and all the agents in the agentset using the link creator and in the named network. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_ac1684e6697bc1343e56c00f7abd4895a}{create\-Link\-From} (\hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} $\ast$turtle, const std\-::string \&network=D\-E\-F\-A\-U\-L\-T\-\_\-\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Creates a link to this \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} from the specified turtle in the named network which defaults to the default directed network. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Link\-Creator $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_turtle_a46f0a70845533ee57290c2504ab02741}{create\-Link\-From\-L\-C} (\hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} $\ast$turtle, Link\-Creator \&link\-Creator, const std\-::string \&network=D\-E\-F\-A\-U\-L\-T\-\_\-\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Creates a link to this \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} from the specified turtle in the named network which defaults to the default directed network. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_turtle_aa8e68c99657df5f7598165ff41f5d5c4}{create\-Links\-From} (\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \&agents, const std\-::string \&network=D\-E\-F\-A\-U\-L\-T\-\_\-\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Creates links to this turtle from all the agents in the agentset in the named network. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type , typename Link\-Creator $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_turtle_a6393bfb55e349357a9f90894761027d2}{create\-Links\-From\-L\-C} (\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \&agents, Link\-Creator \&creator, const std\-::string \&network=D\-E\-F\-A\-U\-L\-T\-\_\-\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Creates links to this turtle from all the agents in the agentset using the link creator and in the named network. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_turtle_a36b942eeadab4d72eb7581897b7212eb}{create\-Links\-To} (\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \&agents, const std\-::string \&network=D\-E\-F\-A\-U\-L\-T\-\_\-\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Creates links from this turtle to all the agents in the agentset in the named network. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type , typename Link\-Creator $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_turtle_a9dbed548c856425530de3164dc35c4ce}{create\-Links\-To\-L\-C} (\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \&agents, Link\-Creator \&creator, const std\-::string \&network=D\-E\-F\-A\-U\-L\-T\-\_\-\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Creates links from this turtle to all the agents in the agentset using the link creator and in the named network. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_a85c8d02bd7b0f860334583e262d8fbd2}{create\-Link\-To} (\hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} $\ast$turtle, const std\-::string \&network=D\-E\-F\-A\-U\-L\-T\-\_\-\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Creates a link from this \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} to the specified turtle in the named network which defaults to the default directed network. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Link\-Creator $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_turtle_af674e400326eb0b7df57130c21bea403}{create\-Link\-To\-L\-C} (\hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} $\ast$turtle, Link\-Creator \&link\-Creator, const std\-::string \&network=D\-E\-F\-A\-U\-L\-T\-\_\-\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Creates a link from this \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} to the specified turtle in the named network which defaults to the default directed network. \end{DoxyCompactList}\item 
+boost\-::shared\-\_\-ptr$<$ \hyperlink{classrepast_1_1relogo_1_1_relogo_link}{Relogo\-Link} $>$ \hyperlink{classrepast_1_1relogo_1_1_turtle_a7a89ddb4f8c305fa5c70088939be3a8b}{in\-Link\-From} (\hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} $\ast$turtle, const std\-::string \&name=D\-E\-F\-A\-U\-L\-T\-\_\-\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Gets the link from the specified turtle to this one in the specified network which defaults to the default directed network. \end{DoxyCompactList}\item 
+boost\-::shared\-\_\-ptr$<$ \hyperlink{classrepast_1_1relogo_1_1_relogo_link}{Relogo\-Link} $>$ \hyperlink{classrepast_1_1relogo_1_1_turtle_aa2761c7ccf88789dddfe2819328c2f8d}{out\-Link\-To} (\hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} $\ast$turtle, const std\-::string \&name=D\-E\-F\-A\-U\-L\-T\-\_\-\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Gets the link from the this turtle to the specified turtle in the specified network which defaults to the default directed network. \end{DoxyCompactList}\item 
+boost\-::shared\-\_\-ptr$<$ \hyperlink{classrepast_1_1relogo_1_1_relogo_link}{Relogo\-Link} $>$ \hyperlink{classrepast_1_1relogo_1_1_turtle_a7b190bd765f3d44bba572eb755522b25}{link\-With} (\hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} $\ast$turtle, const std\-::string \&name=D\-E\-F\-A\-U\-L\-T\-\_\-\-U\-N\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Gets the link between this turtle and the specified on in the named undirected network. \end{DoxyCompactList}\item 
+bool \hyperlink{classrepast_1_1relogo_1_1_turtle_a7b0286279994c4c4a307df7b84ecc229}{link\-Neighbor\-Q} (\hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} $\ast$turtle, const std\-::string \&name=D\-E\-F\-A\-U\-L\-T\-\_\-\-U\-N\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Gets whether or not this turtle is linked to the specified turtle, in the specified network. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_turtle_ad94359368b01be181ac5f70eb10cc31f}{link\-Neighbors} (\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \&out, const std\-::string \&name=D\-E\-F\-A\-U\-L\-T\-\_\-\-U\-N\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Gets all the network neighbors of this turtle in the named network and puts them in the specified \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. \end{DoxyCompactList}\item 
+bool \hyperlink{classrepast_1_1relogo_1_1_turtle_a62c6d290ba854e36958c85de9c85914d}{in\-Link\-Neighbor\-Q} (\hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} $\ast$turtle, const std\-::string \&name=D\-E\-F\-A\-U\-L\-T\-\_\-\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Gets whether or not there is an edge into this turtle from the specified turtle, in the specified network. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_turtle_ac17897ce742a5ef3ae07f0e8477b6943}{in\-Link\-Neighbors} (\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \&out, const std\-::string \&name=D\-E\-F\-A\-U\-L\-T\-\_\-\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Gets all the network predecessors of this turtle in the named network and puts them in the specified array list. \end{DoxyCompactList}\item 
+bool \hyperlink{classrepast_1_1relogo_1_1_turtle_ab9bd9b49c3130423aadd55d5cd671d86}{out\-Link\-Neighbor\-Q} (\hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} $\ast$turtle, const std\-::string \&name=D\-E\-F\-A\-U\-L\-T\-\_\-\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Gets whether or not there is an edge from this turtle to the specified turtle, in the specified network. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_turtle_a7bc1dd39af216bf3df38058fc5702514}{out\-Link\-Neighbors} (\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \&out, const std\-::string \&name=D\-E\-F\-A\-U\-L\-T\-\_\-\-D\-I\-R\-\_\-\-N\-E\-T)
+\begin{DoxyCompactList}\small\item\em Gets all the network successors of this turtle in the named network and puts them in the specified array list. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_a3aa3ddecaeaedc62f2a748ac01042894}{move\-To} (\hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} $\ast$turtle)
+\begin{DoxyCompactList}\small\item\em Moves this turtle to the location of the specified turtle. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_a93590127823b44b6555c2e1e8897f89b}{move\-To} (\hyperlink{classrepast_1_1relogo_1_1_patch}{Patch} $\ast$patch)
+\begin{DoxyCompactList}\small\item\em Moves this turtle to the location of the specified patch. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_a754447665cdbed97b278c479a8c30bbc}{move} (double \hyperlink{classrepast_1_1relogo_1_1_turtle_af1f309528154fa89567e4c4e7b6660b6}{distance})
+\begin{DoxyCompactList}\small\item\em Moves this turtle the specified distance along the current heading. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_a1d0f6b4ad1294b7f0bc834bad9b19c7f}{mv} (double \hyperlink{classrepast_1_1relogo_1_1_turtle_af1f309528154fa89567e4c4e7b6660b6}{distance})
+\begin{DoxyCompactList}\small\item\em Moves this turtle the specified distance along the current heading. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_ada7cc9cf9315b260525fb8b55b830b84}{jump} (double \hyperlink{classrepast_1_1relogo_1_1_turtle_af1f309528154fa89567e4c4e7b6660b6}{distance})
+\begin{DoxyCompactList}\small\item\em Moves this turtle forward the specified distance, if and only if that would not take this turtle outside the current topology. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_a7521d84463d7b96a1db66019bdbb8f49}{forward} (double \hyperlink{classrepast_1_1relogo_1_1_turtle_af1f309528154fa89567e4c4e7b6660b6}{distance})
+\begin{DoxyCompactList}\small\item\em Moves this turtle forward the specified distance. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_a828a30b94996d99ad93db94840e8bc44}{backward} (double \hyperlink{classrepast_1_1relogo_1_1_turtle_af1f309528154fa89567e4c4e7b6660b6}{distance})
+\begin{DoxyCompactList}\small\item\em Moves this turtle backward the specified distance. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_a6af06d493381cab6a9bf6ca5dd7a84bc}{fd} (double \hyperlink{classrepast_1_1relogo_1_1_turtle_af1f309528154fa89567e4c4e7b6660b6}{distance})
+\begin{DoxyCompactList}\small\item\em Moves this turtle forward the specified distance. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_a2e85915f73032aec4664218aff5dfee8}{bk} (double \hyperlink{classrepast_1_1relogo_1_1_turtle_af1f309528154fa89567e4c4e7b6660b6}{distance})
+\begin{DoxyCompactList}\small\item\em Moves this turtle backward the specified distance. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Patch\-Type , typename Value\-Getter $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_turtle_a5ea9ce6c630dfce7a2db84926f11ff1c}{downhill} (Value\-Getter \&getter)
+\begin{DoxyCompactList}\small\item\em Moves this turtle to a neighboring patch with lowest value as retrieved via the Value\-Getter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Patch\-Type , typename Value\-Getter $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_turtle_aebaff67686279b81c0e3618c07f43034}{downhill4} (Value\-Getter \&getter)
+\begin{DoxyCompactList}\small\item\em Moves this turtle to the patch with lowest value as retrieved via the Value\-Getter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Patch\-Type , typename Value\-Getter $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_turtle_a9aaaed905670dfb1cfb4fd30fbf252ec}{uphill} (Value\-Getter \&getter)
+\begin{DoxyCompactList}\small\item\em Moves this turtle to the patch with highest value as retrieved via the Value\-Getter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Patch\-Type , typename Value\-Getter $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_turtle_a7b840c9cdc55d9627aaf3bbdcecaa786}{uphill4} (Value\-Getter \&getter)
+\begin{DoxyCompactList}\small\item\em Moves this turtle to the patch with highest value as retrieved via the Value\-Getter. \end{DoxyCompactList}\item 
+double \hyperlink{classrepast_1_1relogo_1_1_turtle_a22a5a715b813f7d0ca4f148200a22666}{dx} () const 
+\begin{DoxyCompactList}\small\item\em Gets the distance traveled along the x dimension if the turtle were to take one step forward along its current heading. \end{DoxyCompactList}\item 
+double \hyperlink{classrepast_1_1relogo_1_1_turtle_a933a5e1fef04d7cc2e98d6bf36897012}{dy} () const 
+\begin{DoxyCompactList}\small\item\em Gets the distance traveled along the y dimension if the turtle were to take one step forward along its current heading. \end{DoxyCompactList}\item 
+bool \hyperlink{classrepast_1_1relogo_1_1_turtle_a032e7e51b676c480519ba1abfbd9df17}{can\-Move\-Q} (double \hyperlink{classrepast_1_1relogo_1_1_turtle_af1f309528154fa89567e4c4e7b6660b6}{distance}) const 
+\begin{DoxyCompactList}\small\item\em Gets whether or not this turtle can move the specified distance along its current heading given the current topology. \end{DoxyCompactList}\item 
+float \hyperlink{classrepast_1_1relogo_1_1_turtle_a750aa7d0eba9818a5644c392e9eb3149}{towards} (\hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $\ast$agent) const 
+\begin{DoxyCompactList}\small\item\em Gets the heading from this turtle to the specified \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} (turtle or patch). \end{DoxyCompactList}\item 
+float \hyperlink{classrepast_1_1relogo_1_1_turtle_a843809bcaa67d5194f29d457f4d3fd05}{towardsxy} (double x, double y) const 
+\begin{DoxyCompactList}\small\item\em Gets the heading from this turtle to the specified location. \end{DoxyCompactList}\item 
+float \hyperlink{classrepast_1_1relogo_1_1_turtle_a39aaad16a3789cead666b18e9b0e7fd0}{towards} (const Point$<$ double $>$ \&\hyperlink{classrepast_1_1relogo_1_1_relogo_agent_a12632fc6c21f34dc1552a1d46d7d1000}{location}) const 
+\begin{DoxyCompactList}\small\item\em Gets the heading from this turtle to the specified location. \end{DoxyCompactList}\item 
+double \hyperlink{classrepast_1_1relogo_1_1_turtle_af1f309528154fa89567e4c4e7b6660b6}{distance} (\hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} $\ast$turtle) const 
+\begin{DoxyCompactList}\small\item\em Gets the distance from this turtle to the specified turtle. \end{DoxyCompactList}\item 
+float \hyperlink{classrepast_1_1relogo_1_1_turtle_abd3ddfba05fb41d8b39ea8684352c8d4}{heading} () const 
+\begin{DoxyCompactList}\small\item\em Gets this \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle}'s current heading. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_aa0f8626257269ab4f06e336510d8832e}{heading} (float heading)
+\begin{DoxyCompactList}\small\item\em Sets this turtle's heading to the specified heading. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Patch\-Type $>$ }\\Patch\-Type $\ast$ \hyperlink{classrepast_1_1relogo_1_1_turtle_afa0fa798e62fcd2e1451d6a2993144cb}{patch\-Here} () const 
+\begin{DoxyCompactList}\small\item\em Gets the patch under this turtle. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_a93ef82fc40f5afe5de01d6059b4fff56}{face} (\hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} $\ast$turtle)
+\begin{DoxyCompactList}\small\item\em Sets the turtles heading to face towards the specified turtle. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_ab83335d773663b81f3b6bf0603b9b14c}{face} (\hyperlink{classrepast_1_1relogo_1_1_patch}{Patch} $\ast$patch)
+\begin{DoxyCompactList}\small\item\em Sets the turtles heading to face towards the specified pach. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_a2ba533eb615ebbb4e654580e8d4e62fc}{facexy} (double nx, double ny)
+\begin{DoxyCompactList}\small\item\em Sets the turtles heading to face the specified coordinates. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_a8c227fd729f0acf6a0b7605b2113df2a}{left} (float degrees)
+\begin{DoxyCompactList}\small\item\em Turns the turtle left by the specified number of degrees. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1relogo_1_1_turtle_a56d1e5b136986d15590005b686d3033b}{lt} (float degrees)
+\begin{DoxyCompactList}\small\item\em Turns the turtle left by the specified number of degrees. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Patch\-Type $>$ }\\Patch\-Type $\ast$ \hyperlink{classrepast_1_1relogo_1_1_turtle_a3578d2c248a90e29f0bb8be4a0d43956}{patch\-Left\-And\-Ahead} (float angle\-In\-Degrees, double \hyperlink{classrepast_1_1relogo_1_1_turtle_af1f309528154fa89567e4c4e7b6660b6}{distance})
+\begin{DoxyCompactList}\small\item\em Gets the patch that is the specified distance from this turtle, at the specified angle (turning left) from this turtle's heading. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Patch\-Type $>$ }\\Patch\-Type $\ast$ \hyperlink{classrepast_1_1relogo_1_1_turtle_a0b3b281fd741f3d9005122cb786f3361}{patch\-Right\-And\-Ahead} (float angle\-In\-Degrees, double \hyperlink{classrepast_1_1relogo_1_1_turtle_af1f309528154fa89567e4c4e7b6660b6}{distance})
+\begin{DoxyCompactList}\small\item\em Gets the patch that is the specified distance from this turtle, in the specified degrees (turning right) from this turtle's heading. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Relogo \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} implementation. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a828a30b94996d99ad93db94840e8bc44}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!backward@{backward}}
+\index{backward@{backward}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{backward}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::backward (
+\begin{DoxyParamCaption}
+\item[{double}]{distance}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_turtle_a828a30b94996d99ad93db94840e8bc44}
+
+
+Moves this turtle backward the specified distance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em distance} & the distance to move \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a2e85915f73032aec4664218aff5dfee8}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!bk@{bk}}
+\index{bk@{bk}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{bk}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::bk (
+\begin{DoxyParamCaption}
+\item[{double}]{distance}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_turtle_a2e85915f73032aec4664218aff5dfee8}
+
+
+Moves this turtle backward the specified distance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em distance} & the distance to move \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a032e7e51b676c480519ba1abfbd9df17}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!can\-Move\-Q@{can\-Move\-Q}}
+\index{can\-Move\-Q@{can\-Move\-Q}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{can\-Move\-Q}]{\setlength{\rightskip}{0pt plus 5cm}bool repast\-::relogo\-::\-Turtle\-::can\-Move\-Q (
+\begin{DoxyParamCaption}
+\item[{double}]{distance}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_turtle_a032e7e51b676c480519ba1abfbd9df17}
+
+
+Gets whether or not this turtle can move the specified distance along its current heading given the current topology. 
+
+\begin{DoxyReturn}{Returns}
+true if this turtle can move the specified distance along its current heading given the current topology, otherwise false 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_ac1684e6697bc1343e56c00f7abd4895a}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!create\-Link\-From@{create\-Link\-From}}
+\index{create\-Link\-From@{create\-Link\-From}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{create\-Link\-From}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::create\-Link\-From (
+\begin{DoxyParamCaption}
+\item[{{\bf Turtle} $\ast$}]{turtle, }
+\item[{const std\-::string \&}]{network = {\ttfamily DEFAULT\-\_\-DIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_ac1684e6697bc1343e56c00f7abd4895a}
+
+
+Creates a link to this \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} from the specified turtle in the named network which defaults to the default directed network. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em turtle} & the turtle that will be the source turtle of the lin \\
+\hline
+{\em network} & the name of the network \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a46f0a70845533ee57290c2504ab02741}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!create\-Link\-From\-L\-C@{create\-Link\-From\-L\-C}}
+\index{create\-Link\-From\-L\-C@{create\-Link\-From\-L\-C}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{create\-Link\-From\-L\-C}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Link\-Creator $>$ void repast\-::relogo\-::\-Turtle\-::create\-Link\-From\-L\-C (
+\begin{DoxyParamCaption}
+\item[{{\bf Turtle} $\ast$}]{turtle, }
+\item[{Link\-Creator \&}]{link\-Creator, }
+\item[{const std\-::string \&}]{network = {\ttfamily DEFAULT\-\_\-DIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a46f0a70845533ee57290c2504ab02741}
+
+
+Creates a link to this \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} from the specified turtle in the named network which defaults to the default directed network. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em turtle} & the turtle that will be the source turtle of the link \\
+\hline
+{\em network} & the name of the network \\
+\hline
+{\em link\-Creator} & an object used to create the link\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Link\-Creator} & an function or functor with the following signature Relogo\-Link$\ast$ (Turtle$\ast$ source, Turtle$\ast$ target) \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_aa8e68c99657df5f7598165ff41f5d5c4}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!create\-Links\-From@{create\-Links\-From}}
+\index{create\-Links\-From@{create\-Links\-From}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{create\-Links\-From}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ void repast\-::relogo\-::\-Turtle\-::create\-Links\-From (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Set}$<$ Agent\-Type $>$ \&}]{agents, }
+\item[{const std\-::string \&}]{network = {\ttfamily DEFAULT\-\_\-DIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_aa8e68c99657df5f7598165ff41f5d5c4}
+
+
+Creates links to this turtle from all the agents in the agentset in the named network. 
+
+The network defaults to the default directed network.
+
+
+\begin{DoxyParams}{Parameters}
+{\em agents} & the agentset of agents to create links from \\
+\hline
+{\em network} & the name of the network to create the links in. This defaults to the default directed network\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of object contained by the agentset. \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a6393bfb55e349357a9f90894761027d2}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!create\-Links\-From\-L\-C@{create\-Links\-From\-L\-C}}
+\index{create\-Links\-From\-L\-C@{create\-Links\-From\-L\-C}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{create\-Links\-From\-L\-C}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type , typename Link\-Creator $>$ void repast\-::relogo\-::\-Turtle\-::create\-Links\-From\-L\-C (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Set}$<$ Agent\-Type $>$ \&}]{agents, }
+\item[{Link\-Creator \&}]{creator, }
+\item[{const std\-::string \&}]{network = {\ttfamily DEFAULT\-\_\-DIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a6393bfb55e349357a9f90894761027d2}
+
+
+Creates links to this turtle from all the agents in the agentset using the link creator and in the named network. 
+
+The network defaults to the default directed network.
+
+
+\begin{DoxyParams}{Parameters}
+{\em agents} & the agentset of agents to create links from \\
+\hline
+{\em network} & the name of the network to create the links in. This defaults to the default directed network\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of object contained by the agentset \\
+\hline
+{\em Link\-Creator} & an function or functor with the following signature Relogo\-Link$\ast$ (Turtle$\ast$ source, Turtle$\ast$ target) \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a36b942eeadab4d72eb7581897b7212eb}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!create\-Links\-To@{create\-Links\-To}}
+\index{create\-Links\-To@{create\-Links\-To}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{create\-Links\-To}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ void repast\-::relogo\-::\-Turtle\-::create\-Links\-To (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Set}$<$ Agent\-Type $>$ \&}]{agents, }
+\item[{const std\-::string \&}]{network = {\ttfamily DEFAULT\-\_\-DIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a36b942eeadab4d72eb7581897b7212eb}
+
+
+Creates links from this turtle to all the agents in the agentset in the named network. 
+
+The network defaults to the default directed network.
+
+
+\begin{DoxyParams}{Parameters}
+{\em agents} & the agentset of agents to create links to \\
+\hline
+{\em network} & the name of the network to create the links in. This defaults to the default directed network\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of object contained by the agentset. \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a9dbed548c856425530de3164dc35c4ce}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!create\-Links\-To\-L\-C@{create\-Links\-To\-L\-C}}
+\index{create\-Links\-To\-L\-C@{create\-Links\-To\-L\-C}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{create\-Links\-To\-L\-C}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type , typename Link\-Creator $>$ void repast\-::relogo\-::\-Turtle\-::create\-Links\-To\-L\-C (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Set}$<$ Agent\-Type $>$ \&}]{agents, }
+\item[{Link\-Creator \&}]{creator, }
+\item[{const std\-::string \&}]{network = {\ttfamily DEFAULT\-\_\-DIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a9dbed548c856425530de3164dc35c4ce}
+
+
+Creates links from this turtle to all the agents in the agentset using the link creator and in the named network. 
+
+The network defaults to the default directed network.
+
+
+\begin{DoxyParams}{Parameters}
+{\em agents} & the agentset of agents to create links to \\
+\hline
+{\em network} & the name of the network to create the links in. This defaults to the default directed network\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of object contained by the agentset \\
+\hline
+{\em Link\-Creator} & an function or functor with the following signature boost\-::shared\-\_\-ptr$<$\-Relogo\-Link$>$ (Turtle$\ast$ source, Turtle$\ast$ target) \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_ab96df4a267218d86195330a826402053}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!create\-Links\-With@{create\-Links\-With}}
+\index{create\-Links\-With@{create\-Links\-With}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{create\-Links\-With}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ void repast\-::relogo\-::\-Turtle\-::create\-Links\-With (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Set}$<$ Agent\-Type $>$ \&}]{agents, }
+\item[{const std\-::string \&}]{network = {\ttfamily DEFAULT\-\_\-UNDIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_ab96df4a267218d86195330a826402053}
+
+
+Creates links between this turtle and all the agents in the \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} in the named network. 
+
+The network defaults to the default undirected network.
+
+
+\begin{DoxyParams}{Parameters}
+{\em agents} & the agentset of agents to create links with \\
+\hline
+{\em network} & the name of the network to create the links in. This defaults to the default undirected network\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent} & the type of object contained by the agentset. \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a322d98e98979872597a8d6fac5e07284}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!create\-Links\-With\-L\-C@{create\-Links\-With\-L\-C}}
+\index{create\-Links\-With\-L\-C@{create\-Links\-With\-L\-C}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{create\-Links\-With\-L\-C}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type , typename Link\-Creator $>$ void repast\-::relogo\-::\-Turtle\-::create\-Links\-With\-L\-C (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Set}$<$ Agent\-Type $>$ \&}]{agents, }
+\item[{Link\-Creator \&}]{creator, }
+\item[{const std\-::string \&}]{network = {\ttfamily DEFAULT\-\_\-UNDIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a322d98e98979872597a8d6fac5e07284}
+
+
+Creates links between this turtle and all the agents in the agentset using the link creator and in the named network. 
+
+The network defaults to the default undirected network.
+
+
+\begin{DoxyParams}{Parameters}
+{\em agents} & the agentset of agents to create links with \\
+\hline
+{\em network} & the name of the network to create the links in. This defaults to the default undirected network \\
+\hline
+{\em creator} & the functor to create the links with\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent} & the type of object contained by the agentset \\
+\hline
+{\em Link\-Creator} & the object used to create the links\\
+\hline
+{\em Link\-Creator} & an function or functor with the following signature Relogo\-Link$\ast$ (Turtle$\ast$ source, Turtle$\ast$ target) \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a85c8d02bd7b0f860334583e262d8fbd2}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!create\-Link\-To@{create\-Link\-To}}
+\index{create\-Link\-To@{create\-Link\-To}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{create\-Link\-To}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::create\-Link\-To (
+\begin{DoxyParamCaption}
+\item[{{\bf Turtle} $\ast$}]{turtle, }
+\item[{const std\-::string \&}]{network = {\ttfamily DEFAULT\-\_\-DIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a85c8d02bd7b0f860334583e262d8fbd2}
+
+
+Creates a link from this \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} to the specified turtle in the named network which defaults to the default directed network. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em turtle} & the turtle that will be the target turtle of the link \\
+\hline
+{\em network} & the name of the network \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_af674e400326eb0b7df57130c21bea403}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!create\-Link\-To\-L\-C@{create\-Link\-To\-L\-C}}
+\index{create\-Link\-To\-L\-C@{create\-Link\-To\-L\-C}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{create\-Link\-To\-L\-C}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Link\-Creator $>$ void repast\-::relogo\-::\-Turtle\-::create\-Link\-To\-L\-C (
+\begin{DoxyParamCaption}
+\item[{{\bf Turtle} $\ast$}]{turtle, }
+\item[{Link\-Creator \&}]{link\-Creator, }
+\item[{const std\-::string \&}]{network = {\ttfamily DEFAULT\-\_\-DIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_af674e400326eb0b7df57130c21bea403}
+
+
+Creates a link from this \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} to the specified turtle in the named network which defaults to the default directed network. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em turtle} & the turtle that will be the target turtle of the link \\
+\hline
+{\em network} & the name of the network \\
+\hline
+{\em link\-Creator} & an object used to create the link \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Link\-Creator} & an function or functor with the following signature boost\-::shared\-\_\-ptr$<$\-Relogo\-Link$>$ (Turtle$\ast$ source, Turtle$\ast$ target) \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a9eb0244977fa479a1ddab9edf9cc7d96}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!create\-Link\-With@{create\-Link\-With}}
+\index{create\-Link\-With@{create\-Link\-With}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{create\-Link\-With}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::create\-Link\-With (
+\begin{DoxyParamCaption}
+\item[{{\bf Turtle} $\ast$}]{turtle, }
+\item[{const std\-::string \&}]{network = {\ttfamily DEFAULT\-\_\-UNDIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a9eb0244977fa479a1ddab9edf9cc7d96}
+
+
+Creates a link between this turtle and the specified turtle in the specified undirected network. 
+
+The network defaults to the default undirected network.
+
+
+\begin{DoxyParams}{Parameters}
+{\em turtle} & the turtle to create the link with \\
+\hline
+{\em network} & the network to create the link in \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_ab55c56347809251aa45ec3a3c4d34e62}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!create\-Link\-With\-L\-C@{create\-Link\-With\-L\-C}}
+\index{create\-Link\-With\-L\-C@{create\-Link\-With\-L\-C}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{create\-Link\-With\-L\-C}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Link\-Creator $>$ void repast\-::relogo\-::\-Turtle\-::create\-Link\-With\-L\-C (
+\begin{DoxyParamCaption}
+\item[{{\bf Turtle} $\ast$}]{turtle, }
+\item[{Link\-Creator \&}]{creator, }
+\item[{const std\-::string \&}]{network = {\ttfamily DEFAULT\-\_\-UNDIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_ab55c56347809251aa45ec3a3c4d34e62}
+
+
+Creates a link between this turtle and the specified turtle in the specified undirected network, using the specified linke creator. 
+
+The network defaults to the default undirected network.
+
+
+\begin{DoxyParams}{Parameters}
+{\em turtle} & the turtle to create the link with \\
+\hline
+{\em creator} & the functor to create the link with \\
+\hline
+{\em network} & the network to create the link in\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Link\-Creator} & an function or functor with the following signature Relogo\-Link$\ast$ (Turtle$\ast$ source, Turtle$\ast$ target) \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_aab4d6acd4379da5bcb778930403edcce}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!die@{die}}
+\index{die@{die}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{die}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::die (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_aab4d6acd4379da5bcb778930403edcce}
+
+
+Removes this turtle from the world. 
+
+Do not call this if there is a chance the \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} will be referred to after the call to \hyperlink{classrepast_1_1relogo_1_1_turtle_aab4d6acd4379da5bcb778930403edcce}{die()}-\/ for example, if it has moved and will be part of a move synchronization. \hypertarget{classrepast_1_1relogo_1_1_turtle_af1f309528154fa89567e4c4e7b6660b6}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!distance@{distance}}
+\index{distance@{distance}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{distance}]{\setlength{\rightskip}{0pt plus 5cm}double repast\-::relogo\-::\-Turtle\-::distance (
+\begin{DoxyParamCaption}
+\item[{{\bf Turtle} $\ast$}]{turtle}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_turtle_af1f309528154fa89567e4c4e7b6660b6}
+
+
+Gets the distance from this turtle to the specified turtle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em turtle} & the turtle to get the distance to\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the distance from this turtle to the specified turtle. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a5ea9ce6c630dfce7a2db84926f11ff1c}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!downhill@{downhill}}
+\index{downhill@{downhill}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{downhill}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Patch\-Type , typename Value\-Getter $>$ void repast\-::relogo\-::\-Turtle\-::downhill (
+\begin{DoxyParamCaption}
+\item[{Value\-Getter \&}]{getter}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a5ea9ce6c630dfce7a2db84926f11ff1c}
+
+
+Moves this turtle to a neighboring patch with lowest value as retrieved via the Value\-Getter. 
+
+The 8 neighboring patches and the current patch the turtle is on are considered. If no surrounding patch has a lower value than the patch the turtle is on, this turtle stays on the current patch. If there is more than one patch with the minimum value, then one will be chosen at random.Note that this turtle will end up in the center of one of the surrounding patches or in the center of its current patch.
+
+
+\begin{DoxyParams}{Parameters}
+{\em getter} & the function or functor used to retrieve the value from the patch\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Patch\-Type} & the patch's type \\
+\hline
+{\em a} & functor or function with the following signature double (Patch\-Type$\ast$ patch) const \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_aebaff67686279b81c0e3618c07f43034}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!downhill4@{downhill4}}
+\index{downhill4@{downhill4}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{downhill4}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Patch\-Type , typename Value\-Getter $>$ void repast\-::relogo\-::\-Turtle\-::downhill4 (
+\begin{DoxyParamCaption}
+\item[{Value\-Getter \&}]{getter}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_aebaff67686279b81c0e3618c07f43034}
+
+
+Moves this turtle to the patch with lowest value as retrieved via the Value\-Getter. 
+
+The 4 neighboring patches and the current patch the turtle is on are considered. If no surrounding patch has a lower value than the patch the turtle is on, this turtle stays on the current patch. If there is more than on patch with the minimum value, then one will be chosen at random. This considers only the current patch and the 4 surrounding patches (N, S, E, W).
+
+Note that this turtle will end up in the center of one of the surrounding patches or in the center of its current patch.
+
+
+\begin{DoxyParams}{Parameters}
+{\em getter} & the function or functor used to retrieve the value from the patch \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Patch\-Type} & the patch's type \\
+\hline
+{\em a} & functor or function with the following signature double (Patch\-Type$\ast$ patch) const \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a22a5a715b813f7d0ca4f148200a22666}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!dx@{dx}}
+\index{dx@{dx}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{dx}]{\setlength{\rightskip}{0pt plus 5cm}double repast\-::relogo\-::\-Turtle\-::dx (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_turtle_a22a5a715b813f7d0ca4f148200a22666}
+
+
+Gets the distance traveled along the x dimension if the turtle were to take one step forward along its current heading. 
+
+\begin{DoxyReturn}{Returns}
+the distance traveled along the x dimension if the turtle were to take one step forward along its current heading. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a933a5e1fef04d7cc2e98d6bf36897012}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!dy@{dy}}
+\index{dy@{dy}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{dy}]{\setlength{\rightskip}{0pt plus 5cm}double repast\-::relogo\-::\-Turtle\-::dy (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_turtle_a933a5e1fef04d7cc2e98d6bf36897012}
+
+
+Gets the distance traveled along the y dimension if the turtle were to take one step forward along its current heading. 
+
+\begin{DoxyReturn}{Returns}
+the distance traveled along the y dimension if the turtle were to take one step forward along its current heading. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a93ef82fc40f5afe5de01d6059b4fff56}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!face@{face}}
+\index{face@{face}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{face}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::face (
+\begin{DoxyParamCaption}
+\item[{{\bf Turtle} $\ast$}]{turtle}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a93ef82fc40f5afe5de01d6059b4fff56}
+
+
+Sets the turtles heading to face towards the specified turtle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em turtle} & the turtle to face \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_ab83335d773663b81f3b6bf0603b9b14c}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!face@{face}}
+\index{face@{face}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{face}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::face (
+\begin{DoxyParamCaption}
+\item[{{\bf Patch} $\ast$}]{patch}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_ab83335d773663b81f3b6bf0603b9b14c}
+
+
+Sets the turtles heading to face towards the specified pach. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em patch} & the patch to face \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a2ba533eb615ebbb4e654580e8d4e62fc}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!facexy@{facexy}}
+\index{facexy@{facexy}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{facexy}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::facexy (
+\begin{DoxyParamCaption}
+\item[{double}]{nx, }
+\item[{double}]{ny}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a2ba533eb615ebbb4e654580e8d4e62fc}
+
+
+Sets the turtles heading to face the specified coordinates. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em nx} & the x coordinate of the location to face \\
+\hline
+{\em ny} & the y coordinate of the location to face \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a6af06d493381cab6a9bf6ca5dd7a84bc}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!fd@{fd}}
+\index{fd@{fd}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{fd}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::fd (
+\begin{DoxyParamCaption}
+\item[{double}]{distance}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_turtle_a6af06d493381cab6a9bf6ca5dd7a84bc}
+
+
+Moves this turtle forward the specified distance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em distance} & the distance to move \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a7521d84463d7b96a1db66019bdbb8f49}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!forward@{forward}}
+\index{forward@{forward}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{forward}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::forward (
+\begin{DoxyParamCaption}
+\item[{double}]{distance}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_turtle_a7521d84463d7b96a1db66019bdbb8f49}
+
+
+Moves this turtle forward the specified distance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em distance} & the distance to move \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_abd3ddfba05fb41d8b39ea8684352c8d4}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!heading@{heading}}
+\index{heading@{heading}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{heading}]{\setlength{\rightskip}{0pt plus 5cm}float repast\-::relogo\-::\-Turtle\-::heading (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_turtle_abd3ddfba05fb41d8b39ea8684352c8d4}
+
+
+Gets this \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle}'s current heading. 
+
+\begin{DoxyReturn}{Returns}
+this \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle}'s current heading. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_aa0f8626257269ab4f06e336510d8832e}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!heading@{heading}}
+\index{heading@{heading}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{heading}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::heading (
+\begin{DoxyParamCaption}
+\item[{float}]{heading}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_aa0f8626257269ab4f06e336510d8832e}
+
+
+Sets this turtle's heading to the specified heading. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em heading} & the new heading \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a7a89ddb4f8c305fa5c70088939be3a8b}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!in\-Link\-From@{in\-Link\-From}}
+\index{in\-Link\-From@{in\-Link\-From}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{in\-Link\-From}]{\setlength{\rightskip}{0pt plus 5cm}boost\-::shared\-\_\-ptr$<$ {\bf Relogo\-Link} $>$ repast\-::relogo\-::\-Turtle\-::in\-Link\-From (
+\begin{DoxyParamCaption}
+\item[{{\bf Turtle} $\ast$}]{turtle, }
+\item[{const std\-::string \&}]{name = {\ttfamily DEFAULT\-\_\-DIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a7a89ddb4f8c305fa5c70088939be3a8b}
+
+
+Gets the link from the specified turtle to this one in the specified network which defaults to the default directed network. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em turtle} & the turtle to get the link from \\
+\hline
+{\em name} & the name of the network containing the link\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the link from the specified turtle to this one in the specified network which defaults to the default directed network. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a62c6d290ba854e36958c85de9c85914d}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!in\-Link\-Neighbor\-Q@{in\-Link\-Neighbor\-Q}}
+\index{in\-Link\-Neighbor\-Q@{in\-Link\-Neighbor\-Q}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{in\-Link\-Neighbor\-Q}]{\setlength{\rightskip}{0pt plus 5cm}bool repast\-::relogo\-::\-Turtle\-::in\-Link\-Neighbor\-Q (
+\begin{DoxyParamCaption}
+\item[{{\bf Turtle} $\ast$}]{turtle, }
+\item[{const std\-::string \&}]{name = {\ttfamily DEFAULT\-\_\-DIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a62c6d290ba854e36958c85de9c85914d}
+
+
+Gets whether or not there is an edge into this turtle from the specified turtle, in the specified network. 
+
+The network defaults to the default directed network.
+
+
+\begin{DoxyParams}{Parameters}
+{\em turtle} & the turtle to check as the source of the edge \\
+\hline
+{\em name} & the name of the network to check, defaults to the default directed network.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if there is an edge into this turtle from the specified turtle in the named directed network, otherwise false. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_ac17897ce742a5ef3ae07f0e8477b6943}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!in\-Link\-Neighbors@{in\-Link\-Neighbors}}
+\index{in\-Link\-Neighbors@{in\-Link\-Neighbors}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{in\-Link\-Neighbors}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ void repast\-::relogo\-::\-Turtle\-::in\-Link\-Neighbors (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Set}$<$ Agent\-Type $>$ \&}]{out, }
+\item[{const std\-::string \&}]{name = {\ttfamily DEFAULT\-\_\-DIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_ac17897ce742a5ef3ae07f0e8477b6943}
+
+
+Gets all the network predecessors of this turtle in the named network and puts them in the specified array list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em out} & the \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} to the return the neighbors in \\
+\hline
+{\em name} & the name of the network to get the network neighbors from \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of agents to find in the network \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_ada7cc9cf9315b260525fb8b55b830b84}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!jump@{jump}}
+\index{jump@{jump}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{jump}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::jump (
+\begin{DoxyParamCaption}
+\item[{double}]{distance}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_turtle_ada7cc9cf9315b260525fb8b55b830b84}
+
+
+Moves this turtle forward the specified distance, if and only if that would not take this turtle outside the current topology. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em distance} & the amount to move \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a8c227fd729f0acf6a0b7605b2113df2a}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!left@{left}}
+\index{left@{left}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{left}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::left (
+\begin{DoxyParamCaption}
+\item[{float}]{degrees}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a8c227fd729f0acf6a0b7605b2113df2a}
+
+
+Turns the turtle left by the specified number of degrees. 
+
+To turn right, use a negative number.
+
+
+\begin{DoxyParams}{Parameters}
+{\em degrees} & the amount to turn \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a7b0286279994c4c4a307df7b84ecc229}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!link\-Neighbor\-Q@{link\-Neighbor\-Q}}
+\index{link\-Neighbor\-Q@{link\-Neighbor\-Q}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{link\-Neighbor\-Q}]{\setlength{\rightskip}{0pt plus 5cm}bool repast\-::relogo\-::\-Turtle\-::link\-Neighbor\-Q (
+\begin{DoxyParamCaption}
+\item[{{\bf Turtle} $\ast$}]{turtle, }
+\item[{const std\-::string \&}]{name = {\ttfamily DEFAULT\-\_\-UNDIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a7b0286279994c4c4a307df7b84ecc229}
+
+
+Gets whether or not this turtle is linked to the specified turtle, in the specified network. 
+
+The network defaults to the default undirected network.
+
+
+\begin{DoxyParams}{Parameters}
+{\em turtle} & the turtle to check that this links to \\
+\hline
+{\em name} & the name of the network to check, defaults to the default undirected network.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if this this turtle is linked to the specified turtle in the named undirected network, otherwise false. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_ad94359368b01be181ac5f70eb10cc31f}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!link\-Neighbors@{link\-Neighbors}}
+\index{link\-Neighbors@{link\-Neighbors}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{link\-Neighbors}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ void repast\-::relogo\-::\-Turtle\-::link\-Neighbors (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Set}$<$ Agent\-Type $>$ \&}]{out, }
+\item[{const std\-::string \&}]{name = {\ttfamily DEFAULT\-\_\-UNDIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_ad94359368b01be181ac5f70eb10cc31f}
+
+
+Gets all the network neighbors of this turtle in the named network and puts them in the specified \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em out} & the \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} to the return the neighbors in \\
+\hline
+{\em name} & the name of the network to get the network neighbors from \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of agents to find in the network \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a7b190bd765f3d44bba572eb755522b25}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!link\-With@{link\-With}}
+\index{link\-With@{link\-With}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{link\-With}]{\setlength{\rightskip}{0pt plus 5cm}boost\-::shared\-\_\-ptr$<$ {\bf Relogo\-Link} $>$ repast\-::relogo\-::\-Turtle\-::link\-With (
+\begin{DoxyParamCaption}
+\item[{{\bf Turtle} $\ast$}]{turtle, }
+\item[{const std\-::string \&}]{name = {\ttfamily DEFAULT\-\_\-UNDIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a7b190bd765f3d44bba572eb755522b25}
+
+
+Gets the link between this turtle and the specified on in the named undirected network. 
+
+The network defaults to the default undirected network.
+
+\begin{DoxyReturn}{Returns}
+the link between this turtle and the specified on in the named undirected network. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a56d1e5b136986d15590005b686d3033b}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!lt@{lt}}
+\index{lt@{lt}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{lt}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::lt (
+\begin{DoxyParamCaption}
+\item[{float}]{degrees}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a56d1e5b136986d15590005b686d3033b}
+
+
+Turns the turtle left by the specified number of degrees. 
+
+To turn right, use a negative number.
+
+
+\begin{DoxyParams}{Parameters}
+{\em degrees} & the amount to turn \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a754447665cdbed97b278c479a8c30bbc}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!move@{move}}
+\index{move@{move}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{move}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::move (
+\begin{DoxyParamCaption}
+\item[{double}]{distance}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a754447665cdbed97b278c479a8c30bbc}
+
+
+Moves this turtle the specified distance along the current heading. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em distance} & the distance to move \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a3aa3ddecaeaedc62f2a748ac01042894}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!move\-To@{move\-To}}
+\index{move\-To@{move\-To}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{move\-To}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::move\-To (
+\begin{DoxyParamCaption}
+\item[{{\bf Turtle} $\ast$}]{turtle}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a3aa3ddecaeaedc62f2a748ac01042894}
+
+
+Moves this turtle to the location of the specified turtle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em turtle} & the turtle whose location this turtle will be moved to \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a93590127823b44b6555c2e1e8897f89b}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!move\-To@{move\-To}}
+\index{move\-To@{move\-To}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{move\-To}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::move\-To (
+\begin{DoxyParamCaption}
+\item[{{\bf Patch} $\ast$}]{patch}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a93590127823b44b6555c2e1e8897f89b}
+
+
+Moves this turtle to the location of the specified patch. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em patch} & the patch whose location this turtle will be moved to \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a1d0f6b4ad1294b7f0bc834bad9b19c7f}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!mv@{mv}}
+\index{mv@{mv}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{mv}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::mv (
+\begin{DoxyParamCaption}
+\item[{double}]{distance}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_turtle_a1d0f6b4ad1294b7f0bc834bad9b19c7f}
+
+
+Moves this turtle the specified distance along the current heading. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em distance} & the distance to move \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_ab9bd9b49c3130423aadd55d5cd671d86}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!out\-Link\-Neighbor\-Q@{out\-Link\-Neighbor\-Q}}
+\index{out\-Link\-Neighbor\-Q@{out\-Link\-Neighbor\-Q}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{out\-Link\-Neighbor\-Q}]{\setlength{\rightskip}{0pt plus 5cm}bool repast\-::relogo\-::\-Turtle\-::out\-Link\-Neighbor\-Q (
+\begin{DoxyParamCaption}
+\item[{{\bf Turtle} $\ast$}]{turtle, }
+\item[{const std\-::string \&}]{name = {\ttfamily DEFAULT\-\_\-DIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_ab9bd9b49c3130423aadd55d5cd671d86}
+
+
+Gets whether or not there is an edge from this turtle to the specified turtle, in the specified network. 
+
+The network defaults to the default directed network.
+
+
+\begin{DoxyParams}{Parameters}
+{\em turtle} & the turtle to check as the target of the edge \\
+\hline
+{\em name} & the name of the network to check, defaults to the default directed network.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if there is an edge from this turtle into the specified turtle in the named directed network, otherwise false. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a7bc1dd39af216bf3df38058fc5702514}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!out\-Link\-Neighbors@{out\-Link\-Neighbors}}
+\index{out\-Link\-Neighbors@{out\-Link\-Neighbors}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{out\-Link\-Neighbors}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ void repast\-::relogo\-::\-Turtle\-::out\-Link\-Neighbors (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Set}$<$ Agent\-Type $>$ \&}]{out, }
+\item[{const std\-::string \&}]{name = {\ttfamily DEFAULT\-\_\-DIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a7bc1dd39af216bf3df38058fc5702514}
+
+
+Gets all the network successors of this turtle in the named network and puts them in the specified array list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em out} & the \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} to the return the neighbors in \\
+\hline
+{\em name} & the name of the network to get the network neighbors from \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of agents to find in the network \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_aa2761c7ccf88789dddfe2819328c2f8d}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!out\-Link\-To@{out\-Link\-To}}
+\index{out\-Link\-To@{out\-Link\-To}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{out\-Link\-To}]{\setlength{\rightskip}{0pt plus 5cm}boost\-::shared\-\_\-ptr$<$ {\bf Relogo\-Link} $>$ repast\-::relogo\-::\-Turtle\-::out\-Link\-To (
+\begin{DoxyParamCaption}
+\item[{{\bf Turtle} $\ast$}]{turtle, }
+\item[{const std\-::string \&}]{name = {\ttfamily DEFAULT\-\_\-DIR\-\_\-NET}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_aa2761c7ccf88789dddfe2819328c2f8d}
+
+
+Gets the link from the this turtle to the specified turtle in the specified network which defaults to the default directed network. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em turtle} & the turtle to get the link to \\
+\hline
+{\em name} & the name of the network containing the link\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the link from the this turtle to the specified turtle in the specified network which defaults to the default directed network. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_afa0fa798e62fcd2e1451d6a2993144cb}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!patch\-Here@{patch\-Here}}
+\index{patch\-Here@{patch\-Here}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{patch\-Here}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Patch\-Type $>$ Patch\-Type $\ast$ repast\-::relogo\-::\-Turtle\-::patch\-Here (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_turtle_afa0fa798e62fcd2e1451d6a2993144cb}
+
+
+Gets the patch under this turtle. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em the} & type of the \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch} \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a3578d2c248a90e29f0bb8be4a0d43956}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!patch\-Left\-And\-Ahead@{patch\-Left\-And\-Ahead}}
+\index{patch\-Left\-And\-Ahead@{patch\-Left\-And\-Ahead}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{patch\-Left\-And\-Ahead}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Patch\-Type $>$ Patch\-Type $\ast$ repast\-::relogo\-::\-Turtle\-::patch\-Left\-And\-Ahead (
+\begin{DoxyParamCaption}
+\item[{float}]{angle\-In\-Degrees, }
+\item[{double}]{distance}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a3578d2c248a90e29f0bb8be4a0d43956}
+
+
+Gets the patch that is the specified distance from this turtle, at the specified angle (turning left) from this turtle's heading. 
+
+Returns 0 if the patch would be outside of the world.
+
+
+\begin{DoxyParams}{Parameters}
+{\em angle\-In\-Degrees} & the angle \\
+\hline
+{\em distance} & the distance\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Patch\-Type} & the type of the \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch} \\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+the patch that is the specified distance from this turtle, at the specified angle (turning left) from this turtle's heading or 0 if the patch would be outside of the world. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a0b3b281fd741f3d9005122cb786f3361}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!patch\-Right\-And\-Ahead@{patch\-Right\-And\-Ahead}}
+\index{patch\-Right\-And\-Ahead@{patch\-Right\-And\-Ahead}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{patch\-Right\-And\-Ahead}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Patch\-Type $>$ Patch\-Type $\ast$ repast\-::relogo\-::\-Turtle\-::patch\-Right\-And\-Ahead (
+\begin{DoxyParamCaption}
+\item[{float}]{angle\-In\-Degrees, }
+\item[{double}]{distance}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a0b3b281fd741f3d9005122cb786f3361}
+
+
+Gets the patch that is the specified distance from this turtle, in the specified degrees (turning right) from this turtle's heading. 
+
+Returns 0 if the patch would be outside of the world.
+
+
+\begin{DoxyParams}{Parameters}
+{\em angle\-In\-Degrees} & the angle \\
+\hline
+{\em distance} & the distance\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Patch\-Type} & the type of the \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch} \\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+the patch that is the specified distance from this turtle, at the specified angle (turning right) from this turtle's heading or 0 if the patch would be outside of the world. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_abeb7b773c8c9d403317587a7acdc1c1f}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!px\-Cor@{px\-Cor}}
+\index{px\-Cor@{px\-Cor}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{px\-Cor}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::relogo\-::\-Turtle\-::px\-Cor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1relogo_1_1_turtle_abeb7b773c8c9d403317587a7acdc1c1f}
+
+
+Gets the \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch} x coordinate of this \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle}. 
+
+\begin{DoxyReturn}{Returns}
+the patch x coordinate of this \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle}. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1relogo_1_1_abstract_relogo_agent_ae631f45eba5815470dea5a2059213c1b}{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}.
+
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a378a3a80d2d33e389d8d78f0e0cae6d2}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!py\-Cor@{py\-Cor}}
+\index{py\-Cor@{py\-Cor}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{py\-Cor}]{\setlength{\rightskip}{0pt plus 5cm}int repast\-::relogo\-::\-Turtle\-::py\-Cor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1relogo_1_1_turtle_a378a3a80d2d33e389d8d78f0e0cae6d2}
+
+
+Gets the \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch} x coordinate of this \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle}. 
+
+\begin{DoxyReturn}{Returns}
+the patch x coordinate of this \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle}. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1relogo_1_1_abstract_relogo_agent_a38df42fbb6277fa62d0068fbd37e6595}{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}.
+
+\hypertarget{classrepast_1_1relogo_1_1_turtle_ab11fc0e94cfd9f414bd7c84022c9e4cd}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!setxy@{setxy}}
+\index{setxy@{setxy}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{setxy}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::setxy (
+\begin{DoxyParamCaption}
+\item[{double}]{x, }
+\item[{double}]{y}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_ab11fc0e94cfd9f414bd7c84022c9e4cd}
+
+
+Sets the x and y coordinate of the \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle}'s location. 
+
+If the location is outside of the world bounds this will throw an exception.
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & the x coordinate \\
+\hline
+{\em y} & the y coordinate \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a750aa7d0eba9818a5644c392e9eb3149}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!towards@{towards}}
+\index{towards@{towards}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{towards}]{\setlength{\rightskip}{0pt plus 5cm}float repast\-::relogo\-::\-Turtle\-::towards (
+\begin{DoxyParamCaption}
+\item[{{\bf Relogo\-Agent} $\ast$}]{agent}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_turtle_a750aa7d0eba9818a5644c392e9eb3149}
+
+
+Gets the heading from this turtle to the specified \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} (turtle or patch). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em agent} & the \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} or \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch} this will get the heading to\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the heading from this turtle to the specified \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} (turtle or patch). 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a39aaad16a3789cead666b18e9b0e7fd0}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!towards@{towards}}
+\index{towards@{towards}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{towards}]{\setlength{\rightskip}{0pt plus 5cm}float repast\-::relogo\-::\-Turtle\-::towards (
+\begin{DoxyParamCaption}
+\item[{const Point$<$ double $>$ \&}]{location}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_turtle_a39aaad16a3789cead666b18e9b0e7fd0}
+
+
+Gets the heading from this turtle to the specified location. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em location} & the location to get the heading to\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the heading from this turtle to the specified location. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a843809bcaa67d5194f29d457f4d3fd05}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!towardsxy@{towardsxy}}
+\index{towardsxy@{towardsxy}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{towardsxy}]{\setlength{\rightskip}{0pt plus 5cm}float repast\-::relogo\-::\-Turtle\-::towardsxy (
+\begin{DoxyParamCaption}
+\item[{double}]{x, }
+\item[{double}]{y}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_turtle_a843809bcaa67d5194f29d457f4d3fd05}
+
+
+Gets the heading from this turtle to the specified location. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & the x coordinate of the location \\
+\hline
+{\em y} & the y coordinate of the location\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the heading from this turtle to the specified location. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a9aaaed905670dfb1cfb4fd30fbf252ec}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!uphill@{uphill}}
+\index{uphill@{uphill}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{uphill}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Patch\-Type , typename Value\-Getter $>$ void repast\-::relogo\-::\-Turtle\-::uphill (
+\begin{DoxyParamCaption}
+\item[{Value\-Getter \&}]{getter}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a9aaaed905670dfb1cfb4fd30fbf252ec}
+
+
+Moves this turtle to the patch with highest value as retrieved via the Value\-Getter. 
+
+The 8 neighboring patches and the current patch the turtle is on are considered. If no surrounding patch has a higher value than the patch the turtle is on, this turtle stays on the current patch. If there is more than on patch with the minimum value, then one will be chosen at random.
+
+Note that this turtle will end up in the center of one of the surrounding patches or in the center of its current patch.
+
+
+\begin{DoxyParams}{Parameters}
+{\em getter} & the function or functor used to retrieve the value from the patch \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Patch\-Type} & the patch's type \\
+\hline
+{\em a} & functor or function with the following signature double (Patch\-Type$\ast$ patch) const \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a7b840c9cdc55d9627aaf3bbdcecaa786}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!uphill4@{uphill4}}
+\index{uphill4@{uphill4}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{uphill4}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Patch\-Type , typename Value\-Getter $>$ void repast\-::relogo\-::\-Turtle\-::uphill4 (
+\begin{DoxyParamCaption}
+\item[{Value\-Getter \&}]{getter}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a7b840c9cdc55d9627aaf3bbdcecaa786}
+
+
+Moves this turtle to the patch with highest value as retrieved via the Value\-Getter. 
+
+The 4 neighboring patches and the current patch the turtle is on are considered. If no surrounding patch has a higher value than the patch the turtle is on, this turtle stays on the current patch. If there is more than on patch with the minimum value, then one will be chosen at random. This considers only the current patch and the 4 surrounding patches (N, S, E, W).
+
+Note that this turtle will end up in the center of one of the surrounding patches or in the center of its current patch.
+
+
+\begin{DoxyParams}{Parameters}
+{\em getter} & the function or functor used to retrieve the value from the patch \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Patch\-Type} & the patch's type \\
+\hline
+{\em a} & functor or function with the following signature double (Patch\-Type$\ast$ patch) const \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_ad2fbb3478a37d234450362d8384fb457}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!x\-Cor@{x\-Cor}}
+\index{x\-Cor@{x\-Cor}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{x\-Cor}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::x\-Cor (
+\begin{DoxyParamCaption}
+\item[{double}]{x}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_ad2fbb3478a37d234450362d8384fb457}
+
+
+Sets the x coordinate of the \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle}'s location. 
+
+If the location is outside of the world bounds this will throw an exception.
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & the new coordinate \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_turtle_a37b35041e28355a00a994fad94db0f0a}{\index{repast\-::relogo\-::\-Turtle@{repast\-::relogo\-::\-Turtle}!y\-Cor@{y\-Cor}}
+\index{y\-Cor@{y\-Cor}!repast::relogo::Turtle@{repast\-::relogo\-::\-Turtle}}
+\subsubsection[{y\-Cor}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::relogo\-::\-Turtle\-::y\-Cor (
+\begin{DoxyParamCaption}
+\item[{double}]{y}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_turtle_a37b35041e28355a00a994fad94db0f0a}
+
+
+Sets the y coordinate of the \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle}'s location. 
+
+If the location is outside of the world bounds this will throw an exception.
+
+
+\begin{DoxyParams}{Parameters}
+{\em y} & the new y coordinate \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/\-Users/murphy/work/\-Repast\-H\-P\-C\-\_\-\-G\-I\-T/repast.\-hpc/src/relogo/Turtle.\-h\item 
+/\-Users/murphy/work/\-Repast\-H\-P\-C\-\_\-\-G\-I\-T/repast.\-hpc/src/relogo/Turtle.\-cpp\end{DoxyCompactItemize}

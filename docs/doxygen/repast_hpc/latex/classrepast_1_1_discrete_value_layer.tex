@@ -1,0 +1,128 @@
+\hypertarget{classrepast_1_1_discrete_value_layer}{\section{repast\-:\-:Discrete\-Value\-Layer$<$ Value\-Type, Borders $>$ Class Template Reference}
+\label{classrepast_1_1_discrete_value_layer}\index{repast\-::\-Discrete\-Value\-Layer$<$ Value\-Type, Borders $>$@{repast\-::\-Discrete\-Value\-Layer$<$ Value\-Type, Borders $>$}}
+}
+
+
+Creates \hyperlink{classrepast_1_1_value_layer}{Value\-Layer} whose location coordinates are ints.  
+
+
+
+
+{\ttfamily \#include $<$Value\-Layer.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Discrete\-Value\-Layer$<$ Value\-Type, Borders $>$\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{classrepast_1_1_discrete_value_layer}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_discrete_value_layer_aae74c061422347ebccf0163db1f0998f}{{\bfseries Discrete\-Value\-Layer} (const \hyperlink{classrepast_1_1_discrete_value_layer}{Discrete\-Value\-Layer}$<$ Value\-Type, \hyperlink{classrepast_1_1_borders}{Borders} $>$ \&other)}\label{classrepast_1_1_discrete_value_layer_aae74c061422347ebccf0163db1f0998f}
+
+\item 
+\hypertarget{classrepast_1_1_discrete_value_layer_aaea82e29c4e38e63e7921b1d83895654}{\hyperlink{classrepast_1_1_discrete_value_layer}{Discrete\-Value\-Layer} \& {\bfseries operator=} (const \hyperlink{classrepast_1_1_discrete_value_layer}{Discrete\-Value\-Layer}$<$ Value\-Type, \hyperlink{classrepast_1_1_borders}{Borders} $>$ \&rhs)}\label{classrepast_1_1_discrete_value_layer_aaea82e29c4e38e63e7921b1d83895654}
+
+\item 
+\hyperlink{classrepast_1_1_discrete_value_layer_a146b16f54f9b13ccfeb6462f359d0203}{Discrete\-Value\-Layer} (const std\-::string \&\hyperlink{classrepast_1_1_base_value_layer_a27277765ee50f9d5446b253f77797f5c}{name}, const \hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} \&\hyperlink{classrepast_1_1_value_layer_a51fe7fe718305d0c006bc465a14ef0e3}{dimensions}, bool dense, const Value\-Type \&default\-Value=Value\-Type())
+\begin{DoxyCompactList}\small\item\em Creates a \hyperlink{classrepast_1_1_discrete_value_layer}{Discrete\-Value\-Layer} whose cells contain a default value of Value\-Type() with the specified dimensions. \end{DoxyCompactList}\item 
+Value\-Type \& \hyperlink{classrepast_1_1_discrete_value_layer_abf7996a02382f6a28b3d993a156386c7}{get} (const \hyperlink{classrepast_1_1_point}{Point}$<$ int $>$ \&pt)
+\begin{DoxyCompactList}\small\item\em Gets the value at the specified point. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_discrete_value_layer_a2070dcc808c4d5b48de96b278f8a8d89}{set} (const Value\-Type \&value, const \hyperlink{classrepast_1_1_point}{Point}$<$ int $>$ \&pt)
+\begin{DoxyCompactList}\small\item\em Sets the value at the specified point. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename Value\-Type, typename Borders$>$class repast\-::\-Discrete\-Value\-Layer$<$ Value\-Type, Borders $>$}
+
+Creates \hyperlink{classrepast_1_1_value_layer}{Value\-Layer} whose location coordinates are ints. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Value\-Type} & the type of what the value layer stores. \\
+\hline
+{\em \hyperlink{classrepast_1_1_borders}{Borders}} & the type of borders (wrapped / periodic, strict). Border types can be found in \hyperlink{_grid_components_8h_source}{Grid\-Components.\-h} \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classrepast_1_1_discrete_value_layer_a146b16f54f9b13ccfeb6462f359d0203}{\index{repast\-::\-Discrete\-Value\-Layer@{repast\-::\-Discrete\-Value\-Layer}!Discrete\-Value\-Layer@{Discrete\-Value\-Layer}}
+\index{Discrete\-Value\-Layer@{Discrete\-Value\-Layer}!repast::DiscreteValueLayer@{repast\-::\-Discrete\-Value\-Layer}}
+\subsubsection[{Discrete\-Value\-Layer}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Value\-Type , typename Borders $>$ {\bf repast\-::\-Discrete\-Value\-Layer}$<$ Value\-Type, {\bf Borders} $>$\-::{\bf Discrete\-Value\-Layer} (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{name, }
+\item[{const {\bf Grid\-Dimensions} \&}]{dimensions, }
+\item[{bool}]{dense, }
+\item[{const Value\-Type \&}]{default\-Value = {\ttfamily ValueType()}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_discrete_value_layer_a146b16f54f9b13ccfeb6462f359d0203}
+
+
+Creates a \hyperlink{classrepast_1_1_discrete_value_layer}{Discrete\-Value\-Layer} whose cells contain a default value of Value\-Type() with the specified dimensions. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & the name of the \hyperlink{classrepast_1_1_discrete_value_layer}{Discrete\-Value\-Layer} \\
+\hline
+{\em dimension} & the dimensions of the \hyperlink{classrepast_1_1_discrete_value_layer}{Discrete\-Value\-Layer} \\
+\hline
+{\em dense} & whether or not the \hyperlink{classrepast_1_1_value_layer}{Value\-Layer} will be densely populated or not \\
+\hline
+{\em default\-Value} & the default value to return if no value has been set of a location. The default is the result of Value\-Type(). \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_discrete_value_layer_abf7996a02382f6a28b3d993a156386c7}{\index{repast\-::\-Discrete\-Value\-Layer@{repast\-::\-Discrete\-Value\-Layer}!get@{get}}
+\index{get@{get}!repast::DiscreteValueLayer@{repast\-::\-Discrete\-Value\-Layer}}
+\subsubsection[{get}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Value\-Type , typename Borders $>$ Value\-Type \& {\bf repast\-::\-Discrete\-Value\-Layer}$<$ Value\-Type, {\bf Borders} $>$\-::get (
+\begin{DoxyParamCaption}
+\item[{const {\bf Point}$<$ int $>$ \&}]{pt}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_discrete_value_layer_abf7996a02382f6a28b3d993a156386c7}
+
+
+Gets the value at the specified point. 
+
+If no value has been set at the specified point then this returns the default value.
+
+param pt the location to get the value of
+
+\begin{DoxyReturn}{Returns}
+the value at the specified point, or if no value has been set, then the default value. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1_value_layer_a472a2fcaa29b30c6410ec29b1cde34c0}{repast\-::\-Value\-Layer$<$ Value\-Type, int $>$}.
+
+\hypertarget{classrepast_1_1_discrete_value_layer_a2070dcc808c4d5b48de96b278f8a8d89}{\index{repast\-::\-Discrete\-Value\-Layer@{repast\-::\-Discrete\-Value\-Layer}!set@{set}}
+\index{set@{set}!repast::DiscreteValueLayer@{repast\-::\-Discrete\-Value\-Layer}}
+\subsubsection[{set}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Value\-Type , typename Borders $>$ void {\bf repast\-::\-Discrete\-Value\-Layer}$<$ Value\-Type, {\bf Borders} $>$\-::set (
+\begin{DoxyParamCaption}
+\item[{const Value\-Type \&}]{value, }
+\item[{const {\bf Point}$<$ int $>$ \&}]{pt}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_discrete_value_layer_a2070dcc808c4d5b48de96b278f8a8d89}
+
+
+Sets the value at the specified point. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em value} & the value \\
+\hline
+{\em pt} & the point where the value should be stored \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{classrepast_1_1_value_layer_a34ab3f83380ca978f19748cff9361425}{repast\-::\-Value\-Layer$<$ Value\-Type, int $>$}.
+
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Value\-Layer.\-h\end{DoxyCompactItemize}

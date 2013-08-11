@@ -55,6 +55,9 @@ namespace repast {
 
 namespace relogo {
 
+/**
+ * Compares two items using the specified getter.
+ */
 template<typename T, typename ValueGetter>
 struct SetCmp {
 

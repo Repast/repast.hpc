@@ -1,0 +1,53 @@
+\hypertarget{classrepast_1_1_k_e_builder}{\section{repast\-:\-:K\-E\-Builder$<$ V, E, Ec, Ec\-M $>$ Class Template Reference}
+\label{classrepast_1_1_k_e_builder}\index{repast\-::\-K\-E\-Builder$<$ V, E, Ec, Ec\-M $>$@{repast\-::\-K\-E\-Builder$<$ V, E, Ec, Ec\-M $>$}}
+}
+
+
+Buils K\-E type networks.  
+
+
+
+
+{\ttfamily \#include $<$Network\-Builder.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classrepast_1_1_k_e_builder_a89b6f648c29bb59fd0b3f2495b9c2fc0}{build} (\hyperlink{classrepast_1_1_properties}{repast\-::\-Properties} \&props, \hyperlink{classrepast_1_1_graph}{repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$ $\ast$graph)
+\begin{DoxyCompactList}\small\item\em Builds the network. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename V, typename E, typename Ec, typename Ec\-M$>$class repast\-::\-K\-E\-Builder$<$ V, E, Ec, Ec\-M $>$}
+
+Buils K\-E type networks. 
+
+See Klemm and Eguiluz, \char`\"{}\-Growing scale-\/free network with small world behavior\char`\"{} in Phys. Rev. E 65. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_k_e_builder_a89b6f648c29bb59fd0b3f2495b9c2fc0}{\index{repast\-::\-K\-E\-Builder@{repast\-::\-K\-E\-Builder}!build@{build}}
+\index{build@{build}!repast::KEBuilder@{repast\-::\-K\-E\-Builder}}
+\subsubsection[{build}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename V , typename E , typename Ec , typename Ec\-M $>$ void {\bf repast\-::\-K\-E\-Builder}$<$ V, E, Ec, Ec\-M $>$\-::build (
+\begin{DoxyParamCaption}
+\item[{{\bf repast\-::\-Properties} \&}]{props, }
+\item[{{\bf repast\-::\-Graph}$<$ V, E, Ec, Ec\-M $>$ $\ast$}]{graph}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_k_e_builder_a89b6f648c29bb59fd0b3f2495b9c2fc0}
+
+
+Builds the network. 
+
+The graph should contains the vertices the build the network with and props should contain the M values.
+
+
+\begin{DoxyParams}{Parameters}
+{\em props} & a \hyperlink{classrepast_1_1_properties}{Properties} containing a property \char`\"{}ke.\-model.\-m\char`\"{} that specifies the M value. \\
+\hline
+{\em graph} & the graph to build the network \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Network\-Builder.\-h\end{DoxyCompactItemize}

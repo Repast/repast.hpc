@@ -58,14 +58,16 @@
 
 namespace repast {
 
-// Unary function used in a transform_iterator that allows the map
-// iterator to return the keys
+/**
+ * Unary function used in a transform_iterator that allows the map
+ * iterator to return the keys
+ */
 struct KeyGetter: public std::unary_function<std::map<std::string, std::string>::value_type, std::string> {
   std::string operator()(const std::map<std::string, std::string>::value_type& value) const;
 };
 
 /**
- * Map type object that contains key, value string properties. A Properties
+ * Map type object that contains key, value(string) properties. A Properties
  * instance can be constructed from a file. Each line is a property with the
  * key and value separated by =. For example,
  *

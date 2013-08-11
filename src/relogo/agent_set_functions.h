@@ -50,7 +50,9 @@
 namespace repast {
 namespace relogo {
 
-// Unary function used in the transform_iterator that allows
+/**
+ *  Unary function used in the transform_iterator that allows
+ */
 template<typename TargetType>
 struct Caster2: public std::unary_function<RelogoAgent, TargetType*> {
 
@@ -60,6 +62,10 @@ struct Caster2: public std::unary_function<RelogoAgent, TargetType*> {
 	}
 };
 
+/**
+ * Used to filter by agent type but ensure that only the
+ * first encountered instance of agent is considered.
+ */
 template<typename T>
 struct IsAgentTypeNoDup {
 	IsAgentType<T> isAgentType;

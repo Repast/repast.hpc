@@ -1,0 +1,123 @@
+\hypertarget{classrepast_1_1_single_occupancy}{\section{repast\-:\-:Single\-Occupancy$<$ T, G\-P\-Type $>$ Class Template Reference}
+\label{classrepast_1_1_single_occupancy}\index{repast\-::\-Single\-Occupancy$<$ T, G\-P\-Type $>$@{repast\-::\-Single\-Occupancy$<$ T, G\-P\-Type $>$}}
+}
+
+
+Single Occupancy cell accessor for accessing the occupants of locations in a \hyperlink{classrepast_1_1_grid}{Grid}.  
+
+
+
+
+{\ttfamily \#include $<$Single\-Occupancy.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+T $\ast$ \hyperlink{classrepast_1_1_single_occupancy_a0793bcf66d06870aaf124a4973e7af8d}{get} (const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&location) const 
+\begin{DoxyCompactList}\small\item\em Gets the object found at the specified location. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_single_occupancy_a85ca94b006194f1dda1ab2b6a0906bf1}{get\-All} (const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&location, std\-::vector$<$ T $\ast$ $>$ \&out) const 
+\begin{DoxyCompactList}\small\item\em Gets the item found at the specified location. \end{DoxyCompactList}\item 
+bool \hyperlink{classrepast_1_1_single_occupancy_aaa697304c7a2ad36799bdd4d9e42e57c}{put} (boost\-::shared\-\_\-ptr$<$ T $>$ \&agent, const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&location)
+\begin{DoxyCompactList}\small\item\em Puts the specified item at the specified location. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_single_occupancy_ab2f366205ad7783cc4537c9e16369043}{remove} (boost\-::shared\-\_\-ptr$<$ T $>$ \&agent, const \hyperlink{classrepast_1_1_point}{Point}$<$ G\-P\-Type $>$ \&location)
+\begin{DoxyCompactList}\small\item\em Removes the specified item from the specified location. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T, typename G\-P\-Type$>$class repast\-::\-Single\-Occupancy$<$ T, G\-P\-Type $>$}
+
+Single Occupancy cell accessor for accessing the occupants of locations in a \hyperlink{classrepast_1_1_grid}{Grid}. 
+
+Each locations can have only a single occupant.
+
+
+\begin{DoxyParams}{Parameters}
+{\em T} & the type of object in the \hyperlink{classrepast_1_1_grid}{Grid} \\
+\hline
+{\em G\-P\-Type} & the coordinate type of the grid point locations. This must be an int or a double. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_single_occupancy_a0793bcf66d06870aaf124a4973e7af8d}{\index{repast\-::\-Single\-Occupancy@{repast\-::\-Single\-Occupancy}!get@{get}}
+\index{get@{get}!repast::SingleOccupancy@{repast\-::\-Single\-Occupancy}}
+\subsubsection[{get}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename G\-P\-Type $>$ T $\ast$ {\bf repast\-::\-Single\-Occupancy}$<$ T, G\-P\-Type $>$\-::get (
+\begin{DoxyParamCaption}
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{location}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1_single_occupancy_a0793bcf66d06870aaf124a4973e7af8d}
+
+
+Gets the object found at the specified location. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em location} & the location to get the object at \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the first object found at the specified location or 0 if there are no objects at the specified location. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_single_occupancy_a85ca94b006194f1dda1ab2b6a0906bf1}{\index{repast\-::\-Single\-Occupancy@{repast\-::\-Single\-Occupancy}!get\-All@{get\-All}}
+\index{get\-All@{get\-All}!repast::SingleOccupancy@{repast\-::\-Single\-Occupancy}}
+\subsubsection[{get\-All}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename G\-P\-Type $>$ void {\bf repast\-::\-Single\-Occupancy}$<$ T, G\-P\-Type $>$\-::get\-All (
+\begin{DoxyParamCaption}
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{location, }
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{out}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1_single_occupancy_a85ca94b006194f1dda1ab2b6a0906bf1}
+
+
+Gets the item found at the specified location. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em location} & the location to get the item at \\
+\hline
+\mbox{\tt out}  & {\em the} & found item will be returned in this vector \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_single_occupancy_aaa697304c7a2ad36799bdd4d9e42e57c}{\index{repast\-::\-Single\-Occupancy@{repast\-::\-Single\-Occupancy}!put@{put}}
+\index{put@{put}!repast::SingleOccupancy@{repast\-::\-Single\-Occupancy}}
+\subsubsection[{put}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename G\-P\-Type $>$ bool {\bf repast\-::\-Single\-Occupancy}$<$ T, G\-P\-Type $>$\-::put (
+\begin{DoxyParamCaption}
+\item[{boost\-::shared\-\_\-ptr$<$ T $>$ \&}]{agent, }
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{location}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_single_occupancy_aaa697304c7a2ad36799bdd4d9e42e57c}
+
+
+Puts the specified item at the specified location. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em agent} & the item to put \\
+\hline
+{\em location} & the location to put the item at \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_single_occupancy_ab2f366205ad7783cc4537c9e16369043}{\index{repast\-::\-Single\-Occupancy@{repast\-::\-Single\-Occupancy}!remove@{remove}}
+\index{remove@{remove}!repast::SingleOccupancy@{repast\-::\-Single\-Occupancy}}
+\subsubsection[{remove}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T , typename G\-P\-Type $>$ void {\bf repast\-::\-Single\-Occupancy}$<$ T, G\-P\-Type $>$\-::remove (
+\begin{DoxyParamCaption}
+\item[{boost\-::shared\-\_\-ptr$<$ T $>$ \&}]{agent, }
+\item[{const {\bf Point}$<$ G\-P\-Type $>$ \&}]{location}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_single_occupancy_ab2f366205ad7783cc4537c9e16369043}
+
+
+Removes the specified item from the specified location. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em agent} & the item to remove \\
+\hline
+{\em location} & the location to remove the item from \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Single\-Occupancy.\-h\end{DoxyCompactItemize}

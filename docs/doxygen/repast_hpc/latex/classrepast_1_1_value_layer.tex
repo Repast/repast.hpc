@@ -1,0 +1,179 @@
+\hypertarget{classrepast_1_1_value_layer}{\section{repast\-:\-:Value\-Layer$<$ Value\-Type, Point\-Type $>$ Class Template Reference}
+\label{classrepast_1_1_value_layer}\index{repast\-::\-Value\-Layer$<$ Value\-Type, Point\-Type $>$@{repast\-::\-Value\-Layer$<$ Value\-Type, Point\-Type $>$}}
+}
+
+
+A collection that stores values at point locations.  
+
+
+
+
+{\ttfamily \#include $<$Value\-Layer.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Value\-Layer$<$ Value\-Type, Point\-Type $>$\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classrepast_1_1_value_layer}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_value_layer_a5cf943b36cd95a9df924c68108e38509}{{\bfseries Value\-Layer} (const std\-::string \&\hyperlink{classrepast_1_1_base_value_layer_a27277765ee50f9d5446b253f77797f5c}{name}, const \hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} \&\hyperlink{classrepast_1_1_value_layer_a51fe7fe718305d0c006bc465a14ef0e3}{dimensions})}\label{classrepast_1_1_value_layer_a5cf943b36cd95a9df924c68108e38509}
+
+\item 
+virtual Value\-Type \& \hyperlink{classrepast_1_1_value_layer_a472a2fcaa29b30c6410ec29b1cde34c0}{get} (const \hyperlink{classrepast_1_1_point}{Point}$<$ Point\-Type $>$ \&pt)=0
+\begin{DoxyCompactList}\small\item\em Gets the value at the specified point. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_value_layer_a34ab3f83380ca978f19748cff9361425}{set} (const Value\-Type \&value, const \hyperlink{classrepast_1_1_point}{Point}$<$ Point\-Type $>$ \&pt)=0
+\begin{DoxyCompactList}\small\item\em Sets the value at the specified point. \end{DoxyCompactList}\item 
+Value\-Type \& \hyperlink{classrepast_1_1_value_layer_a4d48fb5bc3219f8c0a1e7572fd97c0ab}{operator\mbox{[}$\,$\mbox{]}} (const \hyperlink{classrepast_1_1_point}{Point}$<$ Point\-Type $>$ \&pt)
+\begin{DoxyCompactList}\small\item\em Gets the value at the specified point. \end{DoxyCompactList}\item 
+const Value\-Type \& \hyperlink{classrepast_1_1_value_layer_aa2cb696a1be3cc9216936c1d57e494b6}{operator\mbox{[}$\,$\mbox{]}} (const \hyperlink{classrepast_1_1_point}{Point}$<$ Point\-Type $>$ \&pt) const 
+\begin{DoxyCompactList}\small\item\em Gets the value at the specified point. \end{DoxyCompactList}\item 
+const \hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} \hyperlink{classrepast_1_1_value_layer_a51fe7fe718305d0c006bc465a14ef0e3}{dimensions} () const 
+\begin{DoxyCompactList}\small\item\em Gets the dimensions of this \hyperlink{classrepast_1_1_value_layer}{Value\-Layer}. \end{DoxyCompactList}\item 
+const \hyperlink{classrepast_1_1_point}{Point}$<$ int $>$ \hyperlink{classrepast_1_1_value_layer_abe6cc0f23498af967ce82decb0bc5fcc}{shape} () const 
+\begin{DoxyCompactList}\small\item\em Gets the extents of this \hyperlink{classrepast_1_1_value_layer}{Value\-Layer}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_value_layer_ac1f75aa259d123bcd2dd5e8bd1630b14}{void \hyperlink{classrepast_1_1_value_layer_ac1f75aa259d123bcd2dd5e8bd1630b14}{translate} (std\-::vector$<$ Point\-Type $>$ \&pt)}\label{classrepast_1_1_value_layer_ac1f75aa259d123bcd2dd5e8bd1630b14}
+
+\begin{DoxyCompactList}\small\item\em Translates pt by dimensions origin. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_value_layer_a113ad617c865632143a16685faa9de7c}{\hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} {\bfseries \-\_\-dimensions}}\label{classrepast_1_1_value_layer_a113ad617c865632143a16685faa9de7c}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename Value\-Type, typename Point\-Type$>$class repast\-::\-Value\-Layer$<$ Value\-Type, Point\-Type $>$}
+
+A collection that stores values at point locations. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Value\-Type} & the type stored by the value layer. \\
+\hline
+{\em the} & coordinate type (int or double) of the point locations. \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_value_layer_a51fe7fe718305d0c006bc465a14ef0e3}{\index{repast\-::\-Value\-Layer@{repast\-::\-Value\-Layer}!dimensions@{dimensions}}
+\index{dimensions@{dimensions}!repast::ValueLayer@{repast\-::\-Value\-Layer}}
+\subsubsection[{dimensions}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Value\-Type, typename Point\-Type$>$ const {\bf Grid\-Dimensions} {\bf repast\-::\-Value\-Layer}$<$ Value\-Type, Point\-Type $>$\-::dimensions (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_value_layer_a51fe7fe718305d0c006bc465a14ef0e3}
+
+
+Gets the dimensions of this \hyperlink{classrepast_1_1_value_layer}{Value\-Layer}. 
+
+\begin{DoxyReturn}{Returns}
+the dimensions of this \hyperlink{classrepast_1_1_value_layer}{Value\-Layer}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_value_layer_a472a2fcaa29b30c6410ec29b1cde34c0}{\index{repast\-::\-Value\-Layer@{repast\-::\-Value\-Layer}!get@{get}}
+\index{get@{get}!repast::ValueLayer@{repast\-::\-Value\-Layer}}
+\subsubsection[{get}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Value\-Type, typename Point\-Type$>$ virtual Value\-Type\& {\bf repast\-::\-Value\-Layer}$<$ Value\-Type, Point\-Type $>$\-::get (
+\begin{DoxyParamCaption}
+\item[{const {\bf Point}$<$ Point\-Type $>$ \&}]{pt}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1_value_layer_a472a2fcaa29b30c6410ec29b1cde34c0}
+
+
+Gets the value at the specified point. 
+
+If no value has been set at the specified point then this returns some default value. Subclasses will determine the default value.
+
+param pt the location to get the value of
+
+\begin{DoxyReturn}{Returns}
+the value at the specified point, or if no value has been set, then some default value. 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classrepast_1_1_continuous_value_layer_a020830982b41af4f1d955eee5b617bfa}{repast\-::\-Continuous\-Value\-Layer$<$ Value\-Type, Borders $>$}, and \hyperlink{classrepast_1_1_discrete_value_layer_abf7996a02382f6a28b3d993a156386c7}{repast\-::\-Discrete\-Value\-Layer$<$ Value\-Type, Borders $>$}.
+
+\hypertarget{classrepast_1_1_value_layer_a4d48fb5bc3219f8c0a1e7572fd97c0ab}{\index{repast\-::\-Value\-Layer@{repast\-::\-Value\-Layer}!operator\mbox{[}$\,$\mbox{]}@{operator[]}}
+\index{operator\mbox{[}$\,$\mbox{]}@{operator[]}!repast::ValueLayer@{repast\-::\-Value\-Layer}}
+\subsubsection[{operator[]}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Value\-Type , typename Point\-Type$>$ Value\-Type \& {\bf repast\-::\-Value\-Layer}$<$ Value\-Type, Point\-Type $>$\-::operator\mbox{[}$\,$\mbox{]} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Point}$<$ Point\-Type $>$ \&}]{pt}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_value_layer_a4d48fb5bc3219f8c0a1e7572fd97c0ab}
+
+
+Gets the value at the specified point. 
+
+If no value has been set at the specified point then this returns some default value. Subclasses will determine the default value.
+
+param pt the location to get the value of
+
+\begin{DoxyReturn}{Returns}
+the value at the specified point, or if no value has been set, then some default value. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_value_layer_aa2cb696a1be3cc9216936c1d57e494b6}{\index{repast\-::\-Value\-Layer@{repast\-::\-Value\-Layer}!operator\mbox{[}$\,$\mbox{]}@{operator[]}}
+\index{operator\mbox{[}$\,$\mbox{]}@{operator[]}!repast::ValueLayer@{repast\-::\-Value\-Layer}}
+\subsubsection[{operator[]}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Value\-Type , typename Point\-Type$>$ const Value\-Type \& {\bf repast\-::\-Value\-Layer}$<$ Value\-Type, Point\-Type $>$\-::operator\mbox{[}$\,$\mbox{]} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Point}$<$ Point\-Type $>$ \&}]{pt}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1_value_layer_aa2cb696a1be3cc9216936c1d57e494b6}
+
+
+Gets the value at the specified point. 
+
+If no value has been set at the specified point then this returns some default value. Subclasses will determine the default value.
+
+param pt the location to get the value of
+
+\begin{DoxyReturn}{Returns}
+the value at the specified point, or if no value has been set, then some default value. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_value_layer_a34ab3f83380ca978f19748cff9361425}{\index{repast\-::\-Value\-Layer@{repast\-::\-Value\-Layer}!set@{set}}
+\index{set@{set}!repast::ValueLayer@{repast\-::\-Value\-Layer}}
+\subsubsection[{set}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Value\-Type, typename Point\-Type$>$ virtual void {\bf repast\-::\-Value\-Layer}$<$ Value\-Type, Point\-Type $>$\-::set (
+\begin{DoxyParamCaption}
+\item[{const Value\-Type \&}]{value, }
+\item[{const {\bf Point}$<$ Point\-Type $>$ \&}]{pt}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1_value_layer_a34ab3f83380ca978f19748cff9361425}
+
+
+Sets the value at the specified point. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em value} & the value \\
+\hline
+{\em pt} & the point where the value should be stored \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \hyperlink{classrepast_1_1_continuous_value_layer_a619f04cc04200c8de6616ec971674289}{repast\-::\-Continuous\-Value\-Layer$<$ Value\-Type, Borders $>$}, and \hyperlink{classrepast_1_1_discrete_value_layer_a2070dcc808c4d5b48de96b278f8a8d89}{repast\-::\-Discrete\-Value\-Layer$<$ Value\-Type, Borders $>$}.
+
+\hypertarget{classrepast_1_1_value_layer_abe6cc0f23498af967ce82decb0bc5fcc}{\index{repast\-::\-Value\-Layer@{repast\-::\-Value\-Layer}!shape@{shape}}
+\index{shape@{shape}!repast::ValueLayer@{repast\-::\-Value\-Layer}}
+\subsubsection[{shape}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Value\-Type, typename Point\-Type$>$ const {\bf Point}$<$int$>$ {\bf repast\-::\-Value\-Layer}$<$ Value\-Type, Point\-Type $>$\-::shape (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_value_layer_abe6cc0f23498af967ce82decb0bc5fcc}
+
+
+Gets the extents of this \hyperlink{classrepast_1_1_value_layer}{Value\-Layer}. 
+
+\begin{DoxyReturn}{Returns}
+the extents of this \hyperlink{classrepast_1_1_value_layer}{Value\-Layer}. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Value\-Layer.\-h\end{DoxyCompactItemize}

@@ -1,0 +1,76 @@
+\hypertarget{classrepast_1_1_moore2_d_grid_query}{\section{repast\-:\-:Moore2\-D\-Grid\-Query$<$ T $>$ Class Template Reference}
+\label{classrepast_1_1_moore2_d_grid_query}\index{repast\-::\-Moore2\-D\-Grid\-Query$<$ T $>$@{repast\-::\-Moore2\-D\-Grid\-Query$<$ T $>$}}
+}
+
+
+Neighborhood query that gathers neighbors in a Moore (N, S, E, W, N\-E, etc.) neighborhood.  
+
+
+
+
+{\ttfamily \#include $<$Moore2\-D\-Grid\-Query.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Moore2\-D\-Grid\-Query$<$ T $>$\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classrepast_1_1_moore2_d_grid_query}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_moore2_d_grid_query_a427a50dbe9631d9c4f7353bdf5b94bd3}{\hyperlink{classrepast_1_1_moore2_d_grid_query_a427a50dbe9631d9c4f7353bdf5b94bd3}{Moore2\-D\-Grid\-Query} (const \hyperlink{classrepast_1_1_grid}{Grid}$<$ T, int $>$ $\ast$grid)}\label{classrepast_1_1_moore2_d_grid_query_a427a50dbe9631d9c4f7353bdf5b94bd3}
+
+\begin{DoxyCompactList}\small\item\em Creates \hyperlink{classrepast_1_1_moore2_d_grid_query}{Moore2\-D\-Grid\-Query} that will query the specified \hyperlink{classrepast_1_1_grid}{Grid}. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_moore2_d_grid_query_a43cd6c0a6cd2c3f1932bbaa5595b0576}{query} (const \hyperlink{classrepast_1_1_point}{Point}$<$ int $>$ \&center, int range, bool include\-Center, std\-::vector$<$ T $\ast$ $>$ \&out) const 
+\begin{DoxyCompactList}\small\item\em Queries the \hyperlink{classrepast_1_1_grid}{Grid} for the Moore neighbors surrounding the center point within a specified range. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$class repast\-::\-Moore2\-D\-Grid\-Query$<$ T $>$}
+
+Neighborhood query that gathers neighbors in a Moore (N, S, E, W, N\-E, etc.) neighborhood. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & the type of agents in the \hyperlink{classrepast_1_1_grid}{Grid} \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_moore2_d_grid_query_a43cd6c0a6cd2c3f1932bbaa5595b0576}{\index{repast\-::\-Moore2\-D\-Grid\-Query@{repast\-::\-Moore2\-D\-Grid\-Query}!query@{query}}
+\index{query@{query}!repast::Moore2DGridQuery@{repast\-::\-Moore2\-D\-Grid\-Query}}
+\subsubsection[{query}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Moore2\-D\-Grid\-Query}$<$ T $>$\-::query (
+\begin{DoxyParamCaption}
+\item[{const {\bf Point}$<$ int $>$ \&}]{center, }
+\item[{int}]{range, }
+\item[{bool}]{include\-Center, }
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{out}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_moore2_d_grid_query_a43cd6c0a6cd2c3f1932bbaa5595b0576}
+
+
+Queries the \hyperlink{classrepast_1_1_grid}{Grid} for the Moore neighbors surrounding the center point within a specified range. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em center} & the center of the neighborhood \\
+\hline
+ & {\em range} & the range of the neighborhood out from the center \\
+\hline
+ & {\em include\-Center} & whether or not to include any agents at the center \\
+\hline
+\mbox{\tt out}  & {\em the} & neighboring agents will be returned in this vector \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{classrepast_1_1_grid2_d_query_a44d46360d72ba9e7b0114c2cb248ee96}{repast\-::\-Grid2\-D\-Query$<$ T $>$}.
+
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Moore2\-D\-Grid\-Query.\-h\end{DoxyCompactItemize}

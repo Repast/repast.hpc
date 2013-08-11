@@ -112,7 +112,9 @@ public:
 };
 
 
-
+/**
+ * Subclass of RepastEdgeContent, used in synchronization.
+ */
 class RelogoLinkContent: public RepastEdgeContent<RelogoAgent>{
 public:
   RelogoLinkContent(){}
@@ -121,6 +123,10 @@ public:
 };
 
 
+/**
+ * Subclass of RepastEdgeContentManager, used to package and rebuild
+ * edges during synchronization.
+ */
 class RelogoLinkContentManager {
 
 public:

@@ -69,15 +69,33 @@
 #include "Utilities.h"
 #include "logger.h"
 
+
+/**
+ * \mainpage Repast HPC: A High-Performance Agent-Based Modeling Platform
+ *
+ * By Argonne National Laboratory, 2009-2013
+ *
+ * \section intro_sec What is Repast HPC?
+ *
+ * Repast HPC is an Agent-Based Modeling Platform in the spirit of Repast Simphony
+ * but designed for top-500 high-performance computing systems (supercomputers).
+ */
+
 namespace repast {
 
-// Note: A 'Packet' is responsible for deleting the objects to which it points
-// This is essentially not optional: when boost sends the Packet via MPI the locations
-// at which it places the different elements are not known (no 'new' is called
-// in the user code). Some code must be written to track these down and delete,
-// and it is manifestly easier to provide that code in the Packet itself
-// than to rewrite where needed, inspecting the Packet for the locations
 
+/**
+ * Contains information sent as agents are exchanged, either in response to
+ * requests or agent movement. Contains both agent raw information
+ * (of type 'Content') and projection information.
+ *
+ * Note: A 'Packet' is responsible for deleting the objects to which it points
+ * This is essentially not optional: when boost sends the Packet via MPI the locations
+ * at which it places the different elements are not known (no 'new' is called
+ * in the user code). Some code must be written to track these down and delete,
+ * and it is manifestly easier to provide that code in the Packet itself
+ * than to rewrite where needed, inspecting the Packet for the locations
+ */
 template<typename Content>
 class Request_Packet {
 
@@ -120,7 +138,16 @@ public:
 
 
 
-
+/**
+ * Class that contains information sent in conjunction with synchronizing
+ * agent status (agents moving or being removed from the simulation).
+ * May contain secondary agent information (that is, agents that must newly be
+ * created as non-local agents on the receiving process due to obligations
+ * of projection contracts and the new existence of the agents being moved
+ * to that process).
+ *
+ * Note the unusual requirement of the deletion of exporter information.
+ */
 template<typename Content>
 class SyncStatus_Packet {
 
@@ -159,11 +186,13 @@ public:
   }
 
   /**
-   * This is a very odd construction; it arises because the Packet _must_ delete
-   * the exporter info on the process to which it has been sent, but it _cannot_
-   * delete the exporter info on the process from which it was sent. The solution
-   * is to call this function manually on the receiving process, but not call
-   * it on the sending proc. The pointer returned allows the abbreviation:
+   * This method includes a very odd construction that arises because
+   * the Packet _must_ delete the exporter info on the process to which
+   * it has been sent, but it _cannot_ delete the exporter info on the
+   * process from which it was sent. The solution is to call this function
+   * manually on the receiving process, but not call it on the sending proc.
+   *
+   * The pointer returned allows the abbreviation:
    *
    *    delete  instance.deleteExporterInfo();
    */

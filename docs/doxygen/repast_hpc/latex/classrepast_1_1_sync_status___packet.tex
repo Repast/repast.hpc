@@ -1,0 +1,78 @@
+\hypertarget{classrepast_1_1_sync_status___packet}{\section{repast\-:\-:Sync\-Status\-\_\-\-Packet$<$ Content $>$ Class Template Reference}
+\label{classrepast_1_1_sync_status___packet}\index{repast\-::\-Sync\-Status\-\_\-\-Packet$<$ Content $>$@{repast\-::\-Sync\-Status\-\_\-\-Packet$<$ Content $>$}}
+}
+
+
+Class that contains information sent in conjunction with synchronizing agent status (agents moving or being removed from the simulation).  
+
+
+
+
+{\ttfamily \#include $<$Repast\-Process.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_sync_status___packet_af2794c729bc9d7c9c969bd8e1429ed3c}{{\bfseries Sync\-Status\-\_\-\-Packet} (std\-::vector$<$ Content $>$ $\ast$agent\-Content, std\-::map$<$ std\-::string, std\-::vector$<$ \hyperlink{classrepast_1_1_projection_info_packet}{Projection\-Info\-Packet} $\ast$ $>$ $>$ $\ast$projection\-Info, std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ $\ast$secondary\-Ids, Agent\-Exporter\-Info $\ast$exporter\-Info)}\label{classrepast_1_1_sync_status___packet_af2794c729bc9d7c9c969bd8e1429ed3c}
+
+\item 
+\hyperlink{classrepast_1_1_sync_status___packet}{Sync\-Status\-\_\-\-Packet} $\ast$ \hyperlink{classrepast_1_1_sync_status___packet_a5cf55e6368d63dfd6f9b79532389aa8f}{delete\-Exporter\-Info} ()
+\begin{DoxyCompactList}\small\item\em This method includes a very odd construction that arises because the Packet {\itshape must} delete the exporter info on the process to which it has been sent, but it {\itshape cannot} delete the exporter info on the process from which it was sent. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_sync_status___packet_aa86d232a3880460abd7ca62417bc8445}{{\footnotesize template$<$class Archive $>$ }\\void {\bfseries serialize} (Archive \&ar, const unsigned int version)}\label{classrepast_1_1_sync_status___packet_aa86d232a3880460abd7ca62417bc8445}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_sync_status___packet_a0f1b41c38b88b98c9d22ef3432c4a061}{std\-::vector$<$ Content $>$ $\ast$ {\bfseries agent\-Content\-Ptr}}\label{classrepast_1_1_sync_status___packet_a0f1b41c38b88b98c9d22ef3432c4a061}
+
+\item 
+\hypertarget{classrepast_1_1_sync_status___packet_a98f79861c72954a2df739180a92cad93}{std\-::map$<$ std\-::string, \\*
+std\-::vector\\*
+$<$ \hyperlink{classrepast_1_1_projection_info_packet}{Projection\-Info\-Packet} $\ast$ $>$ $>$ $\ast$ {\bfseries projection\-Info\-Ptr}}\label{classrepast_1_1_sync_status___packet_a98f79861c72954a2df739180a92cad93}
+
+\item 
+\hypertarget{classrepast_1_1_sync_status___packet_a5eb0e514a91cafa6e401833ad3ad682e}{std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ $\ast$ {\bfseries secondary\-Ids\-Ptr}}\label{classrepast_1_1_sync_status___packet_a5eb0e514a91cafa6e401833ad3ad682e}
+
+\item 
+\hypertarget{classrepast_1_1_sync_status___packet_aee5fd7841eaefb9e66be94aef24e2d36}{Agent\-Exporter\-Info $\ast$ {\bfseries exporter\-Info\-Ptr}}\label{classrepast_1_1_sync_status___packet_aee5fd7841eaefb9e66be94aef24e2d36}
+
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_sync_status___packet_ac98d07dd8f7b70e16ccb9a01abf56b9c}{class {\bfseries boost\-::serialization\-::access}}\label{classrepast_1_1_sync_status___packet_ac98d07dd8f7b70e16ccb9a01abf56b9c}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename Content$>$class repast\-::\-Sync\-Status\-\_\-\-Packet$<$ Content $>$}
+
+Class that contains information sent in conjunction with synchronizing agent status (agents moving or being removed from the simulation). 
+
+May contain secondary agent information (that is, agents that must newly be created as non-\/local agents on the receiving process due to obligations of projection contracts and the new existence of the agents being moved to that process).
+
+Note the unusual requirement of the deletion of exporter information. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_sync_status___packet_a5cf55e6368d63dfd6f9b79532389aa8f}{\index{repast\-::\-Sync\-Status\-\_\-\-Packet@{repast\-::\-Sync\-Status\-\_\-\-Packet}!delete\-Exporter\-Info@{delete\-Exporter\-Info}}
+\index{delete\-Exporter\-Info@{delete\-Exporter\-Info}!repast::SyncStatus_Packet@{repast\-::\-Sync\-Status\-\_\-\-Packet}}
+\subsubsection[{delete\-Exporter\-Info}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Content$>$ {\bf Sync\-Status\-\_\-\-Packet}$\ast$ {\bf repast\-::\-Sync\-Status\-\_\-\-Packet}$<$ Content $>$\-::delete\-Exporter\-Info (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_sync_status___packet_a5cf55e6368d63dfd6f9b79532389aa8f}
+
+
+This method includes a very odd construction that arises because the Packet {\itshape must} delete the exporter info on the process to which it has been sent, but it {\itshape cannot} delete the exporter info on the process from which it was sent. 
+
+The solution is to call this function manually on the receiving process, but not call it on the sending proc.
+
+The pointer returned allows the abbreviation\-:
+
+delete instance.\-delete\-Exporter\-Info(); 
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Repast\-Process.\-h\end{DoxyCompactItemize}

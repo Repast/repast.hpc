@@ -1,0 +1,111 @@
+\hypertarget{classrepast_1_1_double_variable}{\section{repast\-:\-:Double\-Variable Class Reference}
+\label{classrepast_1_1_double_variable}\index{repast\-::\-Double\-Variable@{repast\-::\-Double\-Variable}}
+}
+
+
+Used in \hyperlink{classrepast_1_1_s_v_data_set}{S\-V\-Data\-Set} to manage double data.  
+
+
+
+
+{\ttfamily \#include $<$Variable.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Double\-Variable\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classrepast_1_1_double_variable}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \hyperlink{classrepast_1_1_double_variable_ae6edc7abb29517ba7b8b77f776a7c223}{write} (size\-\_\-t index, std\-::ofstream \&out)
+\begin{DoxyCompactList}\small\item\em Writes the data at the specified index to the specified ofstream. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_double_variable_a9b7e645d7b1c772b7fd8928a3aca6e65}{insert} (double $\ast$array, size\-\_\-t size)
+\begin{DoxyCompactList}\small\item\em Inserts all the doubles in the double array into the collection of data stored in this \hyperlink{classrepast_1_1_variable}{Variable}. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_double_variable_a234cac0e0fbfd60d724fcae3a8edcc63}{insert} (int $\ast$array, size\-\_\-t size)
+\begin{DoxyCompactList}\small\item\em Inserts all the ints in the int array into the collection of data stored in this \hyperlink{classrepast_1_1_variable}{Variable}. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_double_variable_ad9952aa7bc0691d19757b10013e36e0e}{virtual void \hyperlink{classrepast_1_1_double_variable_ad9952aa7bc0691d19757b10013e36e0e}{clear} ()}\label{classrepast_1_1_double_variable_ad9952aa7bc0691d19757b10013e36e0e}
+
+\begin{DoxyCompactList}\small\item\em Clears this \hyperlink{classrepast_1_1_variable}{Variable} of all the data stored in it. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Used in \hyperlink{classrepast_1_1_s_v_data_set}{S\-V\-Data\-Set} to manage double data. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_double_variable_a9b7e645d7b1c772b7fd8928a3aca6e65}{\index{repast\-::\-Double\-Variable@{repast\-::\-Double\-Variable}!insert@{insert}}
+\index{insert@{insert}!repast::DoubleVariable@{repast\-::\-Double\-Variable}}
+\subsubsection[{insert}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Double\-Variable\-::insert (
+\begin{DoxyParamCaption}
+\item[{double $\ast$}]{array, }
+\item[{size\-\_\-t}]{size}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_double_variable_a9b7e645d7b1c772b7fd8928a3aca6e65}
+
+
+Inserts all the doubles in the double array into the collection of data stored in this \hyperlink{classrepast_1_1_variable}{Variable}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em array} & the array to insert \\
+\hline
+{\em size} & the size of the array \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{classrepast_1_1_variable_ac87aada07f0b7ee34d6fbd2486016eb8}{repast\-::\-Variable}.
+
+\hypertarget{classrepast_1_1_double_variable_a234cac0e0fbfd60d724fcae3a8edcc63}{\index{repast\-::\-Double\-Variable@{repast\-::\-Double\-Variable}!insert@{insert}}
+\index{insert@{insert}!repast::DoubleVariable@{repast\-::\-Double\-Variable}}
+\subsubsection[{insert}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Double\-Variable\-::insert (
+\begin{DoxyParamCaption}
+\item[{int $\ast$}]{array, }
+\item[{size\-\_\-t}]{size}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_double_variable_a234cac0e0fbfd60d724fcae3a8edcc63}
+
+
+Inserts all the ints in the int array into the collection of data stored in this \hyperlink{classrepast_1_1_variable}{Variable}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em array} & the array to insert \\
+\hline
+{\em size} & the size of the array \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{classrepast_1_1_variable_a5f625f2652dcbc9c1910539923475936}{repast\-::\-Variable}.
+
+\hypertarget{classrepast_1_1_double_variable_ae6edc7abb29517ba7b8b77f776a7c223}{\index{repast\-::\-Double\-Variable@{repast\-::\-Double\-Variable}!write@{write}}
+\index{write@{write}!repast::DoubleVariable@{repast\-::\-Double\-Variable}}
+\subsubsection[{write}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Double\-Variable\-::write (
+\begin{DoxyParamCaption}
+\item[{size\-\_\-t}]{index, }
+\item[{std\-::ofstream \&}]{out}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_double_variable_ae6edc7abb29517ba7b8b77f776a7c223}
+
+
+Writes the data at the specified index to the specified ofstream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & the index of the data to write \\
+\hline
+{\em out} & the ofstream to write the data to \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{classrepast_1_1_variable_aa72da48bdca530dd7878b912254568e0}{repast\-::\-Variable}.
+
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Variable.\-h\item 
+repast\-\_\-hpc/Variable.\-cpp\end{DoxyCompactItemize}

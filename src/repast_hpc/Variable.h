@@ -47,8 +47,6 @@
 namespace repast {
 
 /**
- * NON USER API.
- *
  * Used in SVDataSet to manage and store the data.
  */
 class Variable {
@@ -66,7 +64,7 @@ public:
 
 
 	/**
-	 * Insertes all the doubles in the double array into the collection
+	 * Inserts all the doubles in the double array into the collection
 	 * of data stored in this Variable.
 	 *
 	 * @param array the array to insert
@@ -76,7 +74,7 @@ public:
 
 
 	/**
-	 * Insertes all the ints in the int array into the collection
+	 * Inserts all the ints in the int array into the collection
 	 * of data stored in this Variable.
 	 *
 	 * @param array the array to insert
@@ -92,10 +90,7 @@ public:
 };
 
 /**
- * NON USER API.
- *
  * Used in SVDataSet to manage integer data.
- *
  */
 class IntVariable: public Variable {
 
@@ -113,10 +108,7 @@ public:
 };
 
 /**
- * NON USER API.
- *
  * Used in SVDataSet to manage double data.
- *
  */
 class DoubleVariable: public Variable {
 

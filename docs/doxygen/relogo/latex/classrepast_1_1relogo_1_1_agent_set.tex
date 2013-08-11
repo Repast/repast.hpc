@@ -1,0 +1,508 @@
+\hypertarget{classrepast_1_1relogo_1_1_agent_set}{\section{repast\-:\-:relogo\-:\-:Agent\-Set$<$ T $>$ Class Template Reference}
+\label{classrepast_1_1relogo_1_1_agent_set}\index{repast\-::relogo\-::\-Agent\-Set$<$ T $>$@{repast\-::relogo\-::\-Agent\-Set$<$ T $>$}}
+}
+
+
+Specialized indexable collection class for agents.  
+
+
+
+
+{\ttfamily \#include $<$Agent\-Set.\-h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_a6acda82cc586e441101f7dad92287d9e}{typedef std\-::vector$<$ T $\ast$ $>$\\*
+\-::iterator {\bfseries as\-\_\-iterator}}\label{classrepast_1_1relogo_1_1_agent_set_a6acda82cc586e441101f7dad92287d9e}
+
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_adf53a71e8dcab04db9bbca40a1dfeba3}{typedef std\-::vector$<$ T $\ast$ $>$\\*
+\-::const\-\_\-iterator {\bfseries const\-\_\-as\-\_\-iterator}}\label{classrepast_1_1relogo_1_1_agent_set_adf53a71e8dcab04db9bbca40a1dfeba3}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_a57e45513bb2fee478ceba906c563fa42}{\hyperlink{classrepast_1_1relogo_1_1_agent_set_a57e45513bb2fee478ceba906c563fa42}{Agent\-Set} ()}\label{classrepast_1_1relogo_1_1_agent_set_a57e45513bb2fee478ceba906c563fa42}
+
+\begin{DoxyCompactList}\small\item\em Creates an empty agent set. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_ad05a9d50cb9c512fd399758fa3d141f0}{{\footnotesize template$<$typename input\-\_\-iterator $>$ }\\\hyperlink{classrepast_1_1relogo_1_1_agent_set_ad05a9d50cb9c512fd399758fa3d141f0}{Agent\-Set} (input\-\_\-iterator start, input\-\_\-iterator \hyperlink{classrepast_1_1relogo_1_1_agent_set_ab862376938b785f091c0b0720de759f3}{end})}\label{classrepast_1_1relogo_1_1_agent_set_ad05a9d50cb9c512fd399758fa3d141f0}
+
+\begin{DoxyCompactList}\small\item\em Creates an agent set and fills with elements from start through end. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_a667732a4a0d7a49ca57c8f8373bb979c}{\hyperlink{classrepast_1_1relogo_1_1_agent_set_a667732a4a0d7a49ca57c8f8373bb979c}{Agent\-Set} (const \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} \&set)}\label{classrepast_1_1relogo_1_1_agent_set_a667732a4a0d7a49ca57c8f8373bb979c}
+
+\begin{DoxyCompactList}\small\item\em Copy constructor. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_afc89da64293d944f23cb36d41e146f9e}{{\footnotesize template$<$typename input\-\_\-iterator $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_agent_set_afc89da64293d944f23cb36d41e146f9e}{add\-All} (input\-\_\-iterator \hyperlink{classrepast_1_1relogo_1_1_agent_set_a9492708e0f156e29fcfa77f9477887af}{begin}, input\-\_\-iterator \hyperlink{classrepast_1_1relogo_1_1_agent_set_ab862376938b785f091c0b0720de759f3}{end})}\label{classrepast_1_1relogo_1_1_agent_set_afc89da64293d944f23cb36d41e146f9e}
+
+\begin{DoxyCompactList}\small\item\em Adds all the agents from the start iterator through the end to this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_a2b06374a28dd6ee8d7d9c8a7ebf8d8a8}{void \hyperlink{classrepast_1_1relogo_1_1_agent_set_a2b06374a28dd6ee8d7d9c8a7ebf8d8a8}{add} (T $\ast$agent)}\label{classrepast_1_1relogo_1_1_agent_set_a2b06374a28dd6ee8d7d9c8a7ebf8d8a8}
+
+\begin{DoxyCompactList}\small\item\em Adds an agent to this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Functor $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_agent_set_a5caff8a45e775403881012e105030134}{ask} (Functor func)
+\begin{DoxyCompactList}\small\item\em Calls the Functor on each agent in this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Functor , typename P1 $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_agent_set_a21561fa480f0dbaa059753815fbe7821}{ask} (Functor func, const P1 \&p1)
+\begin{DoxyCompactList}\small\item\em Calls the Functor on each agent in this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}, passing the specified argument. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Functor , typename P1 $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_agent_set_a2af4658a4ca1205fba7225064d736d42}{ask} (Functor func, P1 \&p1)
+\begin{DoxyCompactList}\small\item\em Calls the Functor on each agent in this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}, passing the specified argument. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Functor $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_agent_set_ad3598fac70650951640e6c114139ae3b}{apply} (Functor \&func)
+\begin{DoxyCompactList}\small\item\em Applies the functor to each each agent in the agent set. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Functor $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_agent_set_a7504d1d703d7fa46ce159a4d1b2f59fc}{apply} (const Functor \&func)
+\begin{DoxyCompactList}\small\item\em Applies the functor to each each agent in the agent set. \end{DoxyCompactList}\item 
+T $\ast$ \hyperlink{classrepast_1_1relogo_1_1_agent_set_a2c6200d20ec50279d5e52ffedd8f763e}{at} (int index)
+\begin{DoxyCompactList}\small\item\em Gets the item at the specified index. \end{DoxyCompactList}\item 
+size\-\_\-t \hyperlink{classrepast_1_1relogo_1_1_agent_set_aa3a44b933b292416299f4da0ce39d0ae}{count} () const 
+\begin{DoxyCompactList}\small\item\em Gets the size of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. \end{DoxyCompactList}\item 
+size\-\_\-t \hyperlink{classrepast_1_1relogo_1_1_agent_set_abb4a6f94c42cf89dff6f08f1eb47ab51}{size} () const 
+\begin{DoxyCompactList}\small\item\em Gets the size of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. \end{DoxyCompactList}\item 
+T $\ast$ \hyperlink{classrepast_1_1relogo_1_1_agent_set_a7a0f373b6f05f4d01a9eaff067b7d514}{operator\mbox{[}$\,$\mbox{]}} (size\-\_\-t index)
+\begin{DoxyCompactList}\small\item\em Gets the item at the specified index without doing any range checking. \end{DoxyCompactList}\item 
+as\-\_\-iterator \hyperlink{classrepast_1_1relogo_1_1_agent_set_a9492708e0f156e29fcfa77f9477887af}{begin} ()
+\begin{DoxyCompactList}\small\item\em Gets an iterator to the begining of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. \end{DoxyCompactList}\item 
+const\-\_\-as\-\_\-iterator \hyperlink{classrepast_1_1relogo_1_1_agent_set_a209b06bdddbcf48eebc316c7784c226c}{begin} () const 
+\begin{DoxyCompactList}\small\item\em Gets a const iterator to the begining of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. \end{DoxyCompactList}\item 
+as\-\_\-iterator \hyperlink{classrepast_1_1relogo_1_1_agent_set_ab862376938b785f091c0b0720de759f3}{end} ()
+\begin{DoxyCompactList}\small\item\em Gets an iterator to the end of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. \end{DoxyCompactList}\item 
+const\-\_\-as\-\_\-iterator \hyperlink{classrepast_1_1relogo_1_1_agent_set_a9b48798c03c4a1f39d63af9a0efefc96}{end} () const 
+\begin{DoxyCompactList}\small\item\em Gets a const iterator to the end of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_aad1e6bd07bd986979044c1097464de19}{void \hyperlink{classrepast_1_1relogo_1_1_agent_set_aad1e6bd07bd986979044c1097464de19}{clear} ()}\label{classrepast_1_1relogo_1_1_agent_set_aad1e6bd07bd986979044c1097464de19}
+
+\begin{DoxyCompactList}\small\item\em Clears this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} of any agents that it contains. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Value\-Getter $>$ }\\T $\ast$ \hyperlink{classrepast_1_1relogo_1_1_agent_set_af51f6858bfa282b98803663fd98ee586}{min\-One\-Of} (const Value\-Getter \&getter)
+\begin{DoxyCompactList}\small\item\em Gets the set member that has the minimum value of the number returned by Value\-Getter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Value\-Getter $>$ }\\T $\ast$ \hyperlink{classrepast_1_1relogo_1_1_agent_set_a3ee8b550f0157ae73c0bd9b63debef14}{max\-One\-Of} (const Value\-Getter \&getter)
+\begin{DoxyCompactList}\small\item\em Gets the set member that has the maximum value of the number returned by Value\-Getter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Value\-Getter $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_agent_set_a56e27a6154a3bb13310a8e4e9e7e75ab}{with\-Min} (const Value\-Getter \&getter, \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ T $>$ \&set)
+\begin{DoxyCompactList}\small\item\em Gets the set members that have the minimum value of the number returned by Value\-Getter, and puts them in the specified set. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Value\-Getter $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_agent_set_a3a1086c427446de2b5587a442b044a01}{with\-Max} (const Value\-Getter \&getter, \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ T $>$ \&set)
+\begin{DoxyCompactList}\small\item\em Gets the set members that have the maximum value of the number returned by Value\-Getter and puts them in the specified set. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Value\-Getter $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_agent_set_a7c148ed677ad6f2f1db3d56fd644adf2}{min\-N\-Of} (size\-\_\-t \hyperlink{classrepast_1_1relogo_1_1_agent_set_aa3a44b933b292416299f4da0ce39d0ae}{count}, const Value\-Getter \&getter, \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ T $>$ \&set, bool initial\-Set\-Is\-Sorted=false)
+\begin{DoxyCompactList}\small\item\em Gets count number of set members that have the minimum value of the number returned by Value\-Getter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Value\-Getter $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_agent_set_ae572019108c57f8a8d4e9dcd5feddd42}{max\-N\-Of} (size\-\_\-t \hyperlink{classrepast_1_1relogo_1_1_agent_set_aa3a44b933b292416299f4da0ce39d0ae}{count}, const Value\-Getter \&getter, \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ T $>$ \&set, bool initial\-Set\-Is\-Sorted=false)
+\begin{DoxyCompactList}\small\item\em Gets count number of set members that have the maximum value of the number returned by Value\-Getter. \end{DoxyCompactList}\item 
+T $\ast$ \hyperlink{classrepast_1_1relogo_1_1_agent_set_a86c9434e990506cc04975062eaa9235c}{one\-Of} ()
+\begin{DoxyCompactList}\small\item\em Gets one of the members of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} at random. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_a71cc2d2b676bce1728d3e8a7a9d2a96a}{void \hyperlink{classrepast_1_1relogo_1_1_agent_set_a71cc2d2b676bce1728d3e8a7a9d2a96a}{remove} (T $\ast$agent)}\label{classrepast_1_1relogo_1_1_agent_set_a71cc2d2b676bce1728d3e8a7a9d2a96a}
+
+\begin{DoxyCompactList}\small\item\em Removes all instances of the specified agent from this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_ab3ba8ae249e8b09b37b5f5005c725ce1}{void \hyperlink{classrepast_1_1relogo_1_1_agent_set_ab3ba8ae249e8b09b37b5f5005c725ce1}{shuffle} ()}\label{classrepast_1_1relogo_1_1_agent_set_ab3ba8ae249e8b09b37b5f5005c725ce1}
+
+\begin{DoxyCompactList}\small\item\em Randomly shuffles the elements of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_a8bfb57ea4d61d60810b354645b013761}{std\-::vector$<$ T $\ast$ $>$ {\bfseries agents}}\label{classrepast_1_1relogo_1_1_agent_set_a8bfb57ea4d61d60810b354645b013761}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$class repast\-::relogo\-::\-Agent\-Set$<$ T $>$}
+
+Specialized indexable collection class for agents. 
+
+This includes methods designed to call arbitrary code on the agents it contains.
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & the type of agent the \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} contains \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_ad3598fac70650951640e6c114139ae3b}{\index{repast\-::relogo\-::\-Agent\-Set@{repast\-::relogo\-::\-Agent\-Set}!apply@{apply}}
+\index{apply@{apply}!repast::relogo::AgentSet@{repast\-::relogo\-::\-Agent\-Set}}
+\subsubsection[{apply}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename Functor $>$ void {\bf repast\-::relogo\-::\-Agent\-Set}$<$ T $>$\-::apply (
+\begin{DoxyParamCaption}
+\item[{Functor \&}]{func}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_agent_set_ad3598fac70650951640e6c114139ae3b}
+
+
+Applies the functor to each each agent in the agent set. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Functor} & an object that implements operator()(\-T$\ast$ agent); \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_a7504d1d703d7fa46ce159a4d1b2f59fc}{\index{repast\-::relogo\-::\-Agent\-Set@{repast\-::relogo\-::\-Agent\-Set}!apply@{apply}}
+\index{apply@{apply}!repast::relogo::AgentSet@{repast\-::relogo\-::\-Agent\-Set}}
+\subsubsection[{apply}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename Functor $>$ void {\bf repast\-::relogo\-::\-Agent\-Set}$<$ T $>$\-::apply (
+\begin{DoxyParamCaption}
+\item[{const Functor \&}]{func}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_agent_set_a7504d1d703d7fa46ce159a4d1b2f59fc}
+
+
+Applies the functor to each each agent in the agent set. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Functor} & an object that implements operator()(\-T$\ast$ agent); \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_a5caff8a45e775403881012e105030134}{\index{repast\-::relogo\-::\-Agent\-Set@{repast\-::relogo\-::\-Agent\-Set}!ask@{ask}}
+\index{ask@{ask}!repast::relogo::AgentSet@{repast\-::relogo\-::\-Agent\-Set}}
+\subsubsection[{ask}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename Functor $>$ void {\bf repast\-::relogo\-::\-Agent\-Set}$<$ T $>$\-::ask (
+\begin{DoxyParamCaption}
+\item[{Functor}]{func}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_agent_set_a5caff8a45e775403881012e105030134}
+
+
+Calls the Functor on each agent in this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em func} & a pointer to the method to call each member of the set\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Functor} & pointer to no-\/arg method belonging to the type of agent contained by this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_a21561fa480f0dbaa059753815fbe7821}{\index{repast\-::relogo\-::\-Agent\-Set@{repast\-::relogo\-::\-Agent\-Set}!ask@{ask}}
+\index{ask@{ask}!repast::relogo::AgentSet@{repast\-::relogo\-::\-Agent\-Set}}
+\subsubsection[{ask}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename Functor , typename P1 $>$ void {\bf repast\-::relogo\-::\-Agent\-Set}$<$ T $>$\-::ask (
+\begin{DoxyParamCaption}
+\item[{Functor}]{func, }
+\item[{const P1 \&}]{p1}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_agent_set_a21561fa480f0dbaa059753815fbe7821}
+
+
+Calls the Functor on each agent in this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}, passing the specified argument. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em func} & a pointer to the method to call each member of the set \\
+\hline
+{\em p1} & a reference to a P1 type that is passed to the called method\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Functor} & pointer to method belonging to the type of agent contained by this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. \\
+\hline
+{\em P1} & the type of the method parameter \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_a2af4658a4ca1205fba7225064d736d42}{\index{repast\-::relogo\-::\-Agent\-Set@{repast\-::relogo\-::\-Agent\-Set}!ask@{ask}}
+\index{ask@{ask}!repast::relogo::AgentSet@{repast\-::relogo\-::\-Agent\-Set}}
+\subsubsection[{ask}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename Functor , typename P1 $>$ void {\bf repast\-::relogo\-::\-Agent\-Set}$<$ T $>$\-::ask (
+\begin{DoxyParamCaption}
+\item[{Functor}]{func, }
+\item[{P1 \&}]{p1}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_agent_set_a2af4658a4ca1205fba7225064d736d42}
+
+
+Calls the Functor on each agent in this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}, passing the specified argument. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em func} & a pointer to the method to call each member of the set \\
+\hline
+{\em p1} & a reference to a P1 type that is passed to the called method \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Functor} & pointer to method belonging to the type of agent contained by this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. \\
+\hline
+{\em P1} & the type of the method parameter \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_a2c6200d20ec50279d5e52ffedd8f763e}{\index{repast\-::relogo\-::\-Agent\-Set@{repast\-::relogo\-::\-Agent\-Set}!at@{at}}
+\index{at@{at}!repast::relogo::AgentSet@{repast\-::relogo\-::\-Agent\-Set}}
+\subsubsection[{at}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T $\ast$ {\bf repast\-::relogo\-::\-Agent\-Set}$<$ T $>$\-::at (
+\begin{DoxyParamCaption}
+\item[{int}]{index}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_agent_set_a2c6200d20ec50279d5e52ffedd8f763e}
+
+
+Gets the item at the specified index. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & the index of the agent to get \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the agent at the specified index 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_a9492708e0f156e29fcfa77f9477887af}{\index{repast\-::relogo\-::\-Agent\-Set@{repast\-::relogo\-::\-Agent\-Set}!begin@{begin}}
+\index{begin@{begin}!repast::relogo::AgentSet@{repast\-::relogo\-::\-Agent\-Set}}
+\subsubsection[{begin}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ as\-\_\-iterator {\bf repast\-::relogo\-::\-Agent\-Set}$<$ T $>$\-::begin (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_agent_set_a9492708e0f156e29fcfa77f9477887af}
+
+
+Gets an iterator to the begining of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. 
+
+\begin{DoxyReturn}{Returns}
+an iterator to the beginning of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_a209b06bdddbcf48eebc316c7784c226c}{\index{repast\-::relogo\-::\-Agent\-Set@{repast\-::relogo\-::\-Agent\-Set}!begin@{begin}}
+\index{begin@{begin}!repast::relogo::AgentSet@{repast\-::relogo\-::\-Agent\-Set}}
+\subsubsection[{begin}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ const\-\_\-as\-\_\-iterator {\bf repast\-::relogo\-::\-Agent\-Set}$<$ T $>$\-::begin (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_agent_set_a209b06bdddbcf48eebc316c7784c226c}
+
+
+Gets a const iterator to the begining of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. 
+
+\begin{DoxyReturn}{Returns}
+a const iterator to the beginning of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_aa3a44b933b292416299f4da0ce39d0ae}{\index{repast\-::relogo\-::\-Agent\-Set@{repast\-::relogo\-::\-Agent\-Set}!count@{count}}
+\index{count@{count}!repast::relogo::AgentSet@{repast\-::relogo\-::\-Agent\-Set}}
+\subsubsection[{count}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ size\-\_\-t {\bf repast\-::relogo\-::\-Agent\-Set}$<$ T $>$\-::count (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_agent_set_aa3a44b933b292416299f4da0ce39d0ae}
+
+
+Gets the size of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. 
+
+\begin{DoxyReturn}{Returns}
+the size of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_ab862376938b785f091c0b0720de759f3}{\index{repast\-::relogo\-::\-Agent\-Set@{repast\-::relogo\-::\-Agent\-Set}!end@{end}}
+\index{end@{end}!repast::relogo::AgentSet@{repast\-::relogo\-::\-Agent\-Set}}
+\subsubsection[{end}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ as\-\_\-iterator {\bf repast\-::relogo\-::\-Agent\-Set}$<$ T $>$\-::end (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_agent_set_ab862376938b785f091c0b0720de759f3}
+
+
+Gets an iterator to the end of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. 
+
+\begin{DoxyReturn}{Returns}
+an iterator to the end of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_a9b48798c03c4a1f39d63af9a0efefc96}{\index{repast\-::relogo\-::\-Agent\-Set@{repast\-::relogo\-::\-Agent\-Set}!end@{end}}
+\index{end@{end}!repast::relogo::AgentSet@{repast\-::relogo\-::\-Agent\-Set}}
+\subsubsection[{end}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ const\-\_\-as\-\_\-iterator {\bf repast\-::relogo\-::\-Agent\-Set}$<$ T $>$\-::end (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_agent_set_a9b48798c03c4a1f39d63af9a0efefc96}
+
+
+Gets a const iterator to the end of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. 
+
+\begin{DoxyReturn}{Returns}
+a const iterator to the end of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_ae572019108c57f8a8d4e9dcd5feddd42}{\index{repast\-::relogo\-::\-Agent\-Set@{repast\-::relogo\-::\-Agent\-Set}!max\-N\-Of@{max\-N\-Of}}
+\index{max\-N\-Of@{max\-N\-Of}!repast::relogo::AgentSet@{repast\-::relogo\-::\-Agent\-Set}}
+\subsubsection[{max\-N\-Of}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename Value\-Getter $>$ void {\bf repast\-::relogo\-::\-Agent\-Set}$<$ T $>$\-::max\-N\-Of (
+\begin{DoxyParamCaption}
+\item[{size\-\_\-t}]{count, }
+\item[{const Value\-Getter \&}]{getter, }
+\item[{{\bf Agent\-Set}$<$ T $>$ \&}]{set, }
+\item[{bool}]{initial\-Set\-Is\-Sorted = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_agent_set_ae572019108c57f8a8d4e9dcd5feddd42}
+
+
+Gets count number of set members that have the maximum value of the number returned by Value\-Getter. 
+
+If there are not enough to satisfy the count then members with the second lowest value are returned and so on.
+
+
+\begin{DoxyParams}{Parameters}
+{\em getter} & the Value\-Getter to use in retreiving the value used in the max comparison\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Value\-Getter} & a function or functor that takes a member of this agentset and returns a double value. This double value is used in the max comparison. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em initial\-Set\-Is\-Sorted} & Optional performance parameter; if false (the default), a call to this function must sort an entire copy of the original set; if true, the function assumes the original set is already sorted. Useful if the same set is to be used repeatedly. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_a3ee8b550f0157ae73c0bd9b63debef14}{\index{repast\-::relogo\-::\-Agent\-Set@{repast\-::relogo\-::\-Agent\-Set}!max\-One\-Of@{max\-One\-Of}}
+\index{max\-One\-Of@{max\-One\-Of}!repast::relogo::AgentSet@{repast\-::relogo\-::\-Agent\-Set}}
+\subsubsection[{max\-One\-Of}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename Value\-Getter $>$ T $\ast$ {\bf repast\-::relogo\-::\-Agent\-Set}$<$ T $>$\-::max\-One\-Of (
+\begin{DoxyParamCaption}
+\item[{const Value\-Getter \&}]{getter}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_agent_set_a3ee8b550f0157ae73c0bd9b63debef14}
+
+
+Gets the set member that has the maximum value of the number returned by Value\-Getter. 
+
+If more than one agent has the minimum value, then return one of those at random.
+
+
+\begin{DoxyParams}{Parameters}
+{\em getter} & the Value\-Getter to use in retreiving the value used in the max comparison\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Value\-Getter} & a function or functor that takes a member of this agentset and returns a double value. This double value is used in the max comparison. \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_a7c148ed677ad6f2f1db3d56fd644adf2}{\index{repast\-::relogo\-::\-Agent\-Set@{repast\-::relogo\-::\-Agent\-Set}!min\-N\-Of@{min\-N\-Of}}
+\index{min\-N\-Of@{min\-N\-Of}!repast::relogo::AgentSet@{repast\-::relogo\-::\-Agent\-Set}}
+\subsubsection[{min\-N\-Of}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename Value\-Getter $>$ void {\bf repast\-::relogo\-::\-Agent\-Set}$<$ T $>$\-::min\-N\-Of (
+\begin{DoxyParamCaption}
+\item[{size\-\_\-t}]{count, }
+\item[{const Value\-Getter \&}]{getter, }
+\item[{{\bf Agent\-Set}$<$ T $>$ \&}]{set, }
+\item[{bool}]{initial\-Set\-Is\-Sorted = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_agent_set_a7c148ed677ad6f2f1db3d56fd644adf2}
+
+
+Gets count number of set members that have the minimum value of the number returned by Value\-Getter. 
+
+If there are not enough to satisfy the count then members with the second lowest value are returned and so on.
+
+
+\begin{DoxyParams}{Parameters}
+{\em getter} & the Value\-Getter to use in retreiving the value used in the min comparison\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Value\-Getter} & a function or functor that takes a member of this agentset and returns a double value. This double value is used in the min comparison. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em initial\-Set\-Is\-Sorted} & Optional performance parameter; if false (the default), a call to this function must sort an entire copy of the original set; if true, the function assumes the original set is already sorted. Useful if the same set is to be used repeatedly. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_af51f6858bfa282b98803663fd98ee586}{\index{repast\-::relogo\-::\-Agent\-Set@{repast\-::relogo\-::\-Agent\-Set}!min\-One\-Of@{min\-One\-Of}}
+\index{min\-One\-Of@{min\-One\-Of}!repast::relogo::AgentSet@{repast\-::relogo\-::\-Agent\-Set}}
+\subsubsection[{min\-One\-Of}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename Value\-Getter $>$ T $\ast$ {\bf repast\-::relogo\-::\-Agent\-Set}$<$ T $>$\-::min\-One\-Of (
+\begin{DoxyParamCaption}
+\item[{const Value\-Getter \&}]{getter}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_agent_set_af51f6858bfa282b98803663fd98ee586}
+
+
+Gets the set member that has the minimum value of the number returned by Value\-Getter. 
+
+If more than one agent has the minimum value, then return one of those at random.
+
+
+\begin{DoxyParams}{Parameters}
+{\em getter} & the Value\-Getter to use in retreiving the value used in the min comparison\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Value\-Getter} & a function or functor that takes a member of this agentset and returns a double value. This double value is used in the min comparison. \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_a86c9434e990506cc04975062eaa9235c}{\index{repast\-::relogo\-::\-Agent\-Set@{repast\-::relogo\-::\-Agent\-Set}!one\-Of@{one\-Of}}
+\index{one\-Of@{one\-Of}!repast::relogo::AgentSet@{repast\-::relogo\-::\-Agent\-Set}}
+\subsubsection[{one\-Of}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T $\ast$ {\bf repast\-::relogo\-::\-Agent\-Set}$<$ T $>$\-::one\-Of (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_agent_set_a86c9434e990506cc04975062eaa9235c}
+
+
+Gets one of the members of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} at random. 
+
+If the set is empty, this returns 0. \hypertarget{classrepast_1_1relogo_1_1_agent_set_a7a0f373b6f05f4d01a9eaff067b7d514}{\index{repast\-::relogo\-::\-Agent\-Set@{repast\-::relogo\-::\-Agent\-Set}!operator\mbox{[}$\,$\mbox{]}@{operator[]}}
+\index{operator\mbox{[}$\,$\mbox{]}@{operator[]}!repast::relogo::AgentSet@{repast\-::relogo\-::\-Agent\-Set}}
+\subsubsection[{operator[]}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T $\ast$ {\bf repast\-::relogo\-::\-Agent\-Set}$<$ T $>$\-::operator\mbox{[}$\,$\mbox{]} (
+\begin{DoxyParamCaption}
+\item[{size\-\_\-t}]{index}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_agent_set_a7a0f373b6f05f4d01a9eaff067b7d514}
+
+
+Gets the item at the specified index without doing any range checking. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & the index of the agent to get \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the agent at the specified index 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_abb4a6f94c42cf89dff6f08f1eb47ab51}{\index{repast\-::relogo\-::\-Agent\-Set@{repast\-::relogo\-::\-Agent\-Set}!size@{size}}
+\index{size@{size}!repast::relogo::AgentSet@{repast\-::relogo\-::\-Agent\-Set}}
+\subsubsection[{size}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ size\-\_\-t {\bf repast\-::relogo\-::\-Agent\-Set}$<$ T $>$\-::size (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1relogo_1_1_agent_set_abb4a6f94c42cf89dff6f08f1eb47ab51}
+
+
+Gets the size of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. 
+
+\begin{DoxyReturn}{Returns}
+the size of this \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_a3a1086c427446de2b5587a442b044a01}{\index{repast\-::relogo\-::\-Agent\-Set@{repast\-::relogo\-::\-Agent\-Set}!with\-Max@{with\-Max}}
+\index{with\-Max@{with\-Max}!repast::relogo::AgentSet@{repast\-::relogo\-::\-Agent\-Set}}
+\subsubsection[{with\-Max}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename Value\-Getter $>$ void {\bf repast\-::relogo\-::\-Agent\-Set}$<$ T $>$\-::with\-Max (
+\begin{DoxyParamCaption}
+\item[{const Value\-Getter \&}]{getter, }
+\item[{{\bf Agent\-Set}$<$ T $>$ \&}]{set}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_agent_set_a3a1086c427446de2b5587a442b044a01}
+
+
+Gets the set members that have the maximum value of the number returned by Value\-Getter and puts them in the specified set. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em getter} & the Value\-Getter to use in retreiving the value used in the max comparison\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Value\-Getter} & a function or functor that takes a member of this agentset and returns a double value. This double value is used in the max comparison. \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_agent_set_a56e27a6154a3bb13310a8e4e9e7e75ab}{\index{repast\-::relogo\-::\-Agent\-Set@{repast\-::relogo\-::\-Agent\-Set}!with\-Min@{with\-Min}}
+\index{with\-Min@{with\-Min}!repast::relogo::AgentSet@{repast\-::relogo\-::\-Agent\-Set}}
+\subsubsection[{with\-Min}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename Value\-Getter $>$ void {\bf repast\-::relogo\-::\-Agent\-Set}$<$ T $>$\-::with\-Min (
+\begin{DoxyParamCaption}
+\item[{const Value\-Getter \&}]{getter, }
+\item[{{\bf Agent\-Set}$<$ T $>$ \&}]{set}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_agent_set_a56e27a6154a3bb13310a8e4e9e7e75ab}
+
+
+Gets the set members that have the minimum value of the number returned by Value\-Getter, and puts them in the specified set. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em getter} & the Value\-Getter to use in retreiving the value used in the min comparison\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Value\-Getter} & a function or functor that takes a member of this agentset and returns a double value. This double value is used in the min comparison. \\
+\hline
+\end{DoxyTemplParams}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+/\-Users/murphy/work/\-Repast\-H\-P\-C\-\_\-\-G\-I\-T/repast.\-hpc/src/relogo/Agent\-Set.\-h\end{DoxyCompactItemize}

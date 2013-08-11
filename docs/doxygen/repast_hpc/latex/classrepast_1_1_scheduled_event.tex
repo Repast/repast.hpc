@@ -1,0 +1,54 @@
+\hypertarget{classrepast_1_1_scheduled_event}{\section{repast\-:\-:Scheduled\-Event Class Reference}
+\label{classrepast_1_1_scheduled_event}\index{repast\-::\-Scheduled\-Event@{repast\-::\-Scheduled\-Event}}
+}
+
+
+The object that is placed (scheduled) in the priority queue for execution.  
+
+
+
+
+{\ttfamily \#include $<$Schedule.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Scheduled\-Event\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classrepast_1_1_scheduled_event}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_scheduled_event_ac2d5b9640a4b968cfc5f94d25ffa1995}{{\bfseries Scheduled\-Event} (double, \hyperlink{classrepast_1_1_repast_event}{Repast\-Event} $\ast$)}\label{classrepast_1_1_scheduled_event_ac2d5b9640a4b968cfc5f94d25ffa1995}
+
+\item 
+\hypertarget{classrepast_1_1_scheduled_event_a1fa06003d6e3aecce186ef6eb3e32c61}{virtual bool \hyperlink{classrepast_1_1_scheduled_event_a1fa06003d6e3aecce186ef6eb3e32c61}{reschedule} (std\-::priority\-\_\-queue$<$ \hyperlink{classrepast_1_1_scheduled_event}{Scheduled\-Event} $\ast$, std\-::vector$<$ \hyperlink{classrepast_1_1_scheduled_event}{Scheduled\-Event} $\ast$ $>$, \hyperlink{classrepast_1_1_event_compare}{Event\-Compare} $>$ \&)=0}\label{classrepast_1_1_scheduled_event_a1fa06003d6e3aecce186ef6eb3e32c61}
+
+\begin{DoxyCompactList}\small\item\em Returns true if this event is rescheduled on the specified queue, otherwise false. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_scheduled_event_a937c8e3ec29d6e232201ce9aaffb1e2b}{\hyperlink{classrepast_1_1_repast_event}{Repast\-Event} $\ast$ \hyperlink{classrepast_1_1_scheduled_event_a937c8e3ec29d6e232201ce9aaffb1e2b}{get\-\_\-event} ()}\label{classrepast_1_1_scheduled_event_a937c8e3ec29d6e232201ce9aaffb1e2b}
+
+\begin{DoxyCompactList}\small\item\em Gets the \hyperlink{classrepast_1_1_repast_event}{Repast\-Event} that this Schedule\-Event wraps. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_scheduled_event_afe1c28943ae16de4fe32ba177741ec70}{\hyperlink{classrepast_1_1_repast_event}{Repast\-Event} $\ast$ {\bfseries event}}\label{classrepast_1_1_scheduled_event_afe1c28943ae16de4fe32ba177741ec70}
+
+\item 
+\hypertarget{classrepast_1_1_scheduled_event_a0302155f37ab0345e18e247eb3d3ac16}{double {\bfseries start}}\label{classrepast_1_1_scheduled_event_a0302155f37ab0345e18e247eb3d3ac16}
+
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_scheduled_event_a13ca8575c9e8e7af0301158bc50424a2}{class {\bfseries Event\-Compare}}\label{classrepast_1_1_scheduled_event_a13ca8575c9e8e7af0301158bc50424a2}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The object that is placed (scheduled) in the priority queue for execution. 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Schedule.\-h\item 
+repast\-\_\-hpc/Schedule.\-cpp\end{DoxyCompactItemize}

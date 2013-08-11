@@ -1,0 +1,1093 @@
+\hypertarget{classrepast_1_1_shared_context}{\section{repast\-:\-:Shared\-Context$<$ T $>$ Class Template Reference}
+\label{classrepast_1_1_shared_context}\index{repast\-::\-Shared\-Context$<$ T $>$@{repast\-::\-Shared\-Context$<$ T $>$}}
+}
+
+
+\hyperlink{classrepast_1_1_context}{Context} implementation specialized for the parallel distributed simulation.  
+
+
+
+
+{\ttfamily \#include $<$Shared\-Context.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Shared\-Context$<$ T $>$\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classrepast_1_1_shared_context}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum {\bfseries filter\-Local\-Flag} \{ {\bfseries L\-O\-C\-A\-L} = 1, 
+{\bfseries N\-O\-N\-\_\-\-L\-O\-C\-A\-L} = 0
+ \}
+\item 
+\hypertarget{classrepast_1_1_shared_context_a841565813e336d28a9fd13197652928f}{typedef boost\-::filter\-\_\-iterator\\*
+$<$ \hyperlink{structrepast_1_1_is_local_agent}{Is\-Local\-Agent}$<$ T $>$, typename \\*
+\hyperlink{classrepast_1_1_context}{Context}$<$ T $>$\-::const\-\_\-iterator $>$ {\bfseries const\-\_\-local\-\_\-iterator}}\label{classrepast_1_1_shared_context_a841565813e336d28a9fd13197652928f}
+
+\item 
+\hypertarget{classrepast_1_1_shared_context_ab40b787c7ec2f70cbad6f50827c15c09}{typedef boost\-::filter\-\_\-iterator\\*
+$<$ \hyperlink{structrepast_1_1_agent_state_filter}{Agent\-State\-Filter}$<$ T $>$\\*
+, typename \hyperlink{classrepast_1_1_context}{Context}$<$ T $>$\\*
+\-::const\-\_\-iterator $>$ {\bfseries const\-\_\-state\-\_\-aware\-\_\-iterator}}\label{classrepast_1_1_shared_context_ab40b787c7ec2f70cbad6f50827c15c09}
+
+\item 
+\hypertarget{classrepast_1_1_shared_context_a0cd1a3df6a563cb2fbd6cbe5498fbe90}{typedef boost\-::filter\-\_\-iterator\\*
+$<$ \hyperlink{structrepast_1_1_agent_state_filter}{Agent\-State\-Filter}$<$ T $>$\\*
+, typename \hyperlink{classrepast_1_1_context}{Context}$<$ T $>$\\*
+\-::const\-\_\-bytype\-\_\-iterator $>$ {\bfseries const\-\_\-state\-\_\-aware\-\_\-bytype\-\_\-iterator}}\label{classrepast_1_1_shared_context_a0cd1a3df6a563cb2fbd6cbe5498fbe90}
+
+\item 
+\hypertarget{classrepast_1_1_shared_context_a4d4876295de6ffeaa5cc3a5619cc01be}{typedef \hyperlink{classrepast_1_1_projection}{Projection}$<$ T $>$\-::R\-A\-D\-I\-U\-S {\bfseries R\-A\-D\-I\-U\-S}}\label{classrepast_1_1_shared_context_a4d4876295de6ffeaa5cc3a5619cc01be}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_shared_context_a13008265474e088cc155d4dea800bb1c}{{\bfseries Shared\-Context} (boost\-::mpi\-::communicator $\ast$comm)}\label{classrepast_1_1_shared_context_a13008265474e088cc155d4dea800bb1c}
+
+\item 
+const\-\_\-local\-\_\-iterator \hyperlink{classrepast_1_1_shared_context_a65b7e68261aba30e53cc1935020bd4f3}{local\-Begin} () const 
+\begin{DoxyCompactList}\small\item\em Gets the start of iterator over the local agents in this context. \end{DoxyCompactList}\item 
+const\-\_\-local\-\_\-iterator \hyperlink{classrepast_1_1_shared_context_a4040d23e1b0636967a8bba895433fa49}{local\-End} () const 
+\begin{DoxyCompactList}\small\item\em Gets the end of an iterator over the local agents in this context. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_shared_context_a958b4a5063ece7992c937dbc612cd339}{remove\-Agent} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} id)
+\begin{DoxyCompactList}\small\item\em Removes the specified agent from this context. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_shared_context_a89e71c4275d8a31caa5e62c32f16c050}{remove\-Agent} (T $\ast$agent)
+\begin{DoxyCompactList}\small\item\em Removes the specified agent from this context. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_shared_context_ae0695338eefe31bee634e094a8e33071}{imported\-Agent\-Removed} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)
+\begin{DoxyCompactList}\small\item\em Notifies this context that the specified non-\/local agent has been removed and this context should then delete that agent from itself. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_shared_context_a6515a8c1814265bdf371d421c1e0e672}{increment\-Proj\-Ref\-Count} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)
+\begin{DoxyCompactList}\small\item\em Increments the projection reference count for the specified agent. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_shared_context_a3baf1a56686971ebc513eabfe9c4b4e3}{decrement\-Proj\-Ref\-Count} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)
+\begin{DoxyCompactList}\small\item\em Decrements the projection reference count for the specified agent. \end{DoxyCompactList}\item 
+const\-\_\-state\-\_\-aware\-\_\-iterator \hyperlink{classrepast_1_1_shared_context_a2dd16dea7be7c83dc705f5a810dc3a5b}{begin} (filter\-Local\-Flag local)
+\begin{DoxyCompactList}\small\item\em Gets the start of an iterator that will iterate over only local or non-\/local agents. \end{DoxyCompactList}\item 
+const\-\_\-state\-\_\-aware\-\_\-iterator \hyperlink{classrepast_1_1_shared_context_a7c2c2cf54b4a050fe8ca940504295592}{end} (filter\-Local\-Flag local)
+\begin{DoxyCompactList}\small\item\em Gets the end of an iterator that will iterate over only local or non-\/local agents. \end{DoxyCompactList}\item 
+const\-\_\-state\-\_\-aware\-\_\-bytype\-\_\-iterator \hyperlink{classrepast_1_1_shared_context_a68db7f370b539b6efcf5559caca3202c}{by\-Type\-Begin} (filter\-Local\-Flag local, int type)
+\begin{DoxyCompactList}\small\item\em Gets the start of an iterator that will iterate over only local or non-\/local agents of a certain type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} value) \end{DoxyCompactList}\item 
+const\-\_\-state\-\_\-aware\-\_\-bytype\-\_\-iterator \hyperlink{classrepast_1_1_shared_context_a4c25e43ac8dbcc5cba3965ec8dc67de7}{by\-Type\-End} (filter\-Local\-Flag local, int type)
+\begin{DoxyCompactList}\small\item\em Gets the end of an iterator that will iterate over only local or non-\/local agents of a certain type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} value) \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\boost\-::filter\-\_\-iterator\\*
+$<$ filter\-Struct, typename \\*
+\hyperlink{classrepast_1_1_shared_context}{Shared\-Context}$<$ T $>$\\*
+\-::const\-\_\-state\-\_\-aware\-\_\-iterator $>$ \hyperlink{classrepast_1_1_shared_context_ab6e397073084a148cc768a904d7e5522}{filtered\-Begin} (filter\-Local\-Flag local, filter\-Struct \&f\-Struct)
+\begin{DoxyCompactList}\small\item\em Gets the start of an iterator that will iterate over only local or non-\/local agents meeting the criteria of the user-\/defined struct (see \hyperlink{structrepast_1_1_is_local_agent}{Is\-Local\-Agent} for an example) \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\boost\-::filter\-\_\-iterator\\*
+$<$ filter\-Struct, typename \\*
+\hyperlink{classrepast_1_1_shared_context}{Shared\-Context}$<$ T $>$\\*
+\-::const\-\_\-state\-\_\-aware\-\_\-iterator $>$ \hyperlink{classrepast_1_1_shared_context_a86555cc3bdc22642f497e48e5c0bba4b}{filtered\-End} (filter\-Local\-Flag local, filter\-Struct \&f\-Struct)
+\begin{DoxyCompactList}\small\item\em Gets the end of an iterator that will iterate over only local or non-\/local agents meeting the criteria of the user-\/defined struct (see \hyperlink{structrepast_1_1_is_local_agent}{Is\-Local\-Agent} for an example) \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\boost\-::filter\-\_\-iterator\\*
+$<$ filter\-Struct, typename \\*
+\hyperlink{classrepast_1_1_shared_context}{Shared\-Context}$<$ T $>$\\*
+\-::const\-\_\-state\-\_\-aware\-\_\-bytype\-\_\-iterator $>$ \hyperlink{classrepast_1_1_shared_context_a44bb645e769bc49417b108c7663a5c92}{by\-Type\-Filtered\-Begin} (filter\-Local\-Flag local, int type, filter\-Struct \&f\-Struct)
+\begin{DoxyCompactList}\small\item\em Gets the start of an iterator that will iterate over only local or non-\/local agents of the specified type and meeting the criteria of the user-\/defined struct (see \hyperlink{structrepast_1_1_is_local_agent}{Is\-Local\-Agent} for an example) \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\boost\-::filter\-\_\-iterator\\*
+$<$ filter\-Struct, typename \\*
+\hyperlink{classrepast_1_1_shared_context}{Shared\-Context}$<$ T $>$\\*
+\-::const\-\_\-state\-\_\-aware\-\_\-bytype\-\_\-iterator $>$ \hyperlink{classrepast_1_1_shared_context_a3ed0899e2b6f1c8f53d96f0555e460f0}{by\-Type\-Filtered\-End} (filter\-Local\-Flag local, int type, filter\-Struct \&f\-Struct)
+\begin{DoxyCompactList}\small\item\em Gets the end of an iterator that will iterate over only local or non-\/local agents of the specified type and meeting the criteria of the user-\/defined struct (see \hyperlink{structrepast_1_1_is_local_agent}{Is\-Local\-Agent} for an example) \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_shared_context_a216c8e1c03beae6861488b09ae52a6f7}{select\-Agents} (filter\-Local\-Flag local\-Or\-Non\-Local\-Only, std\-::set$<$ T $\ast$ $>$ \&selected\-Agents, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a set of pointers to all local or non-\/local agents in this context. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_shared_context_a630dc3ce28e596a074d0345a70df5a84}{select\-Agents} (filter\-Local\-Flag local\-Or\-Non\-Local\-Only, std\-::vector$<$ T $\ast$ $>$ \&selected\-Agents, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a randomly ordered vector of pointers to all local or non-\/local agents in this context. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_shared_context_a2c3cac3805fbc40672afcefde05552a1}{select\-Agents} (filter\-Local\-Flag local\-Or\-Non\-Local\-Only, int count, std\-::set$<$ T $\ast$ $>$ \&selected\-Agents, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a set of pointers to a specified number of randomly selected local or non-\/local agents. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_shared_context_a3fa1044d2fe41b97a0c6ee98d650d456}{select\-Agents} (filter\-Local\-Flag local\-Or\-Non\-Local\-Only, int count, std\-::vector$<$ T $\ast$ $>$ \&selected\-Agents, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a randomly ordered vector of pointers to a specified number of randomly selected local or non-\/local agents. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_shared_context_a52c6ac3c380cc8e6c9f7abc91305182d}{select\-Agents} (filter\-Local\-Flag local\-Or\-Non\-Local\-Only, std\-::set$<$ T $\ast$ $>$ \&selected\-Agents, int type, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a set of pointers to all local or non-\/local agents in this context of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values). \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_shared_context_a23250171a02f92878c4b8e6f195f1b0d}{select\-Agents} (filter\-Local\-Flag local\-Or\-Non\-Local\-Only, std\-::vector$<$ T $\ast$ $>$ \&selected\-Agents, int type, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a randomly ordered vector of pointers to all local or non-\/local agents in this context of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values). \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_shared_context_a1899bd475820969bb98e1d5d55c4e378}{select\-Agents} (filter\-Local\-Flag local\-Or\-Non\-Local\-Only, int count, std\-::set$<$ T $\ast$ $>$ \&selected\-Agents, int type, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a set of pointers to a specified number of randomly selected local or non-\/local agents of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values). \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_shared_context_a44f8a986ee3580d6b917f3966d3bfc39}{select\-Agents} (filter\-Local\-Flag local\-Or\-Non\-Local\-Only, int count, std\-::vector$<$ T $\ast$ $>$ \&selected\-Agents, int type, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a randomly ordered vector of pointers to a specified number of randomly selected local or non-\/local agents of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values). \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\void \hyperlink{classrepast_1_1_shared_context_a216f26fff21a3494455fbb07dcb9157c}{select\-Agents} (filter\-Local\-Flag local\-Or\-Non\-Local\-Only, std\-::set$<$ T $\ast$ $>$ \&selected\-Agents, filter\-Struct \&filter, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a set of pointers to all local or non-\/local agents in this context matching a user-\/defined filter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\void \hyperlink{classrepast_1_1_shared_context_a30566b9de19167c8332fe75acbd93aa4}{select\-Agents} (filter\-Local\-Flag local\-Or\-Non\-Local\-Only, std\-::vector$<$ T $\ast$ $>$ \&selected\-Agents, filter\-Struct \&filter, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a randomly ordered vector of pointers to all local or non-\/local agents in this context matching a user-\/defined filter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\void \hyperlink{classrepast_1_1_shared_context_aeef53be1cb9b12ad298e7e965c2ef22a}{select\-Agents} (filter\-Local\-Flag local\-Or\-Non\-Local\-Only, int count, std\-::set$<$ T $\ast$ $>$ \&selected\-Agents, filter\-Struct \&filter, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a set of pointers to a specified number of randomly selected local or non-\/local agents matching a user-\/defined filter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\void \hyperlink{classrepast_1_1_shared_context_ad18c4ca72c9b7a59998c8c3856052a73}{select\-Agents} (filter\-Local\-Flag local\-Or\-Non\-Local\-Only, int count, std\-::vector$<$ T $\ast$ $>$ \&selected\-Agents, filter\-Struct \&filter, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a randomly ordered vector of pointers to a specified number of randomly selected local or non-\/local agents matching a user-\/defined filter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\void \hyperlink{classrepast_1_1_shared_context_a629bb877939f1a3ddbe85c8198d4bdfe}{select\-Agents} (filter\-Local\-Flag local\-Or\-Non\-Local\-Only, std\-::set$<$ T $\ast$ $>$ \&selected\-Agents, int type, filter\-Struct \&filter, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a set of pointers to all local or non-\/local agents in this context of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values) and matching a user-\/defined filter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\void \hyperlink{classrepast_1_1_shared_context_a4e9ef25609d51784de8eb8634e7256d4}{select\-Agents} (filter\-Local\-Flag local\-Or\-Non\-Local\-Only, std\-::vector$<$ T $\ast$ $>$ \&selected\-Agents, int type, filter\-Struct \&filter, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a randomly ordered vector of pointers to all local or non-\/local agents in this context of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values) and matching a user-\/defined filter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\void \hyperlink{classrepast_1_1_shared_context_a3b8319411f215f52f30dd55c46aa9314}{select\-Agents} (filter\-Local\-Flag local\-Or\-Non\-Local\-Only, int count, std\-::set$<$ T $\ast$ $>$ \&selected\-Agents, int type, filter\-Struct \&filter, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a set of pointers to a specified number of randomly selected local or non-\/local agents of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values) and matching a user-\/defined filter. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename filter\-Struct $>$ }\\void \hyperlink{classrepast_1_1_shared_context_ad2dfe0d53036f8b199c9072c8b804629}{select\-Agents} (filter\-Local\-Flag local\-Or\-Non\-Local\-Only, int count, std\-::vector$<$ T $\ast$ $>$ \&selected\-Agents, int type, filter\-Struct \&filter, bool remove=false, int pop\-Size=-\/1)
+\begin{DoxyCompactList}\small\item\em Gets a randomly ordered vector of pointers to a specified number of randomly selected local or non-\/local agents of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values) and matching a user-\/defined filter. \end{DoxyCompactList}\item 
+bool \hyperlink{classrepast_1_1_shared_context_a4c51b1d4b62bb6844334699c5bfba23e}{keeps\-Agents\-On\-Sync\-Proj} ()
+\begin{DoxyCompactList}\small\item\em Returns true if any of the projections in this context will try to 'keep' non-\/local agents during a synchronize projection operation. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_shared_context_acc810aec846be9a7c166aa0d42343028}{bool {\bfseries sends\-Secondary\-Data\-On\-Status\-Exchange} ()}\label{classrepast_1_1_shared_context_acc810aec846be9a7c166aa0d42343028}
+
+\item 
+\hypertarget{classrepast_1_1_shared_context_a657f89618ca05e71250cf8e7ef632c8d}{void {\bfseries get\-Proj\-Info\-Exchange\-Partners} (std\-::set$<$ int $>$ \&sends, std\-::set$<$ int $>$ \&recvs)}\label{classrepast_1_1_shared_context_a657f89618ca05e71250cf8e7ef632c8d}
+
+\item 
+\hypertarget{classrepast_1_1_shared_context_a825be48354b742b7718c106d954932b4}{void {\bfseries get\-Agent\-Status\-Info\-Exchange\-Partners} (std\-::set$<$ int $>$ \&sends, std\-::set$<$ int $>$ \&recvs)}\label{classrepast_1_1_shared_context_a825be48354b742b7718c106d954932b4}
+
+\item 
+\hypertarget{classrepast_1_1_shared_context_ad7acd6256e4daa5efa3133cda76f7e06}{void \hyperlink{classrepast_1_1_shared_context_ad7acd6256e4daa5efa3133cda76f7e06}{get\-Required\-Agents} (std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&agents\-To\-Test, std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&agents\-To\-Keep, R\-A\-D\-I\-U\-S radius=\hyperlink{classrepast_1_1_projection}{Projection}$<$ T $>$\-::P\-R\-I\-M\-A\-R\-Y)}\label{classrepast_1_1_shared_context_ad7acd6256e4daa5efa3133cda76f7e06}
+
+\begin{DoxyCompactList}\small\item\em Given a set of agents to test, returns the set of those agents that must be kept in order to keep required projection information. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_shared_context_a558d18f1606931efc8a9dd6388a263a0}{void \hyperlink{classrepast_1_1_shared_context_a558d18f1606931efc8a9dd6388a263a0}{get\-Nonlocal\-Agents\-To\-Drop} (std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&agents\-To\-Keep, std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ \&agents\-To\-Drop, R\-A\-D\-I\-U\-S radius=\hyperlink{classrepast_1_1_projection}{Projection}$<$ T $>$\-::P\-R\-I\-M\-A\-R\-Y)}\label{classrepast_1_1_shared_context_a558d18f1606931efc8a9dd6388a263a0}
+
+\begin{DoxyCompactList}\small\item\em Given an initial set of agents that must be kept a priori, add any agents that must be kept due to projection requirements, and return the set of all non-\/local agents that can be dropped. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_shared_context_aa2e8604b3d9aa97c3eedd9f51f225647}{void {\bfseries get\-Agents\-To\-Push\-To\-Other\-Processes} (std\-::map$<$ int, std\-::set$<$ \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} $>$ $>$ \&agents\-To\-Push)}\label{classrepast_1_1_shared_context_aa2e8604b3d9aa97c3eedd9f51f225647}
+
+\item 
+virtual void \hyperlink{classrepast_1_1_shared_context_af8f235d4d8e4b1efc548ea8a5b1ab75d}{add\-Projection} (\hyperlink{classrepast_1_1_projection}{Projection}$<$ T $>$ $\ast$projection)
+\begin{DoxyCompactList}\small\item\em Adds the specified projection to this context. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_shared_context_abb904bc9f1f9b37f0859bb5a81bd3376}{\hyperlink{structrepast_1_1_is_local_agent}{Is\-Local\-Agent}$<$ T $>$ {\bfseries local\-Predicate}}\label{classrepast_1_1_shared_context_abb904bc9f1f9b37f0859bb5a81bd3376}
+
+\item 
+\hypertarget{classrepast_1_1_shared_context_a96eaf0a5bebb6126e293cb4b12438a36}{\hyperlink{structrepast_1_1_agent_state_filter}{Agent\-State\-Filter}$<$ T $>$ {\bfseries L\-O\-C\-A\-L\-\_\-\-F\-I\-L\-T\-E\-R}}\label{classrepast_1_1_shared_context_a96eaf0a5bebb6126e293cb4b12438a36}
+
+\item 
+\hypertarget{classrepast_1_1_shared_context_a22f8f60308fbe5e4d02b34262a0a6078}{\hyperlink{structrepast_1_1_agent_state_filter}{Agent\-State\-Filter}$<$ T $>$ {\bfseries N\-O\-N\-\_\-\-L\-O\-C\-A\-L\-\_\-\-F\-I\-L\-T\-E\-R}}\label{classrepast_1_1_shared_context_a22f8f60308fbe5e4d02b34262a0a6078}
+
+\item 
+\hypertarget{classrepast_1_1_shared_context_af2101cd88ef2145b13a2d36a0eecbb05}{std\-::vector$<$ std\-::string $>$ {\bfseries get\-Agents\-To\-Push\-Proj\-Order}}\label{classrepast_1_1_shared_context_af2101cd88ef2145b13a2d36a0eecbb05}
+
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$class repast\-::\-Shared\-Context$<$ T $>$}
+
+\hyperlink{classrepast_1_1_context}{Context} implementation specialized for the parallel distributed simulation. 
+
+A \hyperlink{classrepast_1_1_shared_context}{Shared\-Context} contains both local, that is, agents whose behavior is run on the \hyperlink{classrepast_1_1_shared_context}{Shared\-Context}'s process and foreign agents, that is, copies of agents whose behavior is run on some other process.
+
+
+\begin{DoxyParams}{Parameters}
+{\em T} & the type of agents in the context. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_shared_context_af8f235d4d8e4b1efc548ea8a5b1ab75d}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!add\-Projection@{add\-Projection}}
+\index{add\-Projection@{add\-Projection}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{add\-Projection}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::add\-Projection (
+\begin{DoxyParamCaption}
+\item[{{\bf Projection}$<$ T $>$ $\ast$}]{projection}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_shared_context_af8f235d4d8e4b1efc548ea8a5b1ab75d}
+
+
+Adds the specified projection to this context. 
+
+All the agents in this context will be added to the \hyperlink{classrepast_1_1_projection}{Projection}. Any agents subsequently added to this context will also be added to the \hyperlink{classrepast_1_1_projection}{Projection}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em projection} & the projection to add \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{classrepast_1_1_context_a96d41e5246dc2940be3ea45f2a233487}{repast\-::\-Context$<$ T $>$}.
+
+\hypertarget{classrepast_1_1_shared_context_a2dd16dea7be7c83dc705f5a810dc3a5b}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!begin@{begin}}
+\index{begin@{begin}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{begin}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ boost\-::filter\-\_\-iterator$<$ {\bf Agent\-State\-Filter}$<$ T $>$, typename {\bf Context}$<$ T $>$\-::const\-\_\-iterator $>$ {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::begin (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a2dd16dea7be7c83dc705f5a810dc3a5b}
+
+
+Gets the start of an iterator that will iterate over only local or non-\/local agents. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em local} & flag indicating whether local or non-\/local agents are to be included \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_shared_context_a68db7f370b539b6efcf5559caca3202c}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!by\-Type\-Begin@{by\-Type\-Begin}}
+\index{by\-Type\-Begin@{by\-Type\-Begin}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{by\-Type\-Begin}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ boost\-::filter\-\_\-iterator$<$ {\bf Agent\-State\-Filter}$<$ T $>$, typename {\bf Context}$<$ T $>$\-::const\-\_\-bytype\-\_\-iterator $>$ {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::by\-Type\-Begin (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local, }
+\item[{int}]{type}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a68db7f370b539b6efcf5559caca3202c}
+
+
+Gets the start of an iterator that will iterate over only local or non-\/local agents of a certain type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} value) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em local} & flag indicating whether local or non-\/local agents are to be included \\
+\hline
+{\em type} & type to included \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_shared_context_a4c25e43ac8dbcc5cba3965ec8dc67de7}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!by\-Type\-End@{by\-Type\-End}}
+\index{by\-Type\-End@{by\-Type\-End}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{by\-Type\-End}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ boost\-::filter\-\_\-iterator$<$ {\bf Agent\-State\-Filter}$<$ T $>$, typename {\bf Context}$<$ T $>$\-::const\-\_\-bytype\-\_\-iterator $>$ {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::by\-Type\-End (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local, }
+\item[{int}]{type}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a4c25e43ac8dbcc5cba3965ec8dc67de7}
+
+
+Gets the end of an iterator that will iterate over only local or non-\/local agents of a certain type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} value) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em local} & flag indicating whether local or non-\/local agents are to be included \\
+\hline
+{\em type} & type to included \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_shared_context_a44bb645e769bc49417b108c7663a5c92}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!by\-Type\-Filtered\-Begin@{by\-Type\-Filtered\-Begin}}
+\index{by\-Type\-Filtered\-Begin@{by\-Type\-Filtered\-Begin}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{by\-Type\-Filtered\-Begin}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ boost\-::filter\-\_\-iterator$<$ filter\-Struct, typename {\bf Shared\-Context}$<$ T $>$\-::const\-\_\-state\-\_\-aware\-\_\-bytype\-\_\-iterator $>$ {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::by\-Type\-Filtered\-Begin (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local, }
+\item[{int}]{type, }
+\item[{filter\-Struct \&}]{f\-Struct}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a44bb645e769bc49417b108c7663a5c92}
+
+
+Gets the start of an iterator that will iterate over only local or non-\/local agents of the specified type and meeting the criteria of the user-\/defined struct (see \hyperlink{structrepast_1_1_is_local_agent}{Is\-Local\-Agent} for an example) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em local} & flag indicating whether local or non-\/local agents are to be included \\
+\hline
+{\em type} & type to be included \\
+\hline
+{\em filter} & struct with unary operator (boost\-::shared\-\_\-ptr$<$\-T$>$) that returns true or false; used to selectively include agents.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the class of the filter to be used \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_shared_context_a3ed0899e2b6f1c8f53d96f0555e460f0}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!by\-Type\-Filtered\-End@{by\-Type\-Filtered\-End}}
+\index{by\-Type\-Filtered\-End@{by\-Type\-Filtered\-End}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{by\-Type\-Filtered\-End}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ boost\-::filter\-\_\-iterator$<$ filter\-Struct, typename {\bf Shared\-Context}$<$ T $>$\-::const\-\_\-state\-\_\-aware\-\_\-bytype\-\_\-iterator $>$ {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::by\-Type\-Filtered\-End (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local, }
+\item[{int}]{type, }
+\item[{filter\-Struct \&}]{f\-Struct}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a3ed0899e2b6f1c8f53d96f0555e460f0}
+
+
+Gets the end of an iterator that will iterate over only local or non-\/local agents of the specified type and meeting the criteria of the user-\/defined struct (see \hyperlink{structrepast_1_1_is_local_agent}{Is\-Local\-Agent} for an example) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em local} & flag indicating whether local or non-\/local agents are to be included \\
+\hline
+{\em type} & type to be included \\
+\hline
+{\em filter} & struct with unary operator (boost\-::shared\-\_\-ptr$<$\-T$>$) that returns true or false; used to selectively include agents.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the class of the filter to be used \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_shared_context_a3baf1a56686971ebc513eabfe9c4b4e3}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!decrement\-Proj\-Ref\-Count@{decrement\-Proj\-Ref\-Count}}
+\index{decrement\-Proj\-Ref\-Count@{decrement\-Proj\-Ref\-Count}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{decrement\-Proj\-Ref\-Count}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::decrement\-Proj\-Ref\-Count (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{id}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a3baf1a56686971ebc513eabfe9c4b4e3}
+
+
+Decrements the projection reference count for the specified agent. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the id of the agent \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_shared_context_a7c2c2cf54b4a050fe8ca940504295592}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!end@{end}}
+\index{end@{end}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{end}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ boost\-::filter\-\_\-iterator$<$ {\bf Agent\-State\-Filter}$<$ T $>$, typename {\bf Context}$<$ T $>$\-::const\-\_\-iterator $>$ {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::end (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a7c2c2cf54b4a050fe8ca940504295592}
+
+
+Gets the end of an iterator that will iterate over only local or non-\/local agents. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em local} & flag indicating whether local or non-\/local agents are to be included \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_shared_context_ab6e397073084a148cc768a904d7e5522}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!filtered\-Begin@{filtered\-Begin}}
+\index{filtered\-Begin@{filtered\-Begin}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{filtered\-Begin}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ boost\-::filter\-\_\-iterator$<$ filter\-Struct, typename {\bf Shared\-Context}$<$ T $>$\-::const\-\_\-state\-\_\-aware\-\_\-iterator $>$ {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::filtered\-Begin (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local, }
+\item[{filter\-Struct \&}]{f\-Struct}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_ab6e397073084a148cc768a904d7e5522}
+
+
+Gets the start of an iterator that will iterate over only local or non-\/local agents meeting the criteria of the user-\/defined struct (see \hyperlink{structrepast_1_1_is_local_agent}{Is\-Local\-Agent} for an example) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em local} & flag indicating whether local or non-\/local agents are to be included \\
+\hline
+{\em filter} & struct with unary operator (boost\-::shared\-\_\-ptr$<$\-T$>$) that returns true or false; used to selectively include agents.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the class of the filter to be used \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_shared_context_a86555cc3bdc22642f497e48e5c0bba4b}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!filtered\-End@{filtered\-End}}
+\index{filtered\-End@{filtered\-End}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{filtered\-End}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ boost\-::filter\-\_\-iterator$<$ filter\-Struct, typename {\bf Shared\-Context}$<$ T $>$\-::const\-\_\-state\-\_\-aware\-\_\-iterator $>$ {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::filtered\-End (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local, }
+\item[{filter\-Struct \&}]{f\-Struct}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a86555cc3bdc22642f497e48e5c0bba4b}
+
+
+Gets the end of an iterator that will iterate over only local or non-\/local agents meeting the criteria of the user-\/defined struct (see \hyperlink{structrepast_1_1_is_local_agent}{Is\-Local\-Agent} for an example) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em local} & flag indicating whether local or non-\/local agents are to be included \\
+\hline
+{\em filter} & struct with unary operator (boost\-::shared\-\_\-ptr$<$\-T$>$) that returns true or false; used to selectively include agents.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the class of the filter to be used \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_shared_context_ae0695338eefe31bee634e094a8e33071}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!imported\-Agent\-Removed@{imported\-Agent\-Removed}}
+\index{imported\-Agent\-Removed@{imported\-Agent\-Removed}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{imported\-Agent\-Removed}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::imported\-Agent\-Removed (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{id}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_ae0695338eefe31bee634e094a8e33071}
+
+
+Notifies this context that the specified non-\/local agent has been removed and this context should then delete that agent from itself. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the id of the agent that was removed \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_shared_context_a6515a8c1814265bdf371d421c1e0e672}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!increment\-Proj\-Ref\-Count@{increment\-Proj\-Ref\-Count}}
+\index{increment\-Proj\-Ref\-Count@{increment\-Proj\-Ref\-Count}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{increment\-Proj\-Ref\-Count}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::increment\-Proj\-Ref\-Count (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id} \&}]{id}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a6515a8c1814265bdf371d421c1e0e672}
+
+
+Increments the projection reference count for the specified agent. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the id of the agent \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_shared_context_a4c51b1d4b62bb6844334699c5bfba23e}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!keeps\-Agents\-On\-Sync\-Proj@{keeps\-Agents\-On\-Sync\-Proj}}
+\index{keeps\-Agents\-On\-Sync\-Proj@{keeps\-Agents\-On\-Sync\-Proj}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{keeps\-Agents\-On\-Sync\-Proj}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ bool {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::keeps\-Agents\-On\-Sync\-Proj (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a4c51b1d4b62bb6844334699c5bfba23e}
+
+
+Returns true if any of the projections in this context will try to 'keep' non-\/local agents during a synchronize projection operation. 
+
+(Generally graphs keep local agents that are part of master copies of links, but spaces do not keep any local agents.) \hypertarget{classrepast_1_1_shared_context_a65b7e68261aba30e53cc1935020bd4f3}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!local\-Begin@{local\-Begin}}
+\index{local\-Begin@{local\-Begin}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{local\-Begin}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ boost\-::filter\-\_\-iterator$<$ {\bf Is\-Local\-Agent}$<$ T $>$, typename {\bf Context}$<$ T $>$\-::const\-\_\-iterator $>$ {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::local\-Begin (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1_shared_context_a65b7e68261aba30e53cc1935020bd4f3}
+
+
+Gets the start of iterator over the local agents in this context. 
+
+The iterator derefrences into shared\-\_\-ptr$<$\-T$>$. The actual agent can be accessed by dereferencing the iter\-: ($\ast$iter)-\/$>$get\-Id() for example.
+
+\begin{DoxyReturn}{Returns}
+the start of iterator over the local agents in this context. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_shared_context_a4040d23e1b0636967a8bba895433fa49}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!local\-End@{local\-End}}
+\index{local\-End@{local\-End}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{local\-End}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ boost\-::filter\-\_\-iterator$<$ {\bf Is\-Local\-Agent}$<$ T $>$, typename {\bf Context}$<$ T $>$\-::const\-\_\-iterator $>$ {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::local\-End (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1_shared_context_a4040d23e1b0636967a8bba895433fa49}
+
+
+Gets the end of an iterator over the local agents in this context. 
+
+The iterator derefrences into shared\-\_\-ptr$<$\-T$>$. The actual agent can be accessed by derefrenceing the iter\-: ($\ast$iter)-\/$>$get\-Id() for example. \hypertarget{classrepast_1_1_shared_context_a958b4a5063ece7992c937dbc612cd339}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!remove\-Agent@{remove\-Agent}}
+\index{remove\-Agent@{remove\-Agent}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{remove\-Agent}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::remove\-Agent (
+\begin{DoxyParamCaption}
+\item[{const {\bf Agent\-Id}}]{id}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a958b4a5063ece7992c937dbc612cd339}
+
+
+Removes the specified agent from this context. 
+
+If the agent is non-\/local, this checks to make sure that it is not referenced by any projection before its removed.
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the id of the agent to remove \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_shared_context_a89e71c4275d8a31caa5e62c32f16c050}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!remove\-Agent@{remove\-Agent}}
+\index{remove\-Agent@{remove\-Agent}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{remove\-Agent}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::remove\-Agent (
+\begin{DoxyParamCaption}
+\item[{T $\ast$}]{agent}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a89e71c4275d8a31caa5e62c32f16c050}
+
+
+Removes the specified agent from this context. 
+
+If the agent is non-\/local, this checks to make sure that it is not referenced by any projection before its removed.
+
+
+\begin{DoxyParams}{Parameters}
+{\em agent} & the agent to remove \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_shared_context_a216c8e1c03beae6861488b09ae52a6f7}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local\-Or\-Non\-Local\-Only, }
+\item[{std\-::set$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a216c8e1c03beae6861488b09ae52a6f7}
+
+
+Gets a set of pointers to all local or non-\/local agents in this context. 
+
+If the 'remove' parameter is set to true, any elements in the original set will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em local\-Or\-Non\-Local\-Only} & flag that indicates that the agents selected will be drawn only from agents either local or non-\/local to this process \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a set into which the pointers to the agents will be placed \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_shared_context_a630dc3ce28e596a074d0345a70df5a84}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local\-Or\-Non\-Local\-Only, }
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a630dc3ce28e596a074d0345a70df5a84}
+
+
+Gets a randomly ordered vector of pointers to all local or non-\/local agents in this context. 
+
+If the 'remove' parameter is set to true, any elements in the original vector will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em local\-Or\-Non\-Local\-Only} & flag that indicates that the agents selected will be drawn only from agents either local or non-\/local to this process \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a vector into which the pointers to the agents will be placed \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_shared_context_a2c3cac3805fbc40672afcefde05552a1}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local\-Or\-Non\-Local\-Only, }
+\item[{int}]{count, }
+\item[{std\-::set$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a2c3cac3805fbc40672afcefde05552a1}
+
+
+Gets a set of pointers to a specified number of randomly selected local or non-\/local agents. 
+
+If the set passed contains any elements when this method is called, the agents pointed to by those elements will be omitted from the selection.
+
+If the 'remove' parameter is set to true, any elements in the original set will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em local\-Or\-Non\-Local\-Only} & flag that indicates that the agents selected will be drawn only from agents either local or non-\/local to this process \\
+\hline
+ & {\em count} & the number of agents to be selected. If this exceeds the number that can possibly be selected, all possible agents will be selected \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a set into which the pointers to the agents will be placed \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_shared_context_a3fa1044d2fe41b97a0c6ee98d650d456}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local\-Or\-Non\-Local\-Only, }
+\item[{int}]{count, }
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a3fa1044d2fe41b97a0c6ee98d650d456}
+
+
+Gets a randomly ordered vector of pointers to a specified number of randomly selected local or non-\/local agents. 
+
+If the vector passed contains any elements when this method is called, the agents pointed to by those elements will be omitted from the selection.
+
+If the 'remove' parameter is set to true, any elements in the original vector will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em local\-Or\-Non\-Local\-Only} & flag that indicates that the agents selected will be drawn only from agents either local or non-\/local to this process \\
+\hline
+ & {\em count} & the number of agents to be selected. If this exceeds the number that can possibly be selected, all possible agents will be selected \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a vector into which the pointers to the agents will be placed \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_shared_context_a52c6ac3c380cc8e6c9f7abc91305182d}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local\-Or\-Non\-Local\-Only, }
+\item[{std\-::set$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{int}]{type, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a52c6ac3c380cc8e6c9f7abc91305182d}
+
+
+Gets a set of pointers to all local or non-\/local agents in this context of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values). 
+
+If the 'remove' parameter is set to true, any elements in the original set will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em local\-Or\-Non\-Local\-Only} & flag that indicates that the agents selected will be drawn only from agents either local or non-\/local to this process \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a set into which the pointers to the agents will be placed \\
+\hline
+ & {\em type} & numeric type of agent to be selected \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_shared_context_a23250171a02f92878c4b8e6f195f1b0d}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local\-Or\-Non\-Local\-Only, }
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{int}]{type, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a23250171a02f92878c4b8e6f195f1b0d}
+
+
+Gets a randomly ordered vector of pointers to all local or non-\/local agents in this context of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values). 
+
+If the 'remove' parameter is set to true, any elements in the original vector will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em local\-Or\-Non\-Local\-Only} & flag that indicates that the agents selected will be drawn only from agents either local or non-\/local to this process \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a vector into which the pointers to the agents will be placed \\
+\hline
+ & {\em type} & numeric type of agent to be selected \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_shared_context_a1899bd475820969bb98e1d5d55c4e378}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local\-Or\-Non\-Local\-Only, }
+\item[{int}]{count, }
+\item[{std\-::set$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{int}]{type, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a1899bd475820969bb98e1d5d55c4e378}
+
+
+Gets a set of pointers to a specified number of randomly selected local or non-\/local agents of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values). 
+
+If the set passed contains any elements when this method is called, the agents pointed to by those elements will be omitted from the selection.
+
+If the 'remove' parameter is set to true, any elements in the original set will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em local\-Or\-Non\-Local\-Only} & flag that indicates that the agents selected will be drawn only from agents either local or non-\/local to this process \\
+\hline
+ & {\em count} & the number of agents to be selected. If this exceeds the number that can possibly be selected, all possible agents will be selected \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a set into which the pointers to the agents will be placed \\
+\hline
+ & {\em type} & numeric type of agent to be selected \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_shared_context_a44f8a986ee3580d6b917f3966d3bfc39}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local\-Or\-Non\-Local\-Only, }
+\item[{int}]{count, }
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{int}]{type, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a44f8a986ee3580d6b917f3966d3bfc39}
+
+
+Gets a randomly ordered vector of pointers to a specified number of randomly selected local or non-\/local agents of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values). 
+
+If the vector passed contains any elements when this method is called, the agents pointed to by those elements will be omitted from the selection.
+
+If the 'remove' parameter is set to true, any elements in the original vector will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em local\-Or\-Non\-Local\-Only} & flag that indicates that the agents selected will be drawn only from agents either local or non-\/local to this process \\
+\hline
+ & {\em count} & the number of agents to be selected. If this exceeds the number that can possibly be selected, all possible agents will be selected \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a vector into which the pointers to the agents will be placed \\
+\hline
+ & {\em type} & numeric type of agent to be selected \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_shared_context_a216f26fff21a3494455fbb07dcb9157c}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local\-Or\-Non\-Local\-Only, }
+\item[{std\-::set$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{filter\-Struct \&}]{filter, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a216f26fff21a3494455fbb07dcb9157c}
+
+
+Gets a set of pointers to all local or non-\/local agents in this context matching a user-\/defined filter. 
+
+If the 'remove' parameter is set to true, any elements in the original set will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em local\-Or\-Non\-Local\-Only} & flag that indicates that the agents selected will be drawn only from agents either local or non-\/local to this process \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a set into which the pointers to the agents will be placed \\
+\hline
+ & {\em filter} & user-\/defined filter specifying any criteria agents to be selected must meet \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the type of the filter to be applied to the agents \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_shared_context_a30566b9de19167c8332fe75acbd93aa4}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local\-Or\-Non\-Local\-Only, }
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{filter\-Struct \&}]{filter, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a30566b9de19167c8332fe75acbd93aa4}
+
+
+Gets a randomly ordered vector of pointers to all local or non-\/local agents in this context matching a user-\/defined filter. 
+
+If the 'remove' parameter is set to true, any elements in the original vector will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em local\-Or\-Non\-Local\-Only} & flag that indicates that the agents selected will be drawn only from agents either local or non-\/local to this process \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a vector into which the pointers to the agents will be placed \\
+\hline
+ & {\em filter} & user-\/defined filter specifying any criteria agents to be selected must meet \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the type of the filter to be applied to the agents \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_shared_context_aeef53be1cb9b12ad298e7e965c2ef22a}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local\-Or\-Non\-Local\-Only, }
+\item[{int}]{count, }
+\item[{std\-::set$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{filter\-Struct \&}]{filter, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_aeef53be1cb9b12ad298e7e965c2ef22a}
+
+
+Gets a set of pointers to a specified number of randomly selected local or non-\/local agents matching a user-\/defined filter. 
+
+If the set passed contains any elements when this method is called, the agents pointed to by those elements will be omitted from the selection.
+
+If the 'remove' parameter is set to true, any elements in the original set will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em local\-Or\-Non\-Local\-Only} & flag that indicates that the agents selected will be drawn only from agents either local or non-\/local to this process \\
+\hline
+ & {\em count} & the number of agents to be selected. If this exceeds the number that can possibly be selected, all possible agents will be selected \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a set into which the pointers to the agents will be placed \\
+\hline
+ & {\em filter} & user-\/defined filter specifying any criteria agents to be selected must meet \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the type of the filter to be applied to the agents \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_shared_context_ad18c4ca72c9b7a59998c8c3856052a73}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local\-Or\-Non\-Local\-Only, }
+\item[{int}]{count, }
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{filter\-Struct \&}]{filter, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_ad18c4ca72c9b7a59998c8c3856052a73}
+
+
+Gets a randomly ordered vector of pointers to a specified number of randomly selected local or non-\/local agents matching a user-\/defined filter. 
+
+If the vector passed contains any elements when this method is called, the agents pointed to by those elements will be omitted from the selection.
+
+If the 'remove' parameter is set to true, any elements in the original vector will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em local\-Or\-Non\-Local\-Only} & flag that indicates that the agents selected will be drawn only from agents either local or non-\/local to this process \\
+\hline
+ & {\em count} & the number of agents to be selected. If this exceeds the number that can possibly be selected, all possible agents will be selected \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a vector into which the pointers to the agents will be placed \\
+\hline
+ & {\em filter} & user-\/defined filter specifying any criteria agents to be selected must meet \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the type of the filter to be applied to the agents \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_shared_context_a629bb877939f1a3ddbe85c8198d4bdfe}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local\-Or\-Non\-Local\-Only, }
+\item[{std\-::set$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{int}]{type, }
+\item[{filter\-Struct \&}]{filter, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a629bb877939f1a3ddbe85c8198d4bdfe}
+
+
+Gets a set of pointers to all local or non-\/local agents in this context of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values) and matching a user-\/defined filter. 
+
+If the 'remove' parameter is set to true, any elements in the original set will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em local\-Or\-Non\-Local\-Only} & flag that indicates that the agents selected will be drawn only from agents either local or non-\/local to this process \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a set into which the pointers to the agents will be placed \\
+\hline
+ & {\em type} & numeric type of agent to be selected \\
+\hline
+ & {\em filter} & user-\/defined filter specifying any criteria agents to be selected must meet \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the type of the filter to be applied to the agents \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_shared_context_a4e9ef25609d51784de8eb8634e7256d4}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local\-Or\-Non\-Local\-Only, }
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{int}]{type, }
+\item[{filter\-Struct \&}]{filter, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a4e9ef25609d51784de8eb8634e7256d4}
+
+
+Gets a randomly ordered vector of pointers to all local or non-\/local agents in this context of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values) and matching a user-\/defined filter. 
+
+If the 'remove' parameter is set to true, any elements in the original vector will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em local\-Or\-Non\-Local\-Only} & flag that indicates that the agents selected will be drawn only from agents either local or non-\/local to this process \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a vector into which the pointers to the agents will be placed \\
+\hline
+ & {\em type} & numeric type of agent to be selected \\
+\hline
+ & {\em filter} & user-\/defined filter specifying any criteria agents to be selected must meet \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the type of the filter to be applied to the agents \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_shared_context_a3b8319411f215f52f30dd55c46aa9314}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local\-Or\-Non\-Local\-Only, }
+\item[{int}]{count, }
+\item[{std\-::set$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{int}]{type, }
+\item[{filter\-Struct \&}]{filter, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_a3b8319411f215f52f30dd55c46aa9314}
+
+
+Gets a set of pointers to a specified number of randomly selected local or non-\/local agents of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values) and matching a user-\/defined filter. 
+
+If the set passed contains any elements when this method is called, the agents pointed to by those elements will be omitted from the selection.
+
+If the 'remove' parameter is set to true, any elements in the original set will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em local\-Or\-Non\-Local\-Only} & flag that indicates that the agents selected will be drawn only from agents either local or non-\/local to this process \\
+\hline
+ & {\em count} & the number of agents to be selected. If this exceeds the number that can possibly be selected, all possible agents will be selected \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a set into which the pointers to the agents will be placed \\
+\hline
+ & {\em type} & numeric type of agent to be selected \\
+\hline
+ & {\em filter} & user-\/defined filter specifying any criteria agents to be selected must meet \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the type of the filter to be applied to the agents \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1_shared_context_ad2dfe0d53036f8b199c9072c8b804629}{\index{repast\-::\-Shared\-Context@{repast\-::\-Shared\-Context}!select\-Agents@{select\-Agents}}
+\index{select\-Agents@{select\-Agents}!repast::SharedContext@{repast\-::\-Shared\-Context}}
+\subsubsection[{select\-Agents}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ template$<$typename filter\-Struct $>$ void {\bf repast\-::\-Shared\-Context}$<$ T $>$\-::select\-Agents (
+\begin{DoxyParamCaption}
+\item[{filter\-Local\-Flag}]{local\-Or\-Non\-Local\-Only, }
+\item[{int}]{count, }
+\item[{std\-::vector$<$ T $\ast$ $>$ \&}]{selected\-Agents, }
+\item[{int}]{type, }
+\item[{filter\-Struct \&}]{filter, }
+\item[{bool}]{remove = {\ttfamily false}, }
+\item[{int}]{pop\-Size = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_shared_context_ad2dfe0d53036f8b199c9072c8b804629}
+
+
+Gets a randomly ordered vector of pointers to a specified number of randomly selected local or non-\/local agents of a specified type (per their \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} values) and matching a user-\/defined filter. 
+
+If the vector passed contains any elements when this method is called, the agents pointed to by those elements will be omitted from the selection.
+
+If the 'remove' parameter is set to true, any elements in the original vector will be removed before the method returns.
+
+The pop\-Size parameter is used when the method is repeatedly called on a population whose size is known. Calls to this method typically begin by determining the size of the (valid) population to be sampled; if this is known, it can be provided here, improving performance.
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em local\-Or\-Non\-Local\-Only} & flag that indicates that the agents selected will be drawn only from agents either local or non-\/local to this process \\
+\hline
+ & {\em count} & the number of agents to be selected. If this exceeds the number that can possibly be selected, all possible agents will be selected \\
+\hline
+\mbox{\tt out}  & {\em selected\-Agents} & a vector into which the pointers to the agents will be placed \\
+\hline
+ & {\em type} & numeric type of agent to be selected \\
+\hline
+ & {\em filter} & user-\/defined filter specifying any criteria agents to be selected must meet \\
+\hline
+ & {\em remove} & if true, remove any elements originally in the set before the set is returned (default is false) \\
+\hline
+ & {\em pop\-Size} & size of the population from which the sample will be drawn\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em filter\-Struct} & the type of the filter to be applied to the agents \\
+\hline
+\end{DoxyTemplParams}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Shared\-Context.\-h\end{DoxyCompactItemize}

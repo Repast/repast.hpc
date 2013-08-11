@@ -1,0 +1,256 @@
+\hypertarget{classrepast_1_1relogo_1_1_abstract_relogo_agent}{\section{repast\-:\-:relogo\-:\-:Abstract\-Relogo\-Agent Class Reference}
+\label{classrepast_1_1relogo_1_1_abstract_relogo_agent}\index{repast\-::relogo\-::\-Abstract\-Relogo\-Agent@{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}}
+}
+
+
+Abstract base class for turtles and patches.  
+
+
+
+
+{\ttfamily \#include $<$Abstract\-Relogo\-Agent.\-h$>$}
+
+Inheritance diagram for repast\-:\-:relogo\-:\-:Abstract\-Relogo\-Agent\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{classrepast_1_1relogo_1_1_abstract_relogo_agent}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1relogo_1_1_abstract_relogo_agent_a91a3e14db2e9b51270faf04cc24c6763}{{\bfseries Abstract\-Relogo\-Agent} (Agent\-Id id, \hyperlink{classrepast_1_1relogo_1_1_observer}{Observer} $\ast$observer)}\label{classrepast_1_1relogo_1_1_abstract_relogo_agent_a91a3e14db2e9b51270faf04cc24c6763}
+
+\item 
+virtual int \hyperlink{classrepast_1_1relogo_1_1_abstract_relogo_agent_ae631f45eba5815470dea5a2059213c1b}{px\-Cor} () const =0
+\begin{DoxyCompactList}\small\item\em Gets the patch x coordinate of the agent's location. \end{DoxyCompactList}\item 
+virtual int \hyperlink{classrepast_1_1relogo_1_1_abstract_relogo_agent_a38df42fbb6277fa62d0068fbd37e6595}{py\-Cor} () const =0
+\begin{DoxyCompactList}\small\item\em Gets the patch y coordinate of the agent's location. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_abstract_relogo_agent_aa166d2f1f0bd15ff4bf66afbc2575e6e}{in\-Radius} (\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} $>$ \&in\-Set, double radius, \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \&out\-Set) const 
+\begin{DoxyCompactList}\small\item\em Gets all the agents in the in\-Set within the specified radius for this \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} and put them in the out\-Set. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Patch\-Type $>$ }\\Patch\-Type $\ast$ \hyperlink{classrepast_1_1relogo_1_1_abstract_relogo_agent_abf11a5acb9ae1c549b4800abd8d2e2c9}{patch\-At} (double dx, double dy) const 
+\begin{DoxyCompactList}\small\item\em Gets the patch at direction dx, dy from the this agent. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_abstract_relogo_agent_aac0b1c2047d71efb46b99423b3ecb94b}{turtles\-Here} (\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \&set) const 
+\begin{DoxyCompactList}\small\item\em Gets all the turtles on this turtle's patch and puts them into the specifed set. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \hyperlink{classrepast_1_1relogo_1_1_abstract_relogo_agent_a3bc15fe92588f63ad827a519137b98fc}{turtles\-Here} () const 
+\begin{DoxyCompactList}\small\item\em Gets all the turtles on this turtle's patch and returns them in an \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Patch\-Type $>$ }\\Patch\-Type $\ast$ \hyperlink{classrepast_1_1relogo_1_1_abstract_relogo_agent_ad06a915908d6a0597b707e458c1fd5de}{patch\-At\-Heading\-And\-Distance} (float heading, double \hyperlink{classrepast_1_1relogo_1_1_relogo_agent_a12a186ace28dcebf62faa6d3441f8a78}{distance})
+\begin{DoxyCompactList}\small\item\em Gets the patch at the specified heading and distance from this patch or turtle. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\void \hyperlink{classrepast_1_1relogo_1_1_abstract_relogo_agent_acf2f1f0e0acc8052de997140c8aadec8}{turtles\-On} (\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \&out) const 
+\begin{DoxyCompactList}\small\item\em Gets the turtles that are on this patch or if this is a \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} get the turtles that are on the patch this turtle is on. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Agent\-Type $>$ }\\\hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}$<$ Agent\-Type $>$ \hyperlink{classrepast_1_1relogo_1_1_abstract_relogo_agent_a851b68b9a35ae504fee0d416bd17ee0a}{turtles\-On} () const 
+\begin{DoxyCompactList}\small\item\em Gets the turtles that are on this patch or if this is a \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} get the turtles that are on the patch this turtle is on. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Abstract base class for turtles and patches. 
+
+This contains some methods that can apply to either. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1relogo_1_1_abstract_relogo_agent_aa166d2f1f0bd15ff4bf66afbc2575e6e}{\index{repast\-::relogo\-::\-Abstract\-Relogo\-Agent@{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}!in\-Radius@{in\-Radius}}
+\index{in\-Radius@{in\-Radius}!repast::relogo::AbstractRelogoAgent@{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}}
+\subsubsection[{in\-Radius}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ void repast\-::relogo\-::\-Abstract\-Relogo\-Agent\-::in\-Radius (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Set}$<$ {\bf Relogo\-Agent} $>$ \&}]{in\-Set, }
+\item[{double}]{radius, }
+\item[{{\bf Agent\-Set}$<$ Agent\-Type $>$ \&}]{out\-Set}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_abstract_relogo_agent_aa166d2f1f0bd15ff4bf66afbc2575e6e}
+
+
+Gets all the agents in the in\-Set within the specified radius for this \hyperlink{classrepast_1_1relogo_1_1_relogo_agent}{Relogo\-Agent} and put them in the out\-Set. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em in\-Set} & the set of agents to test if they are withinthe radius \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em the} & type of agents to include in the out\-Set \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_abstract_relogo_agent_abf11a5acb9ae1c549b4800abd8d2e2c9}{\index{repast\-::relogo\-::\-Abstract\-Relogo\-Agent@{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}!patch\-At@{patch\-At}}
+\index{patch\-At@{patch\-At}!repast::relogo::AbstractRelogoAgent@{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}}
+\subsubsection[{patch\-At}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Patch\-Type $>$ Patch\-Type $\ast$ repast\-::relogo\-::\-Abstract\-Relogo\-Agent\-::patch\-At (
+\begin{DoxyParamCaption}
+\item[{double}]{dx, }
+\item[{double}]{dy}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_abstract_relogo_agent_abf11a5acb9ae1c549b4800abd8d2e2c9}
+
+
+Gets the patch at direction dx, dy from the this agent. 
+
+If the resulting location is outside of the world, this returns 0.
+
+
+\begin{DoxyParams}{Parameters}
+{\em dx} & the distance from the caller along the x dimension \\
+\hline
+{\em dy} & the distance from the caller along the y dimension \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em the} & type of the \hyperlink{classrepast_1_1relogo_1_1_patch}{Patch}\\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+the patch at that distance from this \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle}, or 0 if the resulting location is outside of the world. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_abstract_relogo_agent_ad06a915908d6a0597b707e458c1fd5de}{\index{repast\-::relogo\-::\-Abstract\-Relogo\-Agent@{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}!patch\-At\-Heading\-And\-Distance@{patch\-At\-Heading\-And\-Distance}}
+\index{patch\-At\-Heading\-And\-Distance@{patch\-At\-Heading\-And\-Distance}!repast::relogo::AbstractRelogoAgent@{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}}
+\subsubsection[{patch\-At\-Heading\-And\-Distance}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Patch\-Type $>$ Patch\-Type $\ast$ repast\-::relogo\-::\-Abstract\-Relogo\-Agent\-::patch\-At\-Heading\-And\-Distance (
+\begin{DoxyParamCaption}
+\item[{float}]{heading, }
+\item[{double}]{distance}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1relogo_1_1_abstract_relogo_agent_ad06a915908d6a0597b707e458c1fd5de}
+
+
+Gets the patch at the specified heading and distance from this patch or turtle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em heading} & the heading \\
+\hline
+{\em distance} & the distance \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Patch\-Type} & the patch's type \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_abstract_relogo_agent_ae631f45eba5815470dea5a2059213c1b}{\index{repast\-::relogo\-::\-Abstract\-Relogo\-Agent@{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}!px\-Cor@{px\-Cor}}
+\index{px\-Cor@{px\-Cor}!repast::relogo::AbstractRelogoAgent@{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}}
+\subsubsection[{px\-Cor}]{\setlength{\rightskip}{0pt plus 5cm}virtual int repast\-::relogo\-::\-Abstract\-Relogo\-Agent\-::px\-Cor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1relogo_1_1_abstract_relogo_agent_ae631f45eba5815470dea5a2059213c1b}
+
+
+Gets the patch x coordinate of the agent's location. 
+
+\begin{DoxyReturn}{Returns}
+the patch x coordinate 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1relogo_1_1_relogo_agent_a8219a12f66709b4c86c547668235eda9}{repast\-::relogo\-::\-Relogo\-Agent}.
+
+
+
+Implemented in \hyperlink{classrepast_1_1relogo_1_1_turtle_abeb7b773c8c9d403317587a7acdc1c1f}{repast\-::relogo\-::\-Turtle}, and \hyperlink{classrepast_1_1relogo_1_1_patch_a410a47c2b1dc260d83c65ffb66b33a75}{repast\-::relogo\-::\-Patch}.
+
+\hypertarget{classrepast_1_1relogo_1_1_abstract_relogo_agent_a38df42fbb6277fa62d0068fbd37e6595}{\index{repast\-::relogo\-::\-Abstract\-Relogo\-Agent@{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}!py\-Cor@{py\-Cor}}
+\index{py\-Cor@{py\-Cor}!repast::relogo::AbstractRelogoAgent@{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}}
+\subsubsection[{py\-Cor}]{\setlength{\rightskip}{0pt plus 5cm}virtual int repast\-::relogo\-::\-Abstract\-Relogo\-Agent\-::py\-Cor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}}\label{classrepast_1_1relogo_1_1_abstract_relogo_agent_a38df42fbb6277fa62d0068fbd37e6595}
+
+
+Gets the patch y coordinate of the agent's location. 
+
+\begin{DoxyReturn}{Returns}
+the patch y coordinate 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classrepast_1_1relogo_1_1_relogo_agent_a4cf0eae31dc04149160dfd7b77044158}{repast\-::relogo\-::\-Relogo\-Agent}.
+
+
+
+Implemented in \hyperlink{classrepast_1_1relogo_1_1_turtle_a378a3a80d2d33e389d8d78f0e0cae6d2}{repast\-::relogo\-::\-Turtle}, and \hyperlink{classrepast_1_1relogo_1_1_patch_a9fe953832fa384a6fa19bd32511954fc}{repast\-::relogo\-::\-Patch}.
+
+\hypertarget{classrepast_1_1relogo_1_1_abstract_relogo_agent_aac0b1c2047d71efb46b99423b3ecb94b}{\index{repast\-::relogo\-::\-Abstract\-Relogo\-Agent@{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}!turtles\-Here@{turtles\-Here}}
+\index{turtles\-Here@{turtles\-Here}!repast::relogo::AbstractRelogoAgent@{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}}
+\subsubsection[{turtles\-Here}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ void repast\-::relogo\-::\-Abstract\-Relogo\-Agent\-::turtles\-Here (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Set}$<$ Agent\-Type $>$ \&}]{set}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_abstract_relogo_agent_aac0b1c2047d71efb46b99423b3ecb94b}
+
+
+Gets all the turtles on this turtle's patch and puts them into the specifed set. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em set} & the set to put the found turtles in \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of turtles to get \\
+\hline
+\end{DoxyTemplParams}
+\hypertarget{classrepast_1_1relogo_1_1_abstract_relogo_agent_a3bc15fe92588f63ad827a519137b98fc}{\index{repast\-::relogo\-::\-Abstract\-Relogo\-Agent@{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}!turtles\-Here@{turtles\-Here}}
+\index{turtles\-Here@{turtles\-Here}!repast::relogo::AbstractRelogoAgent@{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}}
+\subsubsection[{turtles\-Here}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ {\bf Agent\-Set}$<$ Agent\-Type $>$ repast\-::relogo\-::\-Abstract\-Relogo\-Agent\-::turtles\-Here (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_abstract_relogo_agent_a3bc15fe92588f63ad827a519137b98fc}
+
+
+Gets all the turtles on this turtle's patch and returns them in an \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set}. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of turtles to get\\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+an \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} containing all the turtles on this turtles patch. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1relogo_1_1_abstract_relogo_agent_acf2f1f0e0acc8052de997140c8aadec8}{\index{repast\-::relogo\-::\-Abstract\-Relogo\-Agent@{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}!turtles\-On@{turtles\-On}}
+\index{turtles\-On@{turtles\-On}!repast::relogo::AbstractRelogoAgent@{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}}
+\subsubsection[{turtles\-On}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ void repast\-::relogo\-::\-Abstract\-Relogo\-Agent\-::turtles\-On (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent\-Set}$<$ Agent\-Type $>$ \&}]{out}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_abstract_relogo_agent_acf2f1f0e0acc8052de997140c8aadec8}
+
+
+Gets the turtles that are on this patch or if this is a \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} get the turtles that are on the patch this turtle is on. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of turtle \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em out} & the turtles will be put in out \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1relogo_1_1_abstract_relogo_agent_a851b68b9a35ae504fee0d416bd17ee0a}{\index{repast\-::relogo\-::\-Abstract\-Relogo\-Agent@{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}!turtles\-On@{turtles\-On}}
+\index{turtles\-On@{turtles\-On}!repast::relogo::AbstractRelogoAgent@{repast\-::relogo\-::\-Abstract\-Relogo\-Agent}}
+\subsubsection[{turtles\-On}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename Agent\-Type $>$ {\bf Agent\-Set}$<$ Agent\-Type $>$ repast\-::relogo\-::\-Abstract\-Relogo\-Agent\-::turtles\-On (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classrepast_1_1relogo_1_1_abstract_relogo_agent_a851b68b9a35ae504fee0d416bd17ee0a}
+
+
+Gets the turtles that are on this patch or if this is a \hyperlink{classrepast_1_1relogo_1_1_turtle}{Turtle} get the turtles that are on the patch this turtle is on. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Agent\-Type} & the type of turtle\\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+an \hyperlink{classrepast_1_1relogo_1_1_agent_set}{Agent\-Set} containing all the turtles that are on the patch the caller is on. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/\-Users/murphy/work/\-Repast\-H\-P\-C\-\_\-\-G\-I\-T/repast.\-hpc/src/relogo/Abstract\-Relogo\-Agent.\-h\item 
+/\-Users/murphy/work/\-Repast\-H\-P\-C\-\_\-\-G\-I\-T/repast.\-hpc/src/relogo/Abstract\-Relogo\-Agent.\-cpp\end{DoxyCompactItemize}

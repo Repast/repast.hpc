@@ -1,0 +1,39 @@
+\hypertarget{classrepast_1_1_cart_topology}{\section{repast\-:\-:Cart\-Topology Class Reference}
+\label{classrepast_1_1_cart_topology}\index{repast\-::\-Cart\-Topology@{repast\-::\-Cart\-Topology}}
+}
+
+
+Allows retrieval of the position of this process within the M\-P\-I Cartesian Topology into which it is placed.  
+
+
+
+
+{\ttfamily \#include $<$Shared\-Base\-Grid.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_cart_topology_ac6f5ad2d1539e6e9c5c4f905bd544c19}{{\bfseries Cart\-Topology} (std\-::vector$<$ int $>$ processes\-Per\-Dim, std\-::vector$<$ double $>$ origin, std\-::vector$<$ double $>$ extents, bool space\-Is\-Periodic, boost\-::mpi\-::communicator $\ast$world)}\label{classrepast_1_1_cart_topology_ac6f5ad2d1539e6e9c5c4f905bd544c19}
+
+\item 
+\hypertarget{classrepast_1_1_cart_topology_a7de71d6717688fcf67fd89409adeef90}{void \hyperlink{classrepast_1_1_cart_topology_a7de71d6717688fcf67fd89409adeef90}{get\-Coordinates} (int rank, std\-::vector$<$ int $>$ \&coords)}\label{classrepast_1_1_cart_topology_a7de71d6717688fcf67fd89409adeef90}
+
+\begin{DoxyCompactList}\small\item\em Gets the coordinates in the M\-P\-I Cartesian Communicator for the specified rank. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_cart_topology_ac8e09a16688adc47670c082da1102b10}{\hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} \hyperlink{classrepast_1_1_cart_topology_ac8e09a16688adc47670c082da1102b10}{get\-Dimensions} (int rank)}\label{classrepast_1_1_cart_topology_ac8e09a16688adc47670c082da1102b10}
+
+\begin{DoxyCompactList}\small\item\em Gets the \hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} boundaries for the specified rank. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_cart_topology_ac55a1b28941bedb6743c7a4977bdcea9}{\hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} \hyperlink{classrepast_1_1_cart_topology_ac55a1b28941bedb6743c7a4977bdcea9}{get\-Dimensions} (std\-::vector$<$ int $>$ \&p\-Coordinates)}\label{classrepast_1_1_cart_topology_ac55a1b28941bedb6743c7a4977bdcea9}
+
+\begin{DoxyCompactList}\small\item\em Gets the \hyperlink{classrepast_1_1_grid_dimensions}{Grid\-Dimensions} boundaries for the specified M\-P\-I coordinates. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_cart_topology_adaedba511dc2fad8824ef1f64e9f073c}{void {\bfseries create\-Neighbors} (\hyperlink{classrepast_1_1_neighbors}{Neighbors} \&nghs)}\label{classrepast_1_1_cart_topology_adaedba511dc2fad8824ef1f64e9f073c}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Allows retrieval of the position of this process within the M\-P\-I Cartesian Topology into which it is placed. 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Shared\-Base\-Grid.\-h\item 
+repast\-\_\-hpc/Shared\-Base\-Grid.\-cpp\end{DoxyCompactItemize}

@@ -64,14 +64,23 @@ public:
 	}
 };
 
+/**
+ * Base class for specialized int and double NcType classes
+ */
 template<typename T>
 struct NcTypeTrait;
 
+/**
+ * Used for converting to NetCDF Data, double type
+ */
 template<>
 struct NcTypeTrait<double> {
 	const static NcType type = ncDouble;
 };
 
+/**
+ * Used for converting to NetCDF Data, int type
+ */
 template<>
 struct NcTypeTrait<int> {
 	const static NcType type = ncInt;

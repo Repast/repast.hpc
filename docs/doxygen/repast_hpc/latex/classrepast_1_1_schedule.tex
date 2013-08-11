@@ -1,0 +1,122 @@
+\hypertarget{classrepast_1_1_schedule}{\section{repast\-:\-:Schedule Class Reference}
+\label{classrepast_1_1_schedule}\index{repast\-::\-Schedule@{repast\-::\-Schedule}}
+}
+
+
+The simulation schedule queue.  
+
+
+
+
+{\ttfamily \#include $<$Schedule.\-h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_schedule_a6a31b68f08a9bb28381ffe02b18f1df3}{typedef boost\-::shared\-\_\-ptr\\*
+$<$ \hyperlink{classrepast_1_1_functor}{Functor} $>$ \hyperlink{classrepast_1_1_schedule_a6a31b68f08a9bb28381ffe02b18f1df3}{Functor\-Ptr}}\label{classrepast_1_1_schedule_a6a31b68f08a9bb28381ffe02b18f1df3}
+
+\begin{DoxyCompactList}\small\item\em Typedef of for the functors that get scheduled. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classrepast_1_1_scheduled_event}{Scheduled\-Event} $\ast$ \hyperlink{classrepast_1_1_schedule_ac5084614d3511d6fae1ccb998be2453f}{schedule\-\_\-event} (double at, \hyperlink{classrepast_1_1_schedule_a6a31b68f08a9bb28381ffe02b18f1df3}{Functor\-Ptr} functor)
+\begin{DoxyCompactList}\small\item\em \hyperlink{classrepast_1_1_schedule}{Schedule} the specified functor to execute once at the specified tick. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_scheduled_event}{Scheduled\-Event} $\ast$ \hyperlink{classrepast_1_1_schedule_a31305c3673b85cfa1e7cb3cc5e33acfc}{schedule\-\_\-event} (double start, double interval, \hyperlink{classrepast_1_1_schedule_a6a31b68f08a9bb28381ffe02b18f1df3}{Functor\-Ptr} func)
+\begin{DoxyCompactList}\small\item\em Schedules the specified functor to execute start at start, and at the specified interval thereafter. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_schedule_ab055ccbdc3f4d9bb7602704b017f9363}{void {\bfseries execute} ()}\label{classrepast_1_1_schedule_ab055ccbdc3f4d9bb7602704b017f9363}
+
+\item 
+double \hyperlink{classrepast_1_1_schedule_a04f76630d4435283b94ee526f4de752b}{get\-Current\-Tick} () const 
+\begin{DoxyCompactList}\small\item\em Gets the current simulation tick. \end{DoxyCompactList}\item 
+double \hyperlink{classrepast_1_1_schedule_a02063913da3dac3a2f1b71d6dde05bea}{get\-Next\-Tick} () const 
+\begin{DoxyCompactList}\small\item\em Gets the next tick at which the next events will be executed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The simulation schedule queue. 
+
+This wraps a priority queue to schedule repast Scheduled\-Events. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_schedule_a04f76630d4435283b94ee526f4de752b}{\index{repast\-::\-Schedule@{repast\-::\-Schedule}!get\-Current\-Tick@{get\-Current\-Tick}}
+\index{get\-Current\-Tick@{get\-Current\-Tick}!repast::Schedule@{repast\-::\-Schedule}}
+\subsubsection[{get\-Current\-Tick}]{\setlength{\rightskip}{0pt plus 5cm}double repast\-::\-Schedule\-::get\-Current\-Tick (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_schedule_a04f76630d4435283b94ee526f4de752b}
+
+
+Gets the current simulation tick. 
+
+\begin{DoxyReturn}{Returns}
+the current simulation tick. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_schedule_a02063913da3dac3a2f1b71d6dde05bea}{\index{repast\-::\-Schedule@{repast\-::\-Schedule}!get\-Next\-Tick@{get\-Next\-Tick}}
+\index{get\-Next\-Tick@{get\-Next\-Tick}!repast::Schedule@{repast\-::\-Schedule}}
+\subsubsection[{get\-Next\-Tick}]{\setlength{\rightskip}{0pt plus 5cm}double repast\-::\-Schedule\-::get\-Next\-Tick (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_schedule_a02063913da3dac3a2f1b71d6dde05bea}
+
+
+Gets the next tick at which the next events will be executed. 
+
+\begin{DoxyReturn}{Returns}
+the next tick at which the next events will be executed. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_schedule_ac5084614d3511d6fae1ccb998be2453f}{\index{repast\-::\-Schedule@{repast\-::\-Schedule}!schedule\-\_\-event@{schedule\-\_\-event}}
+\index{schedule\-\_\-event@{schedule\-\_\-event}!repast::Schedule@{repast\-::\-Schedule}}
+\subsubsection[{schedule\-\_\-event}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Scheduled\-Event} $\ast$ repast\-::\-Schedule\-::schedule\-\_\-event (
+\begin{DoxyParamCaption}
+\item[{double}]{at, }
+\item[{{\bf Functor\-Ptr}}]{functor}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_schedule_ac5084614d3511d6fae1ccb998be2453f}
+
+
+\hyperlink{classrepast_1_1_schedule}{Schedule} the specified functor to execute once at the specified tick. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em at} & the tick to execute at \\
+\hline
+{\em functor} & the functor to schedule\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the event that has been scheduled 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_schedule_a31305c3673b85cfa1e7cb3cc5e33acfc}{\index{repast\-::\-Schedule@{repast\-::\-Schedule}!schedule\-\_\-event@{schedule\-\_\-event}}
+\index{schedule\-\_\-event@{schedule\-\_\-event}!repast::Schedule@{repast\-::\-Schedule}}
+\subsubsection[{schedule\-\_\-event}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Scheduled\-Event} $\ast$ repast\-::\-Schedule\-::schedule\-\_\-event (
+\begin{DoxyParamCaption}
+\item[{double}]{start, }
+\item[{double}]{interval, }
+\item[{{\bf Functor\-Ptr}}]{func}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_schedule_a31305c3673b85cfa1e7cb3cc5e33acfc}
+
+
+Schedules the specified functor to execute start at start, and at the specified interval thereafter. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em start} & \\
+\hline
+{\em interval} & \\
+\hline
+{\em func} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the event that has been scheduled 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Schedule.\-h\item 
+repast\-\_\-hpc/Schedule.\-cpp\end{DoxyCompactItemize}

@@ -62,8 +62,10 @@ struct HashVertex {
 	}
 };
 
-// Unary function used in the transform_iterator that allows an
-// iterator over the vertex map to return the
+/**
+ * Unary function used in the transform_iterator that allows an
+ * iterator over the vertex map to return the node.
+ */
 template<typename V, typename E>
 struct NodeGetter: public std::unary_function<
 		typename boost::unordered_map<AgentId, Vertex<V, E>*, HashId>::value_type, V*> {

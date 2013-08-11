@@ -1,0 +1,110 @@
+\hypertarget{classrepast_1_1_abstract_exporter}{\section{repast\-:\-:Abstract\-Exporter Class Reference}
+\label{classrepast_1_1_abstract_exporter}\index{repast\-::\-Abstract\-Exporter@{repast\-::\-Abstract\-Exporter}}
+}
+
+
+Responsible for keeping a list of the agents that have been requested by other processes for which data is to be sent when agents' states are synchronized, and for packaging and sending that data during synchronization.  
+
+
+
+
+{\ttfamily \#include $<$Agent\-Importer\-Exporter.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Abstract\-Exporter\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classrepast_1_1_abstract_exporter}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_abstract_exporter_a128bcef08654b7749e5fc3d5fc4529ec}{typedef std\-::map$<$ int, \\*
+std\-::set$<$ \hyperlink{classrepast_1_1_agent_status}{Agent\-Status} $>$ $>$ {\bfseries Status\-Map}}\label{classrepast_1_1_abstract_exporter_a128bcef08654b7749e5fc3d5fc4529ec}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_abstract_exporter_aaf345aa59918904df1847a432f600fba}{virtual void \hyperlink{classrepast_1_1_abstract_exporter_aaf345aa59918904df1847a432f600fba}{register\-Incoming\-Requests} (std\-::vector$<$ \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} $>$ \&requests)=0}\label{classrepast_1_1_abstract_exporter_aaf345aa59918904df1847a432f600fba}
+
+\begin{DoxyCompactList}\small\item\em Makes a record of the data receives (in the form of a vector of Agent\-Requests) so that the agents' data can be sent to the requesting processes. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classrepast_1_1_abstract_exporter_a6f75977191b82e5b0c7fc574a9fd4aa1}{incorporate\-Agent\-Exporter\-Info} (std\-::map$<$ int, \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} $\ast$ $>$ info)
+\begin{DoxyCompactList}\small\item\em The set of information received here comprises the information that some other process was using to export information about agents that are now being moved to this process. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_abstract_exporter_af3aae158eb37f412c3cb64b7e3be6821}{virtual void \hyperlink{classrepast_1_1_abstract_exporter_af3aae158eb37f412c3cb64b7e3be6821}{agent\-Removed} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id)}\label{classrepast_1_1_abstract_exporter_af3aae158eb37f412c3cb64b7e3be6821}
+
+\begin{DoxyCompactList}\small\item\em 1) Removes the agent export information from this process 2) Updates the outgoing status change buffer to include the status change for this agent to all procs to which this agent was being exported (except if one of these was the proc to which the agent is now moving; this is omitted) \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_abstract_exporter_a829612ffd0827dd1120f7dc26f905c36}{virtual void \hyperlink{classrepast_1_1_abstract_exporter_a829612ffd0827dd1120f7dc26f905c36}{agent\-Moved} (const \hyperlink{classrepast_1_1_agent_id}{Agent\-Id} \&id, int process)}\label{classrepast_1_1_abstract_exporter_a829612ffd0827dd1120f7dc26f905c36}
+
+\begin{DoxyCompactList}\small\item\em 1) Removes the agent export information from this process 2) Places a copy of the agent export information into the outgoing buffer 3) Updates the outgoing status change buffer to include the status change for this agent to all procs to which this agent was being exported (except if one of these was the proc to which the agent is now moving; this is omitted) \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_abstract_exporter_a4f43a562a4f86fb1e4f4dde47508347a}{virtual const std\-::set$<$ int $>$ \& \hyperlink{classrepast_1_1_abstract_exporter_a4f43a562a4f86fb1e4f4dde47508347a}{get\-Processes\-Exported\-To} ()}\label{classrepast_1_1_abstract_exporter_a4f43a562a4f86fb1e4f4dde47508347a}
+
+\begin{DoxyCompactList}\small\item\em Gets the list of processes this exporter is sending information to. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_abstract_exporter_af63857911d4eb8a59a207daf659c047c}{Agent\-Exporter\-Info $\ast$ \hyperlink{classrepast_1_1_abstract_exporter_af63857911d4eb8a59a207daf659c047c}{get\-Agent\-Export\-Info} (int dest\-Proc)}\label{classrepast_1_1_abstract_exporter_af63857911d4eb8a59a207daf659c047c}
+
+\begin{DoxyCompactList}\small\item\em Gets the export information that has been placed into the 'outgoing agent export information' buffer because agents that were being exported are being sent to a new process, for the specified process. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_abstract_exporter_a6e5c166941bf27d1dfbc6ce9162c327f}{const Status\-Map $\ast$ \hyperlink{classrepast_1_1_abstract_exporter_a6e5c166941bf27d1dfbc6ce9162c327f}{get\-Outgoing\-Status\-Changes} ()}\label{classrepast_1_1_abstract_exporter_a6e5c166941bf27d1dfbc6ce9162c327f}
+
+\begin{DoxyCompactList}\small\item\em Gets the set of status changes for the exported agents. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_abstract_exporter_aaed51e6be3878577e7e226a810d1d8c2}{void \hyperlink{classrepast_1_1_abstract_exporter_aaed51e6be3878577e7e226a810d1d8c2}{clear\-Agent\-Export\-Info} ()}\label{classrepast_1_1_abstract_exporter_aaed51e6be3878577e7e226a810d1d8c2}
+
+\begin{DoxyCompactList}\small\item\em Clears the outgoing agent export information buffer; should be called after the information is sent. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_abstract_exporter_a4a708fff42c4bf1dfb838de5703a6e9a}{void \hyperlink{classrepast_1_1_abstract_exporter_a4a708fff42c4bf1dfb838de5703a6e9a}{clear\-Status\-Map} ()}\label{classrepast_1_1_abstract_exporter_a4a708fff42c4bf1dfb838de5703a6e9a}
+
+\begin{DoxyCompactList}\small\item\em Clears the outgoing status information buffer; should be called after the information is sent. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_abstract_exporter_a019c347c149ee82688ff94323eb67818}{virtual const std\-::map$<$ int, \\*
+\hyperlink{classrepast_1_1_agent_request}{Agent\-Request} $>$ \& \hyperlink{classrepast_1_1_abstract_exporter_a019c347c149ee82688ff94323eb67818}{get\-Agents\-To\-Export} ()}\label{classrepast_1_1_abstract_exporter_a019c347c149ee82688ff94323eb67818}
+
+\begin{DoxyCompactList}\small\item\em Gets the list of agents being exported by this exported, as a map by ints representing the processes to which information will be sent. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_abstract_exporter_a02dbd775ca06cc90edc3c8a4834f116a}{{\bfseries Abstract\-Exporter} (Status\-Map $\ast$outgoing\-Status\-Map, \hyperlink{classrepast_1_1_agent_exporter_data}{Agent\-Exporter\-Data} $\ast$outgoing\-Agent\-Exporter\-Info)}\label{classrepast_1_1_abstract_exporter_a02dbd775ca06cc90edc3c8a4834f116a}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_exporter_aee45d6557fa45a2690889dbe309d36e6}{virtual std\-::string \hyperlink{classrepast_1_1_abstract_exporter_aee45d6557fa45a2690889dbe309d36e6}{get\-Report} ()=0}\label{classrepast_1_1_abstract_exporter_aee45d6557fa45a2690889dbe309d36e6}
+
+\begin{DoxyCompactList}\small\item\em Gets a printable report of the state of this object. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_abstract_exporter_a5db82162c555e9e223e6083665266163}{virtual void {\bfseries clear} ()}\label{classrepast_1_1_abstract_exporter_a5db82162c555e9e223e6083665266163}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_exporter_adebe9add519210ab436c3fae09899cc7}{virtual void {\bfseries clear\-Export\-To\-Specific\-Proc} (int rank)}\label{classrepast_1_1_abstract_exporter_adebe9add519210ab436c3fae09899cc7}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_abstract_exporter_ad116dd70f9517119e2d2712beb33adc8}{Status\-Map $\ast$ {\bfseries outgoing\-Status\-Changes}}\label{classrepast_1_1_abstract_exporter_ad116dd70f9517119e2d2712beb33adc8}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_exporter_ab3da50572c1fcb852a8676f3deefbf1d}{\hyperlink{classrepast_1_1_agent_exporter_data}{Agent\-Exporter\-Data} $\ast$ {\bfseries outgoing\-Agent\-Exporter\-Information}}\label{classrepast_1_1_abstract_exporter_ab3da50572c1fcb852a8676f3deefbf1d}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_exporter_ad61d9e8b964430e130c42d87aad7eab6}{std\-::set$<$ int $>$ {\bfseries processes\-Exported\-To}}\label{classrepast_1_1_abstract_exporter_ad61d9e8b964430e130c42d87aad7eab6}
+
+\item 
+\hypertarget{classrepast_1_1_abstract_exporter_aed412358d3bf2742c9445b9b999a81e4}{std\-::map$<$ int, \hyperlink{classrepast_1_1_agent_request}{Agent\-Request} $>$ {\bfseries exported\-Map}}\label{classrepast_1_1_abstract_exporter_aed412358d3bf2742c9445b9b999a81e4}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Responsible for keeping a list of the agents that have been requested by other processes for which data is to be sent when agents' states are synchronized, and for packaging and sending that data during synchronization. 
+
+It is also responsible for exchanging this 'export' information when any of the agents that it is exporting are being moved to other processes; when an agent moves, its new home process must be able to assume the same export duties that its original process was performing. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_abstract_exporter_a6f75977191b82e5b0c7fc574a9fd4aa1}{\index{repast\-::\-Abstract\-Exporter@{repast\-::\-Abstract\-Exporter}!incorporate\-Agent\-Exporter\-Info@{incorporate\-Agent\-Exporter\-Info}}
+\index{incorporate\-Agent\-Exporter\-Info@{incorporate\-Agent\-Exporter\-Info}!repast::AbstractExporter@{repast\-::\-Abstract\-Exporter}}
+\subsubsection[{incorporate\-Agent\-Exporter\-Info}]{\setlength{\rightskip}{0pt plus 5cm}void Abstract\-Exporter\-::incorporate\-Agent\-Exporter\-Info (
+\begin{DoxyParamCaption}
+\item[{std\-::map$<$ int, {\bf Agent\-Request} $\ast$ $>$}]{info}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classrepast_1_1_abstract_exporter_a6f75977191b82e5b0c7fc574a9fd4aa1}
+
+
+The set of information received here comprises the information that some other process was using to export information about agents that are now being moved to this process. 
+
+This method takes that information and incorporates it into this exporter, so that this exporter can now export the agents' information to the processes that have requested it. 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Agent\-Importer\-Exporter.\-h\item 
+repast\-\_\-hpc/Agent\-Importer\-Exporter.\-cpp\end{DoxyCompactItemize}

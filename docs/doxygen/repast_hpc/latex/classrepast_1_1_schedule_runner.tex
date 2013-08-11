@@ -1,0 +1,163 @@
+\hypertarget{classrepast_1_1_schedule_runner}{\section{repast\-:\-:Schedule\-Runner Class Reference}
+\label{classrepast_1_1_schedule_runner}\index{repast\-::\-Schedule\-Runner@{repast\-::\-Schedule\-Runner}}
+}
+
+
+Runs the \hyperlink{classrepast_1_1_schedule}{Schedule} by popping events off of the \hyperlink{classrepast_1_1_schedule}{Schedule} and executing them; also provides methods for scheduling events.  
+
+
+
+
+{\ttfamily \#include $<$Schedule.\-h$>$}
+
+Inheritance diagram for repast\-:\-:Schedule\-Runner\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classrepast_1_1_schedule_runner}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classrepast_1_1_schedule_runner_a160f14417f2400eb2b569edb18ec43f9}{{\bfseries Schedule\-Runner} (boost\-::mpi\-::communicator $\ast$world)}\label{classrepast_1_1_schedule_runner_a160f14417f2400eb2b569edb18ec43f9}
+
+\item 
+\hyperlink{classrepast_1_1_scheduled_event}{Scheduled\-Event} $\ast$ \hyperlink{classrepast_1_1_schedule_runner_a607b44e70ad07b8d62cdce1426fb2ddc}{schedule\-Event} (double at, \hyperlink{classrepast_1_1_schedule_a6a31b68f08a9bb28381ffe02b18f1df3}{Schedule\-::\-Functor\-Ptr} func)
+\begin{DoxyCompactList}\small\item\em Schedules the \hyperlink{classrepast_1_1_functor}{Functor} to execute at the specified tick. \end{DoxyCompactList}\item 
+\hyperlink{classrepast_1_1_scheduled_event}{Scheduled\-Event} $\ast$ \hyperlink{classrepast_1_1_schedule_runner_a7e043ad51b6f5f7eae71d479e0eae471}{schedule\-Event} (double start, double interval, \hyperlink{classrepast_1_1_schedule_a6a31b68f08a9bb28381ffe02b18f1df3}{Schedule\-::\-Functor\-Ptr} func)
+\begin{DoxyCompactList}\small\item\em Schedules the \hyperlink{classrepast_1_1_functor}{Functor} to execute at the specified start tick and every interval thereafter. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_schedule_runner_a52e62ccda4dc3288c90586d91701ed60}{schedule\-End\-Event} (\hyperlink{classrepast_1_1_schedule_a6a31b68f08a9bb28381ffe02b18f1df3}{Schedule\-::\-Functor\-Ptr} func)
+\begin{DoxyCompactList}\small\item\em Schedules the specified functor to execute when the simulation ends. \end{DoxyCompactList}\item 
+void \hyperlink{classrepast_1_1_schedule_runner_a86fa8a634ef091adeaa43d03b040060f}{schedule\-Stop} (double at)
+\begin{DoxyCompactList}\small\item\em Schedules the simulation to stop at the specified tick. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_schedule_runner_afc5cb8954438ed0a9ff665396b2f2994}{void \hyperlink{classrepast_1_1_schedule_runner_afc5cb8954438ed0a9ff665396b2f2994}{run} ()}\label{classrepast_1_1_schedule_runner_afc5cb8954438ed0a9ff665396b2f2994}
+
+\begin{DoxyCompactList}\small\item\em Starts and runs the simulation schedule. \end{DoxyCompactList}\item 
+double \hyperlink{classrepast_1_1_schedule_runner_ab463376b173578b8e4e2f6f1ea378bcd}{current\-Tick} ()
+\begin{DoxyCompactList}\small\item\em Gets the current tick. \end{DoxyCompactList}\item 
+\hypertarget{classrepast_1_1_schedule_runner_a83c18e2030d72c7ae36ccf6a0723d9b8}{void \hyperlink{classrepast_1_1_schedule_runner_a83c18e2030d72c7ae36ccf6a0723d9b8}{stop} ()}\label{classrepast_1_1_schedule_runner_a83c18e2030d72c7ae36ccf6a0723d9b8}
+
+\begin{DoxyCompactList}\small\item\em Stops the simulation. \end{DoxyCompactList}\item 
+const \hyperlink{classrepast_1_1_schedule}{Schedule} \& \hyperlink{classrepast_1_1_schedule_runner_a18301612463546255bcd94513be5cc88}{schedule} ()
+\begin{DoxyCompactList}\small\item\em Gets the schedule executed by this simulation runner. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Runs the \hyperlink{classrepast_1_1_schedule}{Schedule} by popping events off of the \hyperlink{classrepast_1_1_schedule}{Schedule} and executing them; also provides methods for scheduling events. 
+
+Simulation events should be scheduled for execution using this class which is accessible via \hyperlink{classrepast_1_1_repast_process_a8eed21e917ec5d66a11cde664938e92f}{Repast\-Process\-::instance()}-\/$>$get\-Schedule\-Runner() 
+
+\subsection{Member Function Documentation}
+\hypertarget{classrepast_1_1_schedule_runner_ab463376b173578b8e4e2f6f1ea378bcd}{\index{repast\-::\-Schedule\-Runner@{repast\-::\-Schedule\-Runner}!current\-Tick@{current\-Tick}}
+\index{current\-Tick@{current\-Tick}!repast::ScheduleRunner@{repast\-::\-Schedule\-Runner}}
+\subsubsection[{current\-Tick}]{\setlength{\rightskip}{0pt plus 5cm}double repast\-::\-Schedule\-Runner\-::current\-Tick (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_schedule_runner_ab463376b173578b8e4e2f6f1ea378bcd}
+
+
+Gets the current tick. 
+
+\begin{DoxyReturn}{Returns}
+the current tick 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_schedule_runner_a18301612463546255bcd94513be5cc88}{\index{repast\-::\-Schedule\-Runner@{repast\-::\-Schedule\-Runner}!schedule@{schedule}}
+\index{schedule@{schedule}!repast::ScheduleRunner@{repast\-::\-Schedule\-Runner}}
+\subsubsection[{schedule}]{\setlength{\rightskip}{0pt plus 5cm}const {\bf Schedule}\& repast\-::\-Schedule\-Runner\-::schedule (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classrepast_1_1_schedule_runner_a18301612463546255bcd94513be5cc88}
+
+
+Gets the schedule executed by this simulation runner. 
+
+\begin{DoxyReturn}{Returns}
+the schedule used by this simulation runner. 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_schedule_runner_a52e62ccda4dc3288c90586d91701ed60}{\index{repast\-::\-Schedule\-Runner@{repast\-::\-Schedule\-Runner}!schedule\-End\-Event@{schedule\-End\-Event}}
+\index{schedule\-End\-Event@{schedule\-End\-Event}!repast::ScheduleRunner@{repast\-::\-Schedule\-Runner}}
+\subsubsection[{schedule\-End\-Event}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Schedule\-Runner\-::schedule\-End\-Event (
+\begin{DoxyParamCaption}
+\item[{{\bf Schedule\-::\-Functor\-Ptr}}]{func}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_schedule_runner_a52e62ccda4dc3288c90586d91701ed60}
+
+
+Schedules the specified functor to execute when the simulation ends. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em func} & the functor to execute when the simulatione ends \\
+\hline
+\end{DoxyParams}
+\hypertarget{classrepast_1_1_schedule_runner_a607b44e70ad07b8d62cdce1426fb2ddc}{\index{repast\-::\-Schedule\-Runner@{repast\-::\-Schedule\-Runner}!schedule\-Event@{schedule\-Event}}
+\index{schedule\-Event@{schedule\-Event}!repast::ScheduleRunner@{repast\-::\-Schedule\-Runner}}
+\subsubsection[{schedule\-Event}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Scheduled\-Event} $\ast$ repast\-::\-Schedule\-Runner\-::schedule\-Event (
+\begin{DoxyParamCaption}
+\item[{double}]{at, }
+\item[{{\bf Schedule\-::\-Functor\-Ptr}}]{func}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_schedule_runner_a607b44e70ad07b8d62cdce1426fb2ddc}
+
+
+Schedules the \hyperlink{classrepast_1_1_functor}{Functor} to execute at the specified tick. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em at} & the time to execute at \\
+\hline
+{\em func} & the functor to execute\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the event that was scheduled for the func 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_schedule_runner_a7e043ad51b6f5f7eae71d479e0eae471}{\index{repast\-::\-Schedule\-Runner@{repast\-::\-Schedule\-Runner}!schedule\-Event@{schedule\-Event}}
+\index{schedule\-Event@{schedule\-Event}!repast::ScheduleRunner@{repast\-::\-Schedule\-Runner}}
+\subsubsection[{schedule\-Event}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Scheduled\-Event} $\ast$ repast\-::\-Schedule\-Runner\-::schedule\-Event (
+\begin{DoxyParamCaption}
+\item[{double}]{start, }
+\item[{double}]{interval, }
+\item[{{\bf Schedule\-::\-Functor\-Ptr}}]{func}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_schedule_runner_a7e043ad51b6f5f7eae71d479e0eae471}
+
+
+Schedules the \hyperlink{classrepast_1_1_functor}{Functor} to execute at the specified start tick and every interval thereafter. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em start} & the time to start at \\
+\hline
+{\em interval} & the interval to execute at \\
+\hline
+{\em func} & the functor to execute\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the event that was scheduled for the func 
+\end{DoxyReturn}
+\hypertarget{classrepast_1_1_schedule_runner_a86fa8a634ef091adeaa43d03b040060f}{\index{repast\-::\-Schedule\-Runner@{repast\-::\-Schedule\-Runner}!schedule\-Stop@{schedule\-Stop}}
+\index{schedule\-Stop@{schedule\-Stop}!repast::ScheduleRunner@{repast\-::\-Schedule\-Runner}}
+\subsubsection[{schedule\-Stop}]{\setlength{\rightskip}{0pt plus 5cm}void repast\-::\-Schedule\-Runner\-::schedule\-Stop (
+\begin{DoxyParamCaption}
+\item[{double}]{at}
+\end{DoxyParamCaption}
+)}}\label{classrepast_1_1_schedule_runner_a86fa8a634ef091adeaa43d03b040060f}
+
+
+Schedules the simulation to stop at the specified tick. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em at} & the tick at which the simulation should stop \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+repast\-\_\-hpc/Schedule.\-h\item 
+repast\-\_\-hpc/Schedule.\-cpp\end{DoxyCompactItemize}
