@@ -23,7 +23,7 @@ bin/
   zombie_model.exe
 
 To run this makefile, you must provide values for each of the variables in the
-list below. You can do this by adding values directly in in the Makefile, or by invoking 'make'
+list below. You can do this by adding values directly into the Makefile, or by invoking 'make'
 from the command line with these variables specified, i.e.:
 
    make -f Makefile_MANUAL CXX="gcc -g -O3" BOOST_INCLUDE=/home/Boost/Boost_1.48/include"
