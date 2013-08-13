@@ -215,7 +215,8 @@ private:
 	friend class ProviderReceiver;
 
 	repast::SharedContext<Node> nodes;
-	repast::SharedNetwork<Node, repast::RepastEdge<Node> >* net;
+	repast::RepastEdgeContentManager<Node> edgeContentManager;
+	repast::SharedNetwork<Node, repast::RepastEdge<Node>, repast::RepastEdgeContent<Node>, repast::RepastEdgeContentManager<Node> >* net;
 	repast::SVDataSet* dataSet;
 	int rank, stopAt;
 	double totalNodes;

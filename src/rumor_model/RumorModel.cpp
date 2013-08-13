@@ -67,6 +67,8 @@ const string STOP_AT = "stop.at";
 const string SHARED_NODES_N = "shared.nodes.n";
 const string RUN_NUMBER = "run.number";
 
+BOOST_CLASS_EXPORT_GUID(repast::SpecializedProjectionInfoPacket<repast::RepastEdgeContent<Node> >, "SpecializedEdgeContent");
+
 Node::Node(AgentId id, double probability, string distName) :
 	id_(id), rumored_(false), rProb(probability), distName_(distName) {
 }
@@ -91,7 +93,7 @@ void Node::update(Node *node) {
 }
 
 RumorModel::RumorModel(const string& propsFile, int argc, char** argv, boost::mpi::communicator* comm) :
-	lastRumorSum(0), noChangeCount(0), props(propsFile, argc, argv, comm) {
+	lastRumorSum(0), nodes(comm), noChangeCount(0), props(propsFile, argc, argv, comm) {
 
 	RepastProcess *rp = RepastProcess::instance();
 	rank = rp->rank();
@@ -103,7 +105,7 @@ RumorModel::RumorModel(const string& propsFile, int argc, char** argv, boost::mp
 	stopAt = strToDouble(props.getProperty(STOP_AT));
 	runNumber = (props.contains(RUN_NUMBER) ? strToInt(props.getProperty(RUN_NUMBER)) : -1);
 
-	net = new SharedNetwork<Node, RepastEdge<Node> > ("network", true);
+	net = new SharedNetwork<Node, RepastEdge<Node>, RepastEdgeContent<Node>, RepastEdgeContentManager<Node> > ("network", true, &edgeContentManager);
 	nodes.addProjection(net);
 
 	std::string fileOutputName("./output/rumor_model_data" + (runNumber >= 0 ? "_RUN_" + boost::lexical_cast<string>(runNumber) : "") + ".csv");
@@ -124,8 +126,11 @@ void RumorModel::init() {
 
 	buildNetwork(props);
 	NodeAdder adder(this);
-	repast::createComplementaryEdges<Node, RepastEdge<Node> , NodeContent, EdgeContent, RumorModel, NodeAdder>(net,
-			nodes, *this, adder);
+//	repast::createComplementaryEdges<Node, RepastEdge<Node> , NodeContent, EdgeContent, RumorModel, NodeAdder>(net,
+//			nodes, *this, adder);
+
+	repast::RepastProcess::instance()->synchronizeProjectionInfo<Node, NodeContent, RumorModel, RumorModel, NodeAdder >
+	   (nodes, *this, *this, adder);
 
   // Count non-local nodes (proc 0 only) for output
   double nlc = 0;
@@ -295,8 +300,8 @@ void RumorModel::buildNetwork(Properties& props) {
 	}
 
 	NodeAdder adder(this);
-	repast::requestAgents<Node, NodeContent>(nodes, request, *this, adder);
-	KEBuilder<Node, RepastEdge<Node> > builder;
+	repast::RepastProcess::instance()->requestAgents<Node, NodeContent, RumorModel, RumorModel, NodeAdder>(nodes, request, *this, *this, adder);
+	KEBuilder<Node, RepastEdge<Node>, RepastEdgeContent<Node>, RepastEdgeContentManager<Node> > builder;
 	builder.build(props, net);
 
 }
@@ -398,9 +403,9 @@ RepastEdge<Node>* RumorModel::createEdge(repast::Context<Node>& context, EdgeCon
 }
 
 void RumorModel::synchAgents() {
-	repast::syncAgents<NodeContent>(*this, *this);
+	repast::RepastProcess::instance()->synchronizeAgentStates<NodeContent, RumorModel, RumorModel>(*this, *this);
   NodeAdder na(this);
-  repast::RepastProcess::instance()->syncAgentStatus<Node, NodeContent, RumorModel, NodeAdder>(nodes, *this, na);
+  repast::RepastProcess::instance()->synchronizeAgentStatus<Node, NodeContent, RumorModel, NodeAdder, RumorModel>(nodes, *this, *this, na);
 }
 
 void RumorModel::spreadRumor() {
