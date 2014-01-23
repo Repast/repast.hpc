@@ -7,7 +7,7 @@ rumor_model_SOURCES = RumorModel.cpp \
 
 rumor_model_CPPFLAGS = $(BOOST_CPPFLAGS) -I ..
 rumor_model_LDFLAGS = $(BOOST_MPI_LDFLAGS) $(BOOST_SERIALIZATION_LDFLAGS)
-rumor_model_LDADD = ../repast_hpc/librepast_hpc-1.0.1.la ../relogo/librelogo-1.0.1.la $(BOOST_MPI_LIBS) $(BOOST_SERIALIZATION_LIBS) -lnetcdf_c++
+rumor_model_LDADD = ../repast_hpc/librepast_hpc-2.0.0.la ../relogo/librelogo-2.0.0.la $(BOOST_MPI_LIBS) $(BOOST_SERIALIZATION_LIBS) -lnetcdf_c++
 
 rumor_DATA = model.props config.props README.txt
 
