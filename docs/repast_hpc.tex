@@ -106,14 +106,16 @@ class AgentId {
 
 public:
 	/**
-	 * Creates an AgentId.The combination of the
+	 * Creates an AgentId. The combination of the first
 	 * three parameters should uniquely identify the agent.
 	 *
 	 * @param id the agent's id
 	 * @param startProc the rank of the agent's starting process
 	 * @param agentType the agent's type (user defined)
+	 * @param currentProc the rank where the agent is a local agent
 	 */
-	AgentId(int id, int startProc, int agentType);
+	AgentId(int id, int startProc, int agentType, int currentProc = -1);
+
 	virtual ~AgentId();
 
 	/**
@@ -298,11 +300,14 @@ It has methods for getting the total number of processes in the simulation and g
 \captionsetup{labelformat=empty,labelsep=none}
 \lstset{language=c++,caption=, numbers=none}
 \begin{lstlisting}
-template<typename T, typename Package, typename Provider,  typename Receiver>
-void requestAgents(SharedContext<T>& context, AgentRequest& request,  Provider& provider, Receiver& creator)
+  template<typename T, typename Content, typename Provider, typename Updater, typename AgentCreator>
+  void requestAgents(SharedContext<T>& context, AgentRequest& request, Provider& provider, Updater& updater, AgentCreator& creator
+      , std::string setName = DEFAULT_AGENT_REQUEST_SET, AGENT_IMPORTER_EXPORTER_TYPE setType = DEFAULT_ENUM_SYMBOL
+#endif
+);
 \end{lstlisting}
 
-This uses the Package pattern to package, provide and receive the agents. The AgentRequest encapsulates the request and the context is the simulation context (as described above).  An example,
+This uses the Package pattern to package, provide and receive the agents. The AgentRequest encapsulates the request and the context is the simulation context (as described above).  (The capitalized terms relate to an optimization strategy in which the agents are requested as a set, and the set is assigned a name by which this group of agents can later be referenced.) An example,
 
 \captionsetup{labelformat=simple,labelsep=colon}
 \lstset{language=c++,caption=Example Agent Request,label=lst:provider, numbers=left}
@@ -313,17 +318,22 @@ for (int i = 0; i < 10; i++) {
   	AgentId id = createRandomOtherRankId(); 
   	request.addRequest(id);
 } 
-repast::requestAgents<Package>(context, request, provider, receiver);
+repast::RepastProcess::instance()->requestAgents<AgentType, AgentPackageContent, ProviderType, UpdaterType, CreatorType>(context, request, *this, *this, *this);
 \end{lstlisting}
-An AgentRequest is created, passing the process rank of the process making the request in the constructor. The requested ids are then added to the request. Then the request is made. Repast HPC will call the providers on the appropriate processes to provide the Packages that encapsulate the requested agents, and transfer these Packages to the receivers. The receivers will create Agents from these and Repast HPC will add those to the context.
+An AgentRequest is created, passing the process rank of the process making the request in the constructor. The requested ids are then added to the request. Then the request is made. Repast HPC will call the providers on the appropriate processes to provide the Packages that encapsulate the requested agents, and transfer these Packages to the receivers. The receivers will create Agents from these and Repast HPC will add those to the context. Note that in this example the Provider, Updater, and Creator are all the same class (the class making the request).
 
 Agent state synchronization works similarly except that rather than creating new agents, the receiver is expected to update existing agents from the Package contents.
 \captionsetup{labelformat=empty,labelsep=none}
 \lstset{language=c++,caption=, numbers=none}
 \begin{lstlisting}
-template<typename Package, typename Provider, typename Receiver>
-void repast::syncAgents(Provider& provider, Receiver& updater)
+  template<typename Content, typename Provider, typename Updater>
+  void synchronizeAgentStates(Provider& provider, Updater& updater
+   , std::string setName = REQUEST_AGENTS_ALL
+);
 \end{lstlisting}
+
+(The setName parameter refers to the possibility of updating the agent states only of a named set of agents, as a potential optimization.)
+
 The RepastProcess component also synchronizes the status of an agent. If an agent has been removed from the simulation (e.g. ``died") then any processes with a copy of it must be informed of its new status. Similarly, if an agent migrates to another process and becomes local to a new process then its status must be synchronized.
 \captionsetup{labelformat=empty,labelsep=none}
 \lstset{language=c++,caption=, numbers=none}
@@ -331,10 +341,15 @@ The RepastProcess component also synchronizes the status of an agent. If an agen
 template<typename T, typename Content, typename Provider, typename AgentCreator>
 void RepastProcess::syncAgentStatus(SharedContext<T>& context, Provider& provider, AgentCreator& creator) 
 \end{lstlisting}
+
 Additional details about these methods and functions as well as the template type requirements can be found in the API documentation.
+
+
+
 
 \subsection{Parallel Scheduling}
 A described above, Repast HPC uses a discrete event scheduler to iterate the simulation forward. Each process has its own discrete-event schedule. TThe schedules are tightly and conservatively synchronized across processes (i.e., all processes execute the same tick). Each iteration of the schedule loop, each schedule determines the next tick (time step) that should be executed. Each schedule only executes events scheduled for a global minimum next tick which is determined using MPI's 'all reduce’ on the set of local next ticks. This is largely invisible to the user though. The user just schedules events where are typically agent behaviors and data collection. Repast HPC handles any necessary synchronization.
+
 \subsubsection{Scheduling an Event}
 The RepastProcess provides access to the ScheduleRunner. The ScheduleRunner API allows the programmer to schedule events to execute at:
 \begin{itemize}
@@ -406,7 +421,7 @@ See the API docs for Context and SharedContext for more details.
 \subsection{Parallel Projections}
 Parallel projections impose relational structure on members of contexts. In addition to the API relevant to their the structure (e.g. Network::addEdge), parallel projections provide functionality for composing a pan-process projection from smaller local ones. Smaller local grids create a pan-process grid through the use of a buffer Smaller local networks create a pan-process network though cross-process links, and the creation of complementary links. Parallel projections are added by name to a SharedContext during their setup.  Projections can be retrieved by name from the SharedContext. Any agent added to the SharedContext is automatically added to its associated projections.
 
-\subsubsection{SharedNetwork}
+\subsubsection{Shared Networks}
 The SharedNetwork provides typical network functionality such as creating and removing edges, finding node successors and predecessors, iterators over vertices and edges.
 \captionsetup{labelformat=empty,labelsep=none}
 \lstset{language=c++,caption=, numbers=none}
@@ -420,63 +435,13 @@ void adjacent(V* vertex, std::vector<V*>& out);
 \end{lstlisting}
 where V and E are template parameters, identifying the vertex (i.e. agent) and edge types respectively. The default edge type is RepastEdge and any user edge types should extend the RepastEdge class.
 
-The network represented by the SharedNetwork class is distributed across processes. Each process manages some smaller part of the larger pan-process network. The smaller parts are stitched together by the user using shared (i.e. agents) and shared edges. The cross-process creation and synchronization of nodes and edges is mostly automated by Repast HPC. For example, the simulation running on process P1 wants to create a cross-process edge between its local agent P1 and the non-local agent B2 on process P2. 
+The network represented by the SharedNetwork class is distributed across processes. Each process manages some smaller part of the larger pan-process network. The smaller parts are stitched together by the user using shared (i.e. agents) and shared edges. 
 
 \includegraphics[width=150mm]{net.png}
 
-In order to do so, the simulation on P1 must request B2 using the request agents method described previously. The SharedContext on P1 will then contain a non-local copy of B2  and consequently B2 will be a node in the SharedNetwork running on P1. The edge can then be created between A1 and B2 in the SharedNetwork on P1. However, in order for the complementary edge between A1 and B2 to be created in the SharedNetwork on P2, \texttt{createComplementaryEdges} must be called. This will create a copy of A1 in the SharedContext on P2 as well as add a copy of the edge to the SharedNetwork on P2. 
-\captionsetup{labelformat=empty,labelsep=none}
-\lstset{language=c++,caption=, numbers=none}
-\begin{lstlisting}
-template<typename Vertex, typename Edge, typename AgentContent, typename EdgeContent, typename EdgeManager, typename AgentCreator>
-void createComplementaryEdges(SharedNetwork<Vertex, Edge>* net, SharedContext<Vertex>& context, EdgeManager& edgeManager, AgentCreator& creator);
-\end{lstlisting}
- \texttt{createComplementaryEdges}  uses the Package pattern described earlier, adapted to work with edges. Sharing edges requires both the packaging of the edge as well as packaging of the agents that are the source and target nodes of the edge. For this reason  \texttt{createComplementaryEdges}  requires an EdgeManager that acts the provider and receiver for the edges and an AgentCreator that can receive the agent Packages that represent the edge's nodes. See the API documentation for more details.
-\subsubsection{Some SharedNetwork examples}
-Creating a network:
-\captionsetup{labelformat=empty,labelsep=none}
-\lstset{language=c++,caption=, numbers=none}
-\begin{lstlisting}
-SharedNework* net = new SharedNetwork<ModelAgent, ModelEdge>(
-	"network",  true);
-\end{lstlisting}
- The SharedNetwork constructor takes two arguments:
- \begin{enumerate}
-\item
-the name of the network . This should be unique with respect to the other projections in the simulation.
-\item 
-whether or not the network is directed.
-\end{enumerate}•
-The SharedNetwork also takes two template arguments:
- \begin{enumerate}
-\item
-the node (that is, the agent) type
-\item 
-the edge type. This must either be or extend \texttt{repast::RepastEdge}.
-\end{enumerate}
-Once the network has been created edges can be added, network neighbors can be retrieved, etc.
-\captionsetup{labelformat=empty,labelsep=none}
-\lstset{language=c++,caption=, numbers=left}
-\begin{lstlisting}
-AgentId sourceId(1, 1, 0);
-AgentId targetId(3, 1, 0); 
-ModelAgent* source = context.getAgent(sourceId); 
-ModelAgent* target = context.getAgent(targetId);
-
-SharedNetwork* net = new SharedNetwork<ModelAgent,ModelEdge>
-	( "network", true);
-context.addProjection(net);
-// add an edge between the source and target
-net->addEdge(source, target);
-// get all the agents that have an incoming edge from source
-std::vector<ModelAgent*> nghs; 
-net->successors(source, nghs);
-// do something with the successors.
-\end{lstlisting}
-See the SharedNetwork API documentation for more details.
-
-\subsection{Shared Grids and SharedSpaces}
+\subsubsection{Shared Grids and SharedSpaces}
 Shared Grid and Shared Space projections provide the typical ABMS grid and space functionality for discrete grids and continuous spaces. Namely, moving agents to some particular grid or space location, getting the agent or agents at a particular location, and getting the location of some particular agent.
+
 \captionsetup{labelformat=empty,labelsep=none}
 \lstset{language=c++,caption=, numbers=none}
 \begin{lstlisting}
@@ -492,13 +457,13 @@ bool getLocation(const T* agent,
 The discrete grid and continuous space code derives from a common base class and they are largely separated through the use of particular template parameters. Four typical types have been defined as typedefs with default template arguments in the SharedGrids struct.
 \begin{enumerate}
 \item
-SharedWrappedGrid - a discrete periodic grid, that is, a grid wrapped to become a torus.
+SharedWrappedDiscreteSpace - a discrete periodic grid, that is, a grid wrapped to become a torus.
 \item
-SharedStrictGrid - a discrete grid with strict, non-wrapped borders.
+SharedStrictDiscreteSpace - a discrete grid with strict, non-wrapped borders.
 \item
-SharedWrappedSpace - a continuous space wrapped into a torus.
+SharedWrappedContinuousSpace - a continuous space wrapped into a torus.
 \item
-SharedStrictSpace - a continuous space with strict, non-wrapped borders.
+SharedStrictContinuousSpace - a continuous space with strict, non-wrapped borders.
 \end{enumerate}
 
 As with the SharedNetwork, shared grids and spaces are distributed across processes. Each process is responsible for a particular section of a larger pan-process grid. Each subsection has a user-defined buffer that specifies how much of the grid to share with other processes.
@@ -507,60 +472,34 @@ As with the SharedNetwork, shared grids and spaces are distributed across proces
 
 Here there are 4 processes, each responsible for a subsection of the grid. The entire grid runs from (0,0) x (5,7). Process P1 is responsible for the subsection (0,0) x (2, 3), P2 for (3,0) x (5,3) and so on. The buffer has a value of 1, so P1, for instance, contains a buffered area that includes all of column 3 from P2 and row 4 from P3. In this way, the larger pan-process grid is stitched together by overlapping the smaller subsections. Grid and space buffers are synchronized using the Package type pattern the \texttt{synchBuffer} method called on the grid or space that is being synchronized. See the API docs for more info.
 
-Repast HPC is designed so that agents local to a process have a location that is within the bounds of the process' grid or space subsection. For example, all the agents local to P1 are expected to have a location within (0,0) x (2, 3). If an agent moves off the local grid, then that agent will be migrated to the process whose grid subsection the agent has moved into. This migration will occur when the agent's status is updated using \texttt{void RepastProcess::syncAgentStatus(SharedContext<T>\& context, Provider\& provider, AgentCreator\& creator) } described above.
+Repast HPC is designed so that agents local to a process have a location that is within the bounds of the process' grid or space subsection. For example, all the agents local to P1 are expected to have a location within (0,0) x (2, 3). If an agent moves off the local grid, then that agent will be migrated to the process whose grid subsection the agent has moved into. This migration will occur when the agent's status is updated using the `synchronize agent status' method described above.
 
-\subsubsection{Some Grid and Space Examples}
+\subsection{Synchronizing Projections}
 
-Creating a discrete grid:
+RepastProcess includes a method that, when called, synchronizes projection information. The method signature is:
 
 \captionsetup{labelformat=empty,labelsep=none}
 \lstset{language=c++,caption=, numbers=none}
 \begin{lstlisting}
-grid = new SharedGrids<ModelAgent>::SharedWrappedGrid("grid", GridDimensions(Point<int>4000, 5000)), std::vector<int>(2, 2), 2);
+  template<typename T, typename Content, typename Provider, typename Updater, typename AgentCreator>
+  void synchronizeProjectionInfo(SharedContext<T>& context, Provider& provider, Updater& updater, AgentCreator& creator,
+      EXCHANGE_PATTERN exchangePattern = POLL
+  #ifdef SHARE_AGENTS_BY_SET
+      , bool declareNoAgentsKeptOnAnyProcess = false
+  #endif
+);
 \end{lstlisting}
 
-The grid (and space) constructor takes 4 arguments:
- \begin{enumerate}
-\item
-the name of the grid or space . This should be unique with respect to the other projections in the simulation.
-\item 
-the dimensions of the grid. This is an optional origin followed by the extent of the grid.
-\item
-a vector indicating how many processes are in the x and y dimensions. For example, in the graphic above
-the X dimension has two processes and the Y also has 2. The elements of this vector must multiply to the number of processes the simulation is run with.
-\item the buffer size
+In Repast HPC 1.0.1, independent synchronization calls were provided for each projection. Repast HPC 2.0 replaces this with the new synchronizeProjectionInformation method. When called this method:
+
+\begin{enumerate}
+\item removes all non-local agents that are on the process that are not needed
+\item updates all other processes with new projection information pertaining to agents that either do or should exist as non-local agents on other processes (and receives the same from the other processes)
 \end{enumerate}
-Using the grid:
-\captionsetup{labelformat=empty,labelsep=none}
-\lstset{language=c++,caption=, numbers=left}
-\begin{lstlisting}
-AgentId agentId(3, 1, 0); 
-ModelAgent* agent = context.getAgent(agentId); 
-// move the agent to grid cell at 10, 10
-grid->moveTo(agent, Point<int>(10, 10));
 
-// get the all the agents at 10, 10 and put them in out
-std::vector<ModelAgent*> out; 
-grid->getObjectsAt(Point<int>(10, 10), out);
-\end{lstlisting}
+For example, consider a simulation that has a network projection and a spatial projection. A given process should have all of its local agents, plus all of the agents in the buffer zones of the surrounding processes, plus all of the agents to which it is connected in the network. Calling the synchronize method will result in these agents being present on the process. Non-local agents that are not needed are removed. For example, suppose an agent from another process was on the local process because it was connected to a local agent via a network connection; suppose, however, that this connection were eliminated on the other process. After synchronization, this agent would no longer be on the local process. Similarly, suppose a non-local agent were present because it was in an adjacent process's buffer zone, but since the last synchronization, the agent has moved out of the buffer zone. When synchronization is called this agent will no longer be present on the local process.
 
-Continuous Spaces work similarly but use \texttt{Point<double>} for locations.
-
-\begin{minipage}[h]{\textwidth}
-\captionsetup{labelformat=empty,labelsep=none}
-\lstset{language=c++,caption=, numbers=left}
-\begin{lstlisting}
-space = new SharedGrids<ModelAgent>::SharedWrappedSpace(
-	"space", GridDimensions(Point<int>4000, 5000)), std::vector<int>(2, 2),2);
-
-AgentId agentId(3, 1, 0); 
-ModelAgent* agent = context.getAgent(agentId);
-space->moveTo(agent, Point<double>(10.3, 10.3));
- 
-std::vector<ModelAgent*> out; 
-space->getObjectsAt(Point<double>(1324.2, 1032.3), out);
-\end{lstlisting} 
-\end{minipage}
+An important aspect of this new synchronization strategy is that all non-local agents arrive on a process with all of their projection information. In the preceding example, the agent that was present on the local process because of a network connection would still have had its spatial location available: it would be possible for the local agent that is the source of the network connection to have obtained the spatial location of the non-local agent to which it was connected, even though that agent's position might be many processes away in simulation space.
 
 \subsection{Data Collection}
 Repast HPC supports two types of data collection:
@@ -1062,7 +1001,6 @@ When the Zombies and Humans are created in our Observers setup method, we store 
 \lstset{language=c++,caption=, numbers=left}
 \begin{lstlisting}
 void ZombieObserver::setup(Properties props) {
-	Observer::setup(props);
 	int count = strToInt(props.getProperty(HUMAN_COUNT_PROP));
 	humanType = create<Human> (count);
 
@@ -1078,8 +1016,7 @@ The types are stored in humanType and zombieType. Then when unpacking an AgentPa
 \captionsetup{labelformat=empty,labelsep=none}
 \lstset{language=c++,caption=, numbers=left}
 \begin{lstlisting}
-void ZombieObserver::createAgents(std::vector<AgentPackage>& contents, 
-	std::vector<RelogoAgent*>& out) {
+void ZombieObserver::createAgents(std::vector<AgentPackage>& contents, std::vector<RelogoAgent*>& out) {
 	for (size_t i = 0, n = contents.size(); i < n; ++i) {
 		AgentPackage content = contents[i];
 		if (content.type == zombieType) {
@@ -1202,24 +1139,20 @@ struct CountHumansOnPatch {
 };
 
 void Zombie::step() {
-	// get the neighbors of the patch I'm on
-	AgentSet<Patch> nghs = patchHere<Patch>()->neighbors<Patch>();
-	// which patch as the most humans
-	Patch* winningPatch = nghs.maxOneOf(CountHumansOnPatch());
-	// face that patch and move towards it
-	face(winningPatch);
-	move(.5);
+    Patch* p = patchHere<Patch>();
+    AgentSet<Patch> nghs = patchHere<Patch>()->neighbors<Patch>();
+    Patch* winningPatch = nghs.maxOneOf(CountHumansOnPatch());
+    face(winningPatch);
+    move(.5);
 
-	// get the humans on my patch
-	AgentSet<Human> humans;
-	turtlesHere(humans);
-	
-	// if there are any get the first one and infect it
-	if (humans.size() > 0) {
-		Human* human = humans.oneOf();
-		infect(human);
-	}
-}
+    AgentSet<Human> humans;
+    turtlesHere(humans);
+
+    if (humans.size() > 0) {
+      Human* human = humans.oneOf();
+      infect(human);
+    }
+ }
 
 void Zombie::infect(Human* human) {
 	human->infect();
@@ -1247,28 +1180,29 @@ void Human::infect() {
 }
 
 void Human::step() {
+	// if human is now dead we can't move it because
+	// it will be removed from the sim and the synchronization
+	// mechanism cannot move it.
 	bool alive = true;
 	if (_infected) {
-		// infected, increase the amount of time infected
 		_infectionTime++;
-		if (_infectionTime == 5) {
-			// infected for 5 tiimesteps, so hatch a zombie here 
-			// and kill the human.			
+		if (_infectionTime == 50) {
+			// should be safe to die here as nothing else
+			// will need this object, so OK to delete it
 			_observer->hatch<Zombie> (this);
 			die();
 			alive = false;
 		}
 	}
-
+	
 	if (alive) {
-		// are there any zombies in the neighborhood
+		// are there any zombies in the ngh
 		AgentSet<Patch> nghs = patchHere<Patch> ()->neighbors<Patch> ();
-		//  find the path with the least zombies
 		Patch* winningPatch = nghs.minOneOf(CountZombiesOnPatch());
-		// face the patch with the least zombies
 		face(winningPatch);
-		// run there.
-		move(1.5);
+		double distanceToMove = 1.5; // For non-toroidal worlds, need to check to make sure move is not out of bounds
+		while((_observer->patchAtOffset(location(), heading(), distanceToMove) == 0) && (distanceToMove > 0)) distanceToMove--;
+	//  if(distanceToMove > 0) move(distanceToMove);
 	}
 }
 \end{lstlisting}
@@ -1425,77 +1359,38 @@ int main(int argc, char **argv) {
 Note that some error checking code has been removed for clarity. As with a Repast HPC straight C++ model, main needs to begin by initializing the mpi environment and pass a config file to RepastProcess to initialize it.  This then calls runZombies and uses a SimulationRunner to run the simulation.
 
 \section{Synchronization}
-Synchronization is potentially the most confusing part of a Repast HPC simulation whether written in straight C++ or in Logo-like C++. If any there is any sharing across processes then some sort of synchronization must take place. 
+Synchronization is handled almost entirely behind-the-scenes in Repast HPC ReLogo:
 
-If agents are copied across processes via an AgentRequest.
-\begin{itemize}
-\item
-Agent State must be synchronized (unless you are sure the state has not changed). 
+\begin{minipage}[h]{\textwidth}
+\captionsetup{labelformat=empty,labelsep=none}
+\lstset{language=c++,caption=, numbers=left}
+\begin{lstlisting}
+void ZombieObserver::go() {
+  if (_rank == 0) {
+    Log4CL::instance()->get_logger("root").log(INFO, "TICK BEGINS: " + boost::lexical_cast<string>(RepastProcess::instance()->getScheduleRunner().currentTick()));
+  }
+  synchronize<AgentPackage>(*this, *this, *this, RepastProcess::USE_LAST_OR_USE_CURRENT);
 
-C++: \texttt{repast::syncAgents(Provider, Updater);} \newline
-Logo: \texttt{void Observer::synchronizeTurtleState(Provider, Updater);}
-\item 
-Agent Status must be synchronized (unless you are sure that no agent has died).
+  AgentSet<Zombie> zombies;
+  get(zombies);
+  zombies.ask(&Zombie::step);
 
-C++: \texttt{repast::syncAgentStatus(SharedContext, Provider, AgentCreator);} \newline
-Logo: \texttt{void Observer::synchronizeTurtleStatus(Provider, AgentCreator);}
-\end{itemize}
+  AgentId id(0,0,2);
+  Zombie* z = who<Zombie>(id);
 
-If the simulation contains a discrete grid or continuous space projection, and all Logo-like simulations do, 
-\begin{itemize}
-\item
-Agent Status must be synchronized (unless you are sure that no agent has moved into another process).
+  AgentSet<Human> humans;
+  get(humans);
+  humans.ask(&Human::step);
 
-C++: \texttt{repast::syncAgentStatus(SharedContext, Provider, AgentCreator);} \newline
-Logo: \texttt{void Observer::synchronizeTurtleStatus(Provider, AgentCreator);}
+  if (_rank == 0) {
+    Log4CL::instance()->get_logger("root").log(INFO, "TICK ENDS: " + boost::lexical_cast<string>(RepastProcess::instance()->getScheduleRunner().currentTick()));
+  }
+}
+\end{lstlisting}
+\end{minipage}
 
-\item
-Movement must be synchronized in order to synchronize agent migration between processes due to grid or space movement. 
-
-C++: \texttt{synchMove()} called on each grid or space that requires synchronization. \newline
-Logo: \texttt{Observer::synchronizeTurtleCrossPMovement();}
-\end{itemize}
-If the simulation contains a discrete grid or continuous space projection, and all Logo-like simulations do, and the buffer size is greater than 0, then the following need to be called in order.
-
-\begin{itemize}
-\item
-Initialize the buffer synchronization
-
-C++: \texttt{initSynchBuffer()} on each grid or space that requires buffer synchronization. \newline
-Logo: \texttt{Observer::initSynchronize();}
-\item
-Synchronize the buffers
-
-C++: \texttt{synchBuffer(SharedContext, Provider, AgentsCreator)} on each grid or space that requires buffer synchronization. \newline
-Logo: \texttt{Observer::synchronizeBuffers(Provider, AgentsCreator);}
-\end{itemize}
-
-Edges need to be synchronized if cross-process edges have been created using\newline \texttt{createComplimentaryEdges}. 
-\begin{itemize}
-\item
-If the state of the edge has been updated,
-
-C++: \texttt{synchEdges(SharedNetwork, EdgeManager);} \newline
-\item
-If the edge (link) has has been removed:
-
-C++: \texttt{SharedNetwork::synchRemovedEdges()} \newline
-Logo: \texttt{Observer::synchronizeRemovedLinks(std::string)}
-\end{itemize}
-
-Some additional caveats:
-
-\begin{itemize}
-\item
-Synchronizing an agent's status should come before synchronizing its state.
-\item
-Synchronizing agent's state and status should occur before synchronizing cross process movement.
-\item
-An agent should move only once between calls to synchronize status in order to correctly manage the effects
-of cross-process migration.
-\end{itemize}•
+The single call to `synchronize' synchronizes agent status, statuses, and projection information (in that order).
 
 While Repast HPC does simply much of the parallel programming of an agent simulation, users should still give adequate though to how the simulation can be properly implemented to run in the parallel environment.
-
 
 \end{document}  

@@ -53,6 +53,7 @@
 #include "RelogoAgent.h"
 #include "RelogoDiscreteSpaceAdder.h"
 #include "RelogoContinuousSpaceAdder.h"
+#include "RelogoLink.h"
 #include "WorldDefinition.h"
 #include "creators.h"
 #include "relogo.h"
@@ -595,7 +596,7 @@ public:
 
 
 protected:
-	typedef SharedNetwork<RelogoAgent, RelogoLink, RepastEdgeContent<RelogoAgent>, RepastEdgeContentManager<RelogoAgent> > NetworkType;
+	typedef SharedNetwork<RelogoAgent, RelogoLink, RelogoLinkContent, RelogoLinkContentManager> NetworkType;
 
 	Observer();
 	Properties _props;

@@ -103,28 +103,6 @@ void ZombieObserver::setup(Properties& props) {
   get(zombies);
   zombies.apply(RandomMove(this));
 
-  int midX = (minPxcor() + maxPxcor()) / 2;
-  int midY = (minPycor() + maxPycor()) / 2;
-
-  switch (_rank){
-    case 0:{
-      for(int i = 0; i < zombieCount; i++) zombies.at(i)->moveTo(patchAt(maxPxcor(), midY));
-      for(int i = 0; i < humanCount; i++)  humans.at(i)->moveTo(patchAt(midX-25, midY));
-      break;
-    }
-    case 1:{
-      for(int i = 0; i < zombieCount; i++) zombies.at(i)->moveTo(patchAt(midX+25, midY));
-      for(int i = 0; i < humanCount; i++)  humans.at(i)->moveTo(patchAt(minPxcor(), midY));
-      break;
-    }
-    case 2:
-    case 3:{
-      for(int i = 0; i < zombieCount; i++) zombies.at(i)->moveTo(patchAt(midX-25, midY));
-      for(int i = 0; i < humanCount; i++)  humans.at(i)->moveTo(patchAt(midX+25, midY));
-      break;
-    }
-  }
-
 	SVDataSetBuilder svbuilder("./output/data.csv", ",", repast::RepastProcess::instance()->getScheduleRunner().schedule());
 	InfectionSum* iSum = new InfectionSum(this);
 	svbuilder.addDataSource(repast::createSVDataSource("number_infected", iSum, std::plus<int>()));
