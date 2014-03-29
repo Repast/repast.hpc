@@ -1,0 +1,236 @@
+\contentsline {chapter}{\numberline {1}Repast H\discretionary {-}{}{}P\discretionary {-}{}{}C-\/ Re\discretionary {-}{}{}Logo Logo-\/\discretionary {-}{}{}Like Semantics for Repast H\discretionary {-}{}{}P\discretionary {-}{}{}C}{1}{chapter.1}
+\contentsline {section}{\numberline {1.1}What is Re\discretionary {-}{}{}Logo}{1}{section.1.1}
+\contentsline {chapter}{\numberline {2}Hierarchical Index}{3}{chapter.2}
+\contentsline {section}{\numberline {2.1}Class Hierarchy}{3}{section.2.1}
+\contentsline {chapter}{\numberline {3}Class Index}{5}{chapter.3}
+\contentsline {section}{\numberline {3.1}Class List}{5}{section.3.1}
+\contentsline {chapter}{\numberline {4}Class Documentation}{7}{chapter.4}
+\contentsline {section}{\numberline {4.1}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Abstract\discretionary {-}{}{}Relogo\discretionary {-}{}{}Agent Class Reference}{7}{section.4.1}
+\contentsline {subsection}{\numberline {4.1.1}Detailed Description}{8}{subsection.4.1.1}
+\contentsline {subsection}{\numberline {4.1.2}Member Function Documentation}{8}{subsection.4.1.2}
+\contentsline {subsubsection}{\numberline {4.1.2.1}in\discretionary {-}{}{}Radius}{8}{subsubsection.4.1.2.1}
+\contentsline {subsubsection}{\numberline {4.1.2.2}patch\discretionary {-}{}{}At}{8}{subsubsection.4.1.2.2}
+\contentsline {subsubsection}{\numberline {4.1.2.3}patch\discretionary {-}{}{}At\discretionary {-}{}{}Heading\discretionary {-}{}{}And\discretionary {-}{}{}Distance}{8}{subsubsection.4.1.2.3}
+\contentsline {subsubsection}{\numberline {4.1.2.4}px\discretionary {-}{}{}Cor}{9}{subsubsection.4.1.2.4}
+\contentsline {subsubsection}{\numberline {4.1.2.5}py\discretionary {-}{}{}Cor}{9}{subsubsection.4.1.2.5}
+\contentsline {subsubsection}{\numberline {4.1.2.6}turtles\discretionary {-}{}{}Here}{9}{subsubsection.4.1.2.6}
+\contentsline {subsubsection}{\numberline {4.1.2.7}turtles\discretionary {-}{}{}Here}{9}{subsubsection.4.1.2.7}
+\contentsline {subsubsection}{\numberline {4.1.2.8}turtles\discretionary {-}{}{}On}{10}{subsubsection.4.1.2.8}
+\contentsline {subsubsection}{\numberline {4.1.2.9}turtles\discretionary {-}{}{}On}{11}{subsubsection.4.1.2.9}
+\contentsline {section}{\numberline {4.2}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Agent\discretionary {-}{}{}Set$<$ T $>$ Class Template Reference}{11}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Detailed Description}{13}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.2}Member Function Documentation}{13}{subsection.4.2.2}
+\contentsline {subsubsection}{\numberline {4.2.2.1}apply}{13}{subsubsection.4.2.2.1}
+\contentsline {subsubsection}{\numberline {4.2.2.2}apply}{13}{subsubsection.4.2.2.2}
+\contentsline {subsubsection}{\numberline {4.2.2.3}ask}{13}{subsubsection.4.2.2.3}
+\contentsline {subsubsection}{\numberline {4.2.2.4}ask}{14}{subsubsection.4.2.2.4}
+\contentsline {subsubsection}{\numberline {4.2.2.5}ask}{14}{subsubsection.4.2.2.5}
+\contentsline {subsubsection}{\numberline {4.2.2.6}at}{14}{subsubsection.4.2.2.6}
+\contentsline {subsubsection}{\numberline {4.2.2.7}begin}{14}{subsubsection.4.2.2.7}
+\contentsline {subsubsection}{\numberline {4.2.2.8}begin}{15}{subsubsection.4.2.2.8}
+\contentsline {subsubsection}{\numberline {4.2.2.9}count}{15}{subsubsection.4.2.2.9}
+\contentsline {subsubsection}{\numberline {4.2.2.10}end}{15}{subsubsection.4.2.2.10}
+\contentsline {subsubsection}{\numberline {4.2.2.11}end}{15}{subsubsection.4.2.2.11}
+\contentsline {subsubsection}{\numberline {4.2.2.12}max\discretionary {-}{}{}N\discretionary {-}{}{}Of}{15}{subsubsection.4.2.2.12}
+\contentsline {subsubsection}{\numberline {4.2.2.13}max\discretionary {-}{}{}One\discretionary {-}{}{}Of}{16}{subsubsection.4.2.2.13}
+\contentsline {subsubsection}{\numberline {4.2.2.14}min\discretionary {-}{}{}N\discretionary {-}{}{}Of}{17}{subsubsection.4.2.2.14}
+\contentsline {subsubsection}{\numberline {4.2.2.15}min\discretionary {-}{}{}One\discretionary {-}{}{}Of}{17}{subsubsection.4.2.2.15}
+\contentsline {subsubsection}{\numberline {4.2.2.16}one\discretionary {-}{}{}Of}{17}{subsubsection.4.2.2.16}
+\contentsline {subsubsection}{\numberline {4.2.2.17}operator[]}{17}{subsubsection.4.2.2.17}
+\contentsline {subsubsection}{\numberline {4.2.2.18}size}{18}{subsubsection.4.2.2.18}
+\contentsline {subsubsection}{\numberline {4.2.2.19}with\discretionary {-}{}{}Max}{18}{subsubsection.4.2.2.19}
+\contentsline {subsubsection}{\numberline {4.2.2.20}with\discretionary {-}{}{}Min}{18}{subsubsection.4.2.2.20}
+\contentsline {section}{\numberline {4.3}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Caster$<$ Target\discretionary {-}{}{}Type $>$ Struct Template Reference}{18}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}Detailed Description}{19}{subsection.4.3.1}
+\contentsline {section}{\numberline {4.4}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Caster2$<$ Target\discretionary {-}{}{}Type $>$ Struct Template Reference}{19}{section.4.4}
+\contentsline {subsection}{\numberline {4.4.1}Detailed Description}{19}{subsection.4.4.1}
+\contentsline {section}{\numberline {4.5}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Default\discretionary {-}{}{}Agent\discretionary {-}{}{}Creator$<$ Agent $>$ Struct Template Reference}{19}{section.4.5}
+\contentsline {subsection}{\numberline {4.5.1}Detailed Description}{20}{subsection.4.5.1}
+\contentsline {section}{\numberline {4.6}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Default\discretionary {-}{}{}Link\discretionary {-}{}{}Creator Struct Reference}{20}{section.4.6}
+\contentsline {subsection}{\numberline {4.6.1}Detailed Description}{20}{subsection.4.6.1}
+\contentsline {section}{\numberline {4.7}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Is\discretionary {-}{}{}Agent\discretionary {-}{}{}Type\discretionary {-}{}{}No\discretionary {-}{}{}Dup$<$ T $>$ Struct Template Reference}{20}{section.4.7}
+\contentsline {subsection}{\numberline {4.7.1}Detailed Description}{21}{subsection.4.7.1}
+\contentsline {section}{\numberline {4.8}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Observer Class Reference}{21}{section.4.8}
+\contentsline {subsection}{\numberline {4.8.1}Detailed Description}{24}{subsection.4.8.1}
+\contentsline {subsection}{\numberline {4.8.2}Member Function Documentation}{24}{subsection.4.8.2}
+\contentsline {subsubsection}{\numberline {4.8.2.1}\discretionary {-}{}{}\_\discretionary {-}{}{}setup}{24}{subsubsection.4.8.2.1}
+\contentsline {subsubsection}{\numberline {4.8.2.2}add\discretionary {-}{}{}Data\discretionary {-}{}{}Set}{24}{subsubsection.4.8.2.2}
+\contentsline {subsubsection}{\numberline {4.8.2.3}create}{24}{subsubsection.4.8.2.3}
+\contentsline {subsubsection}{\numberline {4.8.2.4}create}{25}{subsubsection.4.8.2.4}
+\contentsline {subsubsection}{\numberline {4.8.2.5}create\discretionary {-}{}{}Link}{26}{subsubsection.4.8.2.5}
+\contentsline {subsubsection}{\numberline {4.8.2.6}create\discretionary {-}{}{}Link}{26}{subsubsection.4.8.2.6}
+\contentsline {subsubsection}{\numberline {4.8.2.7}get}{26}{subsubsection.4.8.2.7}
+\contentsline {subsubsection}{\numberline {4.8.2.8}get}{26}{subsubsection.4.8.2.8}
+\contentsline {subsubsection}{\numberline {4.8.2.9}get}{27}{subsubsection.4.8.2.9}
+\contentsline {subsubsection}{\numberline {4.8.2.10}get}{27}{subsubsection.4.8.2.10}
+\contentsline {subsubsection}{\numberline {4.8.2.11}go}{27}{subsubsection.4.8.2.11}
+\contentsline {subsubsection}{\numberline {4.8.2.12}grid}{27}{subsubsection.4.8.2.12}
+\contentsline {subsubsection}{\numberline {4.8.2.13}hatch}{27}{subsubsection.4.8.2.13}
+\contentsline {subsubsection}{\numberline {4.8.2.14}hatch}{28}{subsubsection.4.8.2.14}
+\contentsline {subsubsection}{\numberline {4.8.2.15}in\discretionary {-}{}{}Radius}{28}{subsubsection.4.8.2.15}
+\contentsline {subsubsection}{\numberline {4.8.2.16}link}{28}{subsubsection.4.8.2.16}
+\contentsline {subsubsection}{\numberline {4.8.2.17}max\discretionary {-}{}{}Pxcor}{28}{subsubsection.4.8.2.17}
+\contentsline {subsubsection}{\numberline {4.8.2.18}max\discretionary {-}{}{}Pycor}{29}{subsubsection.4.8.2.18}
+\contentsline {subsubsection}{\numberline {4.8.2.19}min\discretionary {-}{}{}Pxcor}{29}{subsubsection.4.8.2.19}
+\contentsline {subsubsection}{\numberline {4.8.2.20}min\discretionary {-}{}{}Pycor}{29}{subsubsection.4.8.2.20}
+\contentsline {subsubsection}{\numberline {4.8.2.21}patch\discretionary {-}{}{}At}{29}{subsubsection.4.8.2.21}
+\contentsline {subsubsection}{\numberline {4.8.2.22}patch\discretionary {-}{}{}At}{29}{subsubsection.4.8.2.22}
+\contentsline {subsubsection}{\numberline {4.8.2.23}patch\discretionary {-}{}{}At}{30}{subsubsection.4.8.2.23}
+\contentsline {subsubsection}{\numberline {4.8.2.24}patch\discretionary {-}{}{}At\discretionary {-}{}{}Offset}{31}{subsubsection.4.8.2.24}
+\contentsline {subsubsection}{\numberline {4.8.2.25}patches}{31}{subsubsection.4.8.2.25}
+\contentsline {subsubsection}{\numberline {4.8.2.26}patches}{31}{subsubsection.4.8.2.26}
+\contentsline {subsubsection}{\numberline {4.8.2.27}predecessors}{31}{subsubsection.4.8.2.27}
+\contentsline {subsubsection}{\numberline {4.8.2.28}random\discretionary {-}{}{}Pxcor}{32}{subsubsection.4.8.2.28}
+\contentsline {subsubsection}{\numberline {4.8.2.29}random\discretionary {-}{}{}Pycor}{32}{subsubsection.4.8.2.29}
+\contentsline {subsubsection}{\numberline {4.8.2.30}random\discretionary {-}{}{}Xcor}{32}{subsubsection.4.8.2.30}
+\contentsline {subsubsection}{\numberline {4.8.2.31}random\discretionary {-}{}{}Ycor}{32}{subsubsection.4.8.2.31}
+\contentsline {subsubsection}{\numberline {4.8.2.32}rank}{32}{subsubsection.4.8.2.32}
+\contentsline {subsubsection}{\numberline {4.8.2.33}setup}{32}{subsubsection.4.8.2.33}
+\contentsline {subsubsection}{\numberline {4.8.2.34}space}{33}{subsubsection.4.8.2.34}
+\contentsline {subsubsection}{\numberline {4.8.2.35}successors}{33}{subsubsection.4.8.2.35}
+\contentsline {subsubsection}{\numberline {4.8.2.36}synchronize\discretionary {-}{}{}Turtle\discretionary {-}{}{}States}{33}{subsubsection.4.8.2.36}
+\contentsline {subsubsection}{\numberline {4.8.2.37}synchronize\discretionary {-}{}{}Turtle\discretionary {-}{}{}Status}{33}{subsubsection.4.8.2.37}
+\contentsline {subsubsection}{\numberline {4.8.2.38}turtles\discretionary {-}{}{}At}{34}{subsubsection.4.8.2.38}
+\contentsline {subsubsection}{\numberline {4.8.2.39}turtles\discretionary {-}{}{}At}{34}{subsubsection.4.8.2.39}
+\contentsline {subsubsection}{\numberline {4.8.2.40}turtles\discretionary {-}{}{}On}{34}{subsubsection.4.8.2.40}
+\contentsline {subsubsection}{\numberline {4.8.2.41}turtles\discretionary {-}{}{}On}{35}{subsubsection.4.8.2.41}
+\contentsline {subsubsection}{\numberline {4.8.2.42}who}{35}{subsubsection.4.8.2.42}
+\contentsline {section}{\numberline {4.9}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Patch Class Reference}{35}{section.4.9}
+\contentsline {subsection}{\numberline {4.9.1}Detailed Description}{36}{subsection.4.9.1}
+\contentsline {subsection}{\numberline {4.9.2}Constructor \& Destructor Documentation}{36}{subsection.4.9.2}
+\contentsline {subsubsection}{\numberline {4.9.2.1}Patch}{36}{subsubsection.4.9.2.1}
+\contentsline {subsection}{\numberline {4.9.3}Member Function Documentation}{36}{subsection.4.9.3}
+\contentsline {subsubsection}{\numberline {4.9.3.1}neighbors}{36}{subsubsection.4.9.3.1}
+\contentsline {subsubsection}{\numberline {4.9.3.2}neighbors}{37}{subsubsection.4.9.3.2}
+\contentsline {subsubsection}{\numberline {4.9.3.3}neighbors4}{37}{subsubsection.4.9.3.3}
+\contentsline {subsubsection}{\numberline {4.9.3.4}neighbors4}{37}{subsubsection.4.9.3.4}
+\contentsline {section}{\numberline {4.10}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Random\discretionary {-}{}{}Move Class Reference}{37}{section.4.10}
+\contentsline {subsection}{\numberline {4.10.1}Detailed Description}{38}{subsection.4.10.1}
+\contentsline {subsection}{\numberline {4.10.2}Constructor \& Destructor Documentation}{38}{subsection.4.10.2}
+\contentsline {subsubsection}{\numberline {4.10.2.1}Random\discretionary {-}{}{}Move}{38}{subsubsection.4.10.2.1}
+\contentsline {subsection}{\numberline {4.10.3}Member Function Documentation}{38}{subsection.4.10.3}
+\contentsline {subsubsection}{\numberline {4.10.3.1}operator()}{38}{subsubsection.4.10.3.1}
+\contentsline {section}{\numberline {4.11}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Relogo\discretionary {-}{}{}Agent Class Reference}{38}{section.4.11}
+\contentsline {subsection}{\numberline {4.11.1}Detailed Description}{39}{subsection.4.11.1}
+\contentsline {subsection}{\numberline {4.11.2}Constructor \& Destructor Documentation}{39}{subsection.4.11.2}
+\contentsline {subsubsection}{\numberline {4.11.2.1}Relogo\discretionary {-}{}{}Agent}{39}{subsubsection.4.11.2.1}
+\contentsline {subsection}{\numberline {4.11.3}Member Function Documentation}{40}{subsection.4.11.3}
+\contentsline {subsubsection}{\numberline {4.11.3.1}distance}{40}{subsubsection.4.11.3.1}
+\contentsline {subsubsection}{\numberline {4.11.3.2}distancexy}{40}{subsubsection.4.11.3.2}
+\contentsline {subsubsection}{\numberline {4.11.3.3}get\discretionary {-}{}{}Id}{40}{subsubsection.4.11.3.3}
+\contentsline {subsubsection}{\numberline {4.11.3.4}get\discretionary {-}{}{}Id}{40}{subsubsection.4.11.3.4}
+\contentsline {subsubsection}{\numberline {4.11.3.5}location}{40}{subsubsection.4.11.3.5}
+\contentsline {subsubsection}{\numberline {4.11.3.6}px\discretionary {-}{}{}Cor}{40}{subsubsection.4.11.3.6}
+\contentsline {subsubsection}{\numberline {4.11.3.7}py\discretionary {-}{}{}Cor}{41}{subsubsection.4.11.3.7}
+\contentsline {subsubsection}{\numberline {4.11.3.8}x\discretionary {-}{}{}Cor}{41}{subsubsection.4.11.3.8}
+\contentsline {subsubsection}{\numberline {4.11.3.9}y\discretionary {-}{}{}Cor}{41}{subsubsection.4.11.3.9}
+\contentsline {section}{\numberline {4.12}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Relogo\discretionary {-}{}{}Continuous\discretionary {-}{}{}Space\discretionary {-}{}{}Adder Class Reference}{41}{section.4.12}
+\contentsline {subsection}{\numberline {4.12.1}Detailed Description}{41}{subsection.4.12.1}
+\contentsline {section}{\numberline {4.13}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Relogo\discretionary {-}{}{}Discrete\discretionary {-}{}{}Space\discretionary {-}{}{}Adder Class Reference}{42}{section.4.13}
+\contentsline {subsection}{\numberline {4.13.1}Detailed Description}{42}{subsection.4.13.1}
+\contentsline {section}{\numberline {4.14}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Relogo\discretionary {-}{}{}Link Class Reference}{42}{section.4.14}
+\contentsline {subsection}{\numberline {4.14.1}Detailed Description}{42}{subsection.4.14.1}
+\contentsline {subsection}{\numberline {4.14.2}Constructor \& Destructor Documentation}{43}{subsection.4.14.2}
+\contentsline {subsubsection}{\numberline {4.14.2.1}Relogo\discretionary {-}{}{}Link}{43}{subsubsection.4.14.2.1}
+\contentsline {subsubsection}{\numberline {4.14.2.2}Relogo\discretionary {-}{}{}Link}{43}{subsubsection.4.14.2.2}
+\contentsline {subsubsection}{\numberline {4.14.2.3}Relogo\discretionary {-}{}{}Link}{43}{subsubsection.4.14.2.3}
+\contentsline {subsubsection}{\numberline {4.14.2.4}Relogo\discretionary {-}{}{}Link}{43}{subsubsection.4.14.2.4}
+\contentsline {section}{\numberline {4.15}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Relogo\discretionary {-}{}{}Link\discretionary {-}{}{}Content Class Reference}{43}{section.4.15}
+\contentsline {subsection}{\numberline {4.15.1}Detailed Description}{44}{subsection.4.15.1}
+\contentsline {section}{\numberline {4.16}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Relogo\discretionary {-}{}{}Link\discretionary {-}{}{}Content\discretionary {-}{}{}Manager Class Reference}{44}{section.4.16}
+\contentsline {subsection}{\numberline {4.16.1}Detailed Description}{44}{subsection.4.16.1}
+\contentsline {section}{\numberline {4.17}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Relogo\discretionary {-}{}{}Shared\discretionary {-}{}{}Continuous\discretionary {-}{}{}Space$<$ G\discretionary {-}{}{}P\discretionary {-}{}{}Transformer, Adder $>$ Class Template Reference}{44}{section.4.17}
+\contentsline {subsection}{\numberline {4.17.1}Detailed Description}{45}{subsection.4.17.1}
+\contentsline {section}{\numberline {4.18}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Relogo\discretionary {-}{}{}Shared\discretionary {-}{}{}Discrete\discretionary {-}{}{}Space$<$ G\discretionary {-}{}{}P\discretionary {-}{}{}Transformer, Adder $>$ Class Template Reference}{45}{section.4.18}
+\contentsline {subsection}{\numberline {4.18.1}Detailed Description}{45}{subsection.4.18.1}
+\contentsline {section}{\numberline {4.19}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Set\discretionary {-}{}{}Cmp$<$ T, Value\discretionary {-}{}{}Getter $>$ Struct Template Reference}{46}{section.4.19}
+\contentsline {subsection}{\numberline {4.19.1}Detailed Description}{46}{subsection.4.19.1}
+\contentsline {section}{\numberline {4.20}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Simulation\discretionary {-}{}{}Runner Class Reference}{46}{section.4.20}
+\contentsline {subsection}{\numberline {4.20.1}Detailed Description}{46}{subsection.4.20.1}
+\contentsline {subsection}{\numberline {4.20.2}Member Function Documentation}{47}{subsection.4.20.2}
+\contentsline {subsubsection}{\numberline {4.20.2.1}run}{47}{subsubsection.4.20.2.1}
+\contentsline {section}{\numberline {4.21}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Turtle Class Reference}{47}{section.4.21}
+\contentsline {subsection}{\numberline {4.21.1}Detailed Description}{51}{subsection.4.21.1}
+\contentsline {subsection}{\numberline {4.21.2}Member Function Documentation}{51}{subsection.4.21.2}
+\contentsline {subsubsection}{\numberline {4.21.2.1}backward}{51}{subsubsection.4.21.2.1}
+\contentsline {subsubsection}{\numberline {4.21.2.2}bk}{51}{subsubsection.4.21.2.2}
+\contentsline {subsubsection}{\numberline {4.21.2.3}can\discretionary {-}{}{}Move\discretionary {-}{}{}Q}{51}{subsubsection.4.21.2.3}
+\contentsline {subsubsection}{\numberline {4.21.2.4}create\discretionary {-}{}{}Link\discretionary {-}{}{}From}{51}{subsubsection.4.21.2.4}
+\contentsline {subsubsection}{\numberline {4.21.2.5}create\discretionary {-}{}{}Link\discretionary {-}{}{}From\discretionary {-}{}{}L\discretionary {-}{}{}C}{51}{subsubsection.4.21.2.5}
+\contentsline {subsubsection}{\numberline {4.21.2.6}create\discretionary {-}{}{}Links\discretionary {-}{}{}From}{52}{subsubsection.4.21.2.6}
+\contentsline {subsubsection}{\numberline {4.21.2.7}create\discretionary {-}{}{}Links\discretionary {-}{}{}From\discretionary {-}{}{}L\discretionary {-}{}{}C}{52}{subsubsection.4.21.2.7}
+\contentsline {subsubsection}{\numberline {4.21.2.8}create\discretionary {-}{}{}Links\discretionary {-}{}{}To}{52}{subsubsection.4.21.2.8}
+\contentsline {subsubsection}{\numberline {4.21.2.9}create\discretionary {-}{}{}Links\discretionary {-}{}{}To\discretionary {-}{}{}L\discretionary {-}{}{}C}{52}{subsubsection.4.21.2.9}
+\contentsline {subsubsection}{\numberline {4.21.2.10}create\discretionary {-}{}{}Links\discretionary {-}{}{}With}{54}{subsubsection.4.21.2.10}
+\contentsline {subsubsection}{\numberline {4.21.2.11}create\discretionary {-}{}{}Links\discretionary {-}{}{}With\discretionary {-}{}{}L\discretionary {-}{}{}C}{54}{subsubsection.4.21.2.11}
+\contentsline {subsubsection}{\numberline {4.21.2.12}create\discretionary {-}{}{}Link\discretionary {-}{}{}To}{54}{subsubsection.4.21.2.12}
+\contentsline {subsubsection}{\numberline {4.21.2.13}create\discretionary {-}{}{}Link\discretionary {-}{}{}To\discretionary {-}{}{}L\discretionary {-}{}{}C}{55}{subsubsection.4.21.2.13}
+\contentsline {subsubsection}{\numberline {4.21.2.14}create\discretionary {-}{}{}Link\discretionary {-}{}{}With}{56}{subsubsection.4.21.2.14}
+\contentsline {subsubsection}{\numberline {4.21.2.15}create\discretionary {-}{}{}Link\discretionary {-}{}{}With\discretionary {-}{}{}L\discretionary {-}{}{}C}{56}{subsubsection.4.21.2.15}
+\contentsline {subsubsection}{\numberline {4.21.2.16}die}{56}{subsubsection.4.21.2.16}
+\contentsline {subsubsection}{\numberline {4.21.2.17}distance}{56}{subsubsection.4.21.2.17}
+\contentsline {subsubsection}{\numberline {4.21.2.18}downhill}{57}{subsubsection.4.21.2.18}
+\contentsline {subsubsection}{\numberline {4.21.2.19}downhill4}{57}{subsubsection.4.21.2.19}
+\contentsline {subsubsection}{\numberline {4.21.2.20}dx}{57}{subsubsection.4.21.2.20}
+\contentsline {subsubsection}{\numberline {4.21.2.21}dy}{57}{subsubsection.4.21.2.21}
+\contentsline {subsubsection}{\numberline {4.21.2.22}face}{58}{subsubsection.4.21.2.22}
+\contentsline {subsubsection}{\numberline {4.21.2.23}face}{58}{subsubsection.4.21.2.23}
+\contentsline {subsubsection}{\numberline {4.21.2.24}facexy}{58}{subsubsection.4.21.2.24}
+\contentsline {subsubsection}{\numberline {4.21.2.25}fd}{58}{subsubsection.4.21.2.25}
+\contentsline {subsubsection}{\numberline {4.21.2.26}forward}{58}{subsubsection.4.21.2.26}
+\contentsline {subsubsection}{\numberline {4.21.2.27}heading}{58}{subsubsection.4.21.2.27}
+\contentsline {subsubsection}{\numberline {4.21.2.28}heading}{58}{subsubsection.4.21.2.28}
+\contentsline {subsubsection}{\numberline {4.21.2.29}in\discretionary {-}{}{}Link\discretionary {-}{}{}From}{59}{subsubsection.4.21.2.29}
+\contentsline {subsubsection}{\numberline {4.21.2.30}in\discretionary {-}{}{}Link\discretionary {-}{}{}Neighbor\discretionary {-}{}{}Q}{59}{subsubsection.4.21.2.30}
+\contentsline {subsubsection}{\numberline {4.21.2.31}in\discretionary {-}{}{}Link\discretionary {-}{}{}Neighbors}{59}{subsubsection.4.21.2.31}
+\contentsline {subsubsection}{\numberline {4.21.2.32}jump}{59}{subsubsection.4.21.2.32}
+\contentsline {subsubsection}{\numberline {4.21.2.33}left}{60}{subsubsection.4.21.2.33}
+\contentsline {subsubsection}{\numberline {4.21.2.34}link\discretionary {-}{}{}Neighbor\discretionary {-}{}{}Q}{60}{subsubsection.4.21.2.34}
+\contentsline {subsubsection}{\numberline {4.21.2.35}link\discretionary {-}{}{}Neighbors}{60}{subsubsection.4.21.2.35}
+\contentsline {subsubsection}{\numberline {4.21.2.36}link\discretionary {-}{}{}With}{60}{subsubsection.4.21.2.36}
+\contentsline {subsubsection}{\numberline {4.21.2.37}lt}{61}{subsubsection.4.21.2.37}
+\contentsline {subsubsection}{\numberline {4.21.2.38}move}{62}{subsubsection.4.21.2.38}
+\contentsline {subsubsection}{\numberline {4.21.2.39}move\discretionary {-}{}{}To}{62}{subsubsection.4.21.2.39}
+\contentsline {subsubsection}{\numberline {4.21.2.40}move\discretionary {-}{}{}To}{62}{subsubsection.4.21.2.40}
+\contentsline {subsubsection}{\numberline {4.21.2.41}mv}{62}{subsubsection.4.21.2.41}
+\contentsline {subsubsection}{\numberline {4.21.2.42}out\discretionary {-}{}{}Link\discretionary {-}{}{}Neighbor\discretionary {-}{}{}Q}{62}{subsubsection.4.21.2.42}
+\contentsline {subsubsection}{\numberline {4.21.2.43}out\discretionary {-}{}{}Link\discretionary {-}{}{}Neighbors}{62}{subsubsection.4.21.2.43}
+\contentsline {subsubsection}{\numberline {4.21.2.44}out\discretionary {-}{}{}Link\discretionary {-}{}{}To}{63}{subsubsection.4.21.2.44}
+\contentsline {subsubsection}{\numberline {4.21.2.45}patch\discretionary {-}{}{}Here}{63}{subsubsection.4.21.2.45}
+\contentsline {subsubsection}{\numberline {4.21.2.46}patch\discretionary {-}{}{}Left\discretionary {-}{}{}And\discretionary {-}{}{}Ahead}{63}{subsubsection.4.21.2.46}
+\contentsline {subsubsection}{\numberline {4.21.2.47}patch\discretionary {-}{}{}Right\discretionary {-}{}{}And\discretionary {-}{}{}Ahead}{64}{subsubsection.4.21.2.47}
+\contentsline {subsubsection}{\numberline {4.21.2.48}px\discretionary {-}{}{}Cor}{64}{subsubsection.4.21.2.48}
+\contentsline {subsubsection}{\numberline {4.21.2.49}py\discretionary {-}{}{}Cor}{64}{subsubsection.4.21.2.49}
+\contentsline {subsubsection}{\numberline {4.21.2.50}setxy}{64}{subsubsection.4.21.2.50}
+\contentsline {subsubsection}{\numberline {4.21.2.51}towards}{64}{subsubsection.4.21.2.51}
+\contentsline {subsubsection}{\numberline {4.21.2.52}towards}{65}{subsubsection.4.21.2.52}
+\contentsline {subsubsection}{\numberline {4.21.2.53}towardsxy}{65}{subsubsection.4.21.2.53}
+\contentsline {subsubsection}{\numberline {4.21.2.54}uphill}{65}{subsubsection.4.21.2.54}
+\contentsline {subsubsection}{\numberline {4.21.2.55}uphill4}{65}{subsubsection.4.21.2.55}
+\contentsline {subsubsection}{\numberline {4.21.2.56}x\discretionary {-}{}{}Cor}{67}{subsubsection.4.21.2.56}
+\contentsline {subsubsection}{\numberline {4.21.2.57}y\discretionary {-}{}{}Cor}{67}{subsubsection.4.21.2.57}
+\contentsline {section}{\numberline {4.22}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Turtle\discretionary {-}{}{}Caster Struct Reference}{67}{section.4.22}
+\contentsline {subsection}{\numberline {4.22.1}Detailed Description}{67}{subsection.4.22.1}
+\contentsline {section}{\numberline {4.23}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:Type\discretionary {-}{}{}Info\discretionary {-}{}{}Cmp Struct Reference}{68}{section.4.23}
+\contentsline {subsection}{\numberline {4.23.1}Detailed Description}{68}{subsection.4.23.1}
+\contentsline {section}{\numberline {4.24}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:World\discretionary {-}{}{}Creator Class Reference}{68}{section.4.24}
+\contentsline {subsection}{\numberline {4.24.1}Detailed Description}{68}{subsection.4.24.1}
+\contentsline {subsection}{\numberline {4.24.2}Member Function Documentation}{68}{subsection.4.24.2}
+\contentsline {subsubsection}{\numberline {4.24.2.1}create\discretionary {-}{}{}World}{68}{subsubsection.4.24.2.1}
+\contentsline {subsubsection}{\numberline {4.24.2.2}create\discretionary {-}{}{}World}{69}{subsubsection.4.24.2.2}
+\contentsline {section}{\numberline {4.25}repast\discretionary {-}{}{}:\discretionary {-}{}{}:relogo\discretionary {-}{}{}:\discretionary {-}{}{}:World\discretionary {-}{}{}Definition Class Reference}{69}{section.4.25}
+\contentsline {subsection}{\numberline {4.25.1}Detailed Description}{70}{subsection.4.25.1}
+\contentsline {subsection}{\numberline {4.25.2}Constructor \& Destructor Documentation}{70}{subsection.4.25.2}
+\contentsline {subsubsection}{\numberline {4.25.2.1}World\discretionary {-}{}{}Definition}{70}{subsubsection.4.25.2.1}
+\contentsline {subsection}{\numberline {4.25.3}Member Function Documentation}{70}{subsection.4.25.3}
+\contentsline {subsubsection}{\numberline {4.25.3.1}buffer}{70}{subsubsection.4.25.3.1}
+\contentsline {subsubsection}{\numberline {4.25.3.2}define\discretionary {-}{}{}Network}{70}{subsubsection.4.25.3.2}
+\contentsline {subsubsection}{\numberline {4.25.3.3}define\discretionary {-}{}{}Network}{71}{subsubsection.4.25.3.3}
+\contentsline {subsubsection}{\numberline {4.25.3.4}dimensions}{71}{subsubsection.4.25.3.4}
+\contentsline {subsubsection}{\numberline {4.25.3.5}is\discretionary {-}{}{}Wrapped}{71}{subsubsection.4.25.3.5}
+\contentsline {subsubsection}{\numberline {4.25.3.6}max\discretionary {-}{}{}X}{71}{subsubsection.4.25.3.6}
+\contentsline {subsubsection}{\numberline {4.25.3.7}max\discretionary {-}{}{}Y}{71}{subsubsection.4.25.3.7}
+\contentsline {subsubsection}{\numberline {4.25.3.8}min\discretionary {-}{}{}X}{71}{subsubsection.4.25.3.8}
+\contentsline {subsubsection}{\numberline {4.25.3.9}min\discretionary {-}{}{}Y}{72}{subsubsection.4.25.3.9}
+\contentsline {subsubsection}{\numberline {4.25.3.10}networks\discretionary {-}{}{}\_\discretionary {-}{}{}begin}{72}{subsubsection.4.25.3.10}
+\contentsline {subsubsection}{\numberline {4.25.3.11}networks\discretionary {-}{}{}\_\discretionary {-}{}{}end}{72}{subsubsection.4.25.3.11}
