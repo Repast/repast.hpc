@@ -34,21 +34,20 @@ l_CURL=-lcurl
 # SOURCE FILES
 # Repast HPC
 REPAST_HPC_SOURCES=$(addprefix $(REPAST_HPC_DIR)/, \
-AgentExporter.cpp    AgentId.cpp           AgentImporter.cpp   AgentRequest.cpp \
-AgentStatus.cpp      Graph.cpp             GridComponents.cpp  NCDataSet.cpp \
-NCDataSetBuilder.cpp NetworkBuilder.cpp    Point.cpp           Properties.cpp \
-Random.cpp           RepastProcess.cpp     RequestManager.cpp  SRManager.cpp \
-SVDataSet.cpp        SVDataSetBuilder.cpp  Schedule.cpp        SharedContext.cpp \
-SharedGrid.cpp       SharedNetwork.cpp     Utilities.cpp       ValueLayer.cpp \
-Variable.cpp         initialize_random.cpp io.cpp              logger.cpp \
-spatial_math.cpp )
+AgentId.cpp           AgentImporterExporter.cpp      AgentRequest.cpp     AgentStatus.cpp \
+Graph.cpp             GridComponents.cpp             GridDimensions.cpp   NCDataSet.cpp \
+NCDataSetBuilder.cpp  NetworkBuilder.cpp             Properties.cpp       Random.cpp \
+RepastErrors.cpp      RepastProcess.cpp              SVDataSet.cpp        SVDataSetBuilder.cpp \
+Schedule.cpp          SharedContext.cpp              SharedBaseGrid.cpp   SharedNetwork.cpp \
+Utilities.cpp         ValueLayer.cpp                 Variable.cpp         initialize_random.cpp \
+io.cpp                logger.cpp                     spatial_math.cpp     SRManager.cpp ) 
 
 # ReLogo
 RELOGO_SOURCES=$(addprefix $(RELOGO_DIR)/, \
-AbstractRelogoAgent.cpp   AgentSet.cpp    Observer.cpp        Patch.cpp \
-RandomMove.cpp            RelogoAgent.cpp RelogoGridAdder.cpp RelogoLink.cpp \
-RelogoSpaceAdder.cpp      Turtle.cpp      WorldCreator.cpp    WorldDefinition.cpp \
-creators.cpp utility.cpp )
+AbstractRelogoAgent.cpp   AgentSet.cpp    Observer.cpp                    Patch.cpp \
+RandomMove.cpp            RelogoAgent.cpp RelogoContinuousSpaceAdder.cpp  RelogoDiscreteSpaceAdder.cpp \
+RelogoLink.cpp            Turtle.cpp      WorldCreator.cpp                WorldDefinition.cpp \
+creators.cpp              utility.cpp ) 
 
 # Rumor Model
 RUMOR_SOURCES=$(addprefix $(RUMOR_DIR)/, \
