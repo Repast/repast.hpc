@@ -64,12 +64,14 @@ namespace mpi = boost::mpi;
 
 namespace repast {
 
-RepastProcess* RepastProcess::_instance = 0;
+RepastProcess*            RepastProcess::_instance = 0;
+boost::mpi::communicator* RepastProcess::myWorld   = 0;
 
 RepastProcess::RepastProcess(boost::mpi::communicator* comm):
   procsToSendProjInfoTo(NULL), procsToRecvProjInfoFrom(NULL),
   procsToSendAgentStatusInfoTo(NULL), procsToRecvAgentStatusInfoFrom(NULL){
-  world = (comm  != 0 ? comm : &myWorld);
+  if(myWorld == 0) myWorld = new boost::mpi::communicator();
+  world = (comm  != 0 ? comm : myWorld);
   runner = new ScheduleRunner(world);
   rank_ = world->rank();
   worldSize_ = world->size();
@@ -80,32 +82,34 @@ RepastProcess::RepastProcess(boost::mpi::communicator* comm):
 	importer_exporter = new ImporterExporter_BY_SET();
 #endif
 
-  SpecializedProjectionInfoPacket<double>* test1 = new SpecializedProjectionInfoPacket<double>();
-  SpecializedProjectionInfoPacket<double>*  recvT1;
-  SpecializedProjectionInfoPacket<int>*    test2 = new SpecializedProjectionInfoPacket<int>();
-  SpecializedProjectionInfoPacket<int>*     recvT2;
+  SpecializedProjectionInfoPacket<double> test1;
+  SpecializedProjectionInfoPacket<double> recvT1;
+  SpecializedProjectionInfoPacket<int>    test2;
+  SpecializedProjectionInfoPacket<int>    recvT2;
   int topRank = world->size() - 1;
   int recv = (rank_ > 0        ? rank_ - 1 : topRank);
   int send = (rank_ < topRank  ? rank_ + 1 : 0);
-  world->send(send, 0, test1);
-  world->recv(recv, 0, recvT1);
-  world->send(send, 1, test2);
-  world->recv(recv, 1, recvT2);
+
+  boost::mpi::request requests[4];
+  requests[0] = world->isend(send, 0, test1);
+  requests[1] = world->isend(send, 1, test2);
+  requests[2] = world->irecv(recv, 0, recvT1);
+  requests[3] = world->irecv(recv, 1, recvT2);
+  boost:mpi::wait_all(requests, requests + 4);
 }
 
 RepastProcess* RepastProcess::init(string propsfile, boost::mpi::communicator* comm, int maxConfigFileSize) {
-  if (_instance == 0) {
-    boost::mpi::communicator globalWorld;
-    boost::mpi::communicator* world;
-    world = (comm != 0 ? comm : &globalWorld);
+  if(myWorld == 0) myWorld = new boost::mpi::communicator();
+  if (_instance == 0){
+    boost::mpi::communicator* tmpWorld = (comm != 0 ? comm : myWorld);
 
     if (propsfile.length() > 0)
-			Log4CL::configure(world->rank(), propsfile, comm, maxConfigFileSize);
-		else
-			Log4CL::configure(world->rank());
-		_instance = new RepastProcess(comm);
-	}
-	return _instance;
+        Log4CL::configure(tmpWorld->rank(), propsfile, tmpWorld, maxConfigFileSize);
+    else
+        Log4CL::configure(tmpWorld->rank());
+    _instance = new RepastProcess(tmpWorld);
+  }
+  return _instance;
 }
 
 RepastProcess* RepastProcess::instance() {

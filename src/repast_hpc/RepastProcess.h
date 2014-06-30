@@ -232,11 +232,11 @@ private:
 
 	typedef boost::unordered_set<AgentId, HashId> MovedAgentSetType;
 
-  static RepastProcess *_instance;
+  static RepastProcess*            _instance;
+  static boost::mpi::communicator* myWorld; // In case one is not provided
 
   ScheduleRunner*           runner;
   boost::mpi::communicator* world;
-  boost::mpi::communicator  myWorld; // In case one is not provided
   int                       rank_;
   int                       worldSize_;
 
