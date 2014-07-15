@@ -2,13 +2,13 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(RepastHPC, 1.0.1, repast-interest@sourceforge.net)
+AC_INIT(RepastHPC, 2.0.0, repast-interest@sourceforge.net)
 AM_INIT_AUTOMAKE
 LT_INIT
 AC_CONFIG_MACRO_DIR([m4])
 
 
-AC_CONFIG_SRCDIR([src/repast_hpc/AgentExporter.cpp])
+AC_CONFIG_SRCDIR([src/repast_hpc/AgentId.cpp])
 AC_CONFIG_HEADER([config.h])
 
 # Checks for programs.
@@ -16,7 +16,7 @@ AC_PROG_CC([mpicc mpixlc])
 AC_PROG_CXX([mpic++ mpixlcxx])
 
 
-BOOST_REQUIRE([1.39])
+#BOOST_REQUIRE([1.39])
 
 # Checks for libraries.
 AC_CHECK_LIB([curl], [curl_version])

@@ -14,7 +14,7 @@ InfectionSum.h
 
 zombie_model_CPPFLAGS = $(BOOST_CPPFLAGS) -I ..
 zombie_model_LDFLAGS = $(BOOST_MPI_LDFLAGS) $(BOOST_SERIALIZATION_LDFLAGS)
-zombie_model_LDADD = ../repast_hpc/librepast_hpc-1.0.1.la ../relogo/librelogo-1.0.1.la $(BOOST_MPI_LIBS) $(BOOST_SERIALIZATION_LIBS) -lnetcdf_c++
+zombie_model_LDADD = ../repast_hpc/librepast_hpc-2.0.0.la ../relogo/librelogo-2.0.0.la $(BOOST_MPI_LIBS) $(BOOST_SERIALIZATION_LIBS) -lnetcdf_c++
 
 zombies_DATA = model.props config.props
 
