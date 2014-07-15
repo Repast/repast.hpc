@@ -854,15 +854,15 @@ void RepastProcess::synchronizeAgentStatus(SharedContext<T>& context, Provider& 
 					// Notify importer that this agent will not be imported from the original
 				  // process, but will instead be imported from its new home
 					importer_exporter->importedAgentIsMoved(status.getOldId(), status.getNewId().currentRank());
-					// Find it and update its id
-					T* agent = context.getAgent(status.getOldId());
-					if (agent == (void*) 0)	throw Repast_Error_32<AgentId>(status.getOldId()); // Agent not found
-					agent->getId().currentRank(status.getNewId().currentRank());
 				}
 				else{
 				  // Notify importer that the agent will not be imported anymore because this is its home process now
 				  importer_exporter->importedAgentIsNowLocal(status.getOldId());
 				}
+        // Find it and update its id
+        T* agent = context.getAgent(status.getOldId());
+        if (agent == (void*) 0) throw Repast_Error_32<AgentId>(status.getOldId()); // Agent not found
+        agent->getId().currentRank(status.getNewId().currentRank());
 			}
 		}
 		delete vec;
