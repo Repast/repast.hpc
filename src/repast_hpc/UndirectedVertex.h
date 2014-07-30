@@ -122,17 +122,17 @@ void UndirectedVertex<V,E>::addEdge(Vertex<V,E>* other, boost::shared_ptr<E> edg
 
 template<typename V, typename E>
 void UndirectedVertex<V,E>::successors(std::vector<V*>& out) {
-	getItems(adjMap, out);
+	this->getItems(adjMap, out);
 }
 
 template<typename V, typename E>
 void UndirectedVertex<V,E>::predecessors(std::vector<V*>& out) {
-	getItems(adjMap, out);
+	this->getItems(adjMap, out);
 }
 
 template<typename V, typename E>
 void UndirectedVertex<V,E>::adjacent(std::vector<V*>& out) {
-	getItems(adjMap, out);
+	this->getItems(adjMap, out);
 }
 
 template<typename V, typename E>
