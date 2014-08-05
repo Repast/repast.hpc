@@ -505,13 +505,11 @@ void Graph<V, E, Ec, EcM>::doAddEdge(boost::shared_ptr<E> edge, bool allowOverwr
 
 template<typename V, typename E, typename Ec, typename EcM>
 void Graph<V, E, Ec, EcM>::showEdges(){
-  int vcount = 1;
   std::set<boost::shared_ptr<E> > edgeSet;
   for(typename VertexMap::iterator iter = vertices.begin(), iterEnd = vertices.end(); iter != iterEnd; ++iter){
     std::vector<boost::shared_ptr<E> > edges;
     (*iter).second->edges(repast::Vertex<V, E>::INCOMING, edges);
     (*iter).second->edges(repast::Vertex<V, E>::OUTGOING, edges);
-    int ecount = 1;
     for(typename std::vector<boost::shared_ptr<E> >::iterator EI = edges.begin(), EIEnd = edges.end(); EI != EIEnd; ++EI) edgeSet.insert(*EI);
   }
   for(typename std::set<boost::shared_ptr<E> >::iterator ei = edgeSet.begin(), eiEnd = edgeSet.end(); ei != eiEnd; ++ei){
@@ -691,7 +689,6 @@ void Graph<V, E, Ec, EcM>::getAgentsToPush(std::set<AgentId>& agentsToTest, std:
       vertexMapEntry->second->edges(Vertex<V, E>::OUTGOING, edges);
       for(typename std::vector<boost::shared_ptr<E> >::iterator edgeIter = edges.begin(), edgeIterEnd = edges.end(); edgeIter != edgeIterEnd; ++edgeIter){
         boost::shared_ptr<E> e = *edgeIter;
-        E* eptr = e.get();
         if(isMaster(&**edgeIter)){
           AgentId sourceId = (*edgeIter)->source()->getId();
           AgentId targetId = (*edgeIter)->target()->getId();

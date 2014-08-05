@@ -146,14 +146,13 @@ public:
 	void close();
 
 protected:
-	Log4CL(int);
+	Log4CL();
 
 private:
 	static Log4CL *_instance;
 
 	std::map<std::string, Logger*> logger_map;
 	std::vector<Appender *> appenders;
-	int proc_id;
 };
 
 

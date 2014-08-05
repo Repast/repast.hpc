@@ -588,7 +588,7 @@ template<typename T, typename GPTransformer, typename Adder, typename GPType>
 void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getMovingAgentInfo(std::map<int, std::vector<AgentId> > agentsToMove, GridMovePackets<GPType> outgoing){
   std::map<int, std::vector<AgentId> >::const_iterator mapIterEnd = agentsToMove.end();
   for(std::map<int, std::vector<AgentId> >::const_iterator mapIter = agentsToMove.begin(); mapIter != mapIterEnd; ++mapIter){
-    int dest                      = mapIter->first;
+
     std::vector<AgentId> agentIDs = mapIter->second;
 
     std::vector<AgentId>::const_iterator agentIdIterEnd = agentIDs.end();

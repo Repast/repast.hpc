@@ -73,7 +73,7 @@ struct AgentStateFilter{
 	AgentStateFilter(int rankInCommunicator): rank(rankInCommunicator){
 		local = true;
 	}
-	AgentStateFilter(bool localFlag, int rankInCommunicator): local(localFlag), rank(rankInCommunicator){	}
+	AgentStateFilter(bool localFlag, int rankInCommunicator):  rank(rankInCommunicator), local(localFlag) {	}
 		
 	bool operator()(const boost::shared_ptr<T>& ptr) {
 		return (local ? ptr->getId().currentRank() == rank : ptr->getId().currentRank() != rank);

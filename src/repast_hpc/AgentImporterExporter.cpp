@@ -627,7 +627,6 @@ void Importer_MAP_int::registerOutgoingRequests(AgentRequest &req){
   std::vector<AgentId>::iterator reqAgentIdIterator = req.requestedAgents_.begin();
   while(reqAgentIdIterator != req.requestedAgents_.end()){
     const AgentId &id = *reqAgentIdIterator;
-    int rank = id.currentRank();
 
     // Retrieve the current list for this source rank
     std::map<AgentId, int>* record = getRecord(id.currentRank());

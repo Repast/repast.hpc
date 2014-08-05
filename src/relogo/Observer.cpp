@@ -63,7 +63,7 @@ const int Observer::NO_TYPE_ID = -1;
 static DefaultLinkCreator _defaultLinkCreator;
 
 Observer::Observer() :
-	rndXP(0), rndYP(0), rndX(0), rndY(0), context(RepastProcess::instance()->getCommunicator()) {
+		context(RepastProcess::instance()->getCommunicator()), rndXP(0), rndYP(0), rndX(0), rndY(0) {
 	_rank = RepastProcess::instance()->rank();
 }
 

@@ -690,7 +690,7 @@ Log4CL* Log4CLConfigurator::configure(const string& config_file, int proc_id, bo
 }
 
 Log4CL* Log4CLConfigurator::create_log4cl() {
-	Log4CL* log4CL = new Log4CL(proc_id);
+	Log4CL* log4CL = new Log4CL();
 	// create the appenders
 	map<string, Appender*> amap;
 
@@ -753,8 +753,7 @@ Logger& Log4CL::get_logger(std::string logger_name) {
 	return *(item->second);
 }
 
-Log4CL::Log4CL(int proc_id) :
-	proc_id(proc_id) {
+Log4CL::Log4CL() {
 }
 
 Log4CL::~Log4CL() {
@@ -793,7 +792,7 @@ void Log4CL::configure(int proc_id, const std::string& config_file, boost::mpi::
 }
 
 void Log4CL::configure(int proc_id) {
-	_instance = new Log4CL(proc_id);
+	_instance = new Log4CL();
 	Logger *root = new Logger("root", WARN, proc_id);
 	_instance->logger_map["root"] = root;
 

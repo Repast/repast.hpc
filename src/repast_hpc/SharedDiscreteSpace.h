@@ -236,8 +236,6 @@ void SharedDiscreteSpace<T, GPTransformer, Adder>::getAgentsToPush(std::set<Agen
   // once (instead of three times)
 
 
-  int r = SharedBaseGrid<T, GPTransformer, Adder, int>::comm->rank();
-
   // In a general case, we might not want to do this, but
   // for the current configuration, we can make this (perhaps much) more efficient
   // this way:
