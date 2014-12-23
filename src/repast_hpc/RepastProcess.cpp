@@ -64,17 +64,16 @@ namespace mpi = boost::mpi;
 namespace repast {
 
 RepastProcess* RepastProcess::_instance = 0;
-boost::mpi::communicator* RepastProcess::myWorld = 0;
 
-RepastProcess::RepastProcess(boost::mpi::communicator* comm) :
-		procsToSendProjInfoTo(NULL), procsToRecvProjInfoFrom(NULL), procsToSendAgentStatusInfoTo(
-				NULL), procsToRecvAgentStatusInfoFrom(NULL) {
-	if (myWorld == 0)
-		myWorld = new boost::mpi::communicator();
-	world = (comm != 0 ? comm : myWorld);
-	runner = new ScheduleRunner(world);
-	rank_ = world->rank();
-	worldSize_ = world->size();
+RepastProcess::RepastProcess(boost::mpi::communicator* comm) : world(comm), runner(new ScheduleRunner(world)),
+		rank_(world->rank()), worldSize_(world->size()),
+		procsToSendProjInfoTo(NULL), procsToRecvProjInfoFrom(NULL), procsToSendAgentStatusInfoTo(NULL),
+		procsToRecvAgentStatusInfoFrom(NULL) {
+
+	//world = comm;
+	//runner = new ScheduleRunner(world);
+	//rank_ = world->rank();
+	//worldSize_ = world->size();
 
 #ifndef SHARE_AGENTS_BY_SET
 	importer_exporter = new DEFAULT_IMPORTER_EXPORTER_CLASS();
@@ -105,18 +104,22 @@ RepastProcess::RepastProcess(boost::mpi::communicator* comm) :
 
 RepastProcess* RepastProcess::init(string propsfile,
 		boost::mpi::communicator* comm, int maxConfigFileSize) {
-	if (myWorld == 0)
-		myWorld = new boost::mpi::communicator();
-	if (_instance == 0) {
-		boost::mpi::communicator* tmpWorld = (comm != 0 ? comm : myWorld);
+	if (_instance != 0) {
+		// reinitializing so delete the old instance
+		delete _instance;
 
-		if (propsfile.length() > 0)
-			Log4CL::configure(tmpWorld->rank(), propsfile, tmpWorld,
-					maxConfigFileSize);
-		else
-			Log4CL::configure(tmpWorld->rank());
-		_instance = new RepastProcess(tmpWorld);
 	}
+
+	boost::mpi::communicator* tmpWorld = (
+			comm != 0 ? comm : new boost::mpi::communicator());
+
+	if (propsfile.length() > 0)
+		Log4CL::configure(tmpWorld->rank(), propsfile, tmpWorld,
+				maxConfigFileSize);
+	else
+		Log4CL::configure(tmpWorld->rank());
+	_instance = new RepastProcess(tmpWorld);
+
 	return _instance;
 }
 
