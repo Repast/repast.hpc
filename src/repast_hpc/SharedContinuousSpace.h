@@ -74,7 +74,7 @@ private:
 
 public:
 	virtual ~SharedContinuousSpace();
-	SharedContinuousSpace(std::string name, GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* world);
+	SharedContinuousSpace(std::string name, GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* communicator);
 
 	/**
 	 * Synchronize the buffer area of this SharedGrid with its neighbors. This
@@ -103,8 +103,8 @@ public:
 
 template<typename T, typename GPTransformer, typename Adder>
 SharedContinuousSpace<T, GPTransformer, Adder>::SharedContinuousSpace(std::string name, GridDimensions gridDims,
-		std::vector<int> processDims, int buffer, boost::mpi::communicator* world) :
-	SharedBaseGrid<T, GPTransformer, Adder, double> (name, gridDims, processDims, buffer, world) {
+		std::vector<int> processDims, int buffer, boost::mpi::communicator* communicator) :
+	SharedBaseGrid<T, GPTransformer, Adder, double> (name, gridDims, processDims, buffer, communicator) {
 }
 
 template<typename T, typename GPTransformer, typename Adder>

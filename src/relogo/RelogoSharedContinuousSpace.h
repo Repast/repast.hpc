@@ -60,13 +60,13 @@ protected:
 public:
 	virtual ~RelogoSharedContinuousSpace() {
 	}
-	RelogoSharedContinuousSpace(std::string name, repast::GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* world);
+	RelogoSharedContinuousSpace(std::string name, repast::GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* comm);
 };
 
 template<typename GPTransformer, typename Adder>
 RelogoSharedContinuousSpace<GPTransformer, Adder>::RelogoSharedContinuousSpace(std::string name, repast::GridDimensions gridDims,
-		std::vector<int> processDims, int buffer, boost::mpi::communicator* world) :
-	repast::SharedContinuousSpace<RelogoAgent, GPTransformer, Adder>(name, gridDims, processDims, buffer, world) {
+		std::vector<int> processDims, int buffer, boost::mpi::communicator* comm) :
+	repast::SharedContinuousSpace<RelogoAgent, GPTransformer, Adder>(name, gridDims, processDims, buffer, comm) {
 }
 
 template<typename GPTransformer, typename Adder>

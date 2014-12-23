@@ -247,7 +247,7 @@ private:
 	std::vector<boost::shared_ptr<Functor> > endEvents;
 
 public:
-	ScheduleRunner(boost::mpi::communicator* world);
+	ScheduleRunner(boost::mpi::communicator* communicator);
 	~ScheduleRunner();
 
 	/**

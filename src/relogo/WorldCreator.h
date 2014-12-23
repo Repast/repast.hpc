@@ -67,7 +67,7 @@ class WorldCreator {
   boost::mpi::communicator* comm;
 
 public:
-	WorldCreator(boost::mpi::communicator* world):comm(world) {}
+	WorldCreator(boost::mpi::communicator* communicator):comm(communicator) {}
 	virtual ~WorldCreator() {}
 
 	/**

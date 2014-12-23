@@ -806,7 +806,7 @@ public:
    * the status (moved or removed) for all agents being exported. Returns this information
    * in the statusUpdates vector.
    */
-  virtual void exchangeAgentStatusUpdates(boost::mpi::communicator world, std::vector<std::vector<AgentStatus>* >& statusUpdates);
+  virtual void exchangeAgentStatusUpdates(boost::mpi::communicator comm, std::vector<std::vector<AgentStatus>* >& statusUpdates);
 
   /**
    * Returns the version of this AbstractImporterExporter. The version is a string

@@ -647,7 +647,7 @@ template<typename Vertex, typename Edge, typename EdgeContent, typename EdgeMana
 void synchEdges(SharedNetwork<Vertex, Edge, EdgeContent, EdgeManager>* net, EdgeManager& edgeManager) {
 
   std::map<int, std::vector<boost::shared_ptr<Edge> >* >& exports = net->edgeExporter.getExportedEdges();
-  boost::mpi::communicator* world = RepastProcess::instance()->getCommunicator();
+  boost::mpi::communicator* comm = RepastProcess::instance()->getCommunicator();
 
   std::vector<boost::mpi::request> requests;
   std::vector<std::vector<EdgeContent>*> contents;
@@ -656,7 +656,7 @@ void synchEdges(SharedNetwork<Vertex, Edge, EdgeContent, EdgeManager>* net, Edge
   for (std::map<int, int>::const_iterator iter = net->senders.begin(); iter != net->senders.end(); ++iter) {
     int sender = iter->first;
     std::vector<EdgeContent>* content = new std::vector<EdgeContent>();
-    requests.push_back(world->irecv(sender, NET_EDGE_SYNC, *content));
+    requests.push_back(comm->irecv(sender, NET_EDGE_SYNC, *content));
     contents.push_back(content);
   }
 
@@ -672,7 +672,7 @@ void synchEdges(SharedNetwork<Vertex, Edge, EdgeContent, EdgeManager>* net, Edge
     for (typename std::vector<boost::shared_ptr<Edge> >::iterator iter = edges->begin(); iter != edges->end(); ++iter) {
       edgeContent->push_back(edgeManager.provideEdgeContent(iter->get()));
     }
-    requests.push_back(world->isend(receiver, NET_EDGE_SYNC, *edgeContent));
+    requests.push_back(comm->isend(receiver, NET_EDGE_SYNC, *edgeContent));
   }
 
   boost::mpi::wait_all(requests.begin(), requests.end());
@@ -788,7 +788,7 @@ void SharedNetwork<V, E, Ec, EcM>::graphAddEdge(boost::shared_ptr<E> edge) {
 template<typename V, typename E, typename Ec, typename EcM>
 void SharedNetwork<V, E, Ec, EcM>::notifyExporters() {
   RepastProcess* rp = RepastProcess::instance();
-  boost::mpi::communicator* world = rp->getCommunicator();
+  boost::mpi::communicator* comm = rp->getCommunicator();
 
 	std::vector<int> listToSend;
 	std::vector<int> list;
@@ -796,7 +796,7 @@ void SharedNetwork<V, E, Ec, EcM>::notifyExporters() {
   // get list of ints that the edgeExporter needs to send export requests to
   edgeExporter.gatherExporters(listToSend);
 
-	SRManager exchange(world);
+	SRManager exchange(comm);
 	exchange.retrieveSources(listToSend, list);
 
 
@@ -805,11 +805,11 @@ void SharedNetwork<V, E, Ec, EcM>::notifyExporters() {
 	for (size_t i = 0; i < list.size(); i++) {
 		int sender = list[i];
 		ItemReceipt<ExportRequest>* receipt = new ItemReceipt<ExportRequest> ();
-		requests.push_back(world->irecv(sender, NET_EXPORT_REQUESTS, receipt->items));
+		requests.push_back(comm->irecv(sender, NET_EXPORT_REQUESTS, receipt->items));
 		receipts.push_back(receipt);
 	}
 
-	edgeExporter.sendExportRequests(*world, requests);
+	edgeExporter.sendExportRequests(*comm, requests);
 	boost::mpi::wait_all(requests.begin(), requests.end());
 
 	// process the received requests
@@ -830,12 +830,12 @@ void SharedNetwork<V, E, Ec, EcM>::synchRemovedEdges() {
   // receive from senders
   std::map<int, std::vector<std::pair<AgentId, AgentId> >*> contents;
 
-  boost::mpi::communicator* world = RepastProcess::instance()->getCommunicator();
+  boost::mpi::communicator* comm = RepastProcess::instance()->getCommunicator();
   // receive edge content from those this P is importing from
   for (std::map<int, int>::const_iterator iter = senders.begin(); iter != senders.end(); ++iter) {
     int sender = iter->first;
     std::vector<std::pair<AgentId, AgentId> >* content = new std::vector<std::pair<AgentId, AgentId> >();
-    requests.push_back(world->irecv(sender, NET_EDGE_REMOVE_SYNC, *content));
+    requests.push_back(comm->irecv(sender, NET_EDGE_REMOVE_SYNC, *content));
     contents[sender] = content;
   }
 
@@ -845,9 +845,9 @@ void SharedNetwork<V, E, Ec, EcM>::synchRemovedEdges() {
     int sendTo = iter->first;
     std::map<int, std::vector<std::pair<AgentId, AgentId> > >::iterator removeIter = removedEdges.find(sendTo);
     if (removeIter == removedEdges.end()) {
-      requests.push_back(world->isend(sendTo, NET_EDGE_REMOVE_SYNC, empty));
+      requests.push_back(comm->isend(sendTo, NET_EDGE_REMOVE_SYNC, empty));
     } else {
-      requests.push_back(world->isend(sendTo, NET_EDGE_REMOVE_SYNC, removeIter->second));
+      requests.push_back(comm->isend(sendTo, NET_EDGE_REMOVE_SYNC, removeIter->second));
     }
 
     // delete any empty vectors from exportedEdges

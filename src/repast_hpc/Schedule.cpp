@@ -140,7 +140,7 @@ void Schedule::execute() {
 	//std::cout << "execute at: " << getCurrentTick() << std::endl;
 }
 
-ScheduleRunner::ScheduleRunner(boost::mpi::communicator* world) : go(true), comm(world) {
+ScheduleRunner::ScheduleRunner(boost::mpi::communicator* communicator) : go(true), comm(communicator) {
 }
 
 ScheduleRunner::~ScheduleRunner() {}

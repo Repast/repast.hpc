@@ -56,12 +56,12 @@ class RelogoSharedDiscreteSpace : public repast::SharedDiscreteSpace<RelogoAgent
 
 public:
 	virtual ~RelogoSharedDiscreteSpace() {}
-	RelogoSharedDiscreteSpace(std::string name, repast::GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* world);
+	RelogoSharedDiscreteSpace(std::string name, repast::GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* comm);
 };
 
 template <typename GPTransformer, typename Adder>
-RelogoSharedDiscreteSpace<GPTransformer, Adder>::RelogoSharedDiscreteSpace(std::string name, repast::GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* world) :
-repast::SharedDiscreteSpace<RelogoAgent, GPTransformer, Adder>(name, gridDims, processDims, buffer, world) {}
+RelogoSharedDiscreteSpace<GPTransformer, Adder>::RelogoSharedDiscreteSpace(std::string name, repast::GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* comm) :
+repast::SharedDiscreteSpace<RelogoAgent, GPTransformer, Adder>(name, gridDims, processDims, buffer, comm) {}
 
 
 }
