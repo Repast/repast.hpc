@@ -755,7 +755,7 @@ class Repast_Error_49: public std::invalid_argument{
 public:
   Repast_Error_49(size_t dims, T gridDimensions): INVALID_ARG(ERROR_NUMBER 49)
       THROWN_BY     "SharedBaseGrid<T, GPTransformer, Adder, GPType>::SharedBaseGrid(std::string name, " +
-                    "GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* world)"
+                    "GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* comm)"
       REASON        "Invalid number of grid dimensions (" + VAL (dims) + "): " + make_str(gridDimensions)
       EXPLANATION   "SharedBaseGrid can only use 1- or 2-dimensional grids"
       CAUSE         "Improper model construction"
@@ -769,7 +769,7 @@ class Repast_Error_50: public std::invalid_argument{
 public:
   Repast_Error_50(size_t dims, T gridDimensions, int processDims): INVALID_ARG(ERROR_NUMBER 50)
       THROWN_BY     "SharedBaseGrid<T, GPTransformer, Adder, GPType>::SharedBaseGrid(std::string name, " +
-                    "GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* world)"
+                    "GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* comm)"
       REASON        "Invalid number of grid dimensions (" + VAL (dims) + "): " + make_str(gridDimensions) + " "
                     "Does not match number of process dimensions (" + VAL(processDims) + ")"
       EXPLANATION   "SharedBaseGrid dimensions must match number of process dimensions"
@@ -783,7 +783,7 @@ class Repast_Error_51: public std::invalid_argument{
 public:
   Repast_Error_51(int dimCount, int extent, double pCount): INVALID_ARG(ERROR_NUMBER 51)
       THROWN_BY     "SharedBaseGrid<T, GPTransformer, Adder, GPType>::SharedBaseGrid(std::string name, " +
-                    "GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* world)"
+                    "GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* comm)"
       REASON        "Number of processes in a given dimension must divide evenly into the extent of that dimension; " +
                     "In dimension " + VAL(dimCount) + " the extent is " + VAL(extent) + " but the process count is " + VAL(pCount)
       EXPLANATION   "Repast HPC will try to apportion the total simulation grid among some set of processes; to " +

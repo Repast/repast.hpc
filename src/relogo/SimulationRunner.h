@@ -73,7 +73,7 @@ public:
 	/**
 	 * Creates a SimulationRunner.
 	 */
-	SimulationRunner(boost::mpi::communicator* world): comm(world) {}
+	SimulationRunner(boost::mpi::communicator* communicator): comm(communicator) {}
 
 	/**
 	 * Creates and runs the simulation using the properties defined in props.

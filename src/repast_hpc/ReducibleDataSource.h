@@ -96,15 +96,15 @@ void ReducibleDataSource<Op, T>::record() {
 
 template<typename Op, typename T>
 void ReducibleDataSource<Op, T>::write(Variable* var) {
-	boost::mpi::communicator* world = RepastProcess::instance()->getCommunicator();
+	boost::mpi::communicator* comm = RepastProcess::instance()->getCommunicator();
 	if (rank == 0) {
 		size_t size = data.size();
 		T* results = new T[size];
-		reduce(*world, &data[0], size, results, _op, 0);
+		reduce(*comm, &data[0], size, results, _op, 0);
 		var->insert(results, size);
 		delete[] results;
 	} else {
-		reduce(*world, &data[0], data.size(), _op, 0);
+		reduce(*comm, &data[0], data.size(), _op, 0);
 	}
 	data.clear();
 }

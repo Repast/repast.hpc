@@ -205,7 +205,7 @@ private:
 	boost::mpi::communicator* comm;
 
 public:
-	GridBufferSyncher(boost::mpi::communicator* world): comm(world) {
+	GridBufferSyncher(boost::mpi::communicator* communicator): comm(communicator) {
 	}
 	virtual ~GridBufferSyncher();
 
@@ -379,7 +379,7 @@ public:
 	 * @param buffer the size of the buffer between this part of the pan-process grid
 	 * and its neighbors.
 	 */
-	SharedBaseGrid(std::string name, GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* world);
+	SharedBaseGrid(std::string name, GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* communicator);
 	virtual ~SharedBaseGrid();
 
 	/**
@@ -451,8 +451,8 @@ public:
 
 template<typename T, typename GPTransformer, typename Adder, typename GPType>
 SharedBaseGrid<T, GPTransformer, Adder, GPType>::SharedBaseGrid(std::string name, GridDimensions gridDims, std::vector<
-		int> processDims, int buffer, boost::mpi::communicator* world) :
-	GridBaseType(name, gridDims), _buffer(buffer), comm(world) {
+		int> processDims, int buffer, boost::mpi::communicator* communicator) :
+	GridBaseType(name, gridDims), _buffer(buffer), comm(communicator) {
 
   rank = comm->rank();
 

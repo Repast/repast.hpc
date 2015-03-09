@@ -97,11 +97,11 @@ void NCReducibleDataSource<Op, T>::record() {
 
 template<typename Op, typename T>
 void NCReducibleDataSource<Op, T>::write(NcVar* var) {
-	boost::mpi::communicator* world = RepastProcess::instance()->getCommunicator();
+	boost::mpi::communicator* comm = RepastProcess::instance()->getCommunicator();
 	if (rank == 0) {
 		size_t size = data.size();
 		T* results = new T[size];
-		reduce(*world, &data[0], size, results, op_, 0);
+		reduce(*comm, &data[0], size, results, op_, 0);
 
 		var->set_cur(start, 0);
 		// writing results along the tick dimension
@@ -112,7 +112,7 @@ void NCReducibleDataSource<Op, T>::write(NcVar* var) {
 
 		delete[] results;
 	} else {
-		reduce(*world, &data[0], data.size(), op_, 0);
+		reduce(*comm, &data[0], data.size(), op_, 0);
 	}
 	data.clear();
 }

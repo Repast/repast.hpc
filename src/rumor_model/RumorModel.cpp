@@ -240,8 +240,8 @@ int RumorModel::initializeNodes(Properties& props) {
 	}
 
 	int numNodes = 0;
-	boost::mpi::communicator* world = repast::RepastProcess::instance()->getCommunicator();
-	boost::mpi::scatter(*world, nodeCounts, numNodes, 0);
+	boost::mpi::communicator* comm = repast::RepastProcess::instance()->getCommunicator();
+	boost::mpi::scatter(*comm, nodeCounts, numNodes, 0);
 	double prob = strToDouble(props.getProperty(NODE_RUMORED_PROB));
 	string dist = props.getProperty(NODE_RUMORED_DIST);
 
@@ -257,9 +257,9 @@ int RumorModel::initializeNodes(Properties& props) {
 void RumorModel::buildNetwork(Properties& props) {
   int processCount = RepastProcess::instance()->worldSize();
 	vector<int> nodeCounts;
-	boost::mpi::communicator* world = repast::RepastProcess::instance()->getCommunicator();
+	boost::mpi::communicator* comm = repast::RepastProcess::instance()->getCommunicator();
 
-	all_gather(*world, nodes.size(), nodeCounts);
+	all_gather(*comm, nodes.size(), nodeCounts);
 	// get agents from 4 "neighboring" processes
 	vector<int> others;
 	if (processCount < 5) {
@@ -340,10 +340,10 @@ void RumorModel::checkForStop() {
 	// check if >= half of total nodes have been compromised
 	int rumorCount = rumorSum->getData();
 	double stopTick = 0;
-	boost::mpi::communicator* world = repast::RepastProcess::communicator();
+	boost::mpi::communicator* comm = repast::RepastProcess::communicator();
 	if (rank == 0) {
 		int sum;
-		reduce(*world, rumorCount, sum, std::plus<int>(), 0);
+		reduce(*comm, rumorCount, sum, std::plus<int>(), 0);
 		if (sum == lastRumorSum)
 			noChangeCount++;
 		else {
@@ -360,9 +360,9 @@ void RumorModel::checkForStop() {
 					+ boost::lexical_cast<string>(stopTick));
 		}
 	} else {
-		reduce(*world, rumorCount, std::plus<int>(), 0);
+		reduce(*comm, rumorCount, std::plus<int>(), 0);
 	}
-	broadcast(*world, stopTick, 0);
+	broadcast(*comm, stopTick, 0);
 	if (stopTick > 0) {
 		RepastProcess::instance()->getScheduleRunner().scheduleStop(stopTick);
 	}

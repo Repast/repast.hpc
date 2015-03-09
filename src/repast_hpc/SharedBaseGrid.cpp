@@ -60,7 +60,7 @@ Neighbors::Location recvDirections[8] = {
 };
 
 
-CartTopology::CartTopology(vector<int> processesPerDim, vector<double> origin, vector<double> extents, bool spaceIsPeriodic, boost::mpi::communicator* world) :
+CartTopology::CartTopology(vector<int> processesPerDim, vector<double> origin, vector<double> extents, bool spaceIsPeriodic, boost::mpi::communicator* comm) :
   periodic(spaceIsPeriodic), procsPerDim(processesPerDim) {
   int numDims = procsPerDim.size();
   int* periods = new int[numDims];
@@ -73,7 +73,7 @@ CartTopology::CartTopology(vector<int> processesPerDim, vector<double> origin, v
 	swapXY(origin);
 	swapXY(extents);
 
-	MPI_Cart_create(*world, numDims, &processesPerDim[0], periods, 0, &topologyComm);
+	MPI_Cart_create(*comm, numDims, &processesPerDim[0], periods, 0, &topologyComm);
 	delete[] periods;
 	globalBounds = GridDimensions(origin, extents);
 }

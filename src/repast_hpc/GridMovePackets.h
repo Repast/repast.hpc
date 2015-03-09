@@ -98,7 +98,7 @@ public:
 	 */
 	void removePacketFor(const AgentId& id);
 
-	void send(std::vector<boost::mpi::request>& requests, boost::mpi::communicator world);
+	void send(std::vector<boost::mpi::request>& requests, boost::mpi::communicator comm);
 
 	void receivers(std::vector<int>& receivers) {
 		receivers.insert(receivers.begin(), toSendTo.begin(), toSendTo.end());
@@ -145,9 +145,9 @@ void GridMovePackets<PtType>::clear() {
 }
 
 template<typename PtType>
-void GridMovePackets<PtType>::send(std::vector<boost::mpi::request>& requests, boost::mpi::communicator world) {
+void GridMovePackets<PtType>::send(std::vector<boost::mpi::request>& requests, boost::mpi::communicator comm) {
 	for (typename MapType::iterator iter = packets.begin(); iter != packets.end(); ++iter) {
-		requests.push_back(world.isend(iter->first, GRID_MOVE_SYNC_PACKETS, *(iter->second)));
+		requests.push_back(comm.isend(iter->first, GRID_MOVE_SYNC_PACKETS, *(iter->second)));
 	}
 }
 
