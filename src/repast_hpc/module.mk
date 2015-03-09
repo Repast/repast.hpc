@@ -27,11 +27,7 @@ SharedBaseGrid.cpp \
 logger.cpp \
 SharedContext.cpp
 
-
-local_dir := src/repast_hpc
+local_dir := repast_hpc
 local_src := $(addprefix $(local_dir)/, $(SOURCES))
-cxx_flags := -fPIC
-bin_dir := ./bin/lib
-program := librepast_hpc-2.0.so
 
 sources += $(local_src)
