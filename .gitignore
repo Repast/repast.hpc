@@ -16,3 +16,5 @@ bin/
 *.a
 
 
+/repast_hpc/
+/relogo/
