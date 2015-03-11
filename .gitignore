@@ -15,6 +15,15 @@ bin/
 *.la
 *.a
 
+# eclipse stuff that isn't shared 
+# due to the difficulty of sharing c++ projects
+.project
+.cproject
+.settings
 
 /repast_hpc/
 /relogo/
+
+Release
+Debug
+Profiling

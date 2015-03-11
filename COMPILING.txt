@@ -1,0 +1,11 @@
+These directions and the Makefile.tmplt are aimed at Repast HPC developers, that is,
+to recompile the libraries during development. To use:
+
+1. Create a directory (e.g. Release) in this directory.
+2. Copy Makefile.tmplt into that directory and rename to Makefile.
+3. Edit the copied Makefile as approriate, setting the relevant paths and so forth.
+4. The make targets are repast_hpc, relogo, zombies and rumor 
+
+Note that .gitignore ignores Release, Debug and Profiling folders by default so
+anything in there will not be part of a commit and the Makefiles in there
+can be freely customized.

@@ -1,0 +1,172 @@
+repast_hpc_src :=
+relogo_src :=
+rumor_src :=
+zombie_src :=
+
+
+CXX=/usr/local/bin/mpicxx
+CXXLD=/usr/local/bin/mpicxx
+BOOST_INCLUDE_DIR=/usr/local/include/boost-1_54
+BOOST_LIB_DIR=/usr/local/lib
+BOOST_INFIX=-mt
+NETCDF_INCLUDE_DIR=/usr/local/include
+NETCDF_LIB_DIR=/usr/local/lib
+CURL_INCLUDE_DIR=/usr/local/include
+CURL_LIB_DIR=/usr/local/lib
+
+# DERIVED VARIABLES (Do not modify)
+I_REPAST=-I$(REPAST_HPC_DIR)
+I_BOOST=-I$(BOOST_INCLUDE_DIR)
+L_BOOST=-L$(BOOST_LIB_DIR)
+l_BOOST=-lboost_mpi$(BOOST_INFIX) -lboost_serialization$(BOOST_INFIX) -lboost_system$(BOOST_INFIX) -lboost_filesystem$(BOOST_INFIX)
+I_NETCDF=-I$(NETCDF_INCLUDE_DIR)
+L_NETCDF=-L$(NETCDF_LIB_DIR)
+l_NETCDF=-lnetcdf_c++ -lnetcdf
+I_CURL=-I$(CURL_INCLUDE_DIR)
+L_CURL=-L$(CURL_LIB_DIR)
+l_CURL=-lcurl
+
+INCLUDES = $(I_REPAST) $(I_BOOST) $(I_NETCDF) $(I_CURL)
+
+# src, build directories
+SRC_DIR=../src
+REPAST_HPC_DIR=$(SRC_DIR)/repast_hpc
+RELOGO_DIR=$(SRC_DIR)/relogo
+RUMOR_DIR=$(SRC_DIR)/rumor_model
+ZOMBIE_DIR=$(SRC_DIR)/zombies
+BUILD_DIR = ./build
+
+include $(REPAST_HPC_DIR)/module.mk
+REPAST_HPC_SOURCES =  $(addprefix ../src/, $(repast_hpc_src))
+RHPC_OBJS = $(addprefix $(BUILD_DIR)/, $(repast_hpc_src))
+REPAST_HPC_OBJECTS = $(subst .cpp,.o,$(RHPC_OBJS))
+REPAST_HPC_DEPS = $(subst .o,.d,$(REPAST_HPC_OBJECTS))
+
+include $(RELOGO_DIR)/module.mk
+RELOGO_SOURCES =  $(addprefix ../src/, $(relogo_src))
+REL_OBJS = $(addprefix $(BUILD_DIR)/, $(relogo_src))
+RELOGO_OBJECTS = $(subst .cpp,.o,$(REL_OBJS))
+RELOGO_DEPS = $(subst .o,.d,$(RELOGO_OBJECTS))
+
+include $(RUMOR_DIR)/module.mk
+RUMOR_SOURCES =  $(addprefix ../src/, $(rumor_src))
+RUMOR_OBJS = $(addprefix $(BUILD_DIR)/, $(rumor_src))
+RUMOR_OBJECTS = $(subst .cpp,.o,$(RUMOR_OBJS))
+RUMOR_DEPS = $(subst .o,.d,$(RUMOR_OBJECTS))
+
+include $(ZOMBIE_DIR)/module.mk
+ZOMBIE_SOURCES =  $(addprefix ../src/, $(zombie_src))
+ZOMBIE_OBJS = $(addprefix $(BUILD_DIR)/, $(zombie_src))
+ZOMBIE_OBJECTS = $(subst .cpp,.o,$(ZOMBIE_OBJS))
+ZOMBIE_DEPS = $(subst .o,.d,$(ZOMBIE_OBJECTS))
+
+VPATH = ../src
+
+RELEASE_FLAGS = -Wall -O3 -g0
+DEBUG_FLAGS = -O0 -g3  
+
+CPPFLAGS = $(RELEASE_FLAGS)
+LIB_CPPFLAGS = $(CPPFLAGS)
+
+LDFLAGS =
+LIB_LDFLAGS = $(LDFLAGS)
+LIB_EXT =
+
+OS := $(shell uname)
+
+ifeq ($(OS),Darwin)
+ LIB_LDFLAGS += -dynamiclib
+ LIB_EXT = dylib
+else
+ # linux
+ LIB_CPPFLAGS += -fPIC
+ LIB_LDFLAGS += -shared
+ LIB_EXT = so
+endif
+
+# targets
+REPAST_VERSION=2.2-dev
+REPAST_HPC_NAME=repast_hpc-$(REPAST_VERSION)
+REPAST_HPC_LIB=lib$(REPAST_HPC_NAME).$(LIB_EXT)
+
+RELOGO_NAME=relogo-$(REPAST_VERSION)
+RELOGO_LIB=lib$(RELOGO_NAME).$(LIB_EXT)
+
+RUMOR_EXE=rumor_model
+ZOMBIE_EXE=zombie_model
+	
+SED := sed
+MV := mv -f
+
+ifeq "$(MAKECMDGOALS)" "repast_hpc"
+	-include $(REPAST_HPC_DEPS)
+endif
+
+ifeq "$(MAKECMDGOALS)" "relogo"
+	-include $(REPAST_HPC_DEPS)
+	-include $(RELOGO_DEPS)
+endif
+
+ifeq "$(MAKECMDGOALS)" "rumor"
+	-include $(REPAST_HPC_DEPS)
+	-include $(RUMOR_DEPS)
+endif
+
+ifeq "$(MAKECMDGOALS)" "zombies"
+	-include $(REPAST_HPC_DEPS)
+	-include $(RELOGO_DEPS)
+	-include $(ZOMBIE_DEPS)
+endif
+
+ifeq "$(MAKECMDGOALS)" "all"
+	-include $(REPAST_HPC_DEPS)
+	-include $(RELOGO_DEPS)
+endif
+
+ifeq "$(MAKECMDGOALS)" ""
+	-include $(REPAST_HPC_DEPS)
+	-include $(RELOGO_DEPS)
+	-include $(RUMOR_DEPS)
+	-include $(ZOMBIE_DEPS)
+endif
+
+
+.PHONY: all repast_hpc relogo clean zombies rumor
+
+all : repast_hpc relogo rumor zombies
+
+repast_hpc: $(REPAST_HPC_OBJECTS)
+	-mkdir -p bin
+	$(CXXLD) $(LIB_LDFLAGS) $(l_BOOST) $(l_NETCDF) $(l_CURL) $^ -o bin/$(REPAST_HPC_LIB) $(L_BOOST) $(L_NETCDF) $(L_CURL)
+	
+relogo: $(RELOGO_OBJECTS)
+	-mkdir -p bin
+	$(CXXLD) $(LIB_LDFLAGS) -l$(REPAST_HPC_NAME) $(l_BOOST) $(l_NETCDF) $(l_CURL)  $^ -o bin/$(RELOGO_LIB) $(L_BOOST) $(L_NETCDF) $(L_CURL) -L./bin
+	
+rumor:  $(RUMOR_OBJECTS)
+	mkdir -p ./bin
+	cp $(RUMOR_DIR)/config.props ./bin/rumor_config.props
+	cp $(RUMOR_DIR)/model.props ./bin/rumor_model.props
+	$(CXXLD) $(LDFLAGS) -L./bin $(L_BOOST) $(L_NETCDF) -l$(REPAST_HPC_NAME) $(l_NETCDF) $(l_BOOST)  $(RUMOR_OBJECTS) -o ./bin/$(RUMOR_EXE)
+
+zombies: $(ZOMBIE_OBJECTS)
+	mkdir -p ./bin
+	cp $(ZOMBIE_DIR)/config.props ./bin/zombie_config.props
+	cp $(ZOMBIE_DIR)/model.props ./bin/zombie_model.props
+	$(CXXLD) $(LDFLAGS) -L./bin $(L_BOOST) $(L_NETCDF) $(L_CURL) $(l_NETCDF) $(l_CURL) -l$(REPAST_HPC_NAME) -l$(RELOGO_NAME) $(l_BOOST) $(ZOMBIE_OBJECTS) -o ./bin/$(ZOMBIE_EXE)
+
+$(BUILD_DIR)/%.o : %.cpp
+	$(CXX) $(LIB_CPPFLAGS) $(INCLUDES) -c $< -o $@
+	
+	
+$(BUILD_DIR)/%.d: %.cpp
+	@-mkdir -p $(dir $@)
+	@echo Calculating dependencies for $<
+	@$(CXX) $(CPPFLAGS) -M $< | \
+	$(SED) 's,\($(notdir $*)\.o\) *:,$(dir $@)\1 $@: ,' > $@.tmp
+	@$(MV) $@.tmp $@
+
+	
+clean :
+	rm -rf $(BUILD_DIR)
+	rm -f bin/*
