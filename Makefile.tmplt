@@ -15,7 +15,7 @@ CURL_INCLUDE_DIR=/usr/local/include
 CURL_LIB_DIR=/usr/local/lib
 
 # DERIVED VARIABLES (Do not modify)
-I_REPAST=-I$(REPAST_HPC_DIR)
+I_REPAST=-I$../src
 I_BOOST=-I$(BOOST_INCLUDE_DIR)
 L_BOOST=-L$(BOOST_LIB_DIR)
 l_BOOST=-lboost_mpi$(BOOST_INFIX) -lboost_serialization$(BOOST_INFIX) -lboost_system$(BOOST_INFIX) -lboost_filesystem$(BOOST_INFIX)
@@ -62,7 +62,7 @@ ZOMBIE_DEPS = $(subst .o,.d,$(ZOMBIE_OBJECTS))
 
 VPATH = ../src
 
-RELEASE_FLAGS = -Wall -O3 -g0
+RELEASE_FLAGS = -Wall -O3 -g0 -std=c++11
 DEBUG_FLAGS = -O0 -g3  
 
 CPPFLAGS = $(RELEASE_FLAGS)
@@ -162,7 +162,7 @@ $(BUILD_DIR)/%.o : %.cpp
 $(BUILD_DIR)/%.d: %.cpp
 	@-mkdir -p $(dir $@)
 	@echo Calculating dependencies for $<
-	@$(CXX) $(CPPFLAGS) -M $< | \
+	@$(CXX) $(CPPFLAGS) $(INCLUDES) -M $< | \
 	$(SED) 's,\($(notdir $*)\.o\) *:,$(dir $@)\1 $@: ,' > $@.tmp
 	@$(MV) $@.tmp $@
 
