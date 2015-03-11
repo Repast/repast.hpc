@@ -241,10 +241,10 @@ void EdgeExporter<E>::edgeRemoved(boost::shared_ptr<E> edge, std::map<int, std::
 						removeMap.find(emIter->first);
 				if (iter == removeMap.end()) {
 					std::vector<std::pair<AgentId, AgentId> > vec;
-					vec.push_back(std::make_pair<AgentId, AgentId>(edge->source()->getId(), edge->target()->getId()));
+					vec.push_back(std::make_pair(edge->source()->getId(), edge->target()->getId()));
 					removeMap[emIter->first] = vec;
 				} else {
-					iter->second.push_back(std::make_pair<AgentId, AgentId>(edge->source()->getId(),
+					iter->second.push_back(std::make_pair(edge->source()->getId(),
 							edge->target()->getId()));
 				}
 				edgeIter = edges->erase(edgeIter);
