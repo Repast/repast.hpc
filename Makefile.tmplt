@@ -15,7 +15,7 @@ CURL_INCLUDE_DIR=/usr/local/include
 CURL_LIB_DIR=/usr/local/lib
 
 # DERIVED VARIABLES (Do not modify)
-I_REPAST=-I$../src
+I_REPAST=-I../src
 I_BOOST=-I$(BOOST_INCLUDE_DIR)
 L_BOOST=-L$(BOOST_LIB_DIR)
 l_BOOST=-lboost_mpi$(BOOST_INFIX) -lboost_serialization$(BOOST_INFIX) -lboost_system$(BOOST_INFIX) -lboost_filesystem$(BOOST_INFIX)
