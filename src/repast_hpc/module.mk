@@ -30,4 +30,4 @@ SharedContext.cpp
 local_dir := repast_hpc
 local_src := $(addprefix $(local_dir)/, $(SOURCES))
 
-sources += $(local_src)
+repast_hpc_src += $(local_src)
