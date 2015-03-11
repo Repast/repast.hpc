@@ -85,7 +85,7 @@ else
 endif
 
 # targets
-REPAST_VERSION=2.2-dev
+REPAST_VERSION=2.1-dev
 REPAST_HPC_NAME=repast_hpc-$(REPAST_VERSION)
 REPAST_HPC_LIB=lib$(REPAST_HPC_NAME).$(LIB_EXT)
 
