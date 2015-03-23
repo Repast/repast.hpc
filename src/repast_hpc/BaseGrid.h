@@ -283,6 +283,8 @@ public:
   virtual void updateProjectionInfo(ProjectionInfoPacket* pip, Context<T>* context);
 
   virtual void getAgentsToPush(std::set<AgentId>& agentsToTest, std::map<int, std::set<AgentId> >& agentsToPush){ }
+  virtual void getInfoExchangePartners(std::set<int>& psToSendTo, std::set<int>& psToReceiveFrom) {}
+  virtual void getAgentStatusExchangePartners(std::set<int>& psToSendTo, std::set<int>& psToReceiveFrom) {}
 };
 
 template<typename T, typename CellAccessor, typename GPTransformer, typename Adder, typename GPType>
