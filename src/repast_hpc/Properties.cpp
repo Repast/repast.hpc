@@ -80,9 +80,7 @@ void Properties::putProperty(const string& key, string value) {
 }
 
 void Properties::putProperty(const string& key, long double value){
-  std::stringstream ss;
-  ss << value;
-  map[key] = ss.str();
+  map[key] = std::to_string(value);
 }
 
 bool Properties::contains(const string& key) const {

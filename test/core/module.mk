@@ -7,12 +7,10 @@ SOURCES = context_test.cpp \
           schedule_test.cpp \
           value_layer_tests.cpp 
 
-local_dir := test/core
-local_src := $(addprefix $(local_dir)/, $(SOURCES))
+local_dir := core
+local_src :=  $(addprefix $(local_dir)/, $(SOURCES))
+core_test_src += $(local_src)
 
-sources += $(local_src)
-bin_dir = "bin/unit_tests"
-program = "unit_test"
 
 
 

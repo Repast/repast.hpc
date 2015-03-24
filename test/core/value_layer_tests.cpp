@@ -138,11 +138,11 @@ void testCopy(DiscreteValueLayer<int, StrictBorders>& one, DiscreteValueLayer<in
 	ASSERT_EQ(one.dimensions(), two.dimensions());
 	ASSERT_EQ(one.name(), two.name());
 
-	Point<int> origin = one.dimensions().origin();
-	for (int x = origin.getX(); x < one.shape().getX() + origin.getX(); x++) {
-		for (int y = origin.getY(); y < one.shape().getY() + origin.getY(); y++) {
-			for (int z = origin.getZ(); z < one.shape().getZ() + origin.getZ(); z++) {
-				ASSERT_EQ(one.get(Point<int>(x, y, z)), two.get(Point<int>(x, y, z)));
+	Point<double> origin = one.dimensions().origin();
+	for (double x = origin.getX(); x < one.shape().getX() + origin.getX(); x++) {
+		for (double y = origin.getY(); y < one.shape().getY() + origin.getY(); y++) {
+			for (double z = origin.getZ(); z < one.shape().getZ() + origin.getZ(); z++) {
+				ASSERT_EQ(one.get(Point<int>((int)x, (int)y, (int)z)), two.get(Point<int>((int)x, (int)y, (int)z)));
 			}
 		}
 	}
@@ -152,10 +152,10 @@ void testCopy(ContinuousValueLayer<double, StrictBorders>& one, ContinuousValueL
 	ASSERT_EQ(one.dimensions(), two.dimensions());
 	ASSERT_EQ(one.name(), two.name());
 
-	Point<int> origin = one.dimensions().origin();
-	for (int x = origin.getX(); x < one.shape().getX() + origin.getX(); x++) {
-		for (int y = origin.getY(); y < one.shape().getY() + origin.getY(); y++) {
-			for (int z = origin.getZ(); z < one.shape().getZ() + origin.getZ(); z++) {
+	Point<double> origin = one.dimensions().origin();
+	for (double x = origin.getX(); x < one.shape().getX() + origin.getX(); x++) {
+		for (double y = origin.getY(); y < one.shape().getY() + origin.getY(); y++) {
+			for (double z = origin.getZ(); z < one.shape().getZ() + origin.getZ(); z++) {
 				ASSERT_EQ(one.get(Point<double>(x, y, z)), two.get(Point<double>(x, y, z)));
 			}
 		}
@@ -166,11 +166,11 @@ void testCopy(DiscreteValueLayer<int, WrapAroundBorders>& one, DiscreteValueLaye
 	ASSERT_EQ(one.dimensions(), two.dimensions());
 	ASSERT_EQ(one.name(), two.name());
 
-	Point<int> origin = one.dimensions().origin();
-	for (int x = origin.getX(); x < one.shape().getX() + origin.getX(); x++) {
-		for (int y = origin.getY(); y < one.shape().getY() + origin.getY(); y++) {
-			for (int z = origin.getZ(); z < one.shape().getZ() + origin.getZ(); z++) {
-				ASSERT_EQ(one.get(Point<int>(x, y, z)), two.get(Point<int>(x, y, z)));
+	Point<double> origin = one.dimensions().origin();
+	for (double x = origin.getX(); x < one.shape().getX() + origin.getX(); x++) {
+		for (double y = origin.getY(); y < one.shape().getY() + origin.getY(); y++) {
+			for (double z = origin.getZ(); z < one.shape().getZ() + origin.getZ(); z++) {
+				ASSERT_EQ(one.get(Point<int>((int)x, (int)y, (int)z)), two.get(Point<int>((int)x, (int)y, (int)z)));
 			}
 		}
 	}
@@ -180,10 +180,10 @@ void testCopy(ContinuousValueLayer<int, WrapAroundBorders>& one, ContinuousValue
 	ASSERT_EQ(one.dimensions(), two.dimensions());
 	ASSERT_EQ(one.name(), two.name());
 
-	Point<int> origin = one.dimensions().origin();
-	for (int x = origin.getX(); x < one.shape().getX() + origin.getX(); x++) {
-		for (int y = origin.getY(); y < one.shape().getY() + origin.getY(); y++) {
-			for (int z = origin.getZ(); z < one.shape().getZ() + origin.getZ(); z++) {
+	Point<double> origin = one.dimensions().origin();
+	for (double x = origin.getX(); x < one.shape().getX() + origin.getX(); x++) {
+		for (double y = origin.getY(); y < one.shape().getY() + origin.getY(); y++) {
+			for (double z = origin.getZ(); z < one.shape().getZ() + origin.getZ(); z++) {
 				ASSERT_EQ(one.get(Point<double>(x, y, z)), two.get(Point<double>(x, y, z)));
 			}
 		}
@@ -192,7 +192,7 @@ void testCopy(ContinuousValueLayer<int, WrapAroundBorders>& one, ContinuousValue
 
 TEST(ValueLayer, DiscreteZeroOrigin)
 {
-	DiscreteValueLayer<int, StrictBorders> vl("discrete", GridDimensions(Point<int> (4, 4, 10)), true, 6);
+	DiscreteValueLayer<int, StrictBorders> vl("discrete", GridDimensions(Point<double> (4, 4, 10)), true, 6);
 	for (int x = 0; x < 4; x++) {
 		for (int y = 0; y < 4; y++) {
 			for (int z = 0; z < 10; z++) {
@@ -251,7 +251,7 @@ TEST(ValueLayer, DiscreteZeroOrigin)
 
 TEST(ValueLayer, ContinuousZeroOrigin)
 {
-	ContinuousValueLayer<double, StrictBorders> vl("discrete", GridDimensions(Point<int> (4, 4, 10)), 6.25);
+	ContinuousValueLayer<double, StrictBorders> vl("discrete", GridDimensions(Point<double> (4, 4, 10)), 6.25);
 	for (int x = 0; x < 4; x++) {
 		for (int y = 0; y < 4; y++) {
 			for (int z = 0; z < 10; z++) {
@@ -318,7 +318,7 @@ TEST(ValueLayer, ContinuousZeroOrigin)
 
 TEST(ValueLayer, DiscreteZeroOriginWrapped)
 {
-	DiscreteValueLayer<int, WrapAroundBorders> vl("discrete", GridDimensions(Point<int> (4, 4, 10)), true, 6);
+	DiscreteValueLayer<int, WrapAroundBorders> vl("discrete", GridDimensions(Point<double> (4, 4, 10)), true, 6);
 	for (int x = 0; x < 4; x++) {
 		for (int y = 0; y < 4; y++) {
 			for (int z = 0; z < 10; z++) {
@@ -360,7 +360,7 @@ TEST(ValueLayer, DiscreteZeroOriginWrapped)
 
 TEST(ValueLayer, ContinuousZeroOriginWrapped)
 {
-	ContinuousValueLayer<int, WrapAroundBorders> vl("continuous", GridDimensions(Point<int> (4, 4, 10)), 6);
+	ContinuousValueLayer<int, WrapAroundBorders> vl("continuous", GridDimensions(Point<double> (4, 4, 10)), 6);
 	for (int x = 0; x < 4; x++) {
 		for (int y = 0; y < 4; y++) {
 			for (int z = 0; z < 10; z++) {
@@ -403,34 +403,34 @@ TEST(ValueLayer, ContinuousZeroOriginWrapped)
 TEST(ValueLayer, DiscreteNonZeroOrigin)
 {
 	DiscreteValueLayer<int, StrictBorders> vl("discrete",
-			GridDimensions(Point<int> (-2, -1, -2), Point<int> (4, 4, 10)), true, 6);
-	Point<int> origin = vl.dimensions().origin();
-	for (int x = origin.getX(); x < vl.shape().getX() + origin.getX(); x++) {
-		for (int y = origin.getY(); y < vl.shape().getY() + origin.getY(); y++) {
-			for (int z = origin.getZ(); z < vl.shape().getZ() + origin.getZ(); z++) {
-				Point<int> pt(x, y, z);
+			GridDimensions(Point<double> (-2, -1, -2), Point<double> (4, 4, 10)), true, 6);
+	Point<double> origin = vl.dimensions().origin();
+	for (double x = origin.getX(); x < vl.shape().getX() + origin.getX(); x++) {
+		for (double y = origin.getY(); y < vl.shape().getY() + origin.getY(); y++) {
+			for (double z = origin.getZ(); z < vl.shape().getZ() + origin.getZ(); z++) {
+				Point<int> pt((int)x, (int)y, (int)z);
 				ASSERT_EQ(6, vl[pt]);
 			}
 		}
 	}
 
 	int rnd[4][4][10];
-	for (int x = origin.getX(); x < vl.shape().getX() + origin.getX(); x++) {
-		for (int y = origin.getY(); y < vl.shape().getY() + origin.getY(); y++) {
-			for (int z = origin.getZ(); z < vl.shape().getZ() + origin.getZ(); z++) {
+	for (double x = origin.getX(); x < vl.shape().getX() + origin.getX(); x++) {
+		for (double y = origin.getY(); y < vl.shape().getY() + origin.getY(); y++) {
+			for (double z = origin.getZ(); z < vl.shape().getZ() + origin.getZ(); z++) {
 
 				int val = rand();
-				rnd[x - origin.getX()][y - origin.getY()][z - origin.getZ()] = val;
-				vl[Point<int>(x, y, z)] = val;
+				rnd[(int)x - (int)origin.getX()][(int)y - (int)origin.getY()][(int)z - (int)origin.getZ()] = val;
+				vl[Point<int>((int)x, (int)y, (int)z)] = val;
 			}
 		}
 	}
 
-	for (int x = origin.getX(); x < vl.shape().getX() + origin.getX(); x++) {
-		for (int y = origin.getY(); y < vl.shape().getY() + origin.getY(); y++) {
-			for (int z = origin.getZ(); z < vl.shape().getZ() + origin.getZ(); z++) {
+	for (double x = origin.getX(); x < vl.shape().getX() + origin.getX(); x++) {
+		for (double y = origin.getY(); y < vl.shape().getY() + origin.getY(); y++) {
+			for (double z = origin.getZ(); z < vl.shape().getZ() + origin.getZ(); z++) {
 
-				int val = rnd[x - origin.getX()][y - origin.getY()][z - origin.getZ()];
+				int val = rnd[(int)x - (int)origin.getX()][(int)y - (int)origin.getY()][(int)z - (int)origin.getZ()];
 				ASSERT_EQ(val, vl[Point<int>(x, y, z)]);
 			}
 		}
@@ -447,33 +447,33 @@ TEST(ValueLayer, DiscreteNonZeroOrigin)
 TEST(ValueLayer, ContinuousNonZeroOrigin)
 {
 
-	ContinuousValueLayer<double, StrictBorders> vl("continuous", GridDimensions(Point<int> (-2, -1, -2), Point<int> (4,
+	ContinuousValueLayer<double, StrictBorders> vl("continuous", GridDimensions(Point<double> (-2, -1, -2), Point<double> (4,
 			4, 10)), 6);
-	Point<int> origin = vl.dimensions().origin();
-	for (int x = origin.getX(); x < vl.shape().getX() + origin.getX(); x++) {
-		for (int y = origin.getY(); y < vl.shape().getY() + origin.getY(); y++) {
-			for (int z = origin.getZ(); z < vl.shape().getZ() + origin.getZ(); z++) {
+	Point<double> origin = vl.dimensions().origin();
+	for (double x = origin.getX(); x < vl.shape().getX() + origin.getX(); x++) {
+		for (double y = origin.getY(); y < vl.shape().getY() + origin.getY(); y++) {
+			for (double z = origin.getZ(); z < vl.shape().getZ() + origin.getZ(); z++) {
 				Point<double> pt(x, y, z);
 				ASSERT_EQ(6, vl[pt]);
 			}
 		}
 	}
 
-	int rnd[4][4][10];
-	for (int x = origin.getX(); x < vl.shape().getX() + origin.getX(); x++) {
-		for (int y = origin.getY(); y < vl.shape().getY() + origin.getY(); y++) {
-			for (int z = origin.getZ(); z < vl.shape().getZ() + origin.getZ(); z++) {
+	double rnd[4][4][10];
+	for (double x = origin.getX(); x < vl.shape().getX() + origin.getX(); x++) {
+		for (double y = origin.getY(); y < vl.shape().getY() + origin.getY(); y++) {
+			for (double z = origin.getZ(); z < vl.shape().getZ() + origin.getZ(); z++) {
 				int val = rand();
-				rnd[x - origin.getX()][y - origin.getY()][z - origin.getZ()] = val;
+				rnd[(int)x - (int)origin.getX()][(int)y - (int)origin.getY()][(int)z - (int)origin.getZ()] = val;
 				vl[Point<double>(x, y, z)] = val;
 			}
 		}
 	}
 
-	for (int x = origin.getX(); x < vl.shape().getX() + origin.getX(); x++) {
-		for (int y = origin.getY(); y < vl.shape().getY() + origin.getY(); y++) {
-			for (int z = origin.getZ(); z < vl.shape().getZ() + origin.getZ(); z++) {
-				int val = rnd[x - origin.getX()][y - origin.getY()][z - origin.getZ()];
+	for (double x = origin.getX(); x < vl.shape().getX() + origin.getX(); x++) {
+		for (double y = origin.getY(); y < vl.shape().getY() + origin.getY(); y++) {
+			for (double z = origin.getZ(); z < vl.shape().getZ() + origin.getZ(); z++) {
+				double val = rnd[(int)x - (int)origin.getX()][(int)y - (int)origin.getY()][(int)z - (int)origin.getZ()];
 				ASSERT_EQ(val, vl[Point<double>(x, y, z)]);
 			}
 		}

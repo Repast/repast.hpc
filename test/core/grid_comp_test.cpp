@@ -61,9 +61,8 @@ using namespace std;
 TEST(WrapAroundBorders, Transform)
 {
 
-	GridDimensions dimensions(Point<int> (5, 8));
-	WrapAroundBorders borders;
-	borders.init(dimensions);
+	GridDimensions dimensions(Point<double> (5, 8));
+	WrapAroundBorders borders(dimensions);
 
 	vector<int> in;
 	vector<int> out(2, 0);
@@ -75,12 +74,12 @@ TEST(WrapAroundBorders, Transform)
 	ASSERT_EQ(1, out[0]);
 	ASSERT_EQ(1, out[1]);
 
-	WrapAroundBorders borders2 = WrapAroundBorders();
-	borders2.init(GridDimensions(Point<int>(-4), Point<int>(10)));
+	WrapAroundBorders borders2 = WrapAroundBorders(GridDimensions(Point<double>(-4), Point<double>(10)));
 	in.resize(1, 0);
 
 	int input[] = {16, 8, 10, 14, 2, -3, 5, -15, -11, -13, -14};
-	int expected[] = {-4, -2, 0, 4, 2, -3, 5, 5, -1, -3, -4};
+	// 6 at the end because extent is inclusive upper boundary
+	int expected[] = {-4, -2, 0, 4, 2, -3, 5, 5, -1, -3, 6};
 	for (int i = 0; i < 11; i++) {
 		in[0] = input[i];
 		//std::cout << in[0] << std::endl;
@@ -88,8 +87,7 @@ TEST(WrapAroundBorders, Transform)
 		ASSERT_EQ(expected[i], out[0]);
 	}
 
-	WrapAroundBorders borders3 = WrapAroundBorders();
-	borders3.init(GridDimensions(Point<int>(1, 1), Point<int>(51, 101)));
+	WrapAroundBorders borders3 = WrapAroundBorders(GridDimensions(Point<double>(1, 1), Point<double>(51, 101)));
 	std::vector<double> in2;
 	in2.push_back(9.06);
 	in2.push_back(0.93934);
@@ -97,16 +95,15 @@ TEST(WrapAroundBorders, Transform)
 	borders3.transform(in2, out2);
 	ASSERT_EQ(9.06, out2[0]);
 	// needs wrap completely in order to get to 1
-	ASSERT_EQ(101, out2[1]);
+	ASSERT_EQ(101.93934, out2[1]);
 
 
 }
 
 TEST(StickyBorders, Translate)
 {
-	GridDimensions dimensions(Point<int> (5, 8));
-	StickyBorders borders;
-	borders.init(dimensions);
+	GridDimensions dimensions(Point<double> (5, 8));
+	StickyBorders borders(dimensions);
 
 	vector<int> old;
 	old.push_back(3);
@@ -115,7 +112,8 @@ TEST(StickyBorders, Translate)
 	vector<int> displacement(2, 0);
 	displacement[0] = 2;
 	borders.translate(old, pos, displacement);
-	ASSERT_EQ(4, pos[0]);
+	// extent is inclusive so sticks at 5
+	ASSERT_EQ(5, pos[0]);
 	ASSERT_EQ(6, pos[1]);
 
 	displacement[0] = -10;
@@ -131,7 +129,8 @@ TEST(StickyBorders, Translate)
 	vector<double> displacementd(2, 0);
 	displacementd[0] = 2;
 	borders.translate(oldd, posd, displacementd);
-	ASSERT_EQ(4.0, posd[0]);
+	// extent is inclusive so sticks at 5
+	ASSERT_EQ(5.0, posd[0]);
 	ASSERT_EQ(6.0, posd[1]);
 
 	displacementd[0] = -10;
@@ -143,9 +142,8 @@ TEST(StickyBorders, Translate)
 
 TEST(StickyBorders, Transform)
 {
-	GridDimensions dimensions(Point<int> (5, 8));
-	StickyBorders borders;
-	borders.init(dimensions);
+	GridDimensions dimensions(Point<double> (5, 8));
+	StickyBorders borders(dimensions);
 
 	vector<int> in;
 	vector<int> out(2, 0);
@@ -182,9 +180,8 @@ TEST(StickyBorders, Transform)
 
 TEST(StrictBorders, Transform)
 {
-	GridDimensions dimensions(Point<int> (5, 8));
-	StrictBorders borders;
-	borders.init(dimensions);
+	GridDimensions dimensions(Point<double> (5, 8));
+	StrictBorders borders(dimensions);
 
 	vector<int> in;
 	vector<int> out(2, 0);
@@ -252,7 +249,7 @@ TEST(MultipleOccupancy, All)
 
 	ASSERT_TRUE(mo.put(agents[0], pt));
 	ASSERT_TRUE(mo.put(agents[1], pt));
-	ASSERT_EQ(agents[0].get(), mo.get(pt));
+	ASSERT_TRUE(agents[0].get() == mo.get(pt) || agents[1].get() == mo.get(pt));
 
 	vector<TestAgent*> vec;
 	mo.getAll(pt, vec);

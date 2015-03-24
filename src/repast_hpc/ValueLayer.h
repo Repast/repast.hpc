@@ -159,7 +159,7 @@ public:
 	 *
 	 * @return the extents of this ValueLayer.
 	 */
-	const Point<int> shape() const {
+	const Point<double> shape() const {
 		return _dimensions.extents();
 	}
 };
@@ -281,13 +281,20 @@ DiscreteValueLayer<ValueType, Borders>::~DiscreteValueLayer() {
 template<typename ValueType, typename Borders>
 DiscreteValueLayer<ValueType, Borders>::DiscreteValueLayer(const std::string& name, const GridDimensions& dimensions,
 		bool dense, const ValueType& defaultValue) :
-	ValueLayer<ValueType, int> (name, dimensions), _dense(dense) {
-	if (dense) {
-		matrix = new DenseMatrix<ValueType> (dimensions.extents(), defaultValue);
-	} else {
-		matrix = new SparseMatrix<ValueType> (dimensions.extents(), defaultValue);
+	ValueLayer<ValueType, int> (name, dimensions), _dense(dense) , borders(Borders(ValueLayer<ValueType, int>::_dimensions)) {
+
+	// this is dangerous but at some point dimensions has been converted to take
+	// double extents and we don't have time to convert everything
+	const std::vector<double>& coords = dimensions.extents().coords();
+	std::vector<int> converted_coords;
+	for (double d : coords) {
+		converted_coords.push_back(static_cast<int>(d));
 	}
-	borders = Borders(ValueLayer<ValueType, int>::_dimensions);
+	if (dense) {
+		matrix = new DenseMatrix<ValueType> (Point<int>(converted_coords), defaultValue);
+	} else {
+		matrix = new SparseMatrix<ValueType> (Point<int>(converted_coords), defaultValue);
+	}
 }
 
 template<typename ValueType, typename Borders>

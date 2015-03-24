@@ -39,7 +39,7 @@
  *      Author: nick
  */
 
-#include "repast_hpc/Space.h"
+#include "repast_hpc/Spaces.h"
 #include "repast_hpc/Context.h"
 #include "repast_hpc/Moore2DGridQuery.h"
 #include "repast_hpc/VN2DGridQuery.h"
@@ -54,8 +54,8 @@ TEST(GridTest, GridFill)
 {
 	Context<TestAgent> context;
 
-	GridDimensions dims(Point<int> (0, 0), Point<int> (5, 10));
-	Space<TestAgent>::MultipleStrictGrid* grid = new Space<TestAgent>::MultipleStrictGrid("grid", dims);
+	GridDimensions dims(Point<double> (0, 0), Point<double> (5, 10));
+	Spaces<TestAgent>::MultipleStrictDiscreteSpace* grid = new Spaces<TestAgent>::MultipleStrictDiscreteSpace("grid", dims);
 	context.addProjection(grid);
 
 	int id = 0;
@@ -92,10 +92,10 @@ TEST(GridTest, GridSingleOcc)
 {
 	Context<TestAgent> context;
 
-	GridDimensions dims(Point<int> (20, 30));
+	GridDimensions dims(Point<double> (20, 30));
 	//BaseGrid<TestAgent, SingleOccupancy<TestAgent, int> , StrictBorders, SimpleAdder<TestAgent>,int >* grid
 	//= new BaseGrid<TestAgent, SingleOccupancy<TestAgent, int> , StrictBorders, SimpleAdder<TestAgent>,int > ("grid", dims);
-	Space<TestAgent>::SingleStrictGrid* grid = new Space<TestAgent>::SingleStrictGrid("grid", dims);
+	Spaces<TestAgent>::SingleStrictDiscreteSpace* grid = new Spaces<TestAgent>::SingleStrictDiscreteSpace("grid", dims);
 
 	context.addProjection(grid);
 
@@ -214,8 +214,8 @@ TEST(GridTest, SpaceMultOcc)
 {
 	Context<TestAgent> context;
 
-	GridDimensions dims(Point<int> (20, 30));
-	Space<TestAgent>::MultipleStrictSpace* space = new Space<TestAgent>::MultipleStrictSpace("space", dims);
+	GridDimensions dims(Point<double> (20, 30));
+	Spaces<TestAgent>::MultipleStrictContinuousSpace* space = new Spaces<TestAgent>::MultipleStrictContinuousSpace("space", dims);
 
 	context.addProjection(space);
 
@@ -258,8 +258,8 @@ TEST(GridTest, SpaceSingleOcc)
 {
 	Context<TestAgent> context;
 
-	GridDimensions dims(Point<int> (20, 30));
-	Space<TestAgent>::SingleStrictSpace* space = new Space<TestAgent>::SingleStrictSpace("space", dims);
+	GridDimensions dims(Point<double> (20, 30));
+	Spaces<TestAgent>::SingleStrictContinuousSpace* space = new Spaces<TestAgent>::SingleStrictContinuousSpace("space", dims);
 
 	context.addProjection(space);
 
@@ -373,8 +373,8 @@ TEST(GridTest, GridSingleOccNonZeroOrig)
 {
 	Context<TestAgent> context;
 	// runs from -5 to 5, and -10 to 5
-	GridDimensions dims(Point<int> (-5, -10), Point<int> (10, 15));
-	Space<TestAgent>::SingleStrictGrid* grid = new Space<TestAgent>::SingleStrictGrid("grid", dims);
+	GridDimensions dims(Point<double> (-5, -10), Point<double> (10, 15));
+	Spaces<TestAgent>::SingleStrictDiscreteSpace* grid = new Spaces<TestAgent>::SingleStrictDiscreteSpace("grid", dims);
 
 	context.addProjection(grid);
 
@@ -408,8 +408,8 @@ TEST(GridTest, GridVectorMove)
 {
 	Context<TestAgent> context;
 
-	GridDimensions dims(Point<int> (15, 8, 14));
-	Space<TestAgent>::SingleStrictGrid* grid = new Space<TestAgent>::SingleStrictGrid("grid", dims);
+	GridDimensions dims(Point<double> (15, 8, 14));
+	Spaces<TestAgent>::SingleStrictDiscreteSpace* grid = new Spaces<TestAgent>::SingleStrictDiscreteSpace("grid", dims);
 	context.addProjection(grid);
 
 	for (int i = 0; i < 10; i++) {
@@ -459,8 +459,8 @@ TEST(GridTest, SpaceVectorMove)
 {
 	Context<TestAgent> context;
 
-	GridDimensions dims(Point<int> (15, 10, 14));
-	Space<TestAgent>::SingleStrictSpace* grid = new Space<TestAgent>::SingleStrictSpace("grid", dims);
+	GridDimensions dims(Point<double> (15, 10, 14));
+	Spaces<TestAgent>::SingleStrictContinuousSpace* grid = new Spaces<TestAgent>::SingleStrictContinuousSpace("grid", dims);
 	context.addProjection(grid);
 
 	for (int i = 0; i < 10; i++) {
@@ -522,8 +522,8 @@ TEST(GridTest, MooreQueries)
 {
 	Context<TestAgent> context;
 
-	GridDimensions dims(Point<int> (10, 10));
-	Space<TestAgent>::MultipleStrictGrid* grid = new Space<TestAgent>::MultipleStrictGrid("grid", dims);
+	GridDimensions dims(Point<double> (10, 10));
+	Spaces<TestAgent>::MultipleStrictDiscreteSpace* grid = new Spaces<TestAgent>::MultipleStrictDiscreteSpace("grid", dims);
 	context.addProjection(grid);
 
 	std::set<int> ids;
@@ -610,8 +610,8 @@ TEST(GridTest, VNQueries)
 {
 	Context<TestAgent> context;
 
-	GridDimensions dims(Point<int> (10, 10));
-	Space<TestAgent>::MultipleStrictGrid* grid = new Space<TestAgent>::MultipleStrictGrid("grid", dims);
+	GridDimensions dims(Point<double> (10, 10));
+	Spaces<TestAgent>::MultipleStrictDiscreteSpace* grid = new Spaces<TestAgent>::MultipleStrictDiscreteSpace("grid", dims);
 	context.addProjection(grid);
 
 	for (int i = 0; i < 25; i++) {

@@ -40,8 +40,15 @@
  */
 
 #include <gtest/gtest.h>
+#include <boost/mpi.hpp>
+
+#include "repast_hpc/RepastProcess.h"
 
 int main(int argc, char **argv) {
+	boost::mpi::environment env(argc, argv);
+
 	::testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
+	int r = RUN_ALL_TESTS();
+	repast::RepastProcess::instance()->done();
+	return r;
 }

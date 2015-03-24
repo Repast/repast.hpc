@@ -47,7 +47,7 @@
 using namespace repast;
 using namespace std;
 
-TEST(Properties, Load)
+TEST(Properties, PropsTests)
 {
 	repast::Properties props("./test.properties");
 	ASSERT_EQ(3, props.size());
@@ -70,4 +70,11 @@ TEST(Properties, Load)
 
 	props.putProperty("key", "abcd");
 	ASSERT_EQ("abcd", props.getProperty("key"));
+
+	// test for proper conversion to and from a string
+	// user reported this as an error
+	int i = 5000000;
+	props.putProperty("i", i);
+	ASSERT_EQ("5000000.000000", props.getProperty("i"));
+	ASSERT_EQ(i, std::stoi(props.getProperty("i")));
 }

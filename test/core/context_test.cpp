@@ -48,6 +48,7 @@
 
 #include <gtest/gtest.h>
 #include <boost/smart_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/unordered_set.hpp>
 #include <vector>
 
@@ -62,6 +63,27 @@ protected:
 	repast::Context<TestAgent> context;
 
 public:
+	ContextTest() {
+		repast::RepastProcess::init("./config.props");
+	}
+
+};
+
+class TestGraph : public Graph<TestAgent, RepastEdge<TestAgent>,
+		RepastEdgeContent<TestAgent>, RepastEdgeContentManager<TestAgent> > {
+
+public:
+
+	TestGraph(std::string name, bool directed) :
+			Graph(name, directed, new RepastEdgeContentManager<TestAgent>()) {
+	}
+
+	virtual ~TestGraph() {
+	}
+
+	virtual bool isMaster(RepastEdge<TestAgent>* edge) {
+		return true;
+	}
 
 };
 
@@ -91,12 +113,12 @@ TEST_F(ContextTest, AddRemove)
 TEST_F(ContextTest, ValueLayer)
 {
 	DiscreteValueLayer<int, StrictBorders>* discrete = new DiscreteValueLayer<int, StrictBorders> ("D", GridDimensions(
-			Point<int> (2, 2)), true);
+			Point<double> (2, 2)), true);
 	discrete->set(12, Point<int> (0, 0));
 	context.addValueLayer(discrete);
 
 	ContinuousValueLayer<double, StrictBorders>* continuous = new ContinuousValueLayer<double, StrictBorders> ("C",
-			GridDimensions(Point<int> (2, 2)));
+			GridDimensions(Point<double> (2, 2)));
 	continuous->set(12.3, Point<double> (1.2, 0));
 	context.addValueLayer(continuous);
 
@@ -109,7 +131,7 @@ TEST_F(ContextTest, ValueLayer)
 
 TEST_F(ContextTest, DirectedGraph)
 {
-	Graph<TestAgent, RepastEdge<TestAgent> >* graph = new Graph<TestAgent, RepastEdge<TestAgent> > ("graph", true);
+	TestGraph* graph = new TestGraph ("graph", true);
 	context.addProjection(graph);
 
 	for (int i = 0; i < 10; i++) {
@@ -127,7 +149,6 @@ TEST_F(ContextTest, DirectedGraph)
 		TestAgent* target = context.getAgent(id);
 		graph->addEdge(source, target);
 	}
-
 	ASSERT_EQ(3, graph->edgeCount());
 
 	vector<AgentId> expected;
@@ -156,7 +177,8 @@ TEST_F(ContextTest, DirectedGraph)
 	id = AgentId(4, 0, 0);
 	TestAgent* four = context.getAgent(id);
 
-	RepastEdge<TestAgent>* edge = graph->addEdge(four, three, 2.5);
+	boost::shared_ptr<RepastEdge<TestAgent> > edge = graph->addEdge(four, three, 2.5);
+
 	ASSERT_EQ(2.5, edge->weight());
 	ASSERT_EQ(four, edge->source());
 	ASSERT_EQ(three, edge->target());
@@ -167,7 +189,8 @@ TEST_F(ContextTest, DirectedGraph)
 	ASSERT_EQ(three, edge->target());
 
 	// edge is directed from 4 to 3, no edge from 3 to 4.
-	ASSERT_EQ(NULL, graph->findEdge(three, four));
+	boost::shared_ptr<RepastEdge<TestAgent> > null_shared;
+	ASSERT_EQ(null_shared.get(), graph->findEdge(three, four).get());
 
 	vector<TestAgent*> preds;
 	graph->predecessors(three, preds);
@@ -214,7 +237,7 @@ TEST_F(ContextTest, DirectedGraph)
 TEST_F(ContextTest, UndirectedGraph)
 {
 
-	Graph<TestAgent, RepastEdge<TestAgent> >* graph = new Graph<TestAgent, RepastEdge<TestAgent> > ("ungraph", false);
+	TestGraph* graph = new TestGraph ("ungraph", false);
 	context.addProjection(graph);
 
 	for (int i = 0; i < 10; i++) {
@@ -299,7 +322,7 @@ TEST_F(ContextTest, UndirectedGraph)
 	id = AgentId(4, 0, 0);
 	TestAgent* four = context.getAgent(id);
 
-	RepastEdge<TestAgent>* edge = graph->addEdge(four, three, 2.5);
+	boost::shared_ptr<RepastEdge<TestAgent> > edge = graph->addEdge(four, three, 2.5);
 	ASSERT_EQ(2.5, edge->weight());
 	ASSERT_EQ(four, edge->source());
 	ASSERT_EQ(three, edge->target());
@@ -309,11 +332,11 @@ TEST_F(ContextTest, UndirectedGraph)
 	ASSERT_EQ(four, edge->source());
 	ASSERT_EQ(three, edge->target());
 
-	RepastEdge<TestAgent>* revE = graph->findEdge(four, three);
+	boost::shared_ptr<RepastEdge<TestAgent> > revE = graph->findEdge(four, three);
 	ASSERT_EQ(2.5, revE->weight());
 	ASSERT_EQ(four, revE->source());
 	ASSERT_EQ(three, revE->target());
-	ASSERT_EQ(edge, revE);
+	ASSERT_EQ(edge.get(), revE.get());
 
 	actual.clear();
 	graph->adjacent(three, actual);
@@ -337,7 +360,7 @@ TEST_F(ContextTest, UndirectedGraph)
 
 TEST_F(ContextTest, DirectedGraphRemove)
 {
-	Graph<TestAgent, RepastEdge<TestAgent> >* graph = new Graph<TestAgent, RepastEdge<TestAgent> > ("graph", true);
+	TestGraph* graph = new TestGraph ("graph", true);
 	context.addProjection(graph);
 
 	for (int i = 0; i < 10; i++) {
@@ -380,12 +403,14 @@ TEST_F(ContextTest, DirectedGraphRemove)
 	ASSERT_EQ(1, actual.size());
 	ASSERT_EQ(three, actual[0]);
 
-	ASSERT_EQ(0, graph->findEdge(three, one));
+	boost::shared_ptr<RepastEdge<TestAgent> > null_shared;
+	ASSERT_EQ(null_shared, graph->findEdge(three, one));
 }
 
 TEST_F(ContextTest, UndirectedGraphRemove)
 {
-	Graph<TestAgent, RepastEdge<TestAgent> >* graph = new Graph<TestAgent, RepastEdge<TestAgent> > ("graph", false);
+
+	TestGraph* graph = new TestGraph ("graph", false);
 	context.addProjection(graph);
 
 	for (int i = 0; i < 10; i++) {
@@ -428,7 +453,7 @@ TEST_F(ContextTest, UndirectedGraphRemove)
 	ASSERT_EQ(1, actual.size());
 	ASSERT_EQ(three, actual[0]);
 
-	ASSERT_EQ(0, graph->findEdge(three, one));
+	ASSERT_EQ(0, graph->findEdge(three, one).get());
 }
 
 TEST_F(ContextTest, AgentByType)
