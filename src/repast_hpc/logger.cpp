@@ -679,6 +679,7 @@ Log4CL* Log4CLConfigurator::configure(const string& config_file, int proc_id, bo
 			create_appender_bidx(lexer.key(), lexer.value());
 			break;
 		case ERRORT:
+			error = lexer.error();
 			error_warn();
 			break;
 		default:
