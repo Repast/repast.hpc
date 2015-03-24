@@ -55,6 +55,17 @@ std::string err_msg(int idNum, std::string thrown_by, std::string reason, std::s
   return ss.str();
 }
 
+std::string err_msg_omit_rank(int idNum, std::string thrown_by, std::string reason, std::string explanation, std::string cause, std::string resolution){
+  std::stringstream ss;
+  ss << "REPAST_ERROR_" << idNum << "\n"
+     << "   Thrown By:     " << thrown_by << "\n"
+     << "   Reason:        " << reason << "\n"
+     << "   Explanation:   " << explanation << "\n"
+     << "   Known Causes:  " << cause << "\n"
+     << "   Resolution:    " << resolution << "\n";
+  return ss.str();
+}
+
 
 
 

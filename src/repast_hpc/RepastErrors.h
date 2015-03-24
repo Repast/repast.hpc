@@ -53,6 +53,9 @@ namespace repast{
 std::string err_msg(int idNum, std::string thrown_by, std::string reason, std::string explanation,
     std::string cause, std::string resolution);
 
+std::string err_msg_omit_rank(int idNum, std::string thrown_by, std::string reason, std::string explanation,
+		std::string cause, std::string resolution);
+
 template <typename T>
 std::string make_vec_str(const std::vector<T>& v){
   std::stringstream ss;
@@ -73,6 +76,7 @@ std::string make_str(const T t){
 // Some syntactic sugar to make the error definitions clean
 #define INVALID_ARG(_VAL) std::invalid_argument(err_msg(_VAL
 #define DOMAIN_ERR(_VAL) std::domain_error(err_msg(_VAL
+#define DOMAIN_ERR_OMIT_RANK(_VAL) std::domain_error(err_msg_omit_rank(_VAL
 #define OUT_OF_RANGE(_VAL) std::out_of_range(err_msg(_VAL
 #define ERROR_NUMBER
 #define THROWN_BY   , std::string("") +
@@ -621,7 +625,7 @@ END_ERR
 /* Error 39 */
 class Repast_Error_39: public std::domain_error{
 public:
-  Repast_Error_39(): DOMAIN_ERR(ERROR_NUMBER 39)
+  Repast_Error_39(): DOMAIN_ERR_OMIT_RANK(ERROR_NUMBER 39)
       THROWN_BY     "RepastProcess* RepastProcess::instance()"
       REASON        "RepastProcess must be initialized before calling instance"
       EXPLANATION   "The instance of RepastProcess is not created until RepastProcess::init() is called"
@@ -728,7 +732,7 @@ class Repast_Error_47: public std::out_of_range{
 public:
   Repast_Error_47(int matrixDimensions, int pointDimensions, T index): OUT_OF_RANGE(ERROR_NUMBER 47)
       THROWN_BY     "Matrix<T>::boundsCheck(const Point<int>& index)"
-      REASON        "Number of dimensions in index point (" + make_str(index) + " = " + VAL(pointDimensions) + ") does not equal matrix dimensions (" + matrixDimensions + ")"
+      REASON        "Number of dimensions in index point (" + make_str(index) + " = " + VAL(pointDimensions) + ") does not equal matrix dimensions (" + std::to_string(matrixDimensions) + ")"
       EXPLANATION   "The dimensions of the index point must match those of the matrix to check boundaries"
       CAUSE         "Unknown"
       RESOLUTION    "Unknown"
