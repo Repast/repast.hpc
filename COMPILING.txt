@@ -1,5 +1,52 @@
-These directions and the Makefile.tmplt are aimed at Repast HPC developers, that is,
-to recompile the libraries during development. To use:
+Two ways to compile: cmake and straight makefile. CMake is preferred while the
+latter is deprecated and not necessarily up to date. These directions are aimed at 
+Repast HPC developers, that is, to recompile the libraries, executables and 
+unit tests during development.
+
+Given a CMakeLists.txt file, CMake will create a Makefile. It will also create
+Visual Studio projects etc., but those are not relevant here.
+
+OSX and Linux:
+
+- Install CMake
+	Under OSX, the command line tools are not installed by default.
+	To get cmake to install aliases in /usr/bin, so you can run from terminal:
+	sudo /Applications/CMake.app/Contents/MacOS/CMake
+	and then Tools->Install for Command Line Use
+	
+- Install Boost
+
+- Install gtest (Google C++ unit testing framework: https://code.google.com/p/googletest/)
+
+To Generate the makefile:
+
+1. Open terminal and cd to your repast.hpc working directory (i.e.where you clone the repo to).
+2. mkdir Release then cd Release. The Relase directory is where cmake will generate the makefiles 
+and where the actual compilation will take place. You can also call this Debug if you are creating
+a debug build type. 
+
+3. Run: cmake -DCMAKE_BUILD_TYPE=(Release | Debug) -DGTEST_ROOT=X ../src. 
+ * X should be the root location of gtest. For example if its in /Users/nick/src/gtest-1.7.0/
+ then -DGTEST_ROOT=/Users/nick/src/gtest-1.7.0/. CMake will look in that directory for both 
+ the gtest and gtest_main library and the headers.
+
+If Boost is in some standard place 
+such as /usr/local/include etc. then it should be found. If not you can specify where to find 
+it with the flags: -DBoost_LIBRARY_DIR and -DBoost_INCLUDE_DIR
+
+CMake will look for mpi, curl, and netcdf in the standard places, e.g /usr/lib, /usr/local/lib
+etc. If those are in non-standard places, you can tell CMake were to find them with the following
+variables.
+
+MPI_CXX_COMPILER -- (e.g. mpicxx). CMake will use this to determine the include paths etc. Also
+see, http://www.cmake.org/cmake/help/v3.0/module/FindMPI.html
+
+CURL_INCLUDE_DIRS
+
+NETCDF_INCLUDES
+
+
+Non-CMake using the makefile template:
 
 1. Create a directory (e.g. Release) in this directory.
 2. Copy Makefile.tmplt into that directory and rename to Makefile.
@@ -9,3 +56,4 @@ to recompile the libraries during development. To use:
 Note that .gitignore ignores Release, Debug and Profiling folders by default so
 anything in there will not be part of a commit and the Makefiles in there
 can be freely customized.
+
