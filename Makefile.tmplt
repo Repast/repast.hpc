@@ -137,23 +137,23 @@ all : repast_hpc relogo rumor zombies
 
 repast_hpc: $(REPAST_HPC_OBJECTS)
 	-mkdir -p bin
-	$(CXXLD) $(LIB_LDFLAGS) $(l_BOOST) $(l_NETCDF) $(l_CURL) $^ -o bin/$(REPAST_HPC_LIB) $(L_BOOST) $(L_NETCDF) $(L_CURL)
+	$(CXXLD) $^ $(LIB_LDFLAGS) $(l_BOOST) $(l_NETCDF) $(l_CURL) -o bin/$(REPAST_HPC_LIB) $(L_BOOST) $(L_NETCDF) $(L_CURL)
 	
 relogo: $(RELOGO_OBJECTS)
 	-mkdir -p bin
-	$(CXXLD) $(LIB_LDFLAGS) -l$(REPAST_HPC_NAME) $(l_BOOST) $(l_NETCDF) $(l_CURL)  $^ -o bin/$(RELOGO_LIB) $(L_BOOST) $(L_NETCDF) $(L_CURL) -L./bin
+	$(CXXLD) $^ $(LIB_LDFLAGS) -l$(REPAST_HPC_NAME) $(l_BOOST) $(l_NETCDF) $(l_CURL) -o bin/$(RELOGO_LIB) $(L_BOOST) $(L_NETCDF) $(L_CURL) -L./bin
 	
 rumor:  $(RUMOR_OBJECTS)
 	mkdir -p ./bin
 	cp $(RUMOR_DIR)/config.props ./bin/rumor_config.props
 	cp $(RUMOR_DIR)/model.props ./bin/rumor_model.props
-	$(CXXLD) $(LDFLAGS) -L./bin $(L_BOOST) $(L_NETCDF) -l$(REPAST_HPC_NAME) $(l_NETCDF) $(l_BOOST)  $(RUMOR_OBJECTS) -o ./bin/$(RUMOR_EXE)
+	$(CXXLD) $(RUMOR_OBJECTS) $(LDFLAGS) -L./bin $(L_BOOST) $(L_NETCDF) -l$(REPAST_HPC_NAME) $(l_NETCDF) $(l_BOOST) -o ./bin/$(RUMOR_EXE)
 
 zombies: $(ZOMBIE_OBJECTS)
 	mkdir -p ./bin
 	cp $(ZOMBIE_DIR)/config.props ./bin/zombie_config.props
 	cp $(ZOMBIE_DIR)/model.props ./bin/zombie_model.props
-	$(CXXLD) $(LDFLAGS) -L./bin $(L_BOOST) $(L_NETCDF) $(L_CURL) $(l_NETCDF) $(l_CURL) -l$(REPAST_HPC_NAME) -l$(RELOGO_NAME) $(l_BOOST) $(ZOMBIE_OBJECTS) -o ./bin/$(ZOMBIE_EXE)
+	$(CXXLD) $(ZOMBIE_OBJECTS) $(LDFLAGS) -L./bin $(L_BOOST) $(L_NETCDF) $(L_CURL) $(l_NETCDF) $(l_CURL) -l$(REPAST_HPC_NAME) -l$(RELOGO_NAME) $(l_BOOST) -o ./bin/$(ZOMBIE_EXE)
 
 $(BUILD_DIR)/%.o : %.cpp
 	$(CXX) $(LIB_CPPFLAGS) $(INCLUDES) -c $< -o $@
