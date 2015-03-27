@@ -50,8 +50,14 @@ RelogoDiscreteSpaceAdder::RelogoDiscreteSpaceAdder() :
 }
 
 void RelogoDiscreteSpaceAdder::init(GridDimensions dimensions, RelogoGridType* grid) {
-	int x = doubleCoordToInt(dimensions.origin(0) + dimensions.extents(0) / 2.0);
-	int y = doubleCoordToInt(dimensions.origin(1) + dimensions.extents(1) / 2.0);
+  // we need to use the continuous space adjusted origins to calculate the center
+  // because the turtle returns its discrete coordinates by a transform on its
+  // continuous coords. Without this turtle.pxCor and pyCor won't match the
+  // ones returned by the grid
+  std::vector<double> new_origins = adjustOrigin(dimensions.origin().coords());
+  GridDimensions newDims(new_origins, dimensions.extents().coords());
+	int x = doubleCoordToInt(newDims.origin(0) + newDims.extents(0) / 2.0);
+	int y = doubleCoordToInt(newDims.origin(1) + newDims.extents(1) / 2.0);
 	center = Point<int> (x, y);
 	_grid = grid;
 }

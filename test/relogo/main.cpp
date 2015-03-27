@@ -48,8 +48,16 @@ int main(int argc, char **argv) {
 	boost::mpi::environment env(argc, argv);
 	repast::RepastProcess::init("./config.props");
 
+	boost::mpi::communicator comm;
+	if (comm.size() != 4) {
+	  if (comm.rank() == 0)
+	    std::cout << "Usage: mpirun -np 4 " << argv[0] << std::endl;
+	  return 0;
+	}
+
 	::testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
+	int r = RUN_ALL_TESTS();
 
 	repast::RepastProcess::instance()->done();
+	return r;
 }

@@ -76,5 +76,13 @@ float angleFromDisplacement(double dx, double dy) {
 	return repast::toDegrees(repast::PI + angRad);
 }
 
+std::vector<double> adjustOrigin(const std::vector<double> origin) {
+  std::vector<double> adjusted(origin.size(), 0);
+  for(size_t i = 0, n = origin.size(); i < n; i++) {
+    adjusted[i] = origin[i] - 0.5;
+  }
+  return adjusted;
+}
+
 }
 }

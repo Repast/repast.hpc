@@ -47,6 +47,9 @@
 #include "relogo/utility.h"
 #include "relogo/WorldCreator.h"
 
+using namespace repast;
+using namespace repast::relogo;
+
 class ObserverTests: public ::testing::Test {
 
 protected:
@@ -55,11 +58,11 @@ protected:
 public:
 	ObserverTests() {
 		WorldDefinition def(-50, -100, 51, 101, true, 2);
-		def.defineNetwork(true);
-		def.defineNetwork(false);
-		def.defineNetwork("my_network", true);
-		def.defineNetwork("my_undir_network", false);
-		WorldCreator creator;
+		def.defineNetwork(true, new RelogoLinkContentManager());
+		def.defineNetwork(false, new RelogoLinkContentManager());
+		def.defineNetwork("my_network", true, new RelogoLinkContentManager());
+		def.defineNetwork("my_undir_network", false, new RelogoLinkContentManager());
+		WorldCreator creator(RepastProcess::instance()->getCommunicator());
 		PatchCreator patchCreator;
 		obs = creator.createWorld<MyObserver, MyPatch> (def, std::vector<int>(2, 2), patchCreator);
 	}
@@ -89,7 +92,10 @@ TEST_F(ObserverTests, TurtleTest)
 	Point<double> spaceCenter(space->dimensions().origin(0) + space->dimensions().extents(0) / 2.0,
 			space->dimensions().origin(1) + space->dimensions().extents(1) / 2.0);
 
-	Point<int> gridCenter(doubleCoordToInt(spaceCenter.getX()), doubleCoordToInt(spaceCenter.getY()));
+	int x = doubleCoordToInt(space->dimensions().origin(0) + space->dimensions().extents(0) / 2.0);
+	int y = doubleCoordToInt(space->dimensions().origin(1) + space->dimensions().extents(1) / 2.0);
+
+	Point<int> gridCenter(x, y);
 
 	std::vector<int> gridLocation;
 	std::vector<double> spaceLocation;
@@ -98,8 +104,8 @@ TEST_F(ObserverTests, TurtleTest)
 		ASSERT_EQ(1, turtle->getId().agentType());
 
 		ASSERT_TRUE(grid->getLocation(turtle, gridLocation));
-		ASSERT_EQ(gridCenter, Point<int>(gridLocation));
-		ASSERT_EQ(gridCenter.getX(), turtle->pxCor());
+		//ASSERT_EQ(gridCenter, Point<int>(gridLocation));
+		ASSERT_EQ(gridLocation[0], turtle->pxCor());
 		ASSERT_EQ(gridCenter.getY(), turtle->pyCor());
 
 		ASSERT_TRUE(space->getLocation(turtle, spaceLocation));
@@ -179,10 +185,10 @@ TEST_F(ObserverTests, TurtleDirectedLinkTest)
 	AgentSet<MyTurtle> turtles = obs->get<MyTurtle> ();
 	ASSERT_EQ(10, turtles.size());
 
-	RelogoLink* link = turtles[0]->inLinkFrom(turtles[1]);
-	ASSERT_EQ((void*)0, link);
+	boost::shared_ptr<RelogoLink> link = turtles[0]->inLinkFrom(turtles[1]);
+	ASSERT_EQ((void*)0, link.get());
 	link = turtles[0]->inLinkFrom(turtles[1], "my_network");
-	ASSERT_EQ((void*)0, link);
+	ASSERT_EQ((void*)0, link.get());
 
 	turtles[0]->createLinkFrom(turtles[1]);
 	turtles[0]->createLinkFrom(turtles[1], "my_network");
@@ -191,24 +197,24 @@ TEST_F(ObserverTests, TurtleDirectedLinkTest)
 	turtles[2]->createLinkFromLC(turtles[0], creator);
 
 	link = turtles[0]->inLinkFrom(turtles[1]);
-	ASSERT_NE((void*)0, link);
+	ASSERT_NE((void*)0, link.get());
 	ASSERT_EQ(turtles[1], link->source());
 	ASSERT_EQ(turtles[0], link->target());
 
 	link = turtles[0]->inLinkFrom(turtles[1], "my_network");
-	ASSERT_NE((void*)0, link);
+	ASSERT_NE((void*)0, link.get());
 	ASSERT_EQ(turtles[1], link->source());
 	ASSERT_EQ(turtles[0], link->target());
 
 	link = turtles[2]->inLinkFrom(turtles[0], "my_network");
-	ASSERT_NE((void*)0, link);
+	ASSERT_NE((void*)0, link.get());
 	ASSERT_EQ(turtles[0], link->source());
 	ASSERT_EQ(turtles[2], link->target());
 	// creator sets weight to 12
 	ASSERT_EQ(12.0, link->weight());
 
 	link = turtles[2]->inLinkFrom(turtles[0]);
-	ASSERT_NE((void*)0, link);
+	ASSERT_NE((void*)0, link.get());
 	ASSERT_EQ(turtles[0], link->source());
 	ASSERT_EQ(turtles[2], link->target());
 	// creator sets weight to 12
@@ -220,27 +226,27 @@ TEST_F(ObserverTests, TurtleDirectedLinkTest)
 	turtles[7]->createLinkToLC(turtles[3], creator);
 
 	link = turtles[3]->outLinkTo(turtles[0]);
-	ASSERT_EQ((void*)0, link);
+	ASSERT_EQ((void*)0, link.get());
 
 	link = turtles[3]->outLinkTo(turtles[7]);
-	ASSERT_NE((void*)0, link);
+	ASSERT_NE((void*)0, link.get());
 	ASSERT_EQ(turtles[3], link->source());
 	ASSERT_EQ(turtles[7], link->target());
 
 	link = turtles[3]->outLinkTo(turtles[7], "my_network");
-	ASSERT_NE((void*)0, link);
+	ASSERT_NE((void*)0, link.get());
 	ASSERT_EQ(turtles[3], link->source());
 	ASSERT_EQ(turtles[7], link->target());
 
 	link = turtles[7]->outLinkTo(turtles[3]);
-	ASSERT_NE((void*)0, link);
+	ASSERT_NE((void*)0, link.get());
 	ASSERT_EQ(turtles[7], link->source());
 	ASSERT_EQ(turtles[3], link->target());
 	// creator sets weight to 12
 	ASSERT_EQ(12.0, link->weight());
 
 	link = turtles[7]->outLinkTo(turtles[3], "my_network");
-	ASSERT_NE((void*)0, link);
+	ASSERT_NE((void*)0, link.get());
 	ASSERT_EQ(turtles[7], link->source());
 	ASSERT_EQ(turtles[3], link->target());
 	// creator sets weight to 12
@@ -354,21 +360,21 @@ TEST_F(ObserverTests, TurtleUndirectedLinkTest)
 	AgentSet<MyTurtle> turtles = obs->get<MyTurtle> ();
 	ASSERT_EQ(10, turtles.size());
 
-	RelogoLink* link = turtles[0]->linkWith(turtles[1]);
-	ASSERT_EQ((void*)0, link);
+	boost::shared_ptr<RelogoLink> link = turtles[0]->linkWith(turtles[1]);
+	ASSERT_EQ((void*)0, link.get());
 	link = turtles[0]->linkWith(turtles[1], "my_undir_network");
-	ASSERT_EQ((void*)0, link);
+	ASSERT_EQ((void*)0, link.get());
 
 	turtles[3]->createLinkWith(turtles[7]);
 	link = turtles[3]->linkWith(turtles[7]);
-	ASSERT_NE((void*)0, link);
+	ASSERT_NE((void*)0, link.get());
 	ASSERT_EQ(turtles[3], link->source());
 	ASSERT_EQ(turtles[7], link->target());
 	ASSERT_EQ(link, turtles[7]->linkWith(turtles[3]));
 
 	turtles[3]->createLinkWith(turtles[7], "my_undir_network");
 	link = turtles[3]->linkWith(turtles[7], "my_undir_network");
-	ASSERT_NE((void*)0, link);
+	ASSERT_NE((void*)0, link.get());
 	ASSERT_EQ(turtles[3], link->source());
 	ASSERT_EQ(turtles[7], link->target());
 	ASSERT_EQ(link, turtles[7]->linkWith(turtles[3], "my_undir_network"));
@@ -376,7 +382,7 @@ TEST_F(ObserverTests, TurtleUndirectedLinkTest)
 	LinkCreator creator;
 	turtles[0]->createLinkWithLC(turtles[3], creator, "my_undir_network");
 	link = turtles[0]->linkWith(turtles[3], "my_undir_network");
-	ASSERT_NE((void*)0, link);
+	ASSERT_NE((void*)0, link.get());
 	ASSERT_EQ(turtles[0], link->source());
 	ASSERT_EQ(turtles[3], link->target());
 	ASSERT_EQ(12.0, link->weight());
@@ -384,7 +390,7 @@ TEST_F(ObserverTests, TurtleUndirectedLinkTest)
 
 	turtles[0]->createLinkWithLC(turtles[3], creator);
 	link = turtles[0]->linkWith(turtles[3]);
-	ASSERT_NE((void*)0, link);
+	ASSERT_NE((void*)0, link.get());
 	ASSERT_EQ(turtles[0], link->source());
 	ASSERT_EQ(turtles[3], link->target());
 	ASSERT_EQ(12.0, link->weight());
@@ -398,7 +404,7 @@ TEST_F(ObserverTests, TurtleUndirectedLinkTest)
 	turtles[2]->createLinksWith(others);
 	for (int i = 7; i < 10; i++) {
 		link = turtles[2]->linkWith(turtles[i]);
-		ASSERT_NE((void*)0, link);
+		ASSERT_NE((void*)0, link.get());
 		ASSERT_EQ(turtles[2], link->source());
 		ASSERT_EQ(turtles[i], link->target());
 		//ASSERT_EQ(12.0, link->weight());
@@ -408,7 +414,7 @@ TEST_F(ObserverTests, TurtleUndirectedLinkTest)
 	turtles[2]->createLinksWith(others, "my_undir_network");
 	for (int i = 7; i < 10; i++) {
 		link = turtles[2]->linkWith(turtles[i], "my_undir_network");
-		ASSERT_NE((void*)0, link);
+		ASSERT_NE((void*)0, link.get());
 		ASSERT_EQ(turtles[2], link->source());
 		ASSERT_EQ(turtles[i], link->target());
 		//ASSERT_EQ(12.0, link->weight());
@@ -421,7 +427,7 @@ TEST_F(ObserverTests, TurtleUndirectedLinkTest)
 
 	for (int i = 7; i < 10; i++) {
 		link = turtles[4]->linkWith(turtles[i]);
-		ASSERT_NE((void*)0, link);
+		ASSERT_NE((void*)0, link.get());
 		ASSERT_EQ(turtles[4], link->source());
 		ASSERT_EQ(turtles[i], link->target());
 		ASSERT_EQ(12.0, link->weight());
@@ -430,7 +436,7 @@ TEST_F(ObserverTests, TurtleUndirectedLinkTest)
 
 	for (int i = 7; i < 10; i++) {
 		link = turtles[4]->linkWith(turtles[i], "my_undir_network");
-		ASSERT_NE((void*)0, link);
+		ASSERT_NE((void*)0, link.get());
 		ASSERT_EQ(turtles[4], link->source());
 		ASSERT_EQ(turtles[i], link->target());
 		ASSERT_EQ(12.0, link->weight());
@@ -451,16 +457,16 @@ TEST_F(ObserverTests, TurtleSetLinkTest)
 
 	turtles[2]->createLinksFrom(others);
 	for (int i = 7; i < 10; i++) {
-		RelogoLink* link = turtles[2]->inLinkFrom(turtles[i]);
-		ASSERT_NE((void*)0, link);
+	  boost::shared_ptr<RelogoLink> link = turtles[2]->inLinkFrom(turtles[i]);
+		ASSERT_NE((void*)0, link.get());
 		ASSERT_EQ(turtles[i], link->source());
 		ASSERT_EQ(turtles[2], link->target());
 	}
 
 	turtles[2]->createLinksFrom(others, "my_network");
 	for (int i = 7; i < 10; i++) {
-		RelogoLink* link = turtles[2]->inLinkFrom(turtles[i], "my_network");
-		ASSERT_NE((void*)0, link);
+	  boost::shared_ptr<RelogoLink> link = turtles[2]->inLinkFrom(turtles[i], "my_network");
+		ASSERT_NE((void*)0, link.get());
 		ASSERT_EQ(turtles[i], link->source());
 		ASSERT_EQ(turtles[2], link->target());
 	}
@@ -468,68 +474,68 @@ TEST_F(ObserverTests, TurtleSetLinkTest)
 	LinkCreator creator;
 	turtles[4]->createLinksFromLC(others, creator);
 	for (int i = 7; i < 10; i++) {
-		RelogoLink* link = turtles[4]->inLinkFrom(turtles[i]);
-		ASSERT_NE((void*)0, link);
+	  boost::shared_ptr<RelogoLink> link = turtles[4]->inLinkFrom(turtles[i]);
+		ASSERT_NE((void*)0, link.get());
 		ASSERT_EQ(turtles[i], link->source());
 		ASSERT_EQ(turtles[4], link->target());
 		ASSERT_EQ(12.0, link->weight());
 		link = turtles[i]->outLinkTo(turtles[4]);
-		ASSERT_NE((void*)0, link);
+		ASSERT_NE((void*)0, link.get());
 		ASSERT_EQ(turtles[i], link->source());
 		ASSERT_EQ(turtles[4], link->target());
 	}
 
 	turtles[4]->createLinksFromLC(others, creator, "my_network");
 	for (int i = 7; i < 10; i++) {
-		RelogoLink* link = turtles[4]->inLinkFrom(turtles[i], "my_network");
-		ASSERT_NE((void*)0, link);
+	  boost::shared_ptr<RelogoLink> link = turtles[4]->inLinkFrom(turtles[i], "my_network");
+		ASSERT_NE((void*)0, link.get());
 		ASSERT_EQ(turtles[i], link->source());
 		ASSERT_EQ(turtles[4], link->target());
 		ASSERT_EQ(12.0, link->weight());
 		link = turtles[i]->outLinkTo(turtles[4], "my_network");
-		ASSERT_NE((void*)0, link);
+		ASSERT_NE((void*)0, link.get());
 		ASSERT_EQ(turtles[i], link->source());
 		ASSERT_EQ(turtles[4], link->target());
 	}
 
 	turtles[2]->createLinksTo(others);
 	for (int i = 7; i < 10; i++) {
-		RelogoLink* link = turtles[i]->inLinkFrom(turtles[2]);
-		ASSERT_NE((void*)0, link);
+	  boost::shared_ptr<RelogoLink> link = turtles[i]->inLinkFrom(turtles[2]);
+		ASSERT_NE((void*)0, link.get());
 		ASSERT_EQ(turtles[2], link->source());
 		ASSERT_EQ(turtles[i], link->target());
 	}
 
 	turtles[2]->createLinksTo(others, "my_network");
 	for (int i = 7; i < 10; i++) {
-		RelogoLink* link = turtles[i]->inLinkFrom(turtles[2], "my_network");
-		ASSERT_NE((void*)0, link);
+	  boost::shared_ptr<RelogoLink> link = turtles[i]->inLinkFrom(turtles[2], "my_network");
+		ASSERT_NE((void*)0, link.get());
 		ASSERT_EQ(turtles[2], link->source());
 		ASSERT_EQ(turtles[i], link->target());
 	}
 
 	turtles[4]->createLinksToLC(others, creator);
 	for (int i = 7; i < 10; i++) {
-		RelogoLink* link = turtles[i]->inLinkFrom(turtles[4]);
-		ASSERT_NE((void*)0, link);
+	  boost::shared_ptr<RelogoLink> link = turtles[i]->inLinkFrom(turtles[4]);
+		ASSERT_NE((void*)0, link.get());
 		ASSERT_EQ(turtles[4], link->source());
 		ASSERT_EQ(turtles[i], link->target());
 		ASSERT_EQ(12.0, link->weight());
 		link = turtles[4]->outLinkTo(turtles[i]);
-		ASSERT_NE((void*)0, link);
+		ASSERT_NE((void*)0, link.get());
 		ASSERT_EQ(turtles[4], link->source());
 		ASSERT_EQ(turtles[i], link->target());
 	}
 
 	turtles[4]->createLinksToLC(others, creator, "my_network");
 	for (int i = 7; i < 10; i++) {
-		RelogoLink* link = turtles[i]->inLinkFrom(turtles[4], "my_network");
-		ASSERT_NE((void*)0, link);
+	  boost::shared_ptr<RelogoLink> link = turtles[i]->inLinkFrom(turtles[4], "my_network");
+		ASSERT_NE((void*)0, link.get());
 		ASSERT_EQ(turtles[4], link->source());
 		ASSERT_EQ(turtles[i], link->target());
 		ASSERT_EQ(12.0, link->weight());
 		link = turtles[4]->outLinkTo(turtles[i], "my_network");
-		ASSERT_NE((void*)0, link);
+		ASSERT_NE((void*)0, link.get());
 		ASSERT_EQ(turtles[4], link->source());
 		ASSERT_EQ(turtles[i], link->target());
 	}
@@ -565,26 +571,29 @@ TEST_F(ObserverTests, SetupTest)
 
 	int rank = obs->rank();
 	if (rank == 0) {
-		GridDimensions expected(Point<int> (-50, -100), Point<int> (51, 101));
+	  GridDimensions expected(Point<double> (-50, -100), Point<double> (51, 101));
+		GridDimensions spaceExpected(Point<double> (-50.5, -100.5), Point<double> (51, 101));
 		ASSERT_EQ(expected, grid->dimensions());
-		ASSERT_EQ(expected, space->dimensions());
+		ASSERT_EQ(spaceExpected, space->dimensions());
 
 	} else if (rank == 1) {
-		GridDimensions expected(Point<int>(1, -100),Point<int>(51, 101));
+	  GridDimensions expected(Point<double>(1, -100),Point<double>(51, 101));
+		GridDimensions spaceExpected(Point<double>(0.5, -100.5),Point<double>(51, 101));
 		ASSERT_EQ(expected, grid->dimensions());
-		ASSERT_EQ(expected, space->dimensions());
+		ASSERT_EQ(spaceExpected, space->dimensions());
 	} else if (rank == 2) {
-		GridDimensions expected(Point<int>(-50, 1),Point<int>(51, 101));
+	  GridDimensions expected(Point<double>(-50, 1),Point<double>(51, 101));
+		GridDimensions spaceExpected(Point<double>(-50.5, 0.5),Point<double>(51, 101));
 		ASSERT_EQ(expected, grid->dimensions());
-		ASSERT_EQ(expected, space->dimensions());
+		ASSERT_EQ(spaceExpected, space->dimensions());
 	} else if (rank == 3) {
-		GridDimensions expected(Point<int>(1, 1),Point<int>(51, 101));
+	  GridDimensions expected(Point<double>(1, 1),Point<double>(51, 101));
+		GridDimensions spaceExpected(Point<double>(0.5, 0.5),Point<double>(51, 101));
 		ASSERT_EQ(expected, grid->dimensions());
-		ASSERT_EQ(expected, space->dimensions());
+		ASSERT_EQ(spaceExpected, space->dimensions());
 	}
 
 	testPatches(grid, space);
-
 }
 
 TEST(WorldDef, WorldDefTests)
@@ -798,15 +807,17 @@ TEST_F(ObserverTests, PatchAtHeadingTests)
 	double y = t->yCor();
 	// 0 is north
 	MyPatch* patch = t->patchAtHeadingAndDistance<MyPatch>(0, 2);
-	if (x < 0) {
+	// NC: commented this out as the continuous space origin adjustment
+	// makes it unnecessary
+	//if (x < 0) {
 		// + 1 is necesasry because heading of 0 results is small amount
 		// of displacement which causes -24.5 to be less than -24.5
 		// so it rounds down to -24. NOTE: relogo does this as well
 		// so expected behavior.
-		ASSERT_EQ(doubleCoordToInt(x + 1), patch->pxCor());
-	} else {
-		ASSERT_EQ(doubleCoordToInt(x), patch->pxCor());
-	}
+		//ASSERT_EQ(doubleCoordToInt(x), patch->pxCor());
+	//} else {
+	ASSERT_EQ(doubleCoordToInt(x), patch->pxCor());
+	//}
 
 	ASSERT_EQ(doubleCoordToInt(y + 2), patch->pyCor());
 

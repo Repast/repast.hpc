@@ -160,6 +160,13 @@ set (core_ut_src
 	../test/core/value_layer_tests.cpp
 )
 
+set (relogo_ut_src
+	../test/relogo/agent_set_tests.cpp
+	../test/relogo/main.cpp
+	../test/relogo/Objects.h
+	../test/relogo/ObserverTests.cpp
+)
+
 set (version 2.2-dev)
 set (rhpc_lib_name repast_hpc)
 set (relogo_lib_name relogo)
@@ -213,6 +220,13 @@ target_include_directories(${core_test_exec} PUBLIC . ${GTEST_INCLUDE_DIRS})
 add_dependencies(${core_test_exec} ${rhpc_lib_name})
 file (COPY ../test_data/config.props ../test_data/test.properties DESTINATION .) 
 target_link_libraries(${core_test_exec} ${Boost_LIBRARIES} ${NETCDF_LIBRARIES} ${CURL_LIBRARIES} ${MPI_LIBRARIES} ${rhpc_lib_name} ${GTEST_LIBRARIES})
+
+set (relogo_test_exec relogo_unit_tests)
+add_executable(${relogo_test_exec} ${relogo_ut_src})
+target_include_directories(${relogo_test_exec} PUBLIC . ${GTEST_INCLUDE_DIRS})
+add_dependencies(${relogo_test_exec} ${rhpc_lib_name} ${relogo_lib_name})
+file (COPY ../test_data/config.props ../test_data/test.properties DESTINATION .) 
+target_link_libraries(${relogo_test_exec} ${Boost_LIBRARIES} ${NETCDF_LIBRARIES} ${CURL_LIBRARIES} ${MPI_LIBRARIES} ${rhpc_lib_name} ${relogo_lib_name} ${GTEST_LIBRARIES})
 
 
 

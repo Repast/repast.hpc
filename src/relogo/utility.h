@@ -91,6 +91,12 @@ std::vector<double> calcDisplacementFromHeadingDistance(float heading, double di
  */
 float angleFromDisplacement(double dx, double dy);
 
+/**
+ * Adjust the specified origin so that per process continuous spaces can
+ * be combined properly.
+ */
+std::vector<double> adjustOrigin(const std::vector<double> origin);
+
 }
 }
 

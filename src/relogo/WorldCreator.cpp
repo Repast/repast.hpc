@@ -38,6 +38,8 @@
  *      Author: nick
  */
 #include "WorldCreator.h"
+#include "utility.h"
+
 #include <boost/mpi/communicator.hpp>
 
 namespace repast {
@@ -57,9 +59,8 @@ repast::Projection<RelogoAgent>*  WorldCreator::createDiscreteSpace(const WorldD
 repast::Projection<RelogoAgent>*  WorldCreator::createContinuousSpace(const WorldDefinition& def, const std::vector<int>& pConfiguration) const {
 	repast::Projection<RelogoAgent>* proj = 0;
   GridDimensions originalDimensions = def.dimensions();
-  std::vector<double> origins = originalDimensions.origin().coords();
-  for(size_t i = 0, n = origins.size(); i < n; i++) origins[i] -= .5;
-  GridDimensions newDimensions(origins, def.dimensions().extents().coords());
+  std::vector<double> new_origins = adjustOrigin(originalDimensions.origin().coords());
+  GridDimensions newDimensions(new_origins, def.dimensions().extents().coords());
   if (def.isWrapped()) {
     proj = new ToroidalContinuousSpace(SPACE_NAME, newDimensions, pConfiguration, def.buffer(), comm);
   } else {

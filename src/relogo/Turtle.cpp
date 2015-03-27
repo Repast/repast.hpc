@@ -69,7 +69,7 @@ void Turtle::die() {
 }
 
 void Turtle::setxy(double x, double y) {
-	if (!moved) {
+ 	if (!moved) {
 		moved = true;
 		// cast away the constness so that we can move
 		// needs to const so that users cannot move using the space
