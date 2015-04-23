@@ -44,6 +44,8 @@
 #include <algorithm>
 #include <cmath>
 #include <iomanip>
+#include <limits.h>
+#include <math.h>
 
 using namespace std;
 
@@ -156,10 +158,13 @@ void WrapAroundBorders::transform(const std::vector<double>& in, std::vector<dou
     double coord = in[i];
     if(coord >= mins[i] && coord < maxs[i])
       out[i] = coord;
-    else
+    else{
       out[i] = fmod((coord-_dimensions.origin(i)), _dimensions.extents(i))  +
                (coord < _dimensions.origin(i) ? _dimensions.extents(i) : 0) +
                _dimensions.origin(i);
+      if(out[i] >= maxs[i])       out[i] = nextafter(maxs[i], -DBL_MAX);
+      else if(out[i] < mins[i])   out[i] = nextafter(mins[i],  DBL_MAX);
+    }
   }
 
 }
