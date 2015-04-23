@@ -1,0 +1,99 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_02_Step_03");</script>
+    <p>Now that the agents are connected in a network, we will next allow them to use the network. We will replace the random selection algorithm for playing partners with code that allows agents to play against the agents to which they are connected in the network.</p>
+    <p>The main change will be in the Agent 'play' method. Because we will now not be selecting agents from the context, but rather from the network, we need to change the signature of this method to pass a pointer to the network.</p>
+    <p>Agent.h will need to import the SharedNetwork header:
+<div class="code"><code><pre>
+#include "AgentId.h"
+#include "SharedContext.h"
+<b class="code">#include "SharedNetwork.h"</b>
+</pre></code></div>
+
+    <p>And the method signature for 'play' will be changed to:</p>
+<div class="code"><code><pre>
+    void play(<b class="code">repast::SharedNetwork&ltRepastHPCDemoAgent,
+              repast::RepastEdge&ltRepastHPCDemoAgent&gt,
+              repast::RepastEdgeContent&ltRepastHPCDemoAgent&gt,
+              repast::RepastEdgeContentManager&ltRepastHPCDemoAgent&gt &gt *network</b>);
+</pre></code></div>
+
+<p>The new 'play' method will look like this:</p>
+<div class="code"><code><pre>
+void RepastHPCDemoAgent::play(<b class="code">repast::SharedNetwork&ltRepastHPCDemoAgent,
+                              repast::RepastEdge&ltRepastHPCDemoAgent&gt,
+                              repast::RepastEdgeContent&ltRepastHPCDemoAgent&gt,
+                              repast::RepastEdgeContentManager&ltRepastHPCDemoAgent&gt &gt *network</b>){
+<b class="code">    std::vector&ltRepastHPCDemoAgent*&gt agentsToPlay;
+    network-&gtsuccessors(this, agentsToPlay);</b>
+
+    double cPayoff     = 0;
+    double totalPayoff = 0;
+    std::<b class="code">vector</b>&ltRepastHPCDemoAgent*&gt::iterator agentToPlay = agentsToPlay.begin();
+    while(agentToPlay != agentsToPlay.end()){
+        bool iCooperated = cooperate();                          // Do I cooperate?
+        double payoff = (iCooperated ?
+						 ((*agentToPlay)-&gtcooperate() ?  7 : 1) :     // If I cooperated, did my opponent?
+						 ((*agentToPlay)-&gtcooperate() ? 10 : 3));     // If I didn't cooperate, did my opponent?
+        if(iCooperated) cPayoff += payoff;
+        totalPayoff             += payoff;
+		
+        agentToPlay++;
+    }
+    c      += cPayoff;
+    total  += totalPayoff;
+	
+}
+</pre></code></div>
+
+<p>Notice that the collection of agents to play (agentsToPlay) is now a vector, not a set. The call to the 'successors' method of the network object gets the agents to which 'self' is connected. (This assumes an undirected network; the 'successors' method technically finds nodes that are connected by a directed vector leading from self to other; the 'predecessors' method finds nodes that are connected by a directed vector leading from other to self. For undirected networks, both 'successors' and 'predecessors' return the same nodes, i.e. all connected nodes.)
+
+    <p>The call in 'Model.cpp' will be modified to call the new method:</p>
+
+<div class="code"><code><pre>
+void RepastHPCDemoModel::doSomething(){
+	int whichRank = 0;
+	if(repast::RepastProcess::instance()-&gtrank() == whichRank) std::cout &lt&lt " TICK " &lt&lt repast::RepastProcess::instance()-&gtgetScheduleRunner().currentTick() &lt&lt std::endl;
+
+	if(repast::RepastProcess::instance()-&gtrank() == whichRank){
+		std::cout &lt&lt "LOCAL AGENTS:" &lt&lt std::endl;
+		for(int r = 0; r &lt 4; r++){
+			for(int i = 0; i &lt 10; i++){
+				repast::AgentId toDisplay(i, r, 0);
+				RepastHPCDemoAgent* agent = context.getAgent(toDisplay);
+				if((agent != 0) && (agent-&gtgetId().currentRank() == whichRank)) std::cout &lt&lt agent-&gtgetId() &lt&lt " " &lt&lt agent-&gtgetC() &lt&lt " " &lt&lt agent-&gtgetTotal() &lt&lt std::endl;
+			}
+		}
+
+		std::cout &lt&lt "NON LOCAL AGENTS:" &lt&lt std::endl;
+		for(int r = 0; r &lt 4; r++){
+			for(int i = 0; i &lt 10; i++){
+				repast::AgentId toDisplay(i, r, 0);
+				RepastHPCDemoAgent* agent = context.getAgent(toDisplay);
+				if((agent != 0) && (agent-&gtgetId().currentRank() != whichRank)) std::cout &lt&lt agent-&gtgetId() &lt&lt " " &lt&lt agent-&gtgetC() &lt&lt " " &lt&lt agent-&gtgetTotal() &lt&lt std::endl;
+			}
+		}
+	}
+	
+	std::vector&ltRepastHPCDemoAgent*&gt agents;
+	context.selectAgents(repast::SharedContext&ltRepastHPCDemoAgent&gt::LOCAL, countOfAgents, agents);
+	std::vector&ltRepastHPCDemoAgent*&gt::iterator it = agents.begin();
+	while(it != agents.end()){
+		(*it)-&gtplay(<b class="code">agentNetwork</b>);
+		it++;
+    }
+
+	repast::RepastProcess::instance()-&gtsynchronizeAgentStates&ltRepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt(*provider, *receiver);
+
+}
+</pre></code></div>
+
+    <p>Note that this example is inefficient, in that it re-collects the neighboring network nodes for every agent in every time step. The network in this example is static, so it would be more efficient to collect the list of neighboring agents just once and then to re-use the list without changes thereafter. The code used here is fine for a demonstration, but would be more appropriate for a dynamic network that could change with each time step.</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_02_Step_03");</script>
+  </body>
+</html>

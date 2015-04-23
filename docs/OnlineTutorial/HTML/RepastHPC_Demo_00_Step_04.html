@@ -1,0 +1,80 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_00_Step_04");</script>
+    <h3>Boost</h3>
+    <p>The next issue is to avoid MPI and work instead with a library that is integral to the Repast HPC code: Boost. This will require us to revisit the way that your environment is configured, and we will return to the 'env' file and add to it the location of the 'boost' libraries and header files.</p>
+    <p>The code that is used is a modification of Step 03's code, achieved by replacing the direct MPI calls with the boost equivalent. The new code is:</p>
+<div class="code"><code><pre>
+#include &lt;stdio.h&gt;
+<b class="code">#include &lt;boost/mpi.hpp&gt;</b>
+
+int main(int argc, char** argv){
+	
+	<b class="code">boost::mpi::environment env(argc, argv);</b>
+	<b class="code">boost::mpi::communicator world;</b>
+
+	if(<b class="code">world.rank()</b> == 0){
+	    printf("Hello, world! I'm rank %d\n", <b class="code">world.rank()</b>);
+	}
+	else{
+	    printf("Hmm...\n");
+	}
+	
+}
+</pre></code></div>
+    <p>The changes in this code reflect not only the conversion from straight MPI to Boost, but also from straight C to object-oriented C++. The first change is that the include statement no longer points to the bare mpi.h but to boost's mpi wrapper. The second is that the MPI_Init call is replaced with a roughly equivalent call that creates a boost mpi 'environment' instance, initialized with the same argc and argv as were used by the MPI_Init. The third change is the creation of a boost mpi 'communicator' instance (represented by the variable 'world'). The communicator is the gateway to retrieving information about the processes' role in the larger mpi scheme, as well as communicating with other processes. Note that the 'rank' variable is eliminated; it is replaced with calls to 'world.rank()', which retrieves the same value. The MPI_Finalize call can now be omitted.</p>
+    <p>However, you will (probably) find that this code won't build: either it will compile but it won't link, or it won't compile at all. The reason is that although your mpi-enabled compiler knows where the standard mpi header files and libraries are, it doesn't (probably) know where the 'boost' libraries are. To get past this, we'll briefly go back to manually compiling and linking.</p>
+    <p>First try basic compilation (using the two methods: Mac OS X Laptop and BG/P):</p>
+<div class="code"><code><pre>
+/usr/local/bin/mpicxx -c -o Demo_00.o Demo_00.cpp
+</pre></code></div>
+    <p>or:</p>
+<div class="code"><code><pre>
+mpixlcxx -c -o Demo_00.o Demo_00.cpp
+</pre></code></div>
+    <p>In the (likely) event that these fail, the reason is because the compiler can't find the newly included file, boost/mpi.hpp. Locate this on your computer; it should be in a location with all the other Boost header files. Provide the compiler a path to these by using the -I switch, as:</p>
+<div class="code"><code><pre>
+/usr/local/bin/mpicxx -c -I/external_libraries/Boost_1.46_1/include/ -o Demo_00.o Demo_00.cpp
+</pre></code></div>
+    <p>or:</p>
+<div class="code"><code><pre>
+mpixlcxx -c -I/soft/apps/current/repasthpc-1.0.1/extra/boost/boost_1.48/include/ -o Demo_00.o Demo_00.cpp
+</pre></code></div>
+    <p>When you have found the proper path, and compilation completes successfully, you must give the linker a similar instruction. In this case, it must be able to find the directory in which the boost libraries are found, and, separately, the names of the boost libraries for which it is looking. The directory is specified using a "-L" switch, while the libraries are specified using "-l" (lower-case L). One confusing part: the library files are probably named something like "libMyLibrary.a", but the -l switch omits the 'lib' and the '.a' (or other extension), so it will look like "-lMyLibrary". For the two cases used so far, the linking command looks like:
+<div class="code"><code><pre>
+/usr/local/bin/mpicxx -L/Users/murphy/ext/boost_1_46_1/stage/lib/ -o Demo_00.exe Demo_00.o -lboost_mpi-xgcc42-mt -lboost_serialization-xgcc42-mt -lboost_system-xgcc42-mt -lboost_filesystem-xgcc42-mt
+</pre></code></div>
+    <p>And on the BG/P:</p>
+<div class="code"><code><pre>
+mpixlcxx -L/soft/apps/current/repasthpc-1.0.1/extra/boost/boost_1.48/lib/ -o Demo_00.exe Demo_00.o -lboost_mpi-mt-1_48 -lboost_serialization-mt-1_48 -lboost_system-mt-1_48 -lboost_filesystem-mt-1_48
+</pre></code></div>
+
+    <div class="sidebar" id="DoesOrderMatter" onClick=toggleSidebar("DoesOrderMatter")><b>Does the order in which files to be linked are listed matter?</b></div>
+    <div class="defHIDDEN" id="DoesOrderMatter_DEF" onClick=toggleSidebar("DoesOrderMatter")>The BG/P uses the 'XL' compiler from IBM; order matters. A file that needs a function from another file should be listed before the other file; functions are sought in files later in the list. When using the gcc compiler, it doesn't matter.</div>
+
+
+    <p>This is (obviously) cumbersome, so you can instead modify the 'env' file to include these definitions. For the Max OS case, the variables might be set like:</p>
+<div class="code"><code><pre>
+BOOST_INCLUDE=-I/Users/murphy/ext/boost_1_46_1/
+BOOST_LIB_DIR=-L/Users/murphy/ext/boost_1_46_1/stage/lib/
+BOOST_LIBS=-lboost_mpi-xgcc42-mt -lboost_serialization-xgcc42-mt -lboost_system-xgcc42-mt -lboost_filesystem-xgcc42-mt
+</pre></code></div>
+
+    <p>And on the BG/P:</p>
+<div class="code"><code><pre>
+BOOST_INCLUDE=-I/soft/apps/current/repasthpc-1.0.1/extra/boost/boost_1.48/include/
+BOOST_LIB_DIR=-L/soft/apps/current/repasthpc-1.0.1/extra/boost/boost_1.48/lib/
+BOOST_LIBS=-lboost_mpi-mt-1_48 -lboost_serialization-mt-1_48 -lboost_system-mt-1_48 -lboost_filesystem-mt-1_48
+</pre></code></div>
+    <p>Note the different names of the Boost libraries; these will vary by build and by various build options on your local machines.</p>
+    <p>Once these values are set, cleaning and copying to Step 04 should allow you to use the single 'make' command, and Demo_00 will be built.
+    
+
+    <script type="text/javascript">footer("RepastHPC_Demo_00_Step_04");</script>
+  </body>
+</html>

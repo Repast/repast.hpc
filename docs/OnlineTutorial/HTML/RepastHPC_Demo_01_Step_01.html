@@ -1,0 +1,101 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_01_Step_01");</script>
+    <p>The fundamental component of an agent-based model is, of course, the agents. For this demo we will construct a simple agent that can be placed into a population and will interact with the other agents there.</p>
+    <p>Our demo agents are able to play a simple game: each agent can ask another agent, "Will you cooperate with me?" All agents can also answer this question when it is asked of them; the answer will be either Yes or No.</p>
+    <p>The agent that is doing the asking, however, has a secret motive: it is also planning either to cooperate with the other agent or to try to 'cheat' the other agent. At the end of interaction, the agent that did the asking receives a payoff depending on whether both agents cooperated, both agents refused to cooperate ('defected'), or if one defected and one cooperated. The payoff is:</p>
+    <ul>
+      <li>If I cooperated and the other agent cooperated, I get '7'</li>
+      <li>If I cooperated and the other agent defected, I get '1'</li>
+      <li>If I defected and the other agent cooperated, I get '10'</li>
+      <li>If I defected and the other agent defected, I get '3'</li>
+    </ul>
+    <p>This is a classic 'prisoner's dilemma' game: I am better off if I defect in either the case where my opponent defects or the case where my opponent cooperates; however, if everyone always defects, no one gets a very high payoff at all.</p>
+    <p>For the demonstration game here, the agent tracks two totals, called cPayoff and totalPayoff. The payoff for each turn is always recorded as part of the 'totalPayoff'; if the agent cooperated, the payoff is also added to the 'cPayoff' total.</p>
+    <p>Note: Even though two agents play this game, the payoff is only recorded for the agent that initiates the game ('ego'). The other agent is unaffected!</p>
+    <p>Finally, the likelihood of an agent cooperating or defecting is based on the ratio of cPayoff/totalPayoff.</p>
+
+    <p>The Agent class that we will use is declared in the Demo_01_Agent.h file:</p>
+<div class="code"><code><pre>
+/* Demo_01_Agent.h */
+
+#ifndef DEMO_01_AGENT
+#define DEMO_01_AGENT
+
+#include "AgentId.h"
+#include "SharedContext.h"
+
+
+/* Agents */
+class RepastHPCDemoAgent{
+	
+private:
+    repast::AgentId   id_;
+    double              c;
+    double          total;
+	
+public:
+    RepastHPCDemoAgent(repast::AgentId id);
+	
+    RepastHPCDemoAgent(repast::AgentId id, double newC, double newTotal);
+	
+    ~RepastHPCDemoAgent();
+	
+    /* Required Getters */
+    virtual repast::AgentId& getId(){                   return id_;    }
+    virtual const repast::AgentId& getId() const {      return id_;    }
+	
+    /* Getters specific to this kind of Agent */
+    double getC(){                                      return c;      }
+    double getTotal(){                                  return total;  }
+	
+    /* Setter */
+    void set(int currentRank, double newC, double newTotal);
+	
+    /* Actions */
+    bool cooperate();                                                 // Will indicate whether the agent cooperates or not; probability determined by = c / total
+    void play(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* context);    // Choose three other agents from the given context and see if they cooperate or not
+	
+};
+
+#endif
+</pre></code></div>
+   <p>This code introduces a number of new elements. The first is the 'AgentId'. Repast HPC uses a unique identifier to specify each agent. The identifier has four parts, all numeric. An AgentId of [4, 12, 3, 5] indicates that the agent was created on process 12, is of type '3', was the fifth such agent created on that process (numbers begin with 0, so agent '4' is the fifth one), and is now on process 5. The three identifiers for number, starting process, and type uniquely identify an agent across the entire simulation. All agents must implement the two 'getters' for agent Id; generally this is implemented by providing the agent with an Id in its constructor, this being recorded as an instance variable, as is done here.</p>
+   <p>A second new element is the 'SharedContext'; this is the collection in which the agent will exist during the simulation runs.</p>
+   <p>The code that defines these functions is:</p>
+<div class="code"><code><pre>
+/* Demo_01_Agent.cpp */
+
+#include "Demo_01_Agent.h"
+
+RepastHPCDemoAgent::RepastHPCDemoAgent(repast::AgentId id): id_(id), c(100), total(200){ }
+
+RepastHPCDemoAgent::RepastHPCDemoAgent(repast::AgentId id, double newC, double newTotal): id_(id), c(newC), total(newTotal){ }
+
+RepastHPCDemoAgent::~RepastHPCDemoAgent(){ }
+
+
+void RepastHPCDemoAgent::set(int currentRank, double newC, double newTotal){
+    id_.currentRank(currentRank);
+    c     = newC;
+    total = newTotal;
+}
+
+bool RepastHPCDemoAgent::cooperate(){
+    return true;
+}
+
+void RepastHPCDemoAgent::play(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* context){
+
+}
+</pre></code></div>
+    <p>Note that the constructors use default values if no values for c and total are provided, and also that the two key functions for agents- cooperate() and play()- are left empty for now; we will visit them in closer detail in a moment.</p>
+    <p>This code should compile and run just as the earlier demos, but keep in mind that even though we have compiled our 'agent' classes, there is nothing yet that connects them to the 'main' or 'model' classes. We'll address that in the next step.</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_01_Step_01");</script>
+  </body>
+</html>

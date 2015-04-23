@@ -1,0 +1,63 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_00_Step_02");</script>
+    <h2>Demo_00, Step 02: A (very) little MPI</h2>
+    <h3>Overview</h3>
+    <p>For Step 02, we will turn the code in Step 01 into a more proper MPI program. This will give us more control over the program flow and lay the foundation for creating a Repast HPC program.</p>
+    <h3>Some MPI</h3>
+    <p>Part of the beauty of Repast HPC is that you should not have to know any MPI to use it; however, for this tutorial, we will, very briefly, work with some bare-bones MPI code. We abandon this quickly, but it's a very helpful first step.</p>
+    <p>Recall that the code we created in Step 01 had the potential to create garbled output because all of the processes were being run at the same time. We'll add to that code to bring some order to this. We can do this because MPI gives us a way that each of the separate processes can know that it is just one of many processes; moreover, each process will be assigned a number, so that we can tell specific processes to do specific things.</p>
+    <p>The following lines are added to the original Step 01 code Demo_00.cpp:</p>
+    
+<div class="code"><code><pre>
+#include &lt;stdio.h&gt;
+#include &lt;mpi.h&gt;
+
+int main(int argc, char** argv){
+	<b class="code">int rank;</b>
+	
+	<b class="code">MPI_Init(&argc, &argv);</b>
+	
+	<b class="code">MPI_Comm_rank(MPI_COMM_WORLD, &rank);</b>
+	
+	printf("Hello, world! <b class="code">I'm rank %d\</b>n"<b class="code">, rank</b>);
+
+	<b class="code">MPI_Finalize();</b>
+}
+</pre></code></div>
+    <p>The first line defines an integer variable called 'rank'. The second line is the first genuine MPI code: it 'initializes' the MPI environment. The second line makes a call to an MPI function that sets the variable 'rank' to have a specific value. The changes to the 'printf' line allow the 'rank' variable to be printed. The last line 'MPI_Finalize()' is required to allow MPI to clean itself up before the program exits.</p>
+
+    <div class="sidebar" id="HowIsRankSet" onClick=toggleSidebar("HowIsRankSet")><b>Wait- how does the 'rank' variable get set?</b></div>
+    <div class="defHIDDEN" id="HowIsRankSet_DEF" onClick=toggleSidebar("HowIsRankSet")>If you are more accustomed to Java than C++ (or C; the MPI code listed so far is all C, not C++), there is a mystery in the code above: how does the 'rank' variable get set? The answer is that this is a common strategy in C: a variable is passed to a function as one of its arguments, but the call is actually a pass by reference. The value that is passed is not the value of the 'rank' variable, but its address, and the action of the function is to place a value at that address, so that after the function call is made, the 'rank' variable will contain the appropriate value.</div>
+
+
+    <p>Make these changes in your work directory either by taking the Demo_00.cpp that's already there and typing the changes in manually, or simply use "make copy_RepastHPC_Demo_00_Step_02" to bring the Step 02 file from the SRC directory to the work directory. You can also try to 'compare' the two files to see the difference between Step 01 and Step 02</p>
+    <p>Compile and link the code using:</p>
+    <div class="code"><code><pre>make RepastHPC_Demo_00</pre></code></div>
+    <p>Run the code using the same commands as in Step 01:
+    <div class="code"><code><pre>/usr/bin/local/mpirun -n 4 Demo_00.exe</pre></code></div>
+    <p>Or:</p>
+    <div class="code"><code><pre>qsub -A MyProject -n 4 -cwd /pvfs-surveyor/ -o Demo_00 -t 10 ./Demo_00.exe</pre></code></div>
+    <p>The output should look something like this:</p>
+<div class="code"><code><pre>
+Hello, world! I'm rank 0
+Hello, world! I'm rank 1
+Hello, world! I'm rank 2
+Hello, world! I'm rank 3
+</pre></code></div>
+    <p>As before, this is nice and tidy, but it doesn't have to be; it could be:</p>
+<div class="code"><code><pre>
+Hello, world! I'm rank 3
+Hello, world! I'm rank 2
+Hello, world! I'm rank 0
+Hello, world! I'm rank 1
+</pre></code></div>
+    <p>Or it could be garbled more thoroughly. But the important point is that each of the four processes writes a line of output that indicates which process number ('rank') it is.</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_00_Step_02");</script>
+  </body>
+</html>

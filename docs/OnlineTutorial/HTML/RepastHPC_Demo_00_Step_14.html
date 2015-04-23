@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_00_Step_14");</script>
+    <p>Generally it is useful to save a record of the parameters used for every simulation run. The 'Properties' object provides a simple way to do this.</p>
+    <p>In the code below, the simulation is initialized and writes its properties to an output file immediately:</p>
+<div class="code"><code><pre>
+	RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm){
+		repast::Properties props(propsFile, argc, argv, comm);
+		stopAt = repast::strToInt(props.getProperty("stop.at"));
+		<b class="code">if(repast::RepastProcess::instance()->rank() == 0) props.writeToSVFile("record.csv");</b>
+	}
+</pre></code></div>
+    <p>Try running the code like this:</p>
+    <div class="code"><code><pre>/usr/bin/local/mpirun -n 4 Demo_00.exe config.props model.props RunNumber=1 stop.at=6</pre></code></div>
+    <p>Or:</p>
+    <div class="code"><code><pre>qsub -A MyProject -n 4 -cwd /pvfs-surveyor/ -o Demo_00 -t 10 ./Demo_00.exe config.props model.props RunNumber=1 stop.at=6</pre></code></div>
+    <p>With successive runs, increase the 'RunNumber' and change the 'stop.at' value. When the record.csv file is created, the header is added listing the property keys; each run adds its record, now uniquely identified with the 'RunNumber' and indicating the value used for 'stop.at'.</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_00_Step_14");</script>
+  </body>
+</html>

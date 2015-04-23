@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_03_Step_03");</script>
+    <p>Commonly you will want agents in space to be able to detect agents near themselves. Repast HPC provides a simple way that this can be done in discrete two-dimensional spaces. There are two special objects that can query the space around an agent: the VN2DGridQuery and the Moore2DGridQuery. The first of these is a Von Neumann query, which queries the cells immediate to the N, S, E, and W of the central cell; the second is a Moore query, which queries the 8 surrounding cells, including N, NE, E, SE, S, SW, W, and NW neighbors. Both queries can be extended to more than just immediate neighbors, essentially querying concentric rings around the central point.</p>
+    <p>To use these, we will modify the Agent.h class to pass a pointer to the space as part of the 'play' method:</p>
+
+<div class="code"><code><pre>
+    /* Actions */
+    bool cooperate();                                                 // Will indicate whether the agent cooperates or not; probability determined by = c / total
+    void play(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* context<b class="code">,
+              repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* space</b>);    // Choose three other agents from the given context and see if they cooperate or not
+    void move(repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* space);
+</pre></code></div>
+
+    <p>This will, of course, mean modifying the call in the model.cpp file:</p>
+
+<div class="code"><code><pre>
+	std::vector&lt;RepastHPCDemoAgent*&gt; agents;
+	context.selectAgents(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::LOCAL, countOfAgents, agents);
+	std::vector&lt;RepastHPCDemoAgent*&gt;::iterator it = agents.begin();
+	while(it != agents.end()){
+        	(*it)-&gt;play(&context<b class="code">, discreteSpace</b>);
+		it++;
+    	}
+</pre></code></div>
+
+    <p>Finally, we will change the agent's play method to select agents using the spatial query:</p>
+
+<div class="code"><code><pre>
+<b class="code">#include "Moore2DGridQuery.h"
+#include "Point.h"</b>
+</pre></code></div>
+
+<div class="code"><code><pre>
+void RepastHPCDemoAgent::play(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* context<b class="code">,
+                              repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* space</b>){
+    <b class="code">std::vector&lt;RepastHPCDemoAgent*&gt; agentsToPlay;
+    
+    std::vector&lt;int&gt; agentLoc;
+    space-&gt;getLocation(id_, agentLoc);
+    repast::Point&lt;int&gt; center(agentLoc);
+    repast::Moore2DGridQuery&lt;RepastHPCDemoAgent&gt; moore2DQuery(space);
+    moore2DQuery.query(center, 1, false, agentsToPlay);
+    </b>
+    
+    double cPayoff     = 0;
+    double totalPayoff = 0;
+    std::<b class="code">vector</b>&lt;RepastHPCDemoAgent*&gt;::iterator agentToPlay = agentsToPlay.begin();
+    while(agentToPlay != agentsToPlay.end()){
+        <b class="code">std::cout &lt;&lt; " AGENT " &lt;&lt; id_ &lt;&lt; " AT " &lt;&lt; center &lt;&lt; " PLAYING " &lt;&lt; (*agentToPlay)-&gt;getId() &lt;&lt; std::endl;</b>
+        bool iCooperated = cooperate();                          // Do I cooperate?
+        double payoff = (iCooperated ?
+						 ((*agentToPlay)-&gt;cooperate() ?  7 : 1) :     // If I cooperated, did my opponent?
+						 ((*agentToPlay)-&gt;cooperate() ? 10 : 3));     // If I didn't cooperate, did my opponent?
+        if(iCooperated) cPayoff += payoff;
+        totalPayoff             += payoff;
+		
+        agentToPlay++;
+    }
+    c      += cPayoff;
+    total  += totalPayoff;
+	
+}
+</pre></code></div>
+    <p>Note that the collection of agents that will be played is now a vector rather than a set. The first component of the query is to get the point at which the querying agent is located, which requires a vector to store the result from the space, which is then used to create a point object. After this, the Moore2DGridQuery is created and then called. The four arguments to the query() function are: the center point; the range; whether to include the center cell; and the vector into which the agents in the neighboring cells will be placed. Note that here were are using a range of '1'. We could use '2', but if we needed to use a larger query we would also have to expand the buffer zones of the space to ensure that local agents could 'see' all of the possible neighbors. We are also omitting the center cell; in theory there could be neighboring agents in that cell, but we omit this because it allows us to ensure that the agent doing the search is not included in the results.</p>
+
+    <script type="text/javascript">footer("RepastHPC_Demo_03_Step_03");</script>
+  </body>
+</html>

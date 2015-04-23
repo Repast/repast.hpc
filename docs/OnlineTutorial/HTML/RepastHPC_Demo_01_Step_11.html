@@ -1,0 +1,916 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_01_Step_11");</script>
+    <p>So far in the demo we have exchanged agents so that they are shared across processes; we must now ensure that the copies of agents on each process are synchronized with the 'real' agents that are on the agents' home processes. To do this, we need only add one line of code:</p>
+<div class="code"><code><pre>
+void RepastHPCDemoModel::doSomething(){
+	std::vector&lt;RepastHPCDemoAgent*&gt; agents;
+	context.selectAgents(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::LOCAL, countOfAgents, agents);
+	std::vector&lt;RepastHPCDemoAgent*&gt;::iterator it = agents.begin();
+	while(it != agents.end()){
+		(*it)->play(&context);
+		it++;
+        }
+	<b class="code">repast::RepastProcess::instance()->synchronizeAgentStates&lt;RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(*provider, *receiver);</b>
+	
+}
+</pre></code></div>
+    <p>There are some subtleties to this code. One is its placement: we have placed it in the 'doSomething' function, and called it so that it synchronizes the agents after all the local agents have played our game. It could also have been placed at the <em>beginning</em> of the function, which makes some sense because one could think that it would be important to synchronize the agents before play begins. In reality, it doesn't matter: the first play takes place immediately after the agents are exchanged, which means that the nonlocal agents will be freshly arrived and will match the originals on their home processes.<p>
+    <p>A second is its heavily templated nature. Often when using templated methods it is possible to omit the type specifications that are found in the angle brackets after the function name, but not in this case.</p>
+    <p>Finally, notice that it, like 'requestAgents', is not a member of the class RepastProcess.</p>
+    <p>For demonstration purposes, the actual code in this step contains a lot of output designed to illustrate the timing at which the agents are being updated. The full listing is:</p>
+
+<div class="code"><code><pre>
+void RepastHPCDemoModel::doSomething(){
+    <b class="temp">if(repast::RepastProcess::instance()->rank() == 0) std::cout << " TICK " << repast::RepastProcess::instance()->getScheduleRunner().currentTick() << std::endl;</b>
+	
+    <b class="temp">if(repast::RepastProcess::instance()->rank() == 0){
+        std::cout << " BEFORE PLAY: " << std::endl;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_state_aware_iterator local_agents_iter      = context.begin(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::LOCAL);
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_state_aware_iterator local_agents_end       = context.end(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::LOCAL);
+	while(local_agents_iter != local_agents_end){
+	    RepastHPCDemoAgent* agent = (&**local_agents_iter);
+	    std::cout << agent->getId() << " " << agent->getC() << " " << agent->getTotal() << std::endl;
+	    local_agents_iter++;
+	}
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_state_aware_iterator non_local_agents_iter  = context.begin(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::NON_LOCAL);
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_state_aware_iterator non_local_agents_end   = context.end(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::NON_LOCAL);
+	while(non_local_agents_iter != non_local_agents_end){
+	    RepastHPCDemoAgent* agent = (&**non_local_agents_iter);
+	    std::cout << agent->getId() << " " << agent->getC() << " " << agent->getTotal() << std::endl;
+	    non_local_agents_iter++;
+        }
+    }</b>
+	
+	
+    std::vector&lt;RepastHPCDemoAgent*&gt; agents;
+    context.selectAgents(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::LOCAL, countOfAgents, agents);
+    std::vector&lt;RepastHPCDemoAgent*&gt;::iterator it = agents.begin();
+    while(it != agents.end()){
+	(*it)->play(&context);
+	it++;
+    }
+
+	
+    <b class="temp">if(repast::RepastProcess::instance()->rank() == 0){
+	std::cout << " AFTER PLAY, BEFORE SYNC: " << std::endl;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_state_aware_iterator local_agents_iter      = context.begin(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::LOCAL);
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_state_aware_iterator local_agents_end       = context.end(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::LOCAL);
+	while(local_agents_iter != local_agents_end){
+	    RepastHPCDemoAgent* agent = (&**local_agents_iter);
+            std::cout << agent->getId() << " " << agent->getC() << " " << agent->getTotal() << std::endl;
+	    local_agents_iter++;
+ 	}
+        repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_state_aware_iterator non_local_agents_iter  = context.begin(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::NON_LOCAL);
+        repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_state_aware_iterator non_local_agents_end   = context.end(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::NON_LOCAL);
+        while(non_local_agents_iter != non_local_agents_end){
+	    RepastHPCDemoAgent* agent = (&**non_local_agents_iter);
+	    std::cout << agent->getId() << " " << agent->getC() << " " << agent->getTotal() << std::endl;
+	    non_local_agents_iter++;
+        }
+    }</b>
+	
+	
+	<b class="code">repast::RepastProcess::instance()->synchronizeAgentStates&lt;RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(*provider, *receiver);</b>
+	
+    <b class="temp">if(repast::RepastProcess::instance()->rank() == 0){
+        std::cout << " AFTER SYNC: " << std::endl;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_state_aware_iterator local_agents_iter      = context.begin(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::LOCAL);
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_state_aware_iterator local_agents_end       = context.end(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::LOCAL);
+	while(local_agents_iter != local_agents_end){
+	    RepastHPCDemoAgent* agent = (&**local_agents_iter);
+            std::cout << agent->getId() << " " << agent->getC() << " " << agent->getTotal() << std::endl;
+	    local_agents_iter++;
+ 	}
+        repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_state_aware_iterator non_local_agents_iter  = context.begin(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::NON_LOCAL);
+        repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_state_aware_iterator non_local_agents_end   = context.end(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::NON_LOCAL);
+        while(non_local_agents_iter != non_local_agents_end){
+	    RepastHPCDemoAgent* agent = (&**non_local_agents_iter);
+	    std::cout << agent->getId() << " " << agent->getC() << " " << agent->getTotal() << std::endl;
+	    non_local_agents_iter++;
+         }
+    }</b>
+}
+</pre></code></div>
+
+
+
+    <p>This produces output like the following (with additional annotations in red); note that only Rank 0 is sending output:</p>
+<div class="code"><code><pre>
+ TICK 2
+ BEFORE PLAY: 
+AgentId(3, 0, 0, 0) 100 200   <b class="note"><-Local agents like this one have a 'current process' (last number in agent ID) = 0</b>
+AgentId(4, 0, 0, 0) 100 200   <b class="note">All agents have initial values for c and total</b>
+AgentId(5, 0, 0, 0) 100 200
+AgentId(6, 0, 0, 0) 100 200
+AgentId(7, 0, 0, 0) 100 200
+AgentId(0, 0, 0, 0) 100 200
+AgentId(8, 0, 0, 0) 100 200
+AgentId(1, 0, 0, 0) 100 200
+AgentId(9, 0, 0, 0) 100 200
+AgentId(2, 0, 0, 0) 100 200
+AgentId(8, 3, 0, 3) 100 200   <b class="note"><-This is a non-local agent; there is a copy of the agent on Rank 0, but the agent itself is on current rank = 3</b>
+AgentId(2, 3, 0, 3) 100 200
+AgentId(3, 1, 0, 1) 100 200
+AgentId(4, 2, 0, 2) 100 200
+AgentId(5, 2, 0, 2) 100 200
+AgentId(5, 3, 0, 3) 100 200
+AgentId(6, 1, 0, 1) 100 200
+AgentId(6, 2, 0, 2) 100 200
+AgentId(7, 1, 0, 1) 100 200
+AgentId(7, 2, 0, 2) 100 200
+AgentId(7, 3, 0, 3) 100 200
+AgentId(8, 1, 0, 1) 100 200
+AgentId(0, 3, 0, 3) 100 200
+AgentId(1, 1, 0, 1) 100 200
+AgentId(1, 2, 0, 2) 100 200
+ AFTER PLAY, BEFORE SYNC: 
+AgentId(3, 0, 0, 0) 114 224   <b class="note">Local agents have played the game and updated themselves</b>
+AgentId(4, 0, 0, 0) 100 230
+AgentId(5, 0, 0, 0) 100 223
+AgentId(6, 0, 0, 0) 108 211
+AgentId(7, 0, 0, 0) 114 224
+AgentId(0, 0, 0, 0) 114 217
+AgentId(8, 0, 0, 0) 108 211
+AgentId(1, 0, 0, 0) 107 220
+AgentId(9, 0, 0, 0) 114 217
+AgentId(2, 0, 0, 0) 107 220
+AgentId(8, 3, 0, 3) 100 200   <b class="note">Non-local agents have not played the game; their values are unchanged</b>
+AgentId(2, 3, 0, 3) 100 200
+AgentId(3, 1, 0, 1) 100 200
+AgentId(4, 2, 0, 2) 100 200
+AgentId(5, 2, 0, 2) 100 200
+AgentId(5, 3, 0, 3) 100 200
+AgentId(6, 1, 0, 1) 100 200
+AgentId(6, 2, 0, 2) 100 200
+AgentId(7, 1, 0, 1) 100 200
+AgentId(7, 2, 0, 2) 100 200
+AgentId(7, 3, 0, 3) 100 200
+AgentId(8, 1, 0, 1) 100 200
+AgentId(0, 3, 0, 3) 100 200
+AgentId(1, 1, 0, 1) 100 200
+AgentId(1, 2, 0, 2) 100 200
+ AFTER SYNC:                  <b class="note">Synchronization of non-local agents happens here</b>
+AgentId(3, 0, 0, 0) 114 224
+AgentId(4, 0, 0, 0) 100 230
+AgentId(5, 0, 0, 0) 100 223
+AgentId(6, 0, 0, 0) 108 211
+AgentId(7, 0, 0, 0) 114 224
+AgentId(0, 0, 0, 0) 114 217
+AgentId(8, 0, 0, 0) 108 211
+AgentId(1, 0, 0, 0) 107 220
+AgentId(9, 0, 0, 0) 114 217
+AgentId(2, 0, 0, 0) 107 220
+AgentId(8, 3, 0, 3) 107 220   <b class="note">Now the non-local agents have values; these are received from their home processes</b>
+AgentId(2, 3, 0, 3) 108 218
+AgentId(3, 1, 0, 1) 103 203
+AgentId(4, 2, 0, 2) 102 212
+AgentId(5, 2, 0, 2) 100 223
+AgentId(5, 3, 0, 3) 108 218
+AgentId(6, 1, 0, 1) 101 221
+AgentId(6, 2, 0, 2) 101 214
+AgentId(7, 1, 0, 1) 108 218
+AgentId(7, 2, 0, 2) 109 209
+AgentId(7, 3, 0, 3) 100 216
+AgentId(8, 1, 0, 1) 114 224
+AgentId(0, 3, 0, 3) 102 212
+AgentId(1, 1, 0, 1) 100 223
+AgentId(1, 2, 0, 2) 101 207
+ TICK 3                       <b class="note">Repeat for the next time step</b>
+ BEFORE PLAY: 
+AgentId(3, 0, 0, 0) 114 224
+AgentId(4, 0, 0, 0) 100 230
+AgentId(5, 0, 0, 0) 100 223
+AgentId(6, 0, 0, 0) 108 211
+AgentId(7, 0, 0, 0) 114 224
+AgentId(0, 0, 0, 0) 114 217
+AgentId(8, 0, 0, 0) 108 211
+AgentId(1, 0, 0, 0) 107 220
+AgentId(9, 0, 0, 0) 114 217
+AgentId(2, 0, 0, 0) 107 220
+AgentId(8, 3, 0, 3) 107 220
+AgentId(2, 3, 0, 3) 108 218
+AgentId(3, 1, 0, 1) 103 203
+AgentId(4, 2, 0, 2) 102 212
+AgentId(5, 2, 0, 2) 100 223
+AgentId(5, 3, 0, 3) 108 218
+AgentId(6, 1, 0, 1) 101 221
+AgentId(6, 2, 0, 2) 101 214
+AgentId(7, 1, 0, 1) 108 218
+AgentId(7, 2, 0, 2) 109 209
+AgentId(7, 3, 0, 3) 100 216
+AgentId(8, 1, 0, 1) 114 224
+AgentId(0, 3, 0, 3) 102 212
+AgentId(1, 1, 0, 1) 100 223
+AgentId(1, 2, 0, 2) 101 207
+ AFTER PLAY, BEFORE SYNC: 
+AgentId(3, 0, 0, 0) 128 248
+AgentId(4, 0, 0, 0) 107 250
+AgentId(5, 0, 0, 0) 107 236
+AgentId(6, 0, 0, 0) 116 222
+AgentId(7, 0, 0, 0) 115 245
+AgentId(0, 0, 0, 0) 116 229
+AgentId(8, 0, 0, 0) 110 223
+AgentId(1, 0, 0, 0) 108 234
+AgentId(9, 0, 0, 0) 122 235
+AgentId(2, 0, 0, 0) 122 235
+AgentId(8, 3, 0, 3) 107 220
+AgentId(2, 3, 0, 3) 108 218
+AgentId(3, 1, 0, 1) 103 203
+AgentId(4, 2, 0, 2) 102 212
+AgentId(5, 2, 0, 2) 100 223
+AgentId(5, 3, 0, 3) 108 218
+AgentId(6, 1, 0, 1) 101 221
+AgentId(6, 2, 0, 2) 101 214
+AgentId(7, 1, 0, 1) 108 218
+AgentId(7, 2, 0, 2) 109 209
+AgentId(7, 3, 0, 3) 100 216
+AgentId(8, 1, 0, 1) 114 224
+AgentId(0, 3, 0, 3) 102 212
+AgentId(1, 1, 0, 1) 100 223
+AgentId(1, 2, 0, 2) 101 207
+ AFTER SYNC: 
+AgentId(3, 0, 0, 0) 128 248
+AgentId(4, 0, 0, 0) 107 250
+AgentId(5, 0, 0, 0) 107 236
+AgentId(6, 0, 0, 0) 116 222
+AgentId(7, 0, 0, 0) 115 245
+AgentId(0, 0, 0, 0) 116 229
+AgentId(8, 0, 0, 0) 110 223
+AgentId(1, 0, 0, 0) 108 234
+AgentId(9, 0, 0, 0) 122 235
+AgentId(2, 0, 0, 0) 122 235
+AgentId(8, 3, 0, 3) 114 233
+AgentId(2, 3, 0, 3) 115 231
+AgentId(3, 1, 0, 1) 104 217
+AgentId(4, 2, 0, 2) 123 233
+AgentId(5, 2, 0, 2) 101 237
+AgentId(5, 3, 0, 3) 109 232
+AgentId(6, 1, 0, 1) 108 241
+AgentId(6, 2, 0, 2) 101 237
+AgentId(7, 1, 0, 1) 116 236
+AgentId(7, 2, 0, 2) 109 225
+AgentId(7, 3, 0, 3) 100 232
+AgentId(8, 1, 0, 1) 115 231
+AgentId(0, 3, 0, 3) 104 217
+AgentId(1, 1, 0, 1) 101 230
+AgentId(1, 2, 0, 2) 109 225
+</pre></code></div>
+
+
+    <p>This output, of course, only tells Rank 0's story; here is a more thorough record. Note, however, that the demo code can't produce this output as written: to collect it I've re-written the loops through the agents, then re-compiled and re-run the simulation with the same random number seed but asking for output from different ranks (0, 1, 2, 3). (For the code used, look in the Step 11 directory, 'alt' subdirectory.)</p>
+    <p>For illustration, one agent is highlighted: the highlighted agent is agent # 6 on Rank 2, which has an agent ID of (6, 2, 0, 2). This agent is created and managed on Rank 2, but is borrowed by ranks 0 and 1, which therefore have copies (highlighted in blue). Notice the difference between when the original agent's data is updated (after 'Play') vs. when those updates reach the copies on the other processes (after synchronization). You should be able to track the same pattern for agents who are managed on any process but have copies on one or more of the other processes.</p>
+<center><table>
+<tr><th>Rank 0</th><th>Rank 1</th><th>Rank 2</th><th>Rank 3</th></tr>
+<tr><td>
+<div class="code"><code><pre>
+ TICK 2
+ BEFORE PLAY: 
+AgentId(0, 0, 0, 0) 100 200
+AgentId(1, 0, 0, 0) 100 200
+AgentId(2, 0, 0, 0) 100 200
+AgentId(3, 0, 0, 0) 100 200
+AgentId(4, 0, 0, 0) 100 200
+AgentId(5, 0, 0, 0) 100 200
+AgentId(6, 0, 0, 0) 100 200
+AgentId(7, 0, 0, 0) 100 200
+AgentId(8, 0, 0, 0) 100 200
+AgentId(9, 0, 0, 0) 100 200
+AgentId(1, 1, 0, 1) 100 200
+AgentId(3, 1, 0, 1) 100 200
+AgentId(6, 1, 0, 1) 100 200
+AgentId(7, 1, 0, 1) 100 200
+AgentId(8, 1, 0, 1) 100 200
+AgentId(1, 2, 0, 2) 100 200
+AgentId(4, 2, 0, 2) 100 200
+AgentId(5, 2, 0, 2) 100 200
+<b class="temp">AgentId(6, 2, 0, 2) 100 200</b>
+AgentId(7, 2, 0, 2) 100 200
+AgentId(0, 3, 0, 3) 100 200
+AgentId(2, 3, 0, 3) 100 200
+AgentId(5, 3, 0, 3) 100 200
+AgentId(7, 3, 0, 3) 100 200
+AgentId(8, 3, 0, 3) 100 200
+ AFTER PLAY, BEFORE SYNC: 
+AgentId(0, 0, 0, 0) 114 217
+AgentId(1, 0, 0, 0) 107 220
+AgentId(2, 0, 0, 0) 107 220
+AgentId(3, 0, 0, 0) 114 224
+AgentId(4, 0, 0, 0) 100 230
+AgentId(5, 0, 0, 0) 100 223
+AgentId(6, 0, 0, 0) 108 211
+AgentId(7, 0, 0, 0) 114 224
+AgentId(8, 0, 0, 0) 108 211
+AgentId(9, 0, 0, 0) 114 217
+AgentId(1, 1, 0, 1) 100 200
+AgentId(3, 1, 0, 1) 100 200
+AgentId(6, 1, 0, 1) 100 200
+AgentId(7, 1, 0, 1) 100 200
+AgentId(8, 1, 0, 1) 100 200
+AgentId(1, 2, 0, 2) 100 200
+AgentId(4, 2, 0, 2) 100 200
+AgentId(5, 2, 0, 2) 100 200
+<b class="temp">AgentId(6, 2, 0, 2) 100 200</b>
+AgentId(7, 2, 0, 2) 100 200
+AgentId(0, 3, 0, 3) 100 200
+AgentId(2, 3, 0, 3) 100 200
+AgentId(5, 3, 0, 3) 100 200
+AgentId(7, 3, 0, 3) 100 200
+AgentId(8, 3, 0, 3) 100 200
+ AFTER SYNC: 
+AgentId(0, 0, 0, 0) 114 217
+AgentId(1, 0, 0, 0) 107 220
+AgentId(2, 0, 0, 0) 107 220
+AgentId(3, 0, 0, 0) 114 224
+AgentId(4, 0, 0, 0) 100 230
+AgentId(5, 0, 0, 0) 100 223
+AgentId(6, 0, 0, 0) 108 211
+AgentId(7, 0, 0, 0) 114 224
+AgentId(8, 0, 0, 0) 108 211
+AgentId(9, 0, 0, 0) 114 217
+AgentId(1, 1, 0, 1) 100 223
+AgentId(3, 1, 0, 1) 103 203
+AgentId(6, 1, 0, 1) 101 221
+AgentId(7, 1, 0, 1) 108 218
+AgentId(8, 1, 0, 1) 114 224
+AgentId(1, 2, 0, 2) 101 207
+AgentId(4, 2, 0, 2) 102 212
+AgentId(5, 2, 0, 2) 100 223
+<b class="temp">AgentId(6, 2, 0, 2) 101 214</b>
+AgentId(7, 2, 0, 2) 109 209
+AgentId(0, 3, 0, 3) 102 212
+AgentId(2, 3, 0, 3) 108 218
+AgentId(5, 3, 0, 3) 108 218
+AgentId(7, 3, 0, 3) 100 216
+AgentId(8, 3, 0, 3) 107 220
+ TICK 3
+ BEFORE PLAY: 
+AgentId(0, 0, 0, 0) 114 217
+AgentId(1, 0, 0, 0) 107 220
+AgentId(2, 0, 0, 0) 107 220
+AgentId(3, 0, 0, 0) 114 224
+AgentId(4, 0, 0, 0) 100 230
+AgentId(5, 0, 0, 0) 100 223
+AgentId(6, 0, 0, 0) 108 211
+AgentId(7, 0, 0, 0) 114 224
+AgentId(8, 0, 0, 0) 108 211
+AgentId(9, 0, 0, 0) 114 217
+AgentId(1, 1, 0, 1) 100 223
+AgentId(3, 1, 0, 1) 103 203
+AgentId(6, 1, 0, 1) 101 221
+AgentId(7, 1, 0, 1) 108 218
+AgentId(8, 1, 0, 1) 114 224
+AgentId(1, 2, 0, 2) 101 207
+AgentId(4, 2, 0, 2) 102 212
+AgentId(5, 2, 0, 2) 100 223
+<b class="temp">AgentId(6, 2, 0, 2) 101 214</b>
+AgentId(7, 2, 0, 2) 109 209
+AgentId(0, 3, 0, 3) 102 212
+AgentId(2, 3, 0, 3) 108 218
+AgentId(5, 3, 0, 3) 108 218
+AgentId(7, 3, 0, 3) 100 216
+AgentId(8, 3, 0, 3) 107 220
+ AFTER PLAY, BEFORE SYNC: 
+AgentId(0, 0, 0, 0) 116 229
+AgentId(1, 0, 0, 0) 108 234
+AgentId(2, 0, 0, 0) 122 235
+AgentId(3, 0, 0, 0) 128 248
+AgentId(4, 0, 0, 0) 107 250
+AgentId(5, 0, 0, 0) 107 236
+AgentId(6, 0, 0, 0) 116 222
+AgentId(7, 0, 0, 0) 115 245
+AgentId(8, 0, 0, 0) 110 223
+AgentId(9, 0, 0, 0) 122 235
+AgentId(1, 1, 0, 1) 100 223
+AgentId(3, 1, 0, 1) 103 203
+AgentId(6, 1, 0, 1) 101 221
+AgentId(7, 1, 0, 1) 108 218
+AgentId(8, 1, 0, 1) 114 224
+AgentId(1, 2, 0, 2) 101 207
+AgentId(4, 2, 0, 2) 102 212
+AgentId(5, 2, 0, 2) 100 223
+<b class="temp">AgentId(6, 2, 0, 2) 101 214</b>
+AgentId(7, 2, 0, 2) 109 209
+AgentId(0, 3, 0, 3) 102 212
+AgentId(2, 3, 0, 3) 108 218
+AgentId(5, 3, 0, 3) 108 218
+AgentId(7, 3, 0, 3) 100 216
+AgentId(8, 3, 0, 3) 107 220
+ AFTER SYNC: 
+AgentId(0, 0, 0, 0) 116 229
+AgentId(1, 0, 0, 0) 108 234
+AgentId(2, 0, 0, 0) 122 235
+AgentId(3, 0, 0, 0) 128 248
+AgentId(4, 0, 0, 0) 107 250
+AgentId(5, 0, 0, 0) 107 236
+AgentId(6, 0, 0, 0) 116 222
+AgentId(7, 0, 0, 0) 115 245
+AgentId(8, 0, 0, 0) 110 223
+AgentId(9, 0, 0, 0) 122 235
+AgentId(1, 1, 0, 1) 101 230
+AgentId(3, 1, 0, 1) 104 217
+AgentId(6, 1, 0, 1) 108 241
+AgentId(7, 1, 0, 1) 116 236
+AgentId(8, 1, 0, 1) 115 231
+AgentId(1, 2, 0, 2) 109 225
+AgentId(4, 2, 0, 2) 123 233
+AgentId(5, 2, 0, 2) 101 237
+<b class="temp">AgentId(6, 2, 0, 2) 101 237</b>
+AgentId(7, 2, 0, 2) 109 225
+AgentId(0, 3, 0, 3) 104 217
+AgentId(2, 3, 0, 3) 115 231
+AgentId(5, 3, 0, 3) 109 232
+AgentId(7, 3, 0, 3) 100 232
+AgentId(8, 3, 0, 3) 114 233
+</pre></code></div></td>
+<td><div class="code"><code><pre>
+ TICK 2
+ BEFORE PLAY: 
+AgentId(0, 1, 0, 1) 100 200
+AgentId(1, 1, 0, 1) 100 200
+AgentId(2, 1, 0, 1) 100 200
+AgentId(3, 1, 0, 1) 100 200
+AgentId(4, 1, 0, 1) 100 200
+AgentId(5, 1, 0, 1) 100 200
+AgentId(6, 1, 0, 1) 100 200
+AgentId(7, 1, 0, 1) 100 200
+AgentId(8, 1, 0, 1) 100 200
+AgentId(9, 1, 0, 1) 100 200
+AgentId(0, 0, 0, 0) 100 200
+AgentId(1, 0, 0, 0) 100 200
+AgentId(2, 0, 0, 0) 100 200
+AgentId(8, 0, 0, 0) 100 200
+AgentId(9, 0, 0, 0) 100 200
+AgentId(0, 2, 0, 2) 100 200
+AgentId(1, 2, 0, 2) 100 200
+AgentId(2, 2, 0, 2) 100 200
+<b class="temp">AgentId(6, 2, 0, 2) 100 200</b>
+AgentId(9, 2, 0, 2) 100 200
+AgentId(0, 3, 0, 3) 100 200
+AgentId(2, 3, 0, 3) 100 200
+AgentId(3, 3, 0, 3) 100 200
+AgentId(4, 3, 0, 3) 100 200
+AgentId(9, 3, 0, 3) 100 200
+ AFTER PLAY, BEFORE SYNC: 
+AgentId(0, 1, 0, 1) 100 216
+AgentId(1, 1, 0, 1) 100 223
+AgentId(2, 1, 0, 1) 101 214
+AgentId(3, 1, 0, 1) 103 203
+AgentId(4, 1, 0, 1) 115 215
+AgentId(5, 1, 0, 1) 107 220
+AgentId(6, 1, 0, 1) 101 221
+AgentId(7, 1, 0, 1) 108 218
+AgentId(8, 1, 0, 1) 114 224
+AgentId(9, 1, 0, 1) 101 221
+AgentId(0, 0, 0, 0) 100 200
+AgentId(1, 0, 0, 0) 100 200
+AgentId(2, 0, 0, 0) 100 200
+AgentId(8, 0, 0, 0) 100 200
+AgentId(9, 0, 0, 0) 100 200
+AgentId(0, 2, 0, 2) 100 200
+AgentId(1, 2, 0, 2) 100 200
+AgentId(2, 2, 0, 2) 100 200
+<b class="temp">AgentId(6, 2, 0, 2) 100 200</b>
+AgentId(9, 2, 0, 2) 100 200
+AgentId(0, 3, 0, 3) 100 200
+AgentId(2, 3, 0, 3) 100 200
+AgentId(3, 3, 0, 3) 100 200
+AgentId(4, 3, 0, 3) 100 200
+AgentId(9, 3, 0, 3) 100 200
+ AFTER SYNC: 
+AgentId(0, 1, 0, 1) 100 216
+AgentId(1, 1, 0, 1) 100 223
+AgentId(2, 1, 0, 1) 101 214
+AgentId(3, 1, 0, 1) 103 203
+AgentId(4, 1, 0, 1) 115 215
+AgentId(5, 1, 0, 1) 107 220
+AgentId(6, 1, 0, 1) 101 221
+AgentId(7, 1, 0, 1) 108 218
+AgentId(8, 1, 0, 1) 114 224
+AgentId(9, 1, 0, 1) 101 221
+AgentId(0, 0, 0, 0) 114 217
+AgentId(1, 0, 0, 0) 107 220
+AgentId(2, 0, 0, 0) 107 220
+AgentId(8, 0, 0, 0) 108 211
+AgentId(9, 0, 0, 0) 114 217
+AgentId(0, 2, 0, 2) 114 224
+AgentId(1, 2, 0, 2) 101 207
+AgentId(2, 2, 0, 2) 102 205
+<b class="temp">AgentId(6, 2, 0, 2) 101 214</b>
+AgentId(9, 2, 0, 2) 107 227
+AgentId(0, 3, 0, 3) 102 212
+AgentId(2, 3, 0, 3) 108 218
+AgentId(3, 3, 0, 3) 114 217
+AgentId(4, 3, 0, 3) 101 207
+AgentId(9, 3, 0, 3) 107 227
+ TICK 3
+ BEFORE PLAY: 
+AgentId(0, 1, 0, 1) 100 216
+AgentId(1, 1, 0, 1) 100 223
+AgentId(2, 1, 0, 1) 101 214
+AgentId(3, 1, 0, 1) 103 203
+AgentId(4, 1, 0, 1) 115 215
+AgentId(5, 1, 0, 1) 107 220
+AgentId(6, 1, 0, 1) 101 221
+AgentId(7, 1, 0, 1) 108 218
+AgentId(8, 1, 0, 1) 114 224
+AgentId(9, 1, 0, 1) 101 221
+AgentId(0, 0, 0, 0) 114 217
+AgentId(1, 0, 0, 0) 107 220
+AgentId(2, 0, 0, 0) 107 220
+AgentId(8, 0, 0, 0) 108 211
+AgentId(9, 0, 0, 0) 114 217
+AgentId(0, 2, 0, 2) 114 224
+AgentId(1, 2, 0, 2) 101 207
+AgentId(2, 2, 0, 2) 102 205
+<b class="temp">AgentId(6, 2, 0, 2) 101 214</b>
+AgentId(9, 2, 0, 2) 107 227
+AgentId(0, 3, 0, 3) 102 212
+AgentId(2, 3, 0, 3) 108 218
+AgentId(3, 3, 0, 3) 114 217
+AgentId(4, 3, 0, 3) 101 207
+AgentId(9, 3, 0, 3) 107 227
+ AFTER PLAY, BEFORE SYNC: 
+AgentId(0, 1, 0, 1) 101 230
+AgentId(1, 1, 0, 1) 101 230
+AgentId(2, 1, 0, 1) 101 223
+AgentId(3, 1, 0, 1) 104 217
+AgentId(4, 1, 0, 1) 116 229
+AgentId(5, 1, 0, 1) 122 235
+AgentId(6, 1, 0, 1) 108 241
+AgentId(7, 1, 0, 1) 116 236
+AgentId(8, 1, 0, 1) 115 231
+AgentId(9, 1, 0, 1) 110 230
+AgentId(0, 0, 0, 0) 114 217
+AgentId(1, 0, 0, 0) 107 220
+AgentId(2, 0, 0, 0) 107 220
+AgentId(8, 0, 0, 0) 108 211
+AgentId(9, 0, 0, 0) 114 217
+AgentId(0, 2, 0, 2) 114 224
+AgentId(1, 2, 0, 2) 101 207
+AgentId(2, 2, 0, 2) 102 205
+<b class="temp">AgentId(6, 2, 0, 2) 101 214</b>
+AgentId(9, 2, 0, 2) 107 227
+AgentId(0, 3, 0, 3) 102 212
+AgentId(2, 3, 0, 3) 108 218
+AgentId(3, 3, 0, 3) 114 217
+AgentId(4, 3, 0, 3) 101 207
+AgentId(9, 3, 0, 3) 107 227
+ AFTER SYNC: 
+AgentId(0, 1, 0, 1) 101 230
+AgentId(1, 1, 0, 1) 101 230
+AgentId(2, 1, 0, 1) 101 223
+AgentId(3, 1, 0, 1) 104 217
+AgentId(4, 1, 0, 1) 116 229
+AgentId(5, 1, 0, 1) 122 235
+AgentId(6, 1, 0, 1) 108 241
+AgentId(7, 1, 0, 1) 116 236
+AgentId(8, 1, 0, 1) 115 231
+AgentId(9, 1, 0, 1) 110 230
+AgentId(0, 0, 0, 0) 116 229
+AgentId(1, 0, 0, 0) 108 234
+AgentId(2, 0, 0, 0) 122 235
+AgentId(8, 0, 0, 0) 110 223
+AgentId(9, 0, 0, 0) 122 235
+AgentId(0, 2, 0, 2) 121 237
+AgentId(1, 2, 0, 2) 109 225
+AgentId(2, 2, 0, 2) 103 219
+<b class="temp">AgentId(6, 2, 0, 2) 101 237</b>
+AgentId(9, 2, 0, 2) 115 245
+AgentId(0, 3, 0, 3) 104 217
+AgentId(2, 3, 0, 3) 115 231
+AgentId(3, 3, 0, 3) 115 231
+AgentId(4, 3, 0, 3) 115 224
+AgentId(9, 3, 0, 3) 114 240
+</pre></code></div></td>
+<td><div class="code"><code><pre>
+ TICK 2
+ BEFORE PLAY: 
+AgentId(0, 2, 0, 2) 100 200
+AgentId(1, 2, 0, 2) 100 200
+AgentId(2, 2, 0, 2) 100 200
+AgentId(3, 2, 0, 2) 100 200
+AgentId(4, 2, 0, 2) 100 200
+AgentId(5, 2, 0, 2) 100 200
+<b class="note">AgentId(6, 2, 0, 2) 100 200</b>
+AgentId(7, 2, 0, 2) 100 200
+AgentId(8, 2, 0, 2) 100 200
+AgentId(9, 2, 0, 2) 100 200
+AgentId(0, 0, 0, 0) 100 200
+AgentId(2, 0, 0, 0) 100 200
+AgentId(4, 0, 0, 0) 100 200
+AgentId(7, 0, 0, 0) 100 200
+AgentId(8, 0, 0, 0) 100 200
+AgentId(0, 1, 0, 1) 100 200
+AgentId(1, 1, 0, 1) 100 200
+AgentId(3, 1, 0, 1) 100 200
+AgentId(4, 1, 0, 1) 100 200
+AgentId(5, 1, 0, 1) 100 200
+AgentId(0, 3, 0, 3) 100 200
+AgentId(1, 3, 0, 3) 100 200
+AgentId(4, 3, 0, 3) 100 200
+AgentId(5, 3, 0, 3) 100 200
+AgentId(7, 3, 0, 3) 100 200
+ AFTER PLAY, BEFORE SYNC: 
+AgentId(0, 2, 0, 2) 114 224
+AgentId(1, 2, 0, 2) 101 207
+AgentId(2, 2, 0, 2) 102 205
+AgentId(3, 2, 0, 2) 102 205
+AgentId(4, 2, 0, 2) 102 212
+AgentId(5, 2, 0, 2) 100 223
+<b class="note">AgentId(6, 2, 0, 2) 101 214</b>
+AgentId(7, 2, 0, 2) 109 209
+AgentId(8, 2, 0, 2) 100 230
+AgentId(9, 2, 0, 2) 107 227
+AgentId(0, 0, 0, 0) 100 200
+AgentId(2, 0, 0, 0) 100 200
+AgentId(4, 0, 0, 0) 100 200
+AgentId(7, 0, 0, 0) 100 200
+AgentId(8, 0, 0, 0) 100 200
+AgentId(0, 1, 0, 1) 100 200
+AgentId(1, 1, 0, 1) 100 200
+AgentId(3, 1, 0, 1) 100 200
+AgentId(4, 1, 0, 1) 100 200
+AgentId(5, 1, 0, 1) 100 200
+AgentId(0, 3, 0, 3) 100 200
+AgentId(1, 3, 0, 3) 100 200
+AgentId(4, 3, 0, 3) 100 200
+AgentId(5, 3, 0, 3) 100 200
+AgentId(7, 3, 0, 3) 100 200
+ AFTER SYNC: 
+AgentId(0, 2, 0, 2) 114 224
+AgentId(1, 2, 0, 2) 101 207
+AgentId(2, 2, 0, 2) 102 205
+AgentId(3, 2, 0, 2) 102 205
+AgentId(4, 2, 0, 2) 102 212
+AgentId(5, 2, 0, 2) 100 223
+<b class="note">AgentId(6, 2, 0, 2) 101 214</b>
+AgentId(7, 2, 0, 2) 109 209
+AgentId(8, 2, 0, 2) 100 230
+AgentId(9, 2, 0, 2) 107 227
+AgentId(0, 0, 0, 0) 114 217
+AgentId(2, 0, 0, 0) 107 220
+AgentId(4, 0, 0, 0) 100 230
+AgentId(7, 0, 0, 0) 114 224
+AgentId(8, 0, 0, 0) 108 211
+AgentId(0, 1, 0, 1) 100 216
+AgentId(1, 1, 0, 1) 100 223
+AgentId(3, 1, 0, 1) 103 203
+AgentId(4, 1, 0, 1) 115 215
+AgentId(5, 1, 0, 1) 107 220
+AgentId(0, 3, 0, 3) 102 212
+AgentId(1, 3, 0, 3) 107 220
+AgentId(4, 3, 0, 3) 101 207
+AgentId(5, 3, 0, 3) 108 218
+AgentId(7, 3, 0, 3) 100 216
+ TICK 3
+ BEFORE PLAY: 
+AgentId(0, 2, 0, 2) 114 224
+AgentId(1, 2, 0, 2) 101 207
+AgentId(2, 2, 0, 2) 102 205
+AgentId(3, 2, 0, 2) 102 205
+AgentId(4, 2, 0, 2) 102 212
+AgentId(5, 2, 0, 2) 100 223
+<b class="note">AgentId(6, 2, 0, 2) 101 214</b>
+AgentId(7, 2, 0, 2) 109 209
+AgentId(8, 2, 0, 2) 100 230
+AgentId(9, 2, 0, 2) 107 227
+AgentId(0, 0, 0, 0) 114 217
+AgentId(2, 0, 0, 0) 107 220
+AgentId(4, 0, 0, 0) 100 230
+AgentId(7, 0, 0, 0) 114 224
+AgentId(8, 0, 0, 0) 108 211
+AgentId(0, 1, 0, 1) 100 216
+AgentId(1, 1, 0, 1) 100 223
+AgentId(3, 1, 0, 1) 103 203
+AgentId(4, 1, 0, 1) 115 215
+AgentId(5, 1, 0, 1) 107 220
+AgentId(0, 3, 0, 3) 102 212
+AgentId(1, 3, 0, 3) 107 220
+AgentId(4, 3, 0, 3) 101 207
+AgentId(5, 3, 0, 3) 108 218
+AgentId(7, 3, 0, 3) 100 216
+ AFTER PLAY, BEFORE SYNC: 
+AgentId(0, 2, 0, 2) 121 237
+AgentId(1, 2, 0, 2) 109 225
+AgentId(2, 2, 0, 2) 103 219
+AgentId(3, 2, 0, 2) 109 225
+AgentId(4, 2, 0, 2) 123 233
+AgentId(5, 2, 0, 2) 101 237
+<b class="note">AgentId(6, 2, 0, 2) 101 237</b>
+AgentId(7, 2, 0, 2) 109 225
+AgentId(8, 2, 0, 2) 107 257
+AgentId(9, 2, 0, 2) 115 245
+AgentId(0, 0, 0, 0) 114 217
+AgentId(2, 0, 0, 0) 107 220
+AgentId(4, 0, 0, 0) 100 230
+AgentId(7, 0, 0, 0) 114 224
+AgentId(8, 0, 0, 0) 108 211
+AgentId(0, 1, 0, 1) 100 216
+AgentId(1, 1, 0, 1) 100 223
+AgentId(3, 1, 0, 1) 103 203
+AgentId(4, 1, 0, 1) 115 215
+AgentId(5, 1, 0, 1) 107 220
+AgentId(0, 3, 0, 3) 102 212
+AgentId(1, 3, 0, 3) 107 220
+AgentId(4, 3, 0, 3) 101 207
+AgentId(5, 3, 0, 3) 108 218
+AgentId(7, 3, 0, 3) 100 216
+ AFTER SYNC: 
+AgentId(0, 2, 0, 2) 121 237
+AgentId(1, 2, 0, 2) 109 225
+AgentId(2, 2, 0, 2) 103 219
+AgentId(3, 2, 0, 2) 109 225
+AgentId(4, 2, 0, 2) 123 233
+AgentId(5, 2, 0, 2) 101 237
+<b class="note">AgentId(6, 2, 0, 2) 101 237</b>
+AgentId(7, 2, 0, 2) 109 225
+AgentId(8, 2, 0, 2) 107 257
+AgentId(9, 2, 0, 2) 115 245
+AgentId(0, 0, 0, 0) 116 229
+AgentId(2, 0, 0, 0) 122 235
+AgentId(4, 0, 0, 0) 107 250
+AgentId(7, 0, 0, 0) 115 245
+AgentId(8, 0, 0, 0) 110 223
+AgentId(0, 1, 0, 1) 101 230
+AgentId(1, 1, 0, 1) 101 230
+AgentId(3, 1, 0, 1) 104 217
+AgentId(4, 1, 0, 1) 116 229
+AgentId(5, 1, 0, 1) 122 235
+AgentId(0, 3, 0, 3) 104 217
+AgentId(1, 3, 0, 3) 107 243
+AgentId(4, 3, 0, 3) 115 224
+AgentId(5, 3, 0, 3) 109 232
+AgentId(7, 3, 0, 3) 100 232
+</pre></code></div></td>
+<td><div class="code"><code><pre>
+ TICK 2
+ BEFORE PLAY: 
+AgentId(0, 3, 0, 3) 100 200
+AgentId(1, 3, 0, 3) 100 200
+AgentId(2, 3, 0, 3) 100 200
+AgentId(3, 3, 0, 3) 100 200
+AgentId(4, 3, 0, 3) 100 200
+AgentId(5, 3, 0, 3) 100 200
+AgentId(6, 3, 0, 3) 100 200
+AgentId(7, 3, 0, 3) 100 200
+AgentId(8, 3, 0, 3) 100 200
+AgentId(9, 3, 0, 3) 100 200
+AgentId(0, 0, 0, 0) 100 200
+AgentId(4, 0, 0, 0) 100 200
+AgentId(6, 0, 0, 0) 100 200
+AgentId(7, 0, 0, 0) 100 200
+AgentId(9, 0, 0, 0) 100 200
+AgentId(0, 1, 0, 1) 100 200
+AgentId(3, 1, 0, 1) 100 200
+AgentId(4, 1, 0, 1) 100 200
+AgentId(6, 1, 0, 1) 100 200
+AgentId(7, 1, 0, 1) 100 200
+AgentId(0, 2, 0, 2) 100 200
+AgentId(2, 2, 0, 2) 100 200
+AgentId(5, 2, 0, 2) 100 200
+AgentId(7, 2, 0, 2) 100 200
+AgentId(9, 2, 0, 2) 100 200
+ AFTER PLAY, BEFORE SYNC: 
+AgentId(0, 3, 0, 3) 102 212
+AgentId(1, 3, 0, 3) 107 220
+AgentId(2, 3, 0, 3) 108 218
+AgentId(3, 3, 0, 3) 114 217
+AgentId(4, 3, 0, 3) 101 207
+AgentId(5, 3, 0, 3) 108 218
+AgentId(6, 3, 0, 3) 108 211
+AgentId(7, 3, 0, 3) 100 216
+AgentId(8, 3, 0, 3) 107 220
+AgentId(9, 3, 0, 3) 107 227
+AgentId(0, 0, 0, 0) 100 200
+AgentId(4, 0, 0, 0) 100 200
+AgentId(6, 0, 0, 0) 100 200
+AgentId(7, 0, 0, 0) 100 200
+AgentId(9, 0, 0, 0) 100 200
+AgentId(0, 1, 0, 1) 100 200
+AgentId(3, 1, 0, 1) 100 200
+AgentId(4, 1, 0, 1) 100 200
+AgentId(6, 1, 0, 1) 100 200
+AgentId(7, 1, 0, 1) 100 200
+AgentId(0, 2, 0, 2) 100 200
+AgentId(2, 2, 0, 2) 100 200
+AgentId(5, 2, 0, 2) 100 200
+AgentId(7, 2, 0, 2) 100 200
+AgentId(9, 2, 0, 2) 100 200
+ AFTER SYNC: 
+AgentId(0, 3, 0, 3) 102 212
+AgentId(1, 3, 0, 3) 107 220
+AgentId(2, 3, 0, 3) 108 218
+AgentId(3, 3, 0, 3) 114 217
+AgentId(4, 3, 0, 3) 101 207
+AgentId(5, 3, 0, 3) 108 218
+AgentId(6, 3, 0, 3) 108 211
+AgentId(7, 3, 0, 3) 100 216
+AgentId(8, 3, 0, 3) 107 220
+AgentId(9, 3, 0, 3) 107 227
+AgentId(0, 0, 0, 0) 114 217
+AgentId(4, 0, 0, 0) 100 230
+AgentId(6, 0, 0, 0) 108 211
+AgentId(7, 0, 0, 0) 114 224
+AgentId(9, 0, 0, 0) 114 217
+AgentId(0, 1, 0, 1) 100 216
+AgentId(3, 1, 0, 1) 103 203
+AgentId(4, 1, 0, 1) 115 215
+AgentId(6, 1, 0, 1) 101 221
+AgentId(7, 1, 0, 1) 108 218
+AgentId(0, 2, 0, 2) 114 224
+AgentId(2, 2, 0, 2) 102 205
+AgentId(5, 2, 0, 2) 100 223
+AgentId(7, 2, 0, 2) 109 209
+AgentId(9, 2, 0, 2) 107 227
+ TICK 3
+ BEFORE PLAY: 
+AgentId(0, 3, 0, 3) 102 212
+AgentId(1, 3, 0, 3) 107 220
+AgentId(2, 3, 0, 3) 108 218
+AgentId(3, 3, 0, 3) 114 217
+AgentId(4, 3, 0, 3) 101 207
+AgentId(5, 3, 0, 3) 108 218
+AgentId(6, 3, 0, 3) 108 211
+AgentId(7, 3, 0, 3) 100 216
+AgentId(8, 3, 0, 3) 107 220
+AgentId(9, 3, 0, 3) 107 227
+AgentId(0, 0, 0, 0) 114 217
+AgentId(4, 0, 0, 0) 100 230
+AgentId(6, 0, 0, 0) 108 211
+AgentId(7, 0, 0, 0) 114 224
+AgentId(9, 0, 0, 0) 114 217
+AgentId(0, 1, 0, 1) 100 216
+AgentId(3, 1, 0, 1) 103 203
+AgentId(4, 1, 0, 1) 115 215
+AgentId(6, 1, 0, 1) 101 221
+AgentId(7, 1, 0, 1) 108 218
+AgentId(0, 2, 0, 2) 114 224
+AgentId(2, 2, 0, 2) 102 205
+AgentId(5, 2, 0, 2) 100 223
+AgentId(7, 2, 0, 2) 109 209
+AgentId(9, 2, 0, 2) 107 227
+ AFTER PLAY, BEFORE SYNC: 
+AgentId(0, 3, 0, 3) 104 217
+AgentId(1, 3, 0, 3) 107 243
+AgentId(2, 3, 0, 3) 115 231
+AgentId(3, 3, 0, 3) 115 231
+AgentId(4, 3, 0, 3) 115 224
+AgentId(5, 3, 0, 3) 109 232
+AgentId(6, 3, 0, 3) 122 235
+AgentId(7, 3, 0, 3) 100 232
+AgentId(8, 3, 0, 3) 114 233
+AgentId(9, 3, 0, 3) 114 240
+AgentId(0, 0, 0, 0) 114 217
+AgentId(4, 0, 0, 0) 100 230
+AgentId(6, 0, 0, 0) 108 211
+AgentId(7, 0, 0, 0) 114 224
+AgentId(9, 0, 0, 0) 114 217
+AgentId(0, 1, 0, 1) 100 216
+AgentId(3, 1, 0, 1) 103 203
+AgentId(4, 1, 0, 1) 115 215
+AgentId(6, 1, 0, 1) 101 221
+AgentId(7, 1, 0, 1) 108 218
+AgentId(0, 2, 0, 2) 114 224
+AgentId(2, 2, 0, 2) 102 205
+AgentId(5, 2, 0, 2) 100 223
+AgentId(7, 2, 0, 2) 109 209
+AgentId(9, 2, 0, 2) 107 227
+ AFTER SYNC: 
+AgentId(0, 3, 0, 3) 104 217
+AgentId(1, 3, 0, 3) 107 243
+AgentId(2, 3, 0, 3) 115 231
+AgentId(3, 3, 0, 3) 115 231
+AgentId(4, 3, 0, 3) 115 224
+AgentId(5, 3, 0, 3) 109 232
+AgentId(6, 3, 0, 3) 122 235
+AgentId(7, 3, 0, 3) 100 232
+AgentId(8, 3, 0, 3) 114 233
+AgentId(9, 3, 0, 3) 114 240
+AgentId(0, 0, 0, 0) 116 229
+AgentId(4, 0, 0, 0) 107 250
+AgentId(6, 0, 0, 0) 116 222
+AgentId(7, 0, 0, 0) 115 245
+AgentId(9, 0, 0, 0) 122 235
+AgentId(0, 1, 0, 1) 101 230
+AgentId(3, 1, 0, 1) 104 217
+AgentId(4, 1, 0, 1) 116 229
+AgentId(6, 1, 0, 1) 108 241
+AgentId(7, 1, 0, 1) 116 236
+AgentId(0, 2, 0, 2) 121 237
+AgentId(2, 2, 0, 2) 103 219
+AgentId(5, 2, 0, 2) 101 237
+AgentId(7, 2, 0, 2) 109 225
+AgentId(9, 2, 0, 2) 115 245
+</pre></code></div></td>
+</tr></table></center>
+
+ 
+    <script type="text/javascript">footer("RepastHPC_Demo_01_Step_11");</script>
+  </body>
+</html>

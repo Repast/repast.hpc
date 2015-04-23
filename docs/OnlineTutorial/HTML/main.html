@@ -1,0 +1,65 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("main");</script>
+    <h2>Before you begin</h2>
+    <p>You can download the source code for the examples in this tutorial here:</p>
+    <ul><li><a href="./RHPC_Tutorial_Source.zip">RHPC_Tutorial_Source.zip</a></li></ul>
+    <p>Once you have downloaded and decompressed the file, you should look at the instructions here: <script type="text/javascript">getLinkToPage("HowToUse");</script></p>
+    <h2>Purpose</h2>
+    <p>This tutorial walks through a series of examples that demonstrate several ways that Repast HPC models can be constructed. The intent to is
+    show a range of features that are included in the Repast HPC toolkit, and provide worked examples of how models that make use of these features in
+    different ways can be constructed. Some of the features discussed are related to Repast HPC infrastructure- how to set and change model parameters,
+    obtain and record simulation output, achieve different forms of random number generation, etc; other features are more central to how a Repast HPC
+    model is structured and operates- that is, how Repast HPC facilitates the construction of an ABM model in which agents interact according to some
+    set of structured constraints (including spatial arrangements and network connections).</p>
+    <h2>What you should know</h2>
+    <p>This tutorial is intended for anyone who wants to know the details of RepastHPC and become proficient in developing RepastHPC models. It is written, however,
+       for people with a limited background in an HPC environment- primarily for people who know the basics of agent-based modeling and can work their way through C++ syntax. The hope is that this
+       includes many people who have written code using the Repast environment for Java. Java syntax is based on C++ syntax, and though there are
+       important differences, someone who is familiar with Java can usually read C++ code and begin to write it quickly. In any case, the emphasis
+       in this tutorial is on laying out how Repast HPC and ReLogo are structured, and how to begin to compose, compile, and run models in Repast HPC. 
+       Detailed information about how to write C++ code is not included. However, it is much easier to get code running in Java than it is in C++, and the
+       process for doing this may be new to those accustomed to Java. The process by which Repast HPC code is compiled, linked, and run in
+       an HPC environment will involve steps that are unfamiliar to Java users, and these are covered in greater detail in this tutorial. Users
+       alread accustomed to these issues may want to skim sections that deal mainly with them.</p>
+    <div class="sidebar" id="WhatsABM" onClick=toggleSidebar("WhatsABM")><b>What's 'Agent-Based Modeling'?</b></div>
+    <div class="defHIDDEN" id="WhatsABM_DEF" onClick=toggleSidebar("WhatsABM")> Agent-Based Modeling is a special kind of modeling that is commonly used in social sciences but can also be applied to biological and physical sciences. The fundamental idea is the creation of a population of 'agents', which are entities that can perceive their environment and interact with it and with each other. By specifying simple rules, complex dynamics can emerge that lead to systems-level characteristics and examples of order at a macro-scale that is difficult to derive from the micro-level (agent) rules. Many more detailed discussions are available online; because Repast HPC is specifically for agent-based modeling, this tutorial assumes familiarity with ABM approaches.</div>
+    <div class="sidebar" id="WhatsCompiling" onClick=toggleSidebar("WhatsCompiling")><b>What are 'Compiling' and 'Linking'?</b></div>
+    <div class="defHIDDEN" id="WhatsCompiling_DEF" onClick=toggleSidebar("WhatsCompiling")> 'Compiling' means taking the code that you type and transforming it into the sequence of instructions that the processor executes. 'Linking' refers to the fact that code is usually built in pieces that must be 'linked' together in order to run. The first example (Demo 00) walks through the process of building a demo, and the two-steps of compiling and linking are made clearer there.</div>
+    <h2>Requirements</h2>
+    <p>To use this tutorial you should have:<p>
+    <ul>
+      <li>An installed version of the Repast HPC package (including ReLogo), version 2.1 or later.</li>
+      <li>A system that includes the 'make' and 'diff' utilities (standard on most Unix-like systems)</li>
+      <li>A system capable of compiling and running MPI-based code. This will include an installation of MPICH-2, OpenMPI, or other MPI implementation.</li>
+      <li>The following compiled libraries and associated header files:
+        <ul>
+          <li>Boost (version 1.54 or later), including all headers and the 'serialization', 'mpi', 'system', and 'filesystem' libraries.</li>
+          <li>netcdf, including the c++ extensions</li>
+          <li>curl</li>
+        </ul>
+      </li>
+    </ul>
+    <div class="sidebar" id="WhatsAHeader" onClick=toggleSidebar("WhatsAHeader")><b>What's a 'header file'?</b></div>
+    <div class="defHIDDEN" id="WhatsAHeader_DEF" onClick=toggleSidebar("WhatsAHeader")> If the concept of a 'Header File' is new to you, what you need to know for now is this: C++ code is usually broken into two parts: header files and source files. Headers describe the structure of what is in the source files; source files contain the actual code. Headers usually have a .h extension; source files have a .c extension (for C code) or .cpp (for C++ code). To use the libraries just mentioned, your code will have to know the structure described in the .h files, so that it will know what to find in the compiled version of the .cpp files. The Repast HPC demos given later in this tutorial will make this clearer.</div>
+    <h2>Structure of the tutorial</h2>
+    <p>The outline for this tutorial is:</p>
+    <ul>
+      <li>Repast HPC
+        <ul>
+          <li>Demo 00: A 'null' demo that has no Repast HPC code, but that demonstrates how to compile and run the demos to be presented</li>
+          <li>Demo 01: A basic demo in which agents interact without a spatial or network structure</li>
+          <li>Demo 02: A Network demo: agents interact according to a network of connections among them</li>
+          <li>Demo 03: A Spatial demo: agents interact on the basis of spatial proximity</li>
+          <li>Demo 04: A combined demo, in which agents interact on the basis of space and network connections</li>
+        </ul>
+      </li>
+    </ul>
+    <script type="text/javascript">footer("main");</script>
+  </body>
+</html>

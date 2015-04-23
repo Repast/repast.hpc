@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_01_Step_02");</script>
+    <p>The 'model' class will be the arena in which the population of agents are stored. The way that this is achieved is by providing the model class with a Repast 'SharedContext' object. SharedContext objects are containers that are aware that some of the agents they contain may be agents that are actually being managed by other processes. We will see how this is used in a moment; for now, here is the code that gives the model class a context that it can use:</p>
+<div class="code"><code><pre>
+/* Demo_01_Model.h */
+
+#ifndef DEMO_01_MODEL
+#define DEMO_01_MODEL
+
+#include &lt;boost/mpi.hpp&gt;
+#include "Schedule.h"
+#include "Properties.h"
+<b class="code">#include "SharedContext.h"</b>
+
+<b class="code">#include "Demo_01_Agent.h"</b>
+
+class RepastHPCDemoModel{
+	int stopAt;
+	repast::Properties* props;
+	<b class="code">repast::SharedContext&lt;RepastHPCDemoAgent&gt; context;</b>
+public:
+	RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm);
+	~RepastHPCDemoModel();
+	void init();
+	void doSomething();
+	void initSchedule(repast::ScheduleRunner& runner);
+	void recordResults();
+};
+
+#endif
+</pre></code></div>
+    <p>Note that the SharedContext is a templated class; you must tell it (using the brackets) the class that it will contain- in this case, 'RepastHPCDemoAgent'.</p>
+
+    <div class="sidebar" id="WhatsTemplatedCode" onClick=toggleSidebar("WhatsTemplatedCode")><b>What's 'Templated Code'?</b></div>
+    <div class="defHIDDEN" id="WhatsTemplatedCode_DEF" onClick=toggleSidebar("WhatsTemplatedCode")>Templated Code is a special C++ construct that allows writing code in a general way that becomes specific only when compiled. For example, a container class (like 'vector') is not fully specified until it is told what it will be containing. The code itself has placeholders for whatever is eventually inserted. RepastHPC makes heavy use of templated code, but the user needs only know how to use it (which is as simple as the lines in this example), not how to create it nor how it works.</div>
+
+    <script type="text/javascript">footer("RepastHPC_Demo_01_Step_02");</script>
+  </body>
+</html>

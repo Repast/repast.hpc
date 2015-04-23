@@ -1,0 +1,237 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_00_Step_10");</script>
+    <p>Many agent-based models exist in which the schedule is as simple as the example just given- one recurring event, and one 'stop' event. However, Repast HPC can permit much more complicated schedules. Here is a quick example. The code below (showing only the model class) creates a complicated schedule in which events start at uneven time ticks, recur at uneven intervals, and even vary among processes:</p>
+<div class="code"><code><pre>
+class RepastHPCDemoModel{
+public:
+	RepastHPCDemoModel(){}
+	~RepastHPCDemoModel(){}
+	void init(){}
+	void doSomething(){
+		std::cout << "Rank " << repast::RepastProcess::instance()->rank() << " is doing something<b class="code"> at " << 
+                    repast::RepastProcess::instance()->getScheduleRunner().currentTick()</b> << std::endl;
+	}
+	<b class="code">void doSomethingElse(){
+		std::cout << "Rank " << repast::RepastProcess::instance()->rank() << " is doing something DIFFERENT at " << 
+                    repast::RepastProcess::instance()->getScheduleRunner().currentTick() << std::endl;
+	}</b>
+	void initSchedule(repast::ScheduleRunner& runner){
+		<b class="code">runner.scheduleEvent(1, 1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::doSomething)));
+		runner.scheduleEvent(2.2, 1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::doSomething)));
+		runner.scheduleEvent(2.3, 4, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::doSomething)));
+		if(repast::RepastProcess::instance()->rank() == 0){
+			runner.scheduleEvent(3.1, 2, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::doSomethingElse)));
+		}
+		if(repast::RepastProcess::instance()->rank() == 1){
+			runner.scheduleEvent(5.5, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::doSomethingElse)));
+		}</b>
+		runner.scheduleStop(<b class="code">10.9</b>);
+	}
+};
+</pre></code></div>
+   <p>The changes are:</p>
+   <ul>
+     <li>The output in the 'doSomething' function now shows the current tick, which it retrieves via the RepastProcess instance.</li>
+     <li>A second method, 'doSomethingElse' is added, for clarity</li>
+     <li>The schedule now is initialized to include:<ul>
+        <li>All processes begin at tick 1 by doing 'doSomething', and repeating every tick</li>
+        <li>All processes begin at tick 2.2 by doing 'doSomething', and repeating every tick (3.2, 4.2, etc.)</li>
+        <li>All processes begin at tick 2.3 by doing 'doSomething', and repeating every 4 ticks: (2.3, 6.3, 10.3, etc.)</li>
+        <li>Rank 0 begins at 3.1 by doing 'doSomethingElse', and repeating every second tick (3.1, 5.1, 7.1, etc.)</li>
+        <li>Rank 1 executes 'doSomethingElse' at tick 5.5 (non-repeating)</li></ul></li>
+     <li>The schedule now runs through time tick '10.9' Note that by explicitly placing the stop command at 10.9, where it will not coincide with any repeating event, we make clear that all of the events that should occur during tick '10' will take place.</li>
+    </ul>
+    <p>Some example output:</p>
+<div class="code"><code><pre>
+Rank 3 is doing something at 1
+Rank 7 is doing something at 1
+Rank 1 is doing something at 1
+Rank 5 is doing something at 1
+Rank 6 is doing something at 1
+Rank 0 is doing something at 1
+Rank 2 is doing something at 1
+Rank 4 is doing something at 1
+Rank 0 is doing something at 2
+Rank 4 is doing something at 2
+Rank 6 is doing something at 2
+Rank 2 is doing something at 2
+Rank 5 is doing something at 2
+Rank 1 is doing something at 2
+Rank 3 is doing something at 2
+Rank 7 is doing something at 2
+Rank 2 is doing something at 2.2
+Rank 6 is doing something at 2.2
+Rank 0 is doing something at 2.2
+Rank 3 is doing something at 2.2
+Rank 1 is doing something at 2.2
+Rank 5 is doing something at 2.2
+Rank 4 is doing something at 2.2
+Rank 7 is doing something at 2.2
+Rank 0 is doing something at 2.3
+Rank 4 is doing something at 2.3
+Rank 6 is doing something at 2.3
+Rank 1 is doing something at 2.3
+Rank 5 is doing something at 2.3
+Rank 2 is doing something at 2.3
+Rank 7 is doing something at 2.3
+Rank 3 is doing something at 2.3
+Rank 1 is doing something at 3
+Rank 3 is doing something at 3
+Rank 0 is doing something at 3
+Rank 2 is doing something at 3
+Rank 5 is doing something at 3
+Rank 6 is doing something at 3
+Rank 7 is doing something at 3
+Rank 4 is doing something at 3
+Rank 0 is doing something DIFFERENT at 3.1
+Rank 0 is doing something at 3.2
+Rank 1 is doing something at 3.2
+Rank 2 is doing something at 3.2
+Rank 4 is doing something at 3.2
+Rank 7 is doing something at 3.2
+Rank 3 is doing something at 3.2
+Rank 6 is doing something at 3.2
+Rank 5 is doing something at 3.2
+Rank 1 is doing something at 4
+Rank 5 is doing something at 4
+Rank 7 is doing something at 4
+Rank 0 is doing something at 4
+Rank 2 is doing something at 4
+Rank 4 is doing something at 4
+Rank 6 is doing something at 4
+Rank 3 is doing something at 4
+Rank 0 is doing something at 4.2
+Rank 1 is doing something at 4.2
+Rank 2 is doing something at 4.2
+Rank 3 is doing something at 4.2
+Rank 5 is doing something at 4.2
+Rank 6 is doing something at 4.2
+Rank 7 is doing something at 4.2
+Rank 4 is doing something at 4.2
+Rank 5 is doing something at 5
+Rank 0 is doing something at 5
+Rank 4 is doing something at 5
+Rank 6 is doing something at 5
+Rank 7 is doing something at 5
+Rank 2 is doing something at 5
+Rank 1 is doing something at 5
+Rank 3 is doing something at 5
+Rank 0 is doing something DIFFERENT at 5.1
+Rank 5 is doing something at 5.2
+Rank 7 is doing something at 5.2
+Rank 3 is doing something at 5.2
+Rank 1 is doing something at 5.2
+Rank 2 is doing something at 5.2
+Rank 6 is doing something at 5.2
+Rank 0 is doing something at 5.2
+Rank 4 is doing something at 5.2
+Rank 1 is doing something DIFFERENT at 5.5
+Rank 0 is doing something at 6
+Rank 1 is doing something at 6
+Rank 4 is doing something at 6
+Rank 5 is doing something at 6
+Rank 2 is doing something at 6
+Rank 6 is doing something at 6
+Rank 3 is doing something at 6
+Rank 7 is doing something at 6
+Rank 2 is doing something at 6.2
+Rank 6 is doing something at 6.2
+Rank 1 is doing something at 6.2
+Rank 0 is doing something at 6.2
+Rank 4 is doing something at 6.2
+Rank 3 is doing something at 6.2
+Rank 7 is doing something at 6.2
+Rank 5 is doing something at 6.2
+Rank 5 is doing something at 6.3
+Rank 0 is doing something at 6.3
+Rank 4 is doing something at 6.3
+Rank 7 is doing something at 6.3
+Rank 1 is doing something at 6.3
+Rank 3 is doing something at 6.3
+Rank 2 is doing something at 6.3
+Rank 6 is doing something at 6.3
+Rank 1 is doing something at 7
+Rank 2 is doing something at 7
+Rank 0 is doing something at 7
+Rank 4 is doing something at 7
+Rank 6 is doing something at 7
+Rank 7 is doing something at 7
+Rank 5 is doing something at 7
+Rank 3 is doing something at 7
+Rank 0 is doing something DIFFERENT at 7.1
+Rank 1 is doing something at 7.2
+Rank 2 is doing something at 7.2
+Rank 3 is doing something at 7.2
+Rank 5 is doing something at 7.2
+Rank 7 is doing something at 7.2
+Rank 6 is doing something at 7.2
+Rank 0 is doing something at 7.2
+Rank 4 is doing something at 7.2
+Rank 2 is doing something at 8
+Rank 6 is doing something at 8
+Rank 0 is doing something at 8
+Rank 1 is doing something at 8
+Rank 4 is doing something at 8
+Rank 5 is doing something at 8
+Rank 7 is doing something at 8
+Rank 3 is doing something at 8
+Rank 2 is doing something at 8.2
+Rank 0 is doing something at 8.2
+Rank 6 is doing something at 8.2
+Rank 4 is doing something at 8.2
+Rank 1 is doing something at 8.2
+Rank 3 is doing something at 8.2
+Rank 7 is doing something at 8.2
+Rank 5 is doing something at 8.2
+Rank 7 is doing something at 9
+Rank 5 is doing something at 9
+Rank 0 is doing something at 9
+Rank 4 is doing something at 9
+Rank 1 is doing something at 9
+Rank 3 is doing something at 9
+Rank 2 is doing something at 9
+Rank 6 is doing something at 9
+Rank 0 is doing something DIFFERENT at 9.1
+Rank 2 is doing something at 9.2
+Rank 6 is doing something at 9.2
+Rank 7 is doing something at 9.2
+Rank 4 is doing something at 9.2
+Rank 1 is doing something at 9.2
+Rank 3 is doing something at 9.2
+Rank 0 is doing something at 9.2
+Rank 5 is doing something at 9.2
+Rank 7 is doing something at 10
+Rank 1 is doing something at 10
+Rank 5 is doing something at 10
+Rank 2 is doing something at 10
+Rank 6 is doing something at 10
+Rank 0 is doing something at 10
+Rank 4 is doing something at 10
+Rank 3 is doing something at 10
+Rank 2 is doing something at 10.2
+Rank 6 is doing something at 10.2
+Rank 1 is doing something at 10.2
+Rank 3 is doing something at 10.2
+Rank 5 is doing something at 10.2
+Rank 7 is doing something at 10.2
+Rank 4 is doing something at 10.2
+Rank 0 is doing something at 10.2
+Rank 2 is doing something at 10.3
+Rank 6 is doing something at 10.3
+Rank 0 is doing something at 10.3
+Rank 1 is doing something at 10.3
+Rank 4 is doing something at 10.3
+Rank 5 is doing something at 10.3
+Rank 3 is doing something at 10.3
+Rank 7 is doing something at 10.3
+</pre></code></div>
+
+    <script type="text/javascript">footer("RepastHPC_Demo_00_Step_10");</script>
+  </body>
+</html>

@@ -1,0 +1,93 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_00_Step_09");</script>
+    <p>Commonly in agent-based models a simulation event will be a recurring event. In the simplest form this can be "Every time step do X"; a variation on this is, "Every x time steps do X."</p>
+    <p>This can be achieved in a Repast HPC model simply by scheduling an event with a recurrence interval. The code to achieve this is:</p>
+<div class="code"><code><pre>
+#include &lt;stdio.h&gt;
+#include &lt;boost/mpi.hpp&gt;
+#include "RepastProcess.h"
+
+class RepastHPCDemoModel{
+public:
+	RepastHPCDemoModel(){}
+	~RepastHPCDemoModel(){}
+	void init(){}
+	void doSomething(){
+		std::cout << "Rank " << repast::RepastProcess::instance()->rank() << " is doing something." << std::endl;
+	}
+	void initSchedule(repast::ScheduleRunner& runner){
+		runner.scheduleEvent(1, <b class="code">1,</b> repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::doSomething)));
+		runner.scheduleStop(2);
+	}
+};
+
+int main(int argc, char** argv){
+	
+	std::string configFile = argv[1]; // The name of the configuration file is Arg 1
+	
+	boost::mpi::environment env(argc, argv);
+	boost::mpi::communicator world;
+
+	repast::RepastProcess::init(configFile);
+	
+	RepastHPCDemoModel* model = new RepastHPCDemoModel();
+	repast::ScheduleRunner& runner = repast::RepastProcess::instance()->getScheduleRunner();
+	
+	model->init();
+	model->initSchedule(runner);
+	
+	runner.run();
+	
+	delete model;
+	
+	repast::RepastProcess::instance()->done();
+	
+}
+</pre></code></div>
+    <p>Note that the only difference between this code and the previous example is the addition of one parameter to the 'scheduleEvent' function call.</p>
+    <p>When run as before, you might get output like:</p>
+<div class="code"><code><pre>
+Rank 0 is doing something.
+Rank 1 is doing something.
+Rank 2 is doing something.
+Rank 3 is doing something.
+Rank 0 is doing something.
+Rank 1 is doing something.
+Rank 2 is doing something.
+Rank 3 is doing something.
+</pre></code></div>
+    <p><em>BUT YOU PROBABLY WON'T!</em> In fact, a run might produce output that looks like:</p>
+<div class="code"><code><pre>
+Rank 0 is doing something.
+Rank 3 is doing something.
+Rank 2 is doing something.
+Rank 1 is doing something.
+Rank 2 is doing something.
+Rank 0 is doing something.
+Rank 3 is doing something.
+Rank 1 is doing something.
+</pre></code></div>
+    <p><em>And</em> you might even get output that looks like:</p>
+<div class="code"><code><pre>
+Rank 0 is doing something.
+Rank 0 is doing something.
+Rank 1 is doing something.
+Rank 1 is doing something.
+Rank 2 is doing something.
+Rank 2 is doing something.
+Rank 3 is doing something.
+Rank 3 is doing something.
+</pre></code></div>
+    <p>The first example is 'neat and tidy': it illustrates that each rank is doing something during the first time step, and then each rank does it again during the second time step.</p>
+    <p>The second example is acceptable: each rank does its thing, but the order in which they do it (according to real time) can vary, and so the output is 'scrambled'.</p>
+    <p>The third example should be scary: it looks like Rank 0 does something <em>and then does it again (timestep #2) <u>before</u> Rank 1 takes its turn.</em> In fact, what is actually happening is that the processes are doing their work independently, but timesteps are synchronized across processes: every process executes step 1, then (after all processes are done) every process moves to step 2. Repast HPC synchronizes the time steps across processes. The output, however, may be <em> buffered</em> in strange ways by the operating system, so that it looks as if the events are occurring in an unsynchronized way, so that process 0 gets through time step 2 before process 1 begins. This is <em>not</em> actually happening. Welcome to the world of parallel programming!</p>
+    <p>One final note: technically the second instance of the repeating event will occur at time tick 2, and the 'stop' will also occur at time step 2. What determines which one will be executed first? (In fact, you may have seen only one line of output per process, if the 'stop' event executes before the repeated event. If this is the case, to see the repetition, change the stop event to occur at step 3.)The ordering of events that occur simultaneously on the schedule is officially undefined (meaning that there may be a way to determine which way this will happen, but it is not documented.)  We will see that there are ways to control the sequences of events carefully to avoid problems that this might cause.</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_00_Step_09");</script>
+  </body>
+</html>

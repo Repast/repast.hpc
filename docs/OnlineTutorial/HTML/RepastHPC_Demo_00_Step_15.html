@@ -1,0 +1,56 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_00_Step_15");</script>
+    <p>One other aspect of scheduling was omitted earlier but is of value now: the ability to schedule events that occur at the end of the simulation. For this example, we will schedule an event to run at the end of the simulation. The event will make use of the properties file and will write a result from the simulation to an output file. This is not the only, or even the preferred, way to get output from a RepastHPC simulation, but it is effective and clear.</p>
+    <p>The code is:</p>
+<div class="code"><code><pre>
+#include &lt;stdio.h&gt;
+<b class="code">#include &lt;vector&gt;</b>
+#include &lt;boost/mpi.hpp&gt;
+#include "RepastProcess.h"
+#include "Utilities.h"
+#include "Properties.h"
+
+class RepastHPCDemoModel{
+	int stopAt;
+	<b class="code">repast::Properties* props;</b>
+public:
+	RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm){
+		<b class="code">props = new repast::Properties(propsFile, argc, argv, comm);</b>
+		stopAt = repast::strToInt(props<b class="code">-></b>getProperty("stop.at"));
+		if(repast::RepastProcess::instance()->rank() == 0) props<b class="code">-></b>writeToSVFile("record.csv");
+	}
+	<b class="code">~RepastHPCDemoModel(){
+		delete props;
+	}</b>
+	void init(){}
+	void doSomething(){
+		std::cout << "Rank " << repast::RepastProcess::instance()->rank() << " is doing something." << std::endl;
+	}
+	void initSchedule(repast::ScheduleRunner& runner){
+		runner.scheduleEvent(1, 1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::doSomething)));
+		<b class="code">runner.scheduleEndEvent(repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::recordResults)));</b>
+		runner.scheduleStop(stopAt);
+	}
+	<b class="code">void recordResults(){
+	    if(repast::RepastProcess::instance()->rank() == 0){
+		props->putProperty("Result","Passed");
+		std::vector&lt;std::string&gt; keyOrder;
+		keyOrder.push_back("RunNumber");
+		keyOrder.push_back("stop.at");
+		keyOrder.push_back("Result");
+		props->writeToSVFile("results.csv", keyOrder);
+	    }
+        }</b>
+};
+</pre></code></div>
+    <p>For this example, the instance of the 'Properties' class called 'props' is moved from a local instance in the constructor to a persistent instance created on the heap with the 'new' keyword; it is also destroyed with 'delete' when the instance's destructor is run. Calls to its functions are now made via "->" instead of ".". The new function called 'recordResults' is scheduled to be called as an end event, run after the simulation arrives at the stop event. The 'recordResults' does several things that represent another way to write to a file from a properties object. First, it adds a new entry into the properties file, 'Result'. For this example, the value is simply 'Passed', but in practice the value could be derived from the simulation results. Next the function creates a vector that will contain a list of properties to be output; this allows you to specify both which properties are written to the file (in this case all of them are, but this is not necessary) and in what order (alphabetical key order is the default, but can be inconvenient).</p>
+    <p>Note that this example keeps both the initial write of properties to the 'record.csv' file and the final output to 'results.csv', even though both the 'RunNumber and 'stop.at' values are in both. It might be reasonable to eliminate the 'record' and only use the terminal 'results'; however, it is sometimes useful to write the properties used to create the run immediately, in case the simulation fails to complete successfully.</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_00_Step_15");</script>
+  </body>
+</html>

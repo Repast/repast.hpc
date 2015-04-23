@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_00_Step_05");</script>
+    <h2>Starting Repast HPC</h2>
+    <p>In this step, we will introduce the first genuine Repast HPC element: RepastProcess.</p>
+    <p>Every Repast HPC simulation has one instance of RepastProcess (actually one instance <i>per processor</i>). Creating and initializing this instance requires a few more pieces to be added to our code. The new code is:</p>
+<div class="code"><code><pre>
+#include &ltstdio.h&gt
+#include &ltboost/mpi.hpp&gt
+<b class="code">#include "RepastProcess.h"</b>
+
+int main(int argc, char** argv){
+	
+	<b class="code">std::string configFile = argv[1]; // The name of the configuration file is Arg 1</b>
+	
+	boost::mpi::environment env(argc, argv);
+	boost::mpi::communicator world;
+
+	<b class="code">repast::RepastProcess::init(configFile);</b>
+	
+	<b class="code">repast::RepastProcess::instance()->done();</b>
+}
+</pre></code></div>
+    <p>The first change for this step is that the 'RepastProcess.h' file is included. The second is that the program now expects an argument that will be translated into a string variable called 'configFile.' This is then used in the next changed line, in which RepastProcess is initialized using the 'init(configFile)' method. (This is a static method of the RepastProcess class; it is not called on an instance, but on the class itself.) A word of explanation is in order. Repast HPC requires a file that contains information about some aspects of its configuration- particularly information about logging, such as where and in what format it should output information about simulation runs. By convention this filename is passed as an argument to the model run (it could be hard-coded); also by convention, it is passed as the first argument to the model run. We'll address logging later.</p>
+    <p>As in the previous step, when the first 'Boost' element was added, this will neither compile nor link, because the compiler must be told where the new header and library files are located. Once the locations are known, they can be added to the 'env' file as:</p>
+<div class="code"><code><pre>
+REPAST_HPC_INCLUDE=-I/Users/murphy/ext/repasthpc_1.0.1/include/repast_hpc/
+REPAST_HPC_LIB_DIR=-L/Users/murphy/ext/repasthpc_1.0.1/lib
+REPAST_HPC_LIB=-lrepast_hpc-1.0.1
+</pre></code></div>
+    <p>The code should build. To run it, use the same commands as earlier, but provide the file name for the configuration file as an argument. A sample configuration file is in the Step_05 directory (and is automatically copied if the 'copy' routine is used); it is named config.props.</p>
+    <div class="code"><code><pre>/usr/bin/local/mpirun -n 4 Demo_00.exe config.props</pre></code></div>
+    <p>Or:</p>
+    <div class="code"><code><pre>qsub -A MyProject -n 4 -cwd /pvfs-surveyor/ -o Demo_00 -t 10 ./Demo_00.exe config.props</pre></code></div>
+    <p>When run this code should complete successfully- but there is no output, the printf lines having been deleted.</p>
+
+    <script type="text/javascript">footer("RepastHPC_Demo_00_Step_05");</script>
+  </body>
+</html>

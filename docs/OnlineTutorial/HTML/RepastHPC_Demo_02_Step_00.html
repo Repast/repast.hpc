@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_02_Step_00");</script>
+    <p>Our starting point is the code that ended Demo 01, with all the elements still in place (including data collection), except that we will temporarily remove the code that instructs the agents on how to choose other agents with which to act; we will also assume that the schedule will also need to be revised, and we will return to the general way that agents are requested (with several from each process to each other process, as in <script type="text/javascript">getLinkToPage("RepastHPC_Demo_01_Step_09");</script>).</p>
+
+    <p>The changes to the Agent.cpp file are:</p>
+<div class="code"><code><pre>
+void RepastHPCDemoAgent::play(repast::SharedContext&ltlRepastHPCDemoAgent&gt;* context){
+    std::set&ltlRepastHPCDemoAgent*&gt; agentsToPlay;
+	
+<b class="temp">//    agentsToPlay.insert(this); // Prohibit playing against self	<- With these lines removed, 'agentsToPlay' will just be empty
+//    context-&gt;selectAgents(3, agentsToPlay, true);                         so nothing will happen in the loop below</b>
+	
+    double cPayoff     = 0;
+    double totalPayoff = 0;
+    std::set&ltlRepastHPCDemoAgent*&gt;::iterator agentToPlay = agentsToPlay.begin();
+    while(agentToPlay != agentsToPlay.end()){
+        bool iCooperated = cooperate();                          // Do I cooperate?
+        double payoff = (iCooperated ?
+						 ((*agentToPlay)-&gt;cooperate() ?  7 : 1) :     // If I cooperated, did my opponent?
+						 ((*agentToPlay)-&gt;cooperate() ? 10 : 3));     // If I didn't cooperate, did my opponent?
+        if(iCooperated) cPayoff += payoff;
+        totalPayoff             += payoff;
+		
+        agentToPlay++;
+    }
+    c      += cPayoff;
+    total  += totalPayoff;
+	
+}
+</pre></code></div>
+
+    <script type="text/javascript">footer("RepastHPC_Demo_02_Step_00");</script>
+  </body>
+</html>

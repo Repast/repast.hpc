@@ -1,0 +1,155 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_01_Step_00");</script>
+    <p>In Demo_00, all code was placed in a single file, Demo_00.cpp. For the remainder of this tutorial, a different structure will be used. The structure used represents the common practice among C++ programmers and helps keep a certain order when the code becomes more complicated. The structure also allows the separation of structure from content.</p>
+
+    <div class="sidebar" id="StructureVContent" onClick=toggleSidebar("StructureVContent")><b>Separating structure and content- what is that, and why?</b></div>
+    <div class="defHIDDEN" id="StructureVContent_DEF" onClick=toggleSidebar("StructureVContent")>We have mentioned that header files and source files are separate. Header files describe what functions and classes are available in code; source files contain the actual algorithms the functions and classes use. This is of value because it divides code into pieces. From the 'outside' looking 'in', this allows programmers to concentrate on using these components without needing to know the details of how these components work. From the 'inside' looking 'out', it allows programmers to modify how their code works internally without 'breaking' the code that depends on it: if the structure visible on the 'outside' doesn't change, the algorithms 'inside' can be modified and improved. Moreover, it is possible to write code that works with a given structure, and then to insert many varieties of components that are widely divergent in their internal functioning but that all conform to the same external structure.</div>
+
+    <p>For the remainder of the tutorial, header files will be found in a directory called 'include'; source files (.cpp) will be in a directory called 'src'; the results of compilation will be placed in a directory called 'object'; the results of linking will be placed in a directory called 'bin'; properties files will be kept in a directory called 'props'.</p>
+    <p>The model code will be divided into three separate components. A 'Demo_01_Main.cpp' file will act as the entry point for the simulation (the int main(argc, argv) function). A second component will be the 'Model' code, now in two separate files (Demo_01_Model.h and Demo_01_Model.cpp). The third component will be the 'Agent' code, in Demo_01_Agent.h and Demo_01_Agent.cpp.</p>
+    <p>The importance of the makefile should begin to be clearer: each of the .cpp files will have to be compiled separately, and then all of them linked together. All of this will be done automatically with a basic 'make' instruction similar to the one for Demo_00.</p>
+    <h3>The basic code</h3>
+    <p>The new code comprises five files: Demo_01_Agent.h, Demo_01_Agent.cpp, Demo_01_Model.h, Demo_01_Model.cpp and Demo_01_Main.cpp. (The 'main' function has no structure and is not referred to by any other file, so there is no need to have a 'main.h' file).</p>
+    <p>We will build the agent class in the next steps of this demo, so for now the code in the agent files is:</p>
+<div class="code"><code><pre>
+/* Demo_01_Agent.h */
+#ifndef DEMO_01_AGENT
+#define DEMO_01_AGENT
+
+
+#endif
+</pre></code></div>
+    <p>And:</p>
+<div class="code"><code><pre>
+/* Demo_01_Agent.cpp */
+</pre></code></div>
+    <div class="sidebar" id="WhatsIFNDEF" onClick=toggleSidebar("WhatsIFNDEF")><b>What is that '#ifndef' thing?</b></div>
+    <div class="defHIDDEN" id="WhatsIFNDEF_DEF" onClick=toggleSidebar("WhatsIFNDEF")>The '#ifndef DEMO_01_AGENT' construction is a defense against something that can easily happen as code gets complicated. Suppose a file C.cpp depends on A.h and B.h; now suppose that B.h also depends on A.h. C.cpp would try to include A.h, which would include some definitions; then it would include B.h, which would itself try to include A.h- loading the definitions in A.h twice. To guard against this, the .h files are 'wrapped' in this conditional: when a .h file is loaded once it defines a flag; if an attempt is made to load it again, this flag is directs the compiler to ignore it. '#ifndef' means "If Not Defined".</div>
+
+    <p>The model is now found in these files:</p>
+<div class="code"><code><pre>
+/* Demo_01_Model.h */
+
+#ifndef DEMO_01_MODEL
+#define DEMO_01_MODEL
+
+#include &lt;boost/mpi.hpp&gt;
+#include "Schedule.h"
+#include "Properties.h"
+
+class RepastHPCDemoModel{
+	int stopAt;
+	repast::Properties* props;
+public:
+	RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm);
+	~RepastHPCDemoModel();
+	void init();
+	void doSomething();
+	void initSchedule(repast::ScheduleRunner& runner);
+	void recordResults();
+};
+
+#endif
+</pre></code></div>
+
+  <p>And</p>
+<div class="code"><code><pre>
+/* Demo_01_Model.cpp */
+
+#include &lt;stdio.h&gt;
+#include &lt;vector&gt;
+#include &lt;boost/mpi.hpp&gt;
+#include "RepastProcess.h"
+#include "Utilities.h.h"
+#include "Properties.h"
+
+#include "Demo_01_Model.h"
+
+RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm){
+	props = new repast::Properties(propsFile, argc, argv, comm);
+	stopAt = repast::strToInt(props->getProperty("stop.at"));
+	if(repast::RepastProcess::instance()->rank() == 0) props->writeToSVFile("./output/record.csv");
+}
+
+RepastHPCDemoModel::~RepastHPCDemoModel(){
+		delete props;
+}
+
+void RepastHPCDemoModel::init(){}
+
+void RepastHPCDemoModel::doSomething(){
+	std::cout << "Rank " << repast::RepastProcess::instance()->rank() << " is doing something." << std::endl;
+
+}
+
+void RepastHPCDemoModel::initSchedule(repast::ScheduleRunner& runner){
+	runner.scheduleEvent(1, 1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::doSomething)));
+	runner.scheduleEndEvent(repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::recordResults)));
+	runner.scheduleStop(stopAt);
+}
+
+void RepastHPCDemoModel::recordResults(){
+	if(repast::RepastProcess::instance()->rank() == 0){
+		props->putProperty("Result","Passed");
+		std::vector&lt;std::string&gt; keyOrder;
+		keyOrder.push_back("RunNumber");
+		keyOrder.push_back("stop.at");
+		keyOrder.push_back("Result");
+		props->writeToSVFile("./output/results.csv", keyOrder);
+    }
+}
+</pre></code></div>
+
+
+    <p>And the main function is defined as:</p>
+<div class="code"><code><pre>
+/* Demo_01_Main.cpp */
+
+#include &lt;boost/mpi.hpp&gt;
+#include "RepastProcess.h"
+
+#include "Demo_01_Model.h"
+
+
+int main(int argc, char** argv){
+	
+	std::string configFile = argv[1]; // The name of the configuration file is Arg 1
+	std::string propsFile  = argv[2]; // The name of the properties file is Arg 2
+	
+	boost::mpi::environment env(argc, argv);
+	boost::mpi::communicator world;
+
+	repast::RepastProcess::init(configFile);
+	
+	RepastHPCDemoModel* model = new RepastHPCDemoModel(propsFile, argc, argv, &world);
+	repast::ScheduleRunner& runner = repast::RepastProcess::instance()->getScheduleRunner();
+	
+	model->init();
+	model->initSchedule(runner);
+	
+	runner.run();
+	
+	delete model;
+	
+	repast::RepastProcess::instance()->done();
+	
+}
+</pre></code></div>
+    <p>The 'main' function does not need to be altered during the rest of this demo: it already contains all that it needs to run a RepastHPC model.</p>
+
+<p>Note also that invoking this model requires adding the full paths to the executable and properties files, as:</p>
+
+    <div class="code"><code><pre>mpirun -n 4 ./bin/Demo_01.exe ./props/config.props ./props/model.props RunNumber=1 stop.at=5</pre></code></div>
+
+
+
+
+    <script type="text/javascript">footer("RepastHPC_Demo_01_Step_00");</script>
+  </body>
+</html>

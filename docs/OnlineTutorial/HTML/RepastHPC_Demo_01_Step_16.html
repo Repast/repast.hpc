@@ -1,0 +1,147 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_01_Step_16");</script>
+      <p>Repast HPC has a compiler macro definition in AgentImporterExporter.h called "SHARE_AGENTS_BY_SET". Provided that this macro is defined, Repast HPC has the ability to request and synchronize specific sets of agents. (This function adds a small overhead and can decrease performance; if this is problematic, it is possible to remove this functionality simply by removing the macro definition and recompiling Repast HPC.) The ability to work with named groups of requested agents carries two implications:</p>
+      <ul>
+        <li>Synchronization can be performed only on one named group instead of on all borrowed agents. This can be used to improve performance.</li>
+        <li>Under certain circumstances, RepastHPC will automatically drop borrowed agents from a given process as part of normal synchronization. However, if agents have been requested by a named set, this is overridden, and the agents will be kept on the process.</li>
+      </ul>
+      <p>In this demo we will focus only on the first implication: the ability to request agents in sets, and synchronize only specific sets.</p>
+      <p>The theory behind this feature is simple: suppose you have a large category of agents of one kind, and a small category of agents
+of another kind- say, teachers and students, with many students but relatively few teachers. Imagine that your simulation reaches a point
+where it needs to update non-local copies, but only of the teachers, but not of the students. Updating all of the agents, including both students
+and teachers, would be an expensive operation, but the cost is lower if only the teachers need to be updates. Repast HPC allows this.</p>
+      <p>For this demo, we eliminate some of the unneeded methods in RepastHPCDemoModel class, and make the following modification to the 'requestAgents' method:
+
+<div class="code"><code><pre>
+void RepastHPCDemoModel::requestAgents(){
+	int rank = repast::RepastProcess::instance()->rank();
+	int worldSize= repast::RepastProcess::instance()->worldSize();
+<b class="code">
+	repast::AgentRequest req1(rank);
+        if(rank == 1){
+	  repast::AgentId id1(1,0,0,0);
+	  repast::AgentId id2(2,0,0,0);
+			
+	  req1.addRequest(id1);
+	  req1.addRequest(id2);
+	}
+			
+        repast::RepastProcess::instance()->requestAgents&lt;RepastHPCDemoAgent, RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(context, req1, *provider, *receiver, *receiver, "SET_1");
+
+        repast::AgentRequest req2(rank);
+        if(rank == 1){
+            repast::AgentId id1(3,0,0,0);
+            repast::AgentId id2(4,0,0,0);
+        
+            req2.addRequest(id1);
+            req2.addRequest(id2);
+	}
+    
+        repast::RepastProcess::instance()->requestAgents&lt;RepastHPCDemoAgent, RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(context, req2, *provider, *receiver, *receiver, "SET_2");
+</b>
+}
+</pre></code></div>
+            
+   <p>Notice that this makes two requests (both of them from Process 1 to Process 0), and adds a name to each of the requests, "SET_1" and "SET_2". Using this, we make the following modification to the 'doSomething' method:</p>
+
+<div class="code"><code><pre>
+void RepastHPCDemoModel::doSomething(){
+	<b class="code">int whichRank = 1;</b>
+	if(repast::RepastProcess::instance()->rank() == whichRank) std::cout << " TICK " << repast::RepastProcess::instance()->getScheduleRunner().currentTick() << std::endl;
+
+	if(repast::RepastProcess::instance()->rank() == whichRank){
+		std::cout << "LOCAL AGENTS:" << std::endl;
+		for(int r = 0; r < 4; r++){
+			for(int i = 0; i < 10; i++){
+				repast::AgentId toDisplay(i, r, 0);
+				RepastHPCDemoAgent* agent = context.getAgent(toDisplay);
+				if((agent != 0) && (agent->getId().currentRank() == whichRank)) std::cout << agent->getId() << " " << agent->getC() << " " << agent->getTotal() << std::endl;
+			}
+		}
+		
+		std::cout << "NON LOCAL AGENTS:" << std::endl;
+		for(int r = 0; r < 4; r++){
+			for(int i = 0; i < 10; i++){
+				repast::AgentId toDisplay(i, r, 0);
+				RepastHPCDemoAgent* agent = context.getAgent(toDisplay);
+				if((agent != 0) && (agent->getId().currentRank() != whichRank)) std::cout << agent->getId() << " " << agent->getC() << " " << agent->getTotal() << std::endl;
+			}
+		}
+	}
+	
+	std::vector&lt;RepastHPCDemoAgent*&gt; agents;
+	context.selectAgents(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::LOCAL, countOfAgents, agents);
+	std::vector&lt;RepastHPCDemoAgent*&gt;::iterator it = agents.begin();
+	while(it != agents.end()){
+		(*it)->play(&context);
+		it++;
+    }
+	repast::RepastProcess::instance()->synchronizeAgentStates&lt;RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(*provider, *receiver, <b class="code">"SET_1"</b>);
+
+}
+</pre></code></div>
+
+    <p>The first just changes the rank that will give us output- we want to look at Rank 1, not Rank 0. But the key change is the addition of a set name in the synchronizeAgentStates method. By adding this, the only agents that will be updated will be those in SET_1, and not those in SET_2. We can see this when we examine the output:</p>
+
+<div class="code"><code><pre>
+ TICK 2
+LOCAL AGENTS:
+AgentId(0, 1, 0, 1) 100 200
+AgentId(1, 1, 0, 1) 100 200
+AgentId(2, 1, 0, 1) 100 200
+AgentId(3, 1, 0, 1) 100 200
+AgentId(4, 1, 0, 1) 100 200
+NON LOCAL AGENTS:
+AgentId(1, 0, 0, 0) 100 200
+AgentId(2, 0, 0, 0) 100 200
+AgentId(3, 0, 0, 0) 100 200
+AgentId(4, 0, 0, 0) 100 200
+ TICK 3
+LOCAL AGENTS:
+AgentId(0, 1, 0, 1) 108 218
+AgentId(1, 1, 0, 1) 100 209
+AgentId(2, 1, 0, 1) 107 227
+AgentId(3, 1, 0, 1) 101 221
+AgentId(4, 1, 0, 1) 107 220
+NON LOCAL AGENTS:
+AgentId(1, 0, 0, 0) 108 211
+AgentId(2, 0, 0, 0) 108 218
+AgentId(3, 0, 0, 0) 100 200
+AgentId(4, 0, 0, 0) 100 200
+ TICK 4
+LOCAL AGENTS:
+AgentId(0, 1, 0, 1) 108 234
+AgentId(1, 1, 0, 1) 101 230
+AgentId(2, 1, 0, 1) 115 238
+AgentId(3, 1, 0, 1) 115 245
+AgentId(4, 1, 0, 1) 108 241
+NON LOCAL AGENTS:
+AgentId(1, 0, 0, 0) 115 224
+AgentId(2, 0, 0, 0) 122 242
+AgentId(3, 0, 0, 0) 100 200
+AgentId(4, 0, 0, 0) 100 200
+ TICK 5
+LOCAL AGENTS:
+AgentId(0, 1, 0, 1) 122 251
+AgentId(1, 1, 0, 1) 116 245
+AgentId(2, 1, 0, 1) 117 243
+AgentId(3, 1, 0, 1) 122 265
+AgentId(4, 1, 0, 1) 108 264
+NON LOCAL AGENTS:
+AgentId(1, 0, 0, 0) 123 235
+AgentId(2, 0, 0, 0) 129 262
+AgentId(3, 0, 0, 0) 100 200
+AgentId(4, 0, 0, 0) 100 200
+</pre></code></div>
+
+    <p>The key is to notice that the non-local copies of Agents(3,0,0,0) and (4,0,0,0) that exist on Process 1 are <em>not</em> being updated, even though Agents(1,0,0,0) and (2,0,0,0) are. The originals of all four agents on Process 0 are being update, but not the non-local copies of the agents in SET_2.<p>
+
+    <script type="text/javascript">footer("RepastHPC_Demo_01_Step_16");</script>
+  </body>
+</html>

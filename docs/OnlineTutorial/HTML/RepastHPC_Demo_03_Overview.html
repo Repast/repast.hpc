@@ -1,0 +1,71 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_03_Overview");</script>
+    <p>In Demo 02, we created a network projection and explicitly connected agents using network links. In this demo, we will use a different kind of projection: a <i>spatial</i> projection.</p>
+    <p>As should be obvious, a spatial projection positions agents in space. Less obvious is the fact that the position of an agent in space is only relevant when considered with respect to the positions of <i>other agents in the space</i>. Fundamentally, then, space specifies not the <i>location</i> of an agent but its <i>relationship</i> to other agents. It may be counterintuitive to think of a position in space as a relationship: we might more intuitively think of an agent as having an X,Y attribute, and this attribute is a quality of the agent. But in fact this attribute only has meaning as a way to derive the relative positions of other agents, and thus space is only another way to structure relationships among agents. In this way, space is very similar to a network.</p>
+    <p>Of course, space and networks differ in some fundamental ways as well. One important one is that a network can have any arbitrary set of relationships that might be needed, but in a space, only a limited number of combinations are possible. For example, suppose that the 'space' is actually one-dimensional (a line), and there are 5 elements on it which, labeled in order, are A, B, C, D, and E. The labeling is arbitrary, but in a line (assuming you cannot have two elements in the same place) the elements <i>must</i> be in a sequence, and each element can have 2 neighbors: 'B' is neighbors with A and C; 'D' is neighbors with C and E; etc. (A and E could be considered neighbors if the line is actually a circle.). If we consider a network, we could have B be related to A, C, <i>and</i> D; there is no difficulty with this. However, in a one-dimensional space, B can have exactly two neighbors. Moreover, those neighbors must have B as a neighbor and can only have one other neighbor. In a network, any abstract set of connections is possible; in space, the relationships are constrained.</p>
+    <p>Nevertheless both space and networks both represent relationships. This underlying similarity is the basis for treating spaces and networks together in Repast HPC. In this portion of the tutorial, we will present the procedure for creating and using a spatial projection. However, first we will explain how RepastHPC uses space and how it parallelizes spatial models.</p>
+<h1>Space in Repast HPC</h1>
+    <p>Space in Repast HPC is conceptualized as 2-Dimensional; agents occupy positions in this two-dimensional space. In this Repast HPC is not unlike most other ABM simulation frameworks, including Repast Simphony.</p>
+    <div class="sidebar" id="WhatAbout3D" onClick=toggleSidebar("WhatAbout3D")><b>What about 3-Dimensional Space?</b></div>
+    <div class="defHIDDEN" id="WhatAbout3D_DEF" onClick=toggleSidebar("WhatAbout3D")>There is no official implementation of a 3-Dimensional space in Repast HPC, but some users have attempted to implement them. The implementation can use the same components, because Point objects in Repast HPC are n-dimensional; they can also use the same conceptual framework of 'buffer zones' discussed here.</div>
+    <p>However, Repast HPC behaves very differently when the space is used to parallelize the simulation. To understand how, consider a single, unified grid, as might be found in a non-parallelized simulation:</p>
+    <center><img src="./img/UnifiedGrid.png"/></center>
+    <p>We might imagine that there are agents positioned at various places around this grid:</p>
+    <center><img src="./img/UnifiedGridWithAgents.png"/></center>
+    <p>To improve performance, we would like to divide the simulation up into pieces. To use space for this, imagine that we can run the simulation on four processes. We use space to divide the simulation: each process is responsible for a portion of the space:</p>
+    <center><img src="./img/DividedGridWithAgents.png"/></center>
+    <p>Each process is responsible for- and therefore 'knows about'- only the portion of space that is within its boundaries. Conceptually, each process 'sees' only a portion of its space:</p>
+     <center>
+       <table width="2" border="1">
+         <tr><th>Process 2</th><th>Process 3</th></tr>
+         <tr><td><center><img src="./img/P2_Separate.png"/></center></td><td><center><img src="./img/P3_Separate.png"/></center></td></tr>
+         <tr><td><center><img src="./img/P0_Separate.png"/></center></td><td><center><img src="./img/P1_Separate.png"/></center></td></tr>
+         <tr><th>Process 0</th><th>Process 1</th></tr>
+       </table>
+     </center>
+    <p>This allows parallelization because each process is now doing calculations for only a fraction of the agents. However, each process is aware of its position within the global space: it knows the <i>global boundaries</i>, and it knows the <i>global coordinates</i> of its local region of the space. In the example pictured,the coordinates in each of the spaces are:</p>
+     <center>
+       <table width="2" border="1">
+         <tr><th>Process 2</th><th>Process 3</th></tr>
+         <tr><td><center><img src="./img/P2_Separate_WCoords.png"/></center></td><td><center><img src="./img/P3_Separate_WCoords.png"/></center></td></tr>
+         <tr><td><center><img src="./img/P0_Separate_WCoords.png"/></center></td><td><center><img src="./img/P1_Separate_WCoords.png"/></center></td></tr>
+         <tr><th>Process 0</th><th>Process 1</th></tr>
+       </table>
+     </center>
+     <p>Notice that the coordinates at the inner corners are shared. (Note: Actually the ranges are inclusive of the lower boundaries, but exclusive of the upper boundaries.)</p>
+     <p>Repast HPC, however, needs a way to manage what is going on at the boundaries of these spaces. In theory, the space should be unified across processes, but if we have divided space up into pieces, is it really unified? Consider the red and blue agents:</p>
+     <center><img src="./img/AdjacentAgents.png"/></center>
+     <p>In the unified space they are only 2 units apart. However, when they are on separate processes:</p>
+     <center>
+       <table width="2" border="1">
+         <tr><th>Process 2</th><th>Process 3</th></tr>
+         <tr><td><center><img src="./img/P2_Separate.png"/></center></td><td><center><img src="./img/P3_Separate.png"/></center></td></tr>
+         <tr><td><center><img src="./img/P0_Blue.png"/></center></td><td><center><img src="./img/P1_Red.png"/></center></td></tr>
+         <tr><th>Process 0</th><th>Process 1</th></tr>
+       </table>
+     </center>
+     <p>Here Repast HPC applies a concept of a <i>Buffer Zone</i>. This is a <b>region of space that is managed by an adjacent process that is copied onto the local process</b>. The buffer zone makes agents in adjacent processes available to a local process. There are two important facts about buffer zones that must be kept in mind:</p>
+     <ol>
+       <li>The size of the buffer zone can be chosen by the user, and is determined by the specifics of the simulation: it should be large enough to accommodate any (spatially-based) interaction two agents might engage in across process boundaries. For example, if an agent's range of 'vision' is 3 units, the buffer zone should be at least 3 units.</li>
+       <li>Agents that are copied from adjacent processes because they are in the buffer zone are <i><b>non-local</b></i> agents. They are only copies: changes made to non-local agents are not propogated back to the original agent.</li>
+     </ol>
+     <p>The example space looks like this with the buffer zones copied to each process; the buffer zone size is set to 3.</p>
+     <center>
+       <table width="2" border="1">
+         <tr><th>Process 2</th><th>Process 3</th></tr>
+         <tr><td><center><img src="./img/P2_Buffer.png"/></center></td><td><center><img src="./img/P3_Buffer.png"/></center></td></tr>
+         <tr><td><center><img src="./img/P0_Buffer.png"/></center></td><td><center><img src="./img/P1_Buffer.png"/></center></td></tr>
+         <tr><th>Process 0</th><th>Process 1</th></tr>
+       </table>
+     </center>
+    <p>Although the example here only uses four processes, the procedure is the same when the number of processes is larger. Also, the example here has used a non-toroidal space; in a toroidal space, the coordinates 'wrap around' so that the highest coordinate is adjacent to the lowest, and the buffer zones also extend into all adjacent processes.</p>
+    <p>In the current implementation of Repast HPC space is always divided evenly across processes: each process's space is the same size in the x and y directions. In theory, this is not necessary: each process could be responsible for a portion of space that is unique in size, and, in theory, this might be useful if the distribution of agents in space is not even. The apportionment of space could also be re-calculated on-the-fly if the distribution of agents changes. However, these advanced techniques are not implemented in Repast HPC.</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_03_Overview");</script>
+  </body>
+</html>

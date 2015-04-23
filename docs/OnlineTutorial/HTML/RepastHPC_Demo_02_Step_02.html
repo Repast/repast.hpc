@@ -1,0 +1,81 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_02_Step_02");</script>
+    <p>Our next step will be to establish network connections among the agents.</p>
+    <p>There is an important point that should be made here, even if it is entirely semantic: All of the agents are already <em>in</em> the network- that is, they are already in the network projection. The context contains the network projection (or projections, if there happen to be more than one). When an agent is added to the context, it is also added to all of the projections that the context includes. To say that an agent is in the 'network' is to say that it is contained in the projection. However, at the moment, the 'network' does not include any actual links between agents. It is tempting, when looking at a case in which some agents are linked to others, while other agents are not linked, to say that the linked agents are in the network and the unlinked ones are not, but according to the usage here, this is incorrect.</p>
+    <p>In this step we will connect agents together in the network we have just created. This will take place just after the 'borrowing' of agents has occurred, so that there will be some local and some non-local agents in the network. The algorithm for connecting agents will be to loop through the local agents, choose five agents randomly from the other agents on the same process, and make connections with those five. Connections will be undirected, so an agent can end up with more than 5 connections (because it will have the five that it made, plus the connections any other agents have made to it.</p>
+    <p>To do this, we need to make three changes. First, declare the new, schedulable function of the model class (in model.h):</p>
+<div class="code"><code><pre>
+class RepastHPCDemoModel{
+	int stopAt;
+	int countOfAgents;
+	repast::Properties* props;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt; context;
+	
+	RepastHPCDemoAgentPackageProvider* provider;
+	RepastHPCDemoAgentPackageReceiver* receiver;
+
+	repast::SVDataSet* agentValues;
+	repast::SharedNetwork&lt;RepastHPCDemoAgent, repast::RepastEdge&lt;RepastHPCDemoAgent&gt; &gt;* agentNetwork;
+	
+public:
+	RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm);
+	~RepastHPCDemoModel();
+	void init();
+	void requestAgents();
+	<b class="code">void connectAgentNetwork();</b>
+	void cancelAgentRequests();
+	void removeLocalAgents();
+	void moveAgents();
+	void doSomething();
+	void initSchedule(repast::ScheduleRunner& runner);
+	void recordResults();
+};
+</pre></code></div>
+  <p>Then create this function in the model.cpp file:</p>
+<div class="code"><code><pre>
+<b class="code">void RepastHPCDemoModel::connectAgentNetwork(){
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_local_iterator iter    = context.localBegin();
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_local_iterator iterEnd = context.localEnd();
+	while(iter != iterEnd) {
+		RepastHPCDemoAgent* ego = &**iter;
+		std::vector&lt;RepastHPCDemoAgent*&gt; agents;
+		agents.push_back(ego);                          // Omit self
+		context.selectAgents(5, agents, true);          // Choose 5 other agents randomly
+		// Make an undirected connection
+		for(size_t i = 0; i &lt; agents.size(); i++){
+         	    <b class="temp">std::cout &lt;&lt; "CONNECTING: " &lt;&lt; ego-&gt;getId() &lt;&lt; " to " &lt;&lt; agents[i]-&gt;getId() &lt;&lt; std::endl;</b>
+  	  	    agentNetwork-&gt;addEdge(ego, agents[i]);	
+		}
+		iter++;
+	}	
+}</b>
+</pre></code></div>
+  <p>It is important to note that any algorithm to connect edges must trap the case in which an edge would be connected twice- in our case, because the first connection is from A to B and the second from B to A. RepastHPC requires that this not be done. (If it is done, aspects of the network object, such as the count of edges, will be rendered invalid, and a memory leak will occur.)</p>
+
+  <p>Finally, add this function to the schedule of events:</p>
+<div class="code"><code><pre>
+void RepastHPCDemoModel::initSchedule(repast::ScheduleRunner& runner){
+	runner.scheduleEvent(1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::requestAgents)));
+	<b class="code">runner.scheduleEvent(1.1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::connectAgentNetwork)));</b>
+	runner.scheduleEvent(2, 1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::doSomething)));
+	runner.scheduleEvent(3, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::moveAgents)));
+	runner.scheduleEndEvent(repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::recordResults)));
+	runner.scheduleStop(stopAt);
+	
+	// Data collection
+	runner.scheduleEvent(1.5, 5, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt;(agentValues, &repast::DataSet::record)));
+	runner.scheduleEvent(10.6, 10, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt;(agentValues, &repast::DataSet::write)));
+	runner.scheduleEndEvent(repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt;(agentValues, &repast::DataSet::write)));
+}
+</pre></code></div>
+
+    
+    <script type="text/javascript">footer("RepastHPC_Demo_02_Step_02");</script>
+  </body>
+</html>

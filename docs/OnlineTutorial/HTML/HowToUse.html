@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: How to use this tutorial</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("HowToUse");</script>
+<h2>Overview</h2>
+    <p>This tutorial comprises two aspects: the html pages (including this one),
+    and a collection of source code that represents the step-by-step
+    construction of a set of demos.</p>
+    <p>The main source code directory is not intended to be used directly; you should not change the 
+    code in it. Instead, you should do your work in the 'work' directory.</p>
+    <p>The 'work' directory includes two special files: "env" and "makefile". Of these,
+    <i>makefile</i> should also not be changed. The <i>env</i>
+    file should be modified to include information that is needed to compile and
+    link RepastHPC demos on your system. Setting the values in this file will
+    allow you to use the <i>makefile</i> to build the demos for you.</p>
+    <div class="sidebar" id="WhatsAMakefile" onClick=toggleSidebar("WhatsAMakefile")><b>What's a 'makefile'?</b></div>
+    <div class="defHIDDEN" id="WhatsAMakefile_DEF" onClick=toggleSidebar("WhatsAMakefile")>A 'makefile' is a file that is used by a program called 'make'. Technically 'make'
+can do just about anything, but what it usually does is build software by compiling and linking code.  A 'makefile' specifies what files 'make' should process, what it should do to them, and which ones depend on which other ones. The real purpose of 'make' is to manage dependencies and save time: because
+some pieces of software can depend on other pieces, and because re-compiling and re-linking these pieces takes time, it's useful to have a tool that knows how to figure out
+which pieces need to be rebuilt and which don't (which 'make' can do based on when each piece was changed). However, for this demo we are using 'make' to automate simple tasks
+that will be done repeatedly.</div>
+<h2>What the 'makefile' does for you</h2>
+<p>While in the 'work' directory, performing a 'make' (typing 'make' and pressing return/enter) invokes the 'make' utility, which operates by processing the 'makefile'. This can do the following things:</p>
+
+<ol>
+  <li>Copy code from the source directory into the work directory</li>
+  <li>Compare code that is in the work directory with code in the source directory</li>
+  <li>Build the Repast HPC demo code that is in the work directory</li>
+</ol>
+
+<p>Copy and comparison operations are done on individual steps of the tutorial. This allows you, for example, to copy the code from step '1' into the work directory and compare it with step '2'. This way you can see exactly what has been changed to go from step to step. Alternatively, you may wish to make the changes from one step to another yourself; you can do this, then compare with the stored version to see if you got the changes right.</p>
+
+<p>The simplest way to use the makefile is to simply type something like:<p>
+<div class="code"><code>make RepastHPC_Demo_00</code></div>
+<p>This will cause make to build either the step of the specified demo that is in the working directory or, if none is present, the final step of the specified demo. If there is a problem with it, it will tell you.</p>
+
+<p>To perform a copy from the source to the work directory, you must specify the demo and step to be copied:<p>
+<div class="code"><code>make copy_RepastHPC_Demo_00_Step_01</code></div>
+<p>To compare, specify the element in the source directory that you are comparing the work directory to. So, if the work directory contains RepastHPC_Demo_00_Step_01, typing:</p>
+<div class="code"><code>make compare_RepastHPC_Demo_00_Step_02</code></div>
+
+<p>will compare it with Step 2.</p>
+
+    <div class="sidebar" id="DoIHaveToTypeAllThat" onClick=toggleSidebar("DoIHaveToTypeAllThat")><b>Do I have to type all that every time?</b></div>
+    <div class="defHIDDEN" id="DoIHaveToTypeAllThat_DEF" onClick=toggleSidebar("DoIHaveToTypeAllThat")>No. If you are new to Unix-like systems, notice that when you press the arrow-up key you move through the commands you pressed before; if you already copied Step 1, copying Step 2 requires only finding the command you used and changing one number.</div>
+
+
+<h2>Setting the 'env' values</h2>
+<p>Experienced users might be able to set the values for variables in the 'env' file right away. However, they are not all needed immediately, and this tutorial steps through some very basic initialization first, allowing individual variables to be set (and explained) as they are needed.</p>
+
+    <script type="text/javascript">footer("HowToUse");</script>
+  </body>
+</html>

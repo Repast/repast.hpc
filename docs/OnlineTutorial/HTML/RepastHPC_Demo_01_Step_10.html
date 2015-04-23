@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_01_Step_10");</script>
+    <p>We must now correct a problem in the code. During the 'doSomething' function, the agents are asked to perform an action (playing our 'game'). The routine selects N agents at random, where N is the original number of agents on the process. When only local agents were present, and the actual count of agents present was equal to N, this had the effect of randomly ordering all of the agents. Now that each process has both local and non-local agents, there are two problems. First, the number of agents selected will be less than the actual number of agents present, hence some agents will act while others do not. More important, the agents that act will include both local and non-local agents; however, non-local agents should not be acting at all.</p>
+    <p>The requirement that non-local agents not act deserves some explanation. There is no immediate reason why it should be so: non-local agents behave exactly like local agents, and there is no restriction on calling their functions, etc. They are 'real' agents in every sense, except one: their data- the values of their internal state variables- are ephemeral. Changes made to non-local agents are simply lost; they do <em>not</em> get 'transmitted' back to the process where the agent actually resides. In fact, we will see in the next step that when the a non-local agent's information is updated, the values from the agent's home process overwrite any that remain in the non-local copy on the borrowing process.</p>
+    <p>The solution to this is to have only the local agents act. Repast HPC has more than one way to achieve this; the one we will use ensures that the order of play is randomized each turn.</p>
+    <p>The only change is to the 'doSomething' method:</p>
+<div class="code"><code><pre>
+void RepastHPCDemoModel::doSomething(){
+	<b class="temp">if(repast::RepastProcess::instance()->rank() == 0) std::cout << "DOING SOMETHING at tick " << repast::RepastProcess::instance()->getScheduleRunner().currentTick() << std::endl;</b>
+	std::vector&lt;RepastHPCDemoAgent*&gt; agents;
+	context.selectAgents(<b class="code">repast::SharedContext&lt;RepastHPCDemoAgent&gt;::LOCAL, </b>countOfAgents, agents);
+	std::vector&lt;RepastHPCDemoAgent*&gt;::iterator it = agents.begin();
+	while(it != agents.end()){
+		<b class="temp">if(repast::RepastProcess::instance()->rank() == 0) std::cout << " Rank " << repast::RepastProcess::instance()->rank() << " agent " << (*it)->getId() << " playing " << std::endl;</b>
+		(*it)->play(&context);
+		it++;
+    }
+}
+</pre></code></div>
+    <p>This amounts to just adding a flag to the 'selectAgents' method; the flag indicates that it should select only local agents. (The function can also select only 'non-local' agents using <code>repast::SharedContext<AgentType>::NON_LOCAL</code>).</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_01_Step_10");</script>
+  </body>
+</html>

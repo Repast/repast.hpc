@@ -1,0 +1,54 @@
+h1.header{
+  color:#004444;
+  font-weight:normal;
+}
+
+body{
+  background-color:#FFFFFF;
+}
+
+div.code{
+  background-color:#EEEEEE;
+  margin-left:30;
+  width:100%;
+}
+
+b.code{
+  color:#AA0000;
+}
+
+b.temp{
+  color:#00AAAA;
+}
+
+b.note{
+  color:#990000;
+}
+
+div.sidebar{
+  font-style:italic;
+  color:#0000FF;
+  font-size: 12;
+}
+
+div.defHIDDEN{
+  display: none;
+}
+
+
+div.defSHOW{
+  background-color:#FFFFCC;
+  display: block;
+}
+
+td.right{
+  text-align: right;
+}
+
+td.left{
+  text-align: left;
+}
+
+td.top{
+  vertical-align: top;
+}

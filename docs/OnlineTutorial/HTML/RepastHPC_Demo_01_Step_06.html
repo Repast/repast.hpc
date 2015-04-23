@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_01_Step_06");</script>
+    <p>Next we give the agents the ability to act. This is achieved by changing the agent source file  (Demo_01_Agent.cpp) to fill in the blanks we left earlier in the cooperate() and play() methods:</p>
+<div class="code"><code><pre>
+bool RepastHPCDemoAgent::cooperate(){
+	<b class="code">return repast::Random::instance()->nextDouble() < c/total;</b>
+}
+
+void RepastHPCDemoAgent::play(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* context){
+    <b class="code">std::set&lt;RepastHPCDemoAgent*&gt; agentsToPlay;
+	
+    agentsToPlay.insert(this); // Prohibit playing against self
+	
+    context->selectAgents(3, agentsToPlay, true);
+	
+    double cPayoff     = 0;
+    double totalPayoff = 0;
+    std::set&lt;RepastHPCDemoAgent*&gt;::iterator agentToPlay = agentsToPlay.begin();
+    while(agentToPlay != agentsToPlay.end()){
+        bool iCooperated = cooperate();                          // Do I cooperate?
+        double payoff = (iCooperated ?
+						 ((*agentToPlay)->cooperate() ?  7 : 1) :     // If I cooperated, did my opponent?
+						 ((*agentToPlay)->cooperate() ? 10 : 3));     // If I didn't cooperate, did my opponent?
+        if(iCooperated) cPayoff += payoff;
+        totalPayoff             += payoff;
+		
+        agentToPlay++;
+    }
+    c      += cPayoff;
+    total  += totalPayoff;</b>
+	
+}
+</pre></code></div>
+    <p>Notice that the cooperate method uses an instance of Repast HPC's 'random' class; it will be integrated with the random number generation routines, and hence fully reproducible. Also notice the use of 'selectAgents' to get the three playing partners. In this case the variation of the selectAgents method used means that: the agents are returned in a set (order doesn't matter); the set initially contains 'self', which means that 'self' will not be selected (agents do not play against themselves); and 'self' will be removed from the return set.</p>
+    <p>Also note that this version (with the print lines removed from the model 'doSomething' method) produces no output; we will review data collection later.</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_01_Step_06");</script>
+  </body>
+</html>

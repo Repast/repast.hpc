@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_00_Step_06");</script>
+    <h2>A Repast HPC Model</h2>
+    <p>In this step a RepastHPC model is introduced. The code, modified from the previous step, is:</p>
+<div class="code"><code><pre>
+#include &lt;stdio.h&gt;
+#include &lt;boost/mpi.hpp&gt;
+#include "RepastProcess.h"
+
+<b class="code">
+class RepastHPCDemoModel{
+public:
+	RepastHPCDemoModel(){}
+	~RepastHPCDemoModel(){}
+}</b>
+
+int main(int argc, char** argv){
+	
+	std::string configFile = argv[1]; // The name of the configuration file is Arg 1
+	
+	boost::mpi::environment env(argc, argv);
+	boost::mpi::communicator world;
+
+	repast::RepastProcess::init(configFile);
+	
+	<b class="code">RepastHPCDemoModel* model = new RepastHPCDemoModel();</b>
+
+	<b class="code">model->init();</b>	
+
+	<b class="code">delete model;</b>
+	
+	repast::RepastProcess::instance()->done();
+	
+}
+</pre></code></div>
+    <p>At this point, except for definition of the 'empty' class, the creation of an instance of it (using the 'new' keyword) and the destruction of it, there is no actual change from the previous code, which should run and, as before, generate no output.</p>
+
+    <div class="sidebar" id="WhatsNew" onClick=toggleSidebar("WhatsNew")><b>What's 'new'? And why do I 'delete'?</b></div>
+    <div class="defHIDDEN" id="WhatsNew_DEF" onClick=toggleSidebar("WhatsNew")>An important aspect of C++ is understanding the difference between two ways that objects are created. In both ways, the 'object' is created by allocating memory to store all of the object's inner values. However, 'under the hood' there are two different areas of memory where objects can be created. Even more important than where the object is created is how it is treated when it is no longer needed. The line 'mpi::communicator world' creates an instance of an mpi::communicator that is managed in a local part of memory sometimes called the 'stack'. When the object falls out of scope (such as when the function in which it is created ends), these local objects are automatically destroyed and the memory is freed, so it can be used again. The 'new' keyword works differently. The line 'model = new RepastHPCDemoModel();' creates an object in the non-local part of memory sometimes called the 'heap'. The result of the 'new' keyword is that a pointer to the object is received, and this is the value assigned to the pointer variable 'model'. Instances of objects created this way are <i>not</i> destroyed automatically; it is up to the programmer to destroy them when they are no longer needed. Failing to do so can cause a problem called a 'memory leak.' As a rule of thumb, every use of the 'new' keyword should have a 'delete' associated with it.</div>
+    <p>Notice that even though we are calling our new class 'RepastHPCDemoModel', it does not need to inherit anything from some abstract superclass. We can make our Repast HPC models without extending base classes.</p>
+    <p>Our class is not quite empty: it has one method, called 'init()'. In later demos, this is the point at which the model will be initialized to contain agents and any other elements. For now, however, we leave this blank as a placeholder.</p> 
+    <script type="text/javascript">footer("RepastHPC_Demo_00_Step_06");</script>
+  </body>
+</html>

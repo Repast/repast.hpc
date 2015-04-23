@@ -1,0 +1,336 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_01_Step_15");</script>
+    <p>A key to Repast HPC is understanding what happens when agents move from one process to another. The simplest case is when an agent is not being borrowed by any other processes; in this case the move can simply be removing the agent from its original home process and rebuilding it on the new process. The more complicated case occurs when the agent is being borrowed by one or more other processes. A special case occurs when the agent being moved is actually being copied by the process to which it is now being moved. This demo step will illustrate these cases.</p>
+    <p>To begin, we modify the code to eliminate the random requests made by all processes, and replace these with one small set of targeted requests that we will use as a test case. The new code is:</p>
+<div class="code"><code><pre>
+void RepastHPCDemoModel::requestAgents(){
+	int rank = repast::RepastProcess::instance()-&gt;rank();
+	int worldSize= repast::RepastProcess::instance()-&gt;worldSize();
+<b class="temp">//	repast::AgentRequest req(rank);
+//	for(int i = 0; i &lt; worldSize; i++){                     // For each process
+//		if(i != rank){                                      // ... except this one
+//			std::vector&lt;RepastHPCDemoAgent*&gt; agents;        
+//			context.selectAgents(5, agents);                // Choose 5 local agents randomly
+//			for(size_t j = 0; j &lt; agents.size(); j++){
+//				repast::AgentId local = agents[j]-&gt;getId();          // Transform each local agent's id into a matching non-local one
+//				repast::AgentId other(local.id(), i, 0);
+//				other.currentRank(i);
+//				req.addRequest(other);                      // Add it to the agent request
+//			}
+//		}
+//	}</b>
+<b class="code">	repast::AgentRequest req(rank);
+	repast::AgentId id1(1,0,0);
+	id1.currentRank(0);
+	repast::AgentId id2(2,0,0);
+	id2.currentRank(0);
+	repast::AgentId id3(3,0,0);
+	id3.currentRank(0);
+	repast::AgentId id4(4,0,0);
+	id4.currentRank(0);
+			
+
+	switch (rank) {
+		case 1:
+			req.addRequest(id1);
+			req.addRequest(id3);
+			req.addRequest(id4);			
+			break;
+		case 2:
+			req.addRequest(id3);			
+			break;
+		case 3:
+			req.addRequest(id2);
+	        req.addRequest(id4);
+			break;			
+		default:
+			break;
+	}</b>
+	
+		
+        repast::RepastProcess::instance()->requestAgents&lt;RepastHPCDemoAgent, RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(context, req, *provider, *receiver, *receiver);
+}
+
+</pre></code></div> 
+    <p>The effect of this is to reduce all agent borrowing to just a few case studies, in which all the agents being borrowed are agents on Process 0. The case studies (counting one that is not being borrowed at all) are:</p>
+    <ul>
+      <li>Agent(0, 0, 0, 0): This agent is not being borrowed</li>
+      <li>Agent(1, 0, 0, 0): This agent is being borrowed by exactly one process, Process 1</li>
+      <li>Agent(2, 0, 0, 0): This agent is also being borrowed by exactly one process, Process 3</li>
+      <li>Agent(3, 0, 0, 0): This agent is being borrowed by two processes, Processes 1 and 2</li>
+      <li>Agent(4, 0, 0, 0): This agent is being borrowed by two processes, Processes 1 and 3</li>
+    </ul>
+
+   <p>It should be noted here that although the output lists all four numbers in the Agent ID, only the first three are needed to uniquely identify an agent, so 'Agent(0, 0, 0)' is sufficient, but we will continue to list the fourth digit to keep things clear for a little while longer. Also, in the context of our demo, all agents have the same type, so the third digit is always '0', but we will continue to use it anyway, too. It should also be noted that so far the 'start process' (second digit) and the 'current process' (fourth digit) are always the same; we will see that the 'current process' changes when we move the agent.</p>
+   <p>Our demos will be a set of moves of the agents listed above, which should lead to these results:</p>
+<table width="100%">
+  <tr>
+    <th width="50%">Action</th><th>Expected Result</th>
+  </tr>
+  <tr>
+    <td>Agent(0, 0, 0, 0) will move to Process 1</td><td>The agent ID should change to Agent(0, 0, 0, 1), and Process 1 will consider it a local agent</td>
+  </tr>
+  <tr>
+    <td>Agent(1, 0, 0, 0) will move to Process 2</td><td>The agent ID should change to Agent(1, 0, 0, 2), and this should be reflected both in Process 2's agent list and in Process 1's list of non-local agents, which will now show that the agent is on Process 2.</td>
+  </tr>
+  <tr>
+    <td>Agent(2, 0, 0, 0) will move to Process 3, where it was already being borrowed</td><td>The agent ID should change to Agent(2, 0, 0, 3) in Process 3's list, where it will now be a local agent</td>
+  </tr>
+  <tr>
+    <td>Agent(3, 0, 0, 0) will move to Process 3, where it is not being borrowed</td><td>The agent ID should change to (3, 0, 0, 3) in Process 3's list and in the non-local lists of processes 1 and 2</td>
+  </tr>
+  <tr>
+    <td>Agent(4, 0, 0, 0) will move to Process 1, where it is already being borrowed</td><td>The agent ID should change to (4, 0, 0, 1) in both Process 1's list of local agents and Process 3's list of non-local agents</td>
+  </tr>
+</table>
+
+  <p>The significant changes to the code are, first, to Demo_01_Model.h:</p>
+<div class="code"><code><pre>
+class RepastHPCDemoModel{
+	int stopAt;
+	int countOfAgents;
+	repast::Properties* props;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt; context;
+	
+	RepastHPCDemoAgentPackageProvider* provider;
+	RepastHPCDemoAgentPackageReceiver* receiver;
+	
+public:
+	RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm);
+	~RepastHPCDemoModel();
+	void init();
+	void requestAgents();
+	void cancelAgentRequests();
+	void removeLocalAgents();
+	<b class="code">void moveAgents();</b>
+	void doSomething();
+	void initSchedule(repast::ScheduleRunner& runner);
+	void recordResults();
+};
+</pre></code></div>
+
+    <p>The additional function is:</p>
+
+<div class="code"><code><pre>
+<b class="code">void RepastHPCDemoModel::moveAgents(){
+	int rank = repast::RepastProcess::instance()->rank();
+	if(rank == 0){
+		repast::AgentId agent0(0, 0, 0);
+		repast::AgentId agent1(1, 0, 0);
+		repast::AgentId agent2(2, 0, 0);
+		repast::AgentId agent3(3, 0, 0);
+		repast::AgentId agent4(4, 0, 0);
+		
+		repast::RepastProcess::instance()->moveAgent(agent0, 1);
+		repast::RepastProcess::instance()->moveAgent(agent1, 2);
+		repast::RepastProcess::instance()->moveAgent(agent2, 3);
+		repast::RepastProcess::instance()->moveAgent(agent3, 3);
+		repast::RepastProcess::instance()->moveAgent(agent4, 1);
+	}
+	repast::RepastProcess::instance()->synchronizeAgentStatus&lt;RepastHPCDemoAgent, RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(context, *provider, *receiver, *receiver);
+}</b>
+</pre></code></div>
+
+    <p>And the change to the schedule is:</p>
+
+
+<div class="code"><code><pre>
+void RepastHPCDemoModel::initSchedule(repast::ScheduleRunner& runner){
+	runner.scheduleEvent(1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::requestAgents)));
+	runner.scheduleEvent(2, 1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::doSomething)));
+	<b class="code">runner.scheduleEvent(3, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::moveAgents)));</b>
+	runner.scheduleEndEvent(repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::recordResults)));
+	runner.scheduleStop(stopAt);
+}
+</pre></code></div>
+
+
+    <p>Additionally, an output routine is added to 'doSomething':</p>
+
+<div class="code"><code><pre>
+void RepastHPCDemoModel::doSomething(){
+	<b class="temp">int whichRank = 0;
+	if(repast::RepastProcess::instance()->rank() == whichRank) std::cout << " TICK " << repast::RepastProcess::instance()->getScheduleRunner().currentTick() << std::endl;
+
+	if(repast::RepastProcess::instance()->rank() == whichRank){
+		std::cout << "LOCAL AGENTS:" << std::endl;
+		for(int r = 0; r < 4; r++){
+			for(int i = 0; i < 10; i++){
+				repast::AgentId toDisplay(i, r, 0);
+				RepastHPCDemoAgent* agent = context.getAgent(toDisplay);
+				if((agent != 0) && (agent->getId().currentRank() == whichRank)) std::cout << agent->getId() << " " << agent->getC() << " " << agent->getTotal() << std::endl;
+			}
+		}
+		
+		std::cout << "NON LOCAL AGENTS:" << std::endl;
+		for(int r = 0; r < 4; r++){
+			for(int i = 0; i < 10; i++){
+				repast::AgentId toDisplay(i, r, 0);
+				RepastHPCDemoAgent* agent = context.getAgent(toDisplay);
+				if((agent != 0) && (agent->getId().currentRank() != whichRank)) std::cout << agent->getId() << " " << agent->getC() << " " << agent->getTotal() << std::endl;
+			}
+		}
+	}</b>
+
+	
+	
+	std::vector&lt;RepastHPCDemoAgent*&gt; agents;
+	context.selectAgents(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::LOCAL, countOfAgents, agents);
+	std::vector&lt;RepastHPCDemoAgent*&gt;::iterator it = agents.begin();
+	while(it != agents.end()){
+		(*it)->play(&context);
+		it++;
+    }
+	
+    repast::RepastProcess::instance()->synchronizeAgentStates&lt;RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(*provider, *receiver);
+}
+</pre></code></div>
+
+    <p>By running repeatedly and using different values for 'whichRank', we can see what are the local and non-local agents on each process. (There is no stochasticity in this version; repeated runs will reproduce exactly without regard to random seed). This gives output like:</p>
+<center><table>
+<tr><th>Rank 0</th><th>Rank 1</th><th>Rank 2</th><th>Rank 3</th></tr>
+<tr>
+  <td class="top">
+<div class="code"><code><pre>
+ TICK 2
+LOCAL AGENTS:
+AgentId(0, 0, 0, 0) 100 200
+AgentId(1, 0, 0, 0) 100 200
+AgentId(2, 0, 0, 0) 100 200
+AgentId(3, 0, 0, 0) 100 200
+AgentId(4, 0, 0, 0) 100 200
+AgentId(5, 0, 0, 0) 100 200
+AgentId(6, 0, 0, 0) 100 200
+AgentId(7, 0, 0, 0) 100 200
+AgentId(8, 0, 0, 0) 100 200
+AgentId(9, 0, 0, 0) 100 200
+NON LOCAL AGENTS:
+ TICK 3
+LOCAL AGENTS:
+AgentId(5, 0, 0, 0) 107 227
+AgentId(6, 0, 0, 0) 100 230
+AgentId(7, 0, 0, 0) 101 214
+AgentId(8, 0, 0, 0) 100 216
+AgentId(9, 0, 0, 0) 100 216
+NON LOCAL AGENTS:
+</pre></code></div>
+  </td>
+  <td class="top">
+<div class="code"><code><pre>
+ TICK 2
+LOCAL AGENTS:
+AgentId(0, 1, 0, 1) 100 200
+AgentId(1, 1, 0, 1) 100 200
+AgentId(2, 1, 0, 1) 100 200
+AgentId(3, 1, 0, 1) 100 200
+AgentId(4, 1, 0, 1) 100 200
+AgentId(5, 1, 0, 1) 100 200
+AgentId(6, 1, 0, 1) 100 200
+AgentId(7, 1, 0, 1) 100 200
+AgentId(8, 1, 0, 1) 100 200
+AgentId(9, 1, 0, 1) 100 200
+NON LOCAL AGENTS:
+AgentId(1, 0, 0, 0) 100 200
+AgentId(3, 0, 0, 0) 100 200
+AgentId(4, 0, 0, 0) 100 200
+ TICK 3
+LOCAL AGENTS:
+AgentId(0, 0, 0, 1) 107 220
+AgentId(4, 0, 0, 1) 102 212
+AgentId(0, 1, 0, 1) 107 213
+AgentId(1, 1, 0, 1) 121 221
+AgentId(2, 1, 0, 1) 102 205
+AgentId(3, 1, 0, 1) 107 213
+AgentId(4, 1, 0, 1) 101 221
+AgentId(5, 1, 0, 1) 100 230
+AgentId(6, 1, 0, 1) 100 209
+AgentId(7, 1, 0, 1) 107 227
+AgentId(8, 1, 0, 1) 114 217
+AgentId(9, 1, 0, 1) 121 221
+NON LOCAL AGENTS:
+AgentId(1, 0, 0, 2) 114 224
+AgentId(3, 0, 0, 3) 100 216
+</pre></code></div>
+  </td>
+  <td class="top">
+<div class="code"><code><pre>
+ TICK 2
+LOCAL AGENTS:
+AgentId(0, 2, 0, 2) 100 200
+AgentId(1, 2, 0, 2) 100 200
+AgentId(2, 2, 0, 2) 100 200
+AgentId(3, 2, 0, 2) 100 200
+AgentId(4, 2, 0, 2) 100 200
+AgentId(5, 2, 0, 2) 100 200
+AgentId(6, 2, 0, 2) 100 200
+AgentId(7, 2, 0, 2) 100 200
+AgentId(8, 2, 0, 2) 100 200
+AgentId(9, 2, 0, 2) 100 200
+NON LOCAL AGENTS:
+AgentId(3, 0, 0, 0) 100 200
+ TICK 3
+LOCAL AGENTS:
+AgentId(1, 0, 0, 2) 107 220
+AgentId(0, 2, 0, 2) 114 217
+AgentId(1, 2, 0, 2) 102 205
+AgentId(2, 2, 0, 2) 114 224
+AgentId(3, 2, 0, 2) 107 213
+AgentId(4, 2, 0, 2) 101 207
+AgentId(5, 2, 0, 2) 100 223
+AgentId(6, 2, 0, 2) 101 221
+AgentId(7, 2, 0, 2) 108 211
+AgentId(8, 2, 0, 2) 101 214
+AgentId(9, 2, 0, 2) 101 214
+NON LOCAL AGENTS:
+AgentId(3, 0, 0, 3) 107 220</pre></code></div></td>
+  <td class="top">
+<div class="code"><code><pre>
+ TICK 2
+LOCAL AGENTS:
+AgentId(0, 3, 0, 3) 100 200
+AgentId(1, 3, 0, 3) 100 200
+AgentId(2, 3, 0, 3) 100 200
+AgentId(3, 3, 0, 3) 100 200
+AgentId(4, 3, 0, 3) 100 200
+AgentId(5, 3, 0, 3) 100 200
+AgentId(6, 3, 0, 3) 100 200
+AgentId(7, 3, 0, 3) 100 200
+AgentId(8, 3, 0, 3) 100 200
+AgentId(9, 3, 0, 3) 100 200
+NON LOCAL AGENTS:
+AgentId(2, 0, 0, 0) 100 200
+AgentId(4, 0, 0, 0) 100 200
+ TICK 3
+LOCAL AGENTS:
+AgentId(2, 0, 0, 3) 109 209
+AgentId(3, 0, 0, 3) 107 220
+AgentId(0, 3, 0, 3) 108 218
+AgentId(1, 3, 0, 3) 108 218
+AgentId(2, 3, 0, 3) 107 220
+AgentId(3, 3, 0, 3) 100 216
+AgentId(4, 3, 0, 3) 100 209
+AgentId(5, 3, 0, 3) 102 205
+AgentId(6, 3, 0, 3) 100 223
+AgentId(7, 3, 0, 3) 100 223
+AgentId(8, 3, 0, 3) 102 205
+AgentId(9, 3, 0, 3) 107 213
+NON LOCAL AGENTS:
+AgentId(4, 0, 0, 1) 107 213
+</pre></code></div>
+  </td>
+</tr></table></center>
+    <p>You should be able to confirm that all of the expected actions have occurred. The five agents that were being managed on Process 0 during the first time step have been moved to the expected destinations, where they become local agents. The copies of the five agents are all transformed as expected.</p>
+
+
+
+
+
+    <script type="text/javascript">footer("RepastHPC_Demo_01_Step_15");</script>
+  </body>
+</html>

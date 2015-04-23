@@ -1,0 +1,170 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_03_Step_01");</script>
+	Because a spatial projection is conceptually very similar to a network projection, and because they are implemented according to a common paradigm in Repast HPC, using a spatial projection is basically the same as using a network projection. The first step is to create an instance variable for the projection in the Model object. In the Model.h file, this requires two new include statements and a new variable:</p>
+<div class="code"><code><pre>
+<b class="code">#include "SharedDiscreteSpace.h"</b>
+<b class="code">#include "GridComponents.h"</b>
+</pre></code></div>
+
+
+<div class="code"><code><pre>
+class RepastHPCDemoModel{
+	int stopAt;
+	int countOfAgents;
+	repast::Properties* props;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt; context;
+	
+	RepastHPCDemoAgentPackageProvider* provider;
+	RepastHPCDemoAgentPackageReceiver* receiver;
+
+	repast::SVDataSet* agentValues;
+        <b class="code">repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* discreteSpace;</b>
+	
+public:
+	RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm);
+	~RepastHPCDemoModel();
+	void init();
+	void requestAgents();
+	void cancelAgentRequests();
+	void removeLocalAgents();
+	void moveAgents();
+	void doSomething();
+	void initSchedule(repast::ScheduleRunner& runner);
+	void recordResults();
+};
+</pre></code></div>
+
+<p>The changes in the Model.cpp file are similar to those done for the network projection. There is one additional include:</p>
+<div class="code"><code><pre>
+<b class="code">#include "Point.h"</b>
+</pre></code></div>
+
+<p>The instance of the projection is created in the DemoModel constructor:</p>
+
+<div class="code"><code><pre>
+RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm): context(comm){
+	props = new repast::Properties(propsFile, argc, argv, comm);
+	stopAt = repast::strToInt(props-&gt;getProperty("stop.at"));
+	countOfAgents = repast::strToInt(props-&gt;getProperty("count.of.agents"));
+	initializeRandom(*props, comm);
+	if(repast::RepastProcess::instance()-&gt;rank() == 0) props-&gt;writeToSVFile("./output/record.csv");
+	provider = new RepastHPCDemoAgentPackageProvider(&context);
+	receiver = new RepastHPCDemoAgentPackageReceiver(&context);
+<b class="code">	
+        repast::Point&lt;double&gt; origin(-100,-100);
+        repast::Point&lt;double&gt; extent(201, 201);
+    
+        repast::GridDimensions gd(origin, extent);
+    
+        std::vector&lt;int&gt; processDims;
+        processDims.push_back(2);
+        processDims.push_back(2);
+    
+        discreteSpace = new repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;("AgentDiscreteSpace", gd, processDims, 2, comm);
+	
+        std::cout &lt;&lt; "RANK " &lt;&lt; repast::RepastProcess::instance()-&gt;rank() &lt;&lt; " BOUNDS: " &lt;&lt; discreteSpace-&gt;bounds().origin() &lt;&lt; std::endl;
+    
+   	context.addProjection(discreteSpace);
+  </b>
+	// Data collection
+	// Create the data set builder
+	std::string fileOutputName("./output/agent_total_data.csv");
+	repast::SVDataSetBuilder builder(fileOutputName.c_str(), ",", repast::RepastProcess::instance()-&gt;getScheduleRunner().schedule());
+	
+	// Create the individual data sets to be added to the builder
+	DataSource_AgentTotals* agentTotals_DataSource = new DataSource_AgentTotals(&context);
+	builder.addDataSource(createSVDataSource("Total", agentTotals_DataSource, std::plus&lt;int&gt;()));
+
+	DataSource_AgentCTotals* agentCTotals_DataSource = new DataSource_AgentCTotals(&context);
+	builder.addDataSource(createSVDataSource("C", agentCTotals_DataSource, std::plus&lt;int&gt;()));
+
+	// Use the builder to create the data set
+	agentValues = builder.createDataSet();
+	
+}
+</pre></code></div>
+
+<p>The first two lines of new code create two 'Point' objects; these are not used as points, per se, but instead are simple data structures that are used to construct the grid. In this case the grid will have its lowest x and y coordinates at -100, -100 (the 'origin' value). It will extend 200 units in both directions.<p>
+<p>An important component of the construction of the space is the second-to-last argument, in this case '2'. This is the width of the buffer zone (see   <script type="text/javascript">getLinkToPage("RepastHPC_Demo_03_Overview")</script>), and recall that the size of the buffer zone must be chosen carefully, and should be large enough to exceed all space-based interactions among these agents.</p>
+
+<p>We must additionally change the 'init' method to place the agents at positions in space; this replaces connecting the network.</p>
+
+<div class="code"><code><pre>
+void RepastHPCDemoModel::init(){
+	int rank = repast::RepastProcess::instance()-&gt;rank();
+	for(int i = 0; i &lt; countOfAgents; i++){
+                <b class="code">repast::Point&lt;int&gt; initialLocation((int)discreteSpace-&gt;bounds().origin().getX() + i,(int)discreteSpace-&gt;bounds().origin().getY() + i);</b>
+		repast::AgentId id(i, rank, 0);
+		id.currentRank(rank);
+		RepastHPCDemoAgent* agent = new RepastHPCDemoAgent(id);
+		context.addAgent(agent);
+                <b class="code">discreteSpace-&gt;moveTo(id, initialLocation);</b>
+	}
+}
+</pre></code></div>
+<p>The first highlighted line simply chooses a location for the agent- in this case quite arbitrarily. The last line moves the agent to that location. Note that this is not optional: after being placed in the context, you must explicitly move the agent to a location.</p>
+
+<p>The 'doSomething' method must also be changed:</p>
+
+<div class="code"><code><pre>
+void RepastHPCDemoModel::doSomething(){
+	int whichRank = 0;
+	if(repast::RepastProcess::instance()-&gt;rank() == whichRank) std::cout &lt;&lt; " TICK " &lt;&lt; repast::RepastProcess::instance()-&gt;getScheduleRunner().currentTick() &lt;&lt; std::endl;
+
+	if(repast::RepastProcess::instance()-&gt;rank() == whichRank){
+		std::cout &lt;&lt; "LOCAL AGENTS:" &lt;&lt; std::endl;
+		for(int r = 0; r &lt; 4; r++){
+			for(int i = 0; i &lt; 10; i++){
+				repast::AgentId toDisplay(i, r, 0);
+				RepastHPCDemoAgent* agent = context.getAgent(toDisplay);
+				<b class="code">if((agent != 0) && (agent-&gt;getId().currentRank() == whichRank)){
+                                    std::vector&lt;int&gt; agentLoc;
+                                    discreteSpace-&gt;getLocation(agent-&gt;getId(), agentLoc);
+                                    repast::Point&lt;int&gt; agentLocation(agentLoc);
+                                    std::cout &lt;&lt; agent-&gt;getId() &lt;&lt; " " &lt;&lt; agent-&gt;getC() &lt;&lt; " " &lt;&lt; agent-&gt;getTotal() &lt;&lt; " AT " &lt;&lt; agentLocation &lt;&lt; std::endl;
+                               }</b>
+			}
+		}
+		
+		std::cout &lt;&lt; "NON LOCAL AGENTS:" &lt;&lt; std::endl;
+		for(int r = 0; r &lt; 4; r++){
+			for(int i = 0; i &lt; 10; i++){
+				repast::AgentId toDisplay(i, r, 0);
+				RepastHPCDemoAgent* agent = context.getAgent(toDisplay);
+				<b class="code">if((agent != 0) && (agent-&gt;getId().currentRank() != whichRank)){
+                                    std::vector&lt;int&gt; agentLoc;
+                                    discreteSpace-&gt;getLocation(agent-&gt;getId(), agentLoc);
+                                    repast::Point&lt;int&gt; agentLocation(agentLoc);
+                                    std::cout &lt;&lt; agent-&gt;getId() &lt;&lt; " " &lt;&lt; agent-&gt;getC() &lt;&lt; " " &lt;&lt; agent-&gt;getTotal() &lt;&lt; " AT " &lt;&lt; agentLocation &lt;&lt; std::endl;
+                                }</b>
+			}
+		}
+	}
+
+	std::vector&lt;RepastHPCDemoAgent*&gt; agents;
+	context.selectAgents(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::LOCAL, countOfAgents, agents);
+	std::vector&lt;RepastHPCDemoAgent*&gt;::iterator it = agents.begin();
+	while(it != agents.end()){
+		(*it)-&gt;play(&context);
+		it++;
+        }
+	
+        repast::RepastProcess::instance()-&gt;synchronizeProjectionInfo&lt;RepastHPCDemoAgent, RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(context, *provider, *receiver, *receiver);
+    
+        repast::RepastProcess::instance()-&gt;synchronizeAgentStates&lt;RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(*provider, *receiver);
+    
+}
+</pre></code></div>
+
+<p>These changes are mainly for output: they illustrate the technique for getting an agent's location: create a vector of the appropriate data type, request the location <b>from the space</b> to fill the vector, then (if needed) convert the vector to a Point.</p>
+<p>Note, however, what does <b>not</b> have to be changed: the 'synchronizeProjectionInfo' statement is exactly the same as it was for the network case. This statement will not change even as the character of the space changes.</p>
+<p>When run, the code should output the sizes of the spaces and the positions of the agents in the grid.</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_03_Step_01");</script>
+  </body>
+</html>

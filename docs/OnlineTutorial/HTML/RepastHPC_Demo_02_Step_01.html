@@ -1,0 +1,119 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_02_Step_01");</script>
+    <p>The first step to using a projection is creating it. In this case, we will be using a 'SharedNetwork' projection- that is, a network that 'knows' that it can have connections that are shared across process boundaries.</p>
+    <p>The modifications to the Model.h file are simple: add the required include-</p>
+<div class="code"><code><pre>
+/* Demo_02_Model.h */
+
+#ifndef DEMO_02_MODEL
+#define DEMO_02_MODEL
+
+#include <boost/mpi.hpp>
+#include "Schedule.h"
+#include "Properties.h"
+#include "SharedContext.h"
+#include "AgentRequest.h"
+#include "TDataSource.h"
+#include "SVDataSet.h"
+<b class="code">#include "SharedNetwork.h"</b>
+
+#include "Demo_02_Agent.h"
+</pre></code></div>
+    <p>And create two things: an instance of an 'edge content manager' (that is responsible for packaging edge content and sharing between processes) and a pointer to the network as a private instance variable of the model class:</p>
+
+<div class="code"><code><pre>
+class RepastHPCDemoModel{
+	int stopAt;
+	int countOfAgents;
+	repast::Properties* props;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt; context;
+	
+	RepastHPCDemoAgentPackageProvider* provider;
+	RepastHPCDemoAgentPackageReceiver* receiver;
+
+        <b class="code">repast::RepastEdgeContentManager&lt;RepastHPCDemoAgent&gt; edgeContentManager;</b>
+
+	repast::SVDataSet* agentValues;
+	<b class="code">repast::SharedNetwork&lt;RepastHPCDemoAgent, repast::RepastEdge&lt;RepastHPCDemoAgent&gt;, repast::RepastEdgeContent&lt;RepastHPCDemoAgent&gt;, 
+              repast::RepastEdgeContentManager&lt;RepastHPCDemoAgent&gt; &gt;* agentNetwork;</b>
+	
+public:
+	RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm);
+	~RepastHPCDemoModel();
+	void init();
+	void requestAgents();
+	void cancelAgentRequests();
+	void removeLocalAgents();
+	void moveAgents();
+	void doSomething();
+	void initSchedule(repast::ScheduleRunner& runner);
+	void recordResults();
+};
+</pre></code></div>
+
+    <p>Note that in order to create the network we must specify in the template parameters:</p>
+<ul>
+  <li>The class that will be used for the network 'nodes';</li>
+  <li>The class that will be used for the network edges;</li>
+  <li>The class that will be used for network edge content;</li>
+  <li>The class that will be used for managing network edge content;</li>
+</ul>
+<p>In this case the nodes will be our agents; the edges will be a default edge (provided by repast), which also must be informed that it will be connecting elements of a specific type (hence it is, itself, templated). The edge content will be the default, built-in Repast Edge Content, and it will be managed by the default, built-in Repast Edge Content Manager</p>
+
+    <p>To create the network now requires only two lines in the model constructor, one to create the network instance and one to add it to the context:</p>
+<div class="code"><code><pre>
+RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm){
+	props = new repast::Properties(propsFile, argc, argv, comm);
+	stopAt = repast::strToInt(props-&gt;getProperty("stop.at"));
+	countOfAgents = repast::strToInt(props-&gt;getProperty("count.of.agents"));
+	initializeRandom(*props, comm);
+	if(repast::RepastProcess::instance()-&gt;rank() == 0) props-&gt;writeToSVFile("./output/record.csv");
+	provider = new RepastHPCDemoAgentPackageProvider(&context);
+	receiver = new RepastHPCDemoAgentPackageReceiver(&context);
+	
+        <b class="code">agentNetwork = new repast::SharedNetwork&lt;RepastHPCDemoAgent, repast::RepastEdge&lt;RepastHPCDemoAgent&gt;,
+              repast::RepastEdgeContent&lt;RepastHPCDemoAgent&gt;, repast::RepastEdgeContentManager&lt;RepastHPCDemoAgent&gt; &gt;("agentNetwork", false, &edgeContentManager);
+	context.addProjection(agentNetwork);</b>
+	
+	// Data collection
+	// Create the data set builder
+	std::string fileOutputName("./output/agent_total_data.csv");
+	repast::SVDataSetBuilder builder(fileOutputName.c_str(), ",", repast::RepastProcess::instance()-&gt;getScheduleRunner().schedule());
+	
+	// Create the individual data sets to be added to the builder
+	DataSource_AgentTotals* agentTotals_DataSource = new DataSource_AgentTotals(&context);
+	builder.addDataSource(createSVDataSource("Total", agentTotals_DataSource, std::plus&lt;int&gt;()));
+
+	DataSource_AgentCTotals* agentCTotals_DataSource = new DataSource_AgentCTotals(&context);
+	builder.addDataSource(createSVDataSource("C", agentCTotals_DataSource, std::plus&lt;int&gt;()));
+
+	// Use the builder to create the data set
+	agentValues = builder.createDataSet();
+	
+}
+</pre></code></div>
+    <p>The arguments that are used in the constructor for the network are, first, the name that can be used to refer to the network (remember, a context can have several projections in it, so each one is assigned a name), and second a variable that indicates whether the network will be directed (true) or undirected (false). 'Undirected' networks mean that a connection between two agents is reciprocal: if A is connected to B, then B is connected to A; directed networks allow connections that go only in one direction, such as from A to B but not B to A. The third argument is the content manager instance.</p>
+
+    <p>There is one final but <em>very important</em> step. You must add the following line to the <top> of the DemoModel.cpp file, <em>after the includes but before the rest of the code</em>:
+<div class="code"><code><pre>
+#include "initialize_random.h"
+#include "SVDataSetBuilder.h"
+
+#include "Demo_02_Model.h"
+
+<b class="code">BOOST_CLASS_EXPORT_GUID(repast::SpecializedProjectionInfoPacket&lt;repast::RepastEdgeContent&lt;RepastHPCDemoAgent&gt; &gt;, "SpecializedProjectionInfoPacket_EDGE");</b>
+
+RepastHPCDemoAgentPackageProvider::RepastHPCDemoAgentPackageProvider(repast::SharedContext<RepastHPCDemoAgent>* agentPtr): agents(agentPtr){ }
+</pre></code></div>
+
+    <p>The reason for this is somewhat technical: Repast HPC uses the Boost library, and the Boost library provides some very convenient functions relating to sending information back and forth across processes. This line tells Boost that there will be a class being sent back and forth that carries a specific kind of edge content, in this case the default RepastEdge with RepastHPCDemoAgents as nodes. With this, Boost performs some behind-the-scenes work to make sure that it knows how to package and send this content without too much other preparation needed. However, if you omit this line, the result will be Boost trying to send information for which it does not recognize the structure, and a segmentation fault will occur.</p>
+
+    <script type="text/javascript">footer("RepastHPC_Demo_02_Step_01");</script>
+  </body>
+</html>

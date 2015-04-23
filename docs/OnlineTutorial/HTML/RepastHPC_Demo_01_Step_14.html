@@ -1,0 +1,124 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_01_Step_14");</script>
+    <p>A previous step in this demo showed how a process that is importing (borrowing) an agent can remove its copy of that agent. This demo step will show how a process can remove one of the agents that it is managing- a local, not a non-local, agent.</p>
+    <p>This is apparently a small step, but there is actually a profound difference. When a process is borrowing an agent, it can, effectively, do with that agent whatever it pleases; the changes it makes don't propogate back to the the agent's home process. Removing the borrowed copy of the agent has no effects on the broader simulation as a whole.</p>
+    <p>Removing an agent that is being managed on the local process might also have no effect: the other processes will go on with their business uninterrupted <em>unless the agent being removed has been borrowed by one or more other processes.</em> If the agent is being 'borrowed', then the other processes need to be notified that the agent no longer exists and that it should not expect to receive information about that agent going forward.</p>
+    <p>To demonstrate this, a new function is added to the model class in Demo_01_Model.cpp:</p>
+<div class="code"><code><pre>
+class RepastHPCDemoModel{
+	int stopAt;
+	int countOfAgents;
+	repast::Properties* props;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt; context;
+	
+	RepastHPCDemoAgentPackageProvider* provider;
+	RepastHPCDemoAgentPackageReceiver* receiver;
+	
+public:
+	RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm);
+	~RepastHPCDemoModel();
+	void init();
+	void requestAgents();
+	void cancelAgentRequests();
+	<b class="code">void removeLocalAgents();</b>
+	void doSomething();
+	void initSchedule(repast::ScheduleRunner& runner);
+	void recordResults();
+};
+</pre></code></div>
+
+  <p>The function call for this looks like:</p>
+<div class="code"><code><pre>
+<b class="code">void RepastHPCDemoModel::removeLocalAgents(){
+	int rank = repast::RepastProcess::instance()->rank();
+	if(rank == 0) std::cout << "REMOVING LOCAL AGENTS" << std::endl;
+	for(int i = 0; i < 5; i++){
+		repast::AgentId id(i, rank, 0);
+		repast::RepastProcess::instance()->agentRemoved(id);
+		context.removeAgent(id);
+	}
+	repast::RepastProcess::instance()->synchronizeAgentStatus&lt;RepastHPCDemoAgent, RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(context, *provider, *receiver);
+}</b>
+</pre></code></div>
+   <p>We alter the schedule, placing this call where earlier we called 'cancelAgentRequests':</p>
+<div class="code"><code><pre>
+void RepastHPCDemoModel::initSchedule(repast::ScheduleRunner& runner){
+	runner.scheduleEvent(1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::requestAgents)));
+	runner.scheduleEvent(2, 1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::doSomething)));
+	<b class="code">runner.scheduleEvent(4, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::removeLocalAgents)));</b>
+	runner.scheduleEndEvent(repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::recordResults)));
+	runner.scheduleStop(stopAt);
+}
+</pre></code></div>
+    <p>Now a run with (snipped and annotated) output looks like:</p>
+
+<div class="code"><code><pre>
+ TICK 3
+ BEFORE PLAY: 
+AgentId(3, 0, 0, 0) 114 224 <b class="note"><-All local agents are here</b>
+AgentId(4, 0, 0, 0) 100 230
+AgentId(5, 0, 0, 0) 100 223
+AgentId(6, 0, 0, 0) 108 211
+AgentId(7, 0, 0, 0) 114 224
+AgentId(0, 0, 0, 0) 114 217
+AgentId(8, 0, 0, 0) 108 211
+AgentId(1, 0, 0, 0) 107 220
+AgentId(9, 0, 0, 0) 114 217
+AgentId(2, 0, 0, 0) 107 220
+AgentId(8, 3, 0, 3) 107 220 <b class="note"><-And all non-local agents (whatever their IDs) are here</b>
+AgentId(2, 3, 0, 3) 108 218
+AgentId(3, 1, 0, 1) 103 203
+AgentId(4, 2, 0, 2) 102 212
+AgentId(5, 2, 0, 2) 100 223
+AgentId(5, 3, 0, 3) 108 218
+AgentId(6, 1, 0, 1) 101 221
+AgentId(6, 2, 0, 2) 101 214
+AgentId(7, 1, 0, 1) 108 218
+AgentId(7, 2, 0, 2) 109 209
+AgentId(7, 3, 0, 3) 100 216
+AgentId(8, 1, 0, 1) 114 224
+AgentId(0, 3, 0, 3) 102 212
+AgentId(1, 1, 0, 1) 100 223
+AgentId(1, 2, 0, 2) 101 207
+REMOVING LOCAL AGENTS
+ TICK 4
+ BEFORE PLAY: 
+AgentId(5, 0, 0, 0) 107 236 <b class="note"><-All local agents with id numbers less than 5 are gone because they were removed locally.</b>
+AgentId(6, 0, 0, 0) 116 222
+AgentId(7, 0, 0, 0) 115 245
+AgentId(8, 0, 0, 0) 110 223
+AgentId(9, 0, 0, 0) 122 235
+AgentId(8, 3, 0, 3) 114 233 <b class="note"><-All non-local agents with id numbers less than 5 are gone because they were removed from their home processes!</b>
+AgentId(5, 2, 0, 2) 101 237
+AgentId(5, 3, 0, 3) 109 232
+AgentId(6, 1, 0, 1) 108 241
+AgentId(6, 2, 0, 2) 101 237
+AgentId(7, 1, 0, 1) 116 236
+AgentId(7, 2, 0, 2) 109 225
+AgentId(7, 3, 0, 3) 100 232
+AgentId(8, 1, 0, 1) 115 231
+</pre></code></div>
+    <p>The key lines are:</p>
+<div class="code"><code><pre>
+void RepastHPCDemoModel::removeLocalAgents(){
+	int rank = repast::RepastProcess::instance()->rank();
+	if(rank == 0) std::cout << "REMOVING LOCAL AGENTS" << std::endl;
+	for(int i = 0; i < 5; i++){
+		repast::AgentId id(i, rank, 0);
+		<b class="code">repast::RepastProcess::instance()->agentRemoved(id);</b>
+		context.removeAgent(id);
+	}
+	<b class="code">repast::RepastProcess::instance()->synchronizeAgentStatus&lt;RepastHPCDemoAgent, RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(context, *provider, *receiver);</b>
+}
+</pre></code></div>
+    <p>If these lines are commented out, the agents are removed from the local context, but the other contexts are not notified that the agents no longer exist. The 'agentRemoved' call tells RepastProcess that the agent should be considered 'moved'; when the 'syncAgentstatus' call is made, RepastProcess informs the other processes that have borrowed the agents that the agents are gone, and they are automatically removed from the other processes.</p>
+
+    <script type="text/javascript">footer("RepastHPC_Demo_01_Step_14");</script>
+  </body>
+</html>

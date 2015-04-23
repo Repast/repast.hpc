@@ -1,0 +1,10 @@
+
+# DEBUG, INFO, WARN, ERROR
+# logger.root = INFO, R, stdout      
+# logger.repast.system = DEBUG, R, stdout
+ 
+# appender.R = RollingFileAppender
+# appender.R.MaxBackupIndex =  1
+# appender.R.File = ./logs/repast.log
+# appender.R.MaxFileSize=200
+

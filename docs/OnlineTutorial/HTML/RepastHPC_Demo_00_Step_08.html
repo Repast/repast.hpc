@@ -1,0 +1,66 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_00_Step_08");</script>
+    <h2>Scheduling events</h2>
+    <p>In this step we place events on the schedule to be executed. From the previous step the code additions are:</p>
+<div class="code"><code><pre>
+#include &lt;stdio.h&gt;
+#include &lt;boost/mpi.hpp&gt;
+#include "RepastProcess.h"
+
+class RepastHPCDemoModel{
+public:
+	RepastHPCDemoModel(){}
+	~RepastHPCDemoModel(){}
+	void init(){}
+	<b class="code">void doSomething(){
+		std::cout << "Rank " << repast::RepastProcess::instance()->rank() << " is doing something." << std::endl;
+	}</b>
+	void initSchedule(repast::ScheduleRunner& runner){<b class="code">
+		runner.scheduleEvent(1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::doSomething)));
+		runner.scheduleStop(2);</b>
+	}
+};
+
+int main(int argc, char** argv){
+	
+	std::string configFile = argv[1]; // The name of the configuration file is Arg 1
+	
+	boost::mpi::environment env(argc, argv);
+	boost::mpi::communicator world;
+
+	repast::RepastProcess::init(configFile);
+	
+	RepastHPCDemoModel* model = new RepastHPCDemoModel();
+	repast::ScheduleRunner& runner = repast::RepastProcess::instance()->getScheduleRunner();
+	
+	model->init();
+	model->initSchedule(runner);
+	
+	<b class="code">runner.run();</b>
+	
+	delete model;
+	
+	repast::RepastProcess::instance()->done();
+	
+}
+</pre></code></div>
+    <p>There are three changes. The first is the addition of the 'doSomething' method to the model class. This is, of course, so that there is something that we can schedule. (It also demonstrates the way that code can get access to information about which 'rank' it's being run on from within Repast, using the RepastProcess::instance()->rank() method.)</p>
+    <p>The second, and most complicated, change is in the 'initSchedule' method. The 'runner' class is used to schedule events in the simulation. The easiest event is the second: 'scheduleStop(2)' means that the simulation will stop at timestep 2. The 'scheduleEvent' method is more complicated. The first argument, '1', indicates that the event will occur when the simulation reaches timestep '1'. The second argument is a special class, a 'repast::Schedule::FunctorPtr' that points to the 'doSomething' method of the instance of the RepastHPCDemoModel object. By placing this pointer on the event schedule, RepastHPC is instructed to call that method of the model instance.</p>
+    <p>The third change is the addition of the 'runner.run()' call in the main function. This starts the processing of events on the schedule.</p>
+    <p>When run, the first event on the schedule (on all processes) is a call to 'doSomething' at time step 1; the second is stopping the simulation at time step 2. The output should look like:</p>
+<div class="code"><code><pre>
+Rank 0 is doing something.
+Rank 1 is doing something.
+Rank 2 is doing something.
+Rank 3 is doing something.
+</pre></code></div>
+    <p>(But as before the output may be garbled.)</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_00_Step_08");</script>
+  </body>
+</html>

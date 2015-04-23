@@ -1,0 +1,298 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_02_Step_05");</script>
+    <h2>Custom Edges: An Advanced Topic</h2>
+    <p>In the previous steps we have used Repast HPC's built in default edges. These have only one attribute, the Edge Weight. However, for some simulations you may wish network edges to have multiple attributes. For example, you may wish to track the age of network connections, and drop older ones when they expire, or you may wish to track the number of times a link has been used. To achieve this you will need to create a custom Edge class.</p>
+    <p>Creating custom edges in Repast HPC requires several steps; this is because you must provide extended functionality to replace several actions that Repast HPC perfoms invisibly for its built-in edge type. To do this, you must create three classes:</p>
+    <ul>
+      <li>The new, custom edge class; generally this should extend the default RepastEdge class</li>
+      <li>A new Custom Edge Content class, which will be used to send Edge information across processes</li>
+      <li>A custom Edge Manager that can package instances of edge content classes, send information about them, and, upon receiving this information, construct edge instances</li>
+      <li>Register the new edge class with Boost, as was done with default Edge Class implementations.</li>
+    </ul>
+    <p>Ordinarily you might choose to create each of these classes with its own .h header file; .cpp files will <b>not</b> be used, because the code is templated code. (It is possible to avoid using templated code, but it will be far simpler and more typical to use code templates.) For simplicity, we will place all of the code in a single file, called Demo_02_Network.h, which we will place in the 'includes' directory</p>
+    <p>This file contains the three elements needed. The first is the custom edge itself (preceded by the required header elements):</p>
+
+<div class="code"><code><pre>
+/* Demo_02_Network.h */
+
+#ifndef DEMO_02_NETWORK
+#define DEMO_02_NETWORK
+
+#include "SharedContext.h"
+#include "SharedNetwork.h"
+
+
+/* Custom Network Components */
+template&lt;typename V&gt;
+class DemoModelCustomEdge : public repast::RepastEdge&lt;V&gt;{
+private:
+    int confidence;
+    
+public:
+    DemoModelCustomEdge(){}
+    DemoModelCustomEdge(V* source, V* target) : repast::RepastEdge&lt;V&gt;(source, target) {}
+    DemoModelCustomEdge(V* source, V* target, double weight) : repast::RepastEdge&lt;V&gt;(source, target, weight) {}
+    DemoModelCustomEdge(V* source, V* target, double weight, int confidence) : repast::RepastEdge&lt;V&gt;(source, target, weight), confidence(confidence) {}
+    
+    DemoModelCustomEdge(boost::shared_ptr&lt;V&gt; source, boost::shared_ptr&lt;V&gt; target) : repast::RepastEdge&lt;V&gt;(source, target) {}
+    DemoModelCustomEdge(boost::shared_ptr&lt;V&gt; source, boost::shared_ptr&lt;V&gt; target, double weight) : repast::RepastEdge&lt;V&gt;(source, target, weight) {}
+    DemoModelCustomEdge(boost::shared_ptr&lt;V&gt; source, boost::shared_ptr&lt;V&gt; target, double weight, int confidence) : repast::RepastEdge&lt;V&gt;(source, target, weight), confidence(confidence) {}
+    
+    
+    int getConfidence(){ return confidence; }
+    void setConfidence(int con){ confidence = con; }
+    
+};
+</pre></code></div>
+
+    <p>This new custom edge class contains only one instance variable, which we have arbitrarily named 'confidence'. It is an int, with a basic getter and setter (the last two lines of the class's code). The bulk of the class is the seven different constructors. The empty constructor is needed in order for the class to be serialized by the underlying Boost and mpi libraries. The four constructors that include only 'source', 'target', and 'weight' variables simply extend the RepastEdge's built-in constructors; two of these use standard C++ pointers and two use Boost 'shared' pointers. There are also two functions that include the 'confidence' variable, one using the normal pointer and one using the shared pointer.</p>
+    <p>The class itself is templated to take any object as a vertex. This also mirrors Repast's built-in edges. It means that the name of the class is not DemoModeCustomEdge but DemoModelCustomEdge$lt;ClassName&gt;. This is how it will need to be referred to throughout the code.</p>
+    <p>The next section of the code defines the Edge Content that will be associated with this class. Here we will again extend Repast's built-in class:</p>
+
+<div class="code"><code><pre>
+/* Custom Edge Content */
+template&lt;typename V&gt;
+struct DemoModelCustomEdgeContent : public repast::RepastEdgeContent&lt;V&gt;{
+    
+    friend class boost::serialization::access;
+    
+public:
+    int confidence;
+    DemoModelCustomEdgeContent(){}
+    DemoModelCustomEdgeContent(DemoModelCustomEdge&lt;V&gt;* edge): repast::RepastEdgeContent&lt;V&gt;(edge), confidence(edge-&gt;getConfidence()){}
+    
+    template&lt;class Archive&gt;
+    void serialize(Archive& ar, const unsigned int version) {
+        repast::RepastEdgeContent&lt;V&gt;::serialize(ar, version);
+        ar & confidence;
+    }
+    
+};
+</pre></code></div>
+ 
+    <p>This section of code extends the RepastEdgeContent&lt;V&gt; class. It must define an empty constructor and a constructor that takes an instance of the edge class. It must also provide the 'serialize' method. This method packages the class up into the Archive that is actually sent across processes. In this case, the procedure it uses is to call the parent class's method (which will package the source, target, and weight attributes), and then add the new, 'confidence' attribute in the child class.</p>
+    <p>The third section of code is:</p>
+
+<div class="code"><code><pre>
+/* Custome Edge Content Manager */
+template&lt;typename V&gt;
+class DemoModelCustomEdgeContentManager {
+public:
+    DemoModelCustomEdgeContentManager(){}
+    virtual ~DemoModelCustomEdgeContentManager(){}
+    DemoModelCustomEdge&lt;V&gt;* createEdge(DemoModelCustomEdgeContent&lt;V&gt;& content, repast::Context&lt;V&gt;* context){
+        return new DemoModelCustomEdge&lt;V&gt;(context-&gt;getAgent(content.source), context-&gt;getAgent(content.target), content.weight, content.confidence);
+    }
+    DemoModelCustomEdgeContent&lt;V&gt;* provideEdgeContent(DemoModelCustomEdge&lt;V&gt;* edge){
+        return new DemoModelCustomEdgeContent&lt;V&gt;(edge);
+    }
+};
+
+#endif
+</pre></code></div>
+    <p>This section of code (which ends with the close of the '#ifdef' statement from the header) defines the customized Edge Content Manager. An Edge Content Manager must provide two functions: 'createEdge', which takes an instance of Edge Content and creates an Edge from it, and 'provideEdgeContent', which takes an edge and creates an Edge Content Instance out of it.<p>
+    
+    <p>Having created these classes, we must change the Agent and Model code to make use of them.</p>
+
+    <p>First, we must include the new network file in the Model.h file:</p>
+
+<div class="code"><code><pre>
+/* Demo_02_Model.h */
+
+#ifndef DEMO_02_MODEL
+#define DEMO_02_MODEL
+
+#include &lt;boost/mpi.hpp&gt;
+#include "Schedule.h"
+#include "Properties.h"
+#include "SharedContext.h"
+#include "AgentRequest.h"
+#include "TDataSource.h"
+#include "SVDataSet.h"
+#include "SharedNetwork.h"
+
+<b class="code">#include "Demo_02_Network.h"</b>
+#include "Demo_02_Agent.h"
+</pre></code></div>
+
+    <p>Next we have to change the instance variables for the network and the edge content manager to the new types:</p>
+
+<div class="code"><code><pre>
+class RepastHPCDemoModel{
+	int stopAt;
+	int countOfAgents;
+	repast::Properties* props;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt; context;
+	
+	RepastHPCDemoAgentPackageProvider* provider;
+	RepastHPCDemoAgentPackageReceiver* receiver;
+    
+        <b class="code">DemoModelCustomEdgeContentManager&lt;RepastHPCDemoAgent&gt; edgeContentManager;</b>
+
+	repast::SVDataSet* agentValues;
+	repast::SharedNetwork&lt;RepastHPCDemoAgent, <b class="code">DemoModelCustomEdge&lt;RepastHPCDemoAgent&gt;, DemoModelCustomEdgeContent&lt;RepastHPCDemoAgent&gt;, DemoModelCustomEdgeContentManager&lt;RepastHPCDemoAgent&gt;</b> &gt;* agentNetwork;
+</pre></code></div>    
+    <p>Notice that it is at this point that we take the generic classes that we created, templated to an abstract vertex 'V', and begin to instantiate them with a specific vertex, the RepastHPCDemoAgent. The instantiation of the content manager occurs here in the class declaration. The creation of an instance of the network occurs definition, which is in the source (.cpp) file:</p>
+
+<div class="code"><code><pre>
+RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm): context(comm){
+	props = new repast::Properties(propsFile, argc, argv, comm);
+	stopAt = repast::strToInt(props-&gt;getProperty("stop.at"));
+	countOfAgents = repast::strToInt(props-&gt;getProperty("count.of.agents"));
+	initializeRandom(*props, comm);
+	if(repast::RepastProcess::instance()-&gt;rank() == 0) props-&gt;writeToSVFile("./output/record.csv");
+	provider = new RepastHPCDemoAgentPackageProvider(&context);
+	receiver = new RepastHPCDemoAgentPackageReceiver(&context);
+	
+        agentNetwork = new repast::SharedNetwork&lt;RepastHPCDemoAgent, <b class="code">DemoModelCustomEdge&lt;RepastHPCDemoAgent&gt;, DemoModelCustomEdgeContent&lt;RepastHPCDemoAgent&gt;, 
+            DemoModelCustomEdgeContentManager&lt;RepastHPCDemoAgent&gt; </b>&gt;("agentNetwork", false, &edgeContentManager);
+	context.addProjection(agentNetwork);
+	
+	// Data collection
+	// Create the data set builder
+	std::string fileOutputName("./output/agent_total_data.csv");
+	repast::SVDataSetBuilder builder(fileOutputName.c_str(), ",", repast::RepastProcess::instance()-&gt;getScheduleRunner().schedule());
+	
+	// Create the individual data sets to be added to the builder
+	DataSource_AgentTotals* agentTotals_DataSource = new DataSource_AgentTotals(&context);
+	builder.addDataSource(createSVDataSource("Total", agentTotals_DataSource, std::plus&lt;int&gt;()));
+
+	DataSource_AgentCTotals* agentCTotals_DataSource = new DataSource_AgentCTotals(&context);
+	builder.addDataSource(createSVDataSource("C", agentCTotals_DataSource, std::plus&lt;int&gt;()));
+
+	// Use the builder to create the data set
+	agentValues = builder.createDataSet();
+	
+}
+</pre></code></div>    
+
+    <p>We next need to change the way that edges are created when the network is being created, in the connectAgentNetwork method:</p>
+
+<div class="code"><code><pre>
+void RepastHPCDemoModel::connectAgentNetwork(){
+    repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_local_iterator iter    = context.localBegin();
+    repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_local_iterator iterEnd = context.localEnd();
+    while(iter != iterEnd) {
+        RepastHPCDemoAgent* ego = &**iter;
+        std::vector&lt;RepastHPCDemoAgent*&gt; agents;
+        agents.push_back(ego);                          // Omit self
+        context.selectAgents(5, agents, true);          // Choose 5 other agents randomly
+        // Make an undirected connection
+        for(size_t i = 0; i &lt; agents.size(); i++){
+            if(ego-&gt;getId().id() &lt; agents[i]-&gt;getId().id()){
+                 std::cout &lt;&lt; "CONNECTING: " &lt;&lt; ego-&gt;getId() &lt;&lt; " to " &lt;&lt; agents[i]-&gt;getId() &lt;&lt; std::endl;
+                 <b class="code">boost::shared_ptr&lt;DemoModelCustomEdge&lt;RepastHPCDemoAgent&gt; &gt; demoEdge(new DemoModelCustomEdge&lt;RepastHPCDemoAgent&gt;(ego, agents[i], i + 1, i * i));</b>
+                agentNetwork-&gt;addEdge(demoEdge);
+            }
+	}
+	iter++;
+    }
+}
+</pre></code></div>    
+
+    <p>The model passes an instance of this network to the agents in the 'doSomething' network, when the agent's 'play' method is called; the agents receive this and act on it. Because of this, the Agent.h and Agent.cpp code must also be updated.</p>
+    <p>Agent.h must include the new network header file:</p>
+
+<div class="code"><code><pre>
+/* Demo_02_Agent.h */
+
+#ifndef DEMO_02_AGENT
+#define DEMO_02_AGENT
+
+#include "AgentId.h"
+#include "SharedContext.h"
+#include "SharedNetwork.h"
+<b class="code">#include "Demo_02_Network.h"</b>
+</pre></code></div>
+
+    <p>The 'play' method signature must be changed:</p>
+
+<div class="code"><code><pre>
+/* Agents */
+class RepastHPCDemoAgent{
+	
+private:
+    repast::AgentId   id_;
+    double              c;
+    double          total;
+	
+public:
+    RepastHPCDemoAgent(repast::AgentId id);
+	RepastHPCDemoAgent(){}
+    RepastHPCDemoAgent(repast::AgentId id, double newC, double newTotal);
+	
+    ~RepastHPCDemoAgent();
+	
+    /* Required Getters */
+    virtual repast::AgentId& getId(){                   return id_;    }
+    virtual const repast::AgentId& getId() const {      return id_;    }
+	
+    /* Getters specific to this kind of Agent */
+    double getC(){                                      return c;      }
+    double getTotal(){                                  return total;  }
+	
+    /* Setter */
+    void set(int currentRank, double newC, double newTotal);
+	
+    /* Actions */
+    bool cooperate();                                                 // Will indicate whether the agent cooperates or not; probability determined by = c / total
+    <b class="code">void play(repast::SharedNetwork&lt;RepastHPCDemoAgent,
+              DemoModelCustomEdge&lt;RepastHPCDemoAgent&gt;,
+              DemoModelCustomEdgeContent&lt;RepastHPCDemoAgent&gt;,
+              DemoModelCustomEdgeContentManager&lt;RepastHPCDemoAgent&gt; &gt; *network);</b>
+	
+};
+
+</pre></code></div>
+
+    <p>In the actual 'play' method, we can now retrieve and make use of custom edge values:</p>
+
+<div class="code"><code><pre>
+void RepastHPCDemoAgent::play(repast::SharedNetwork&lt;RepastHPCDemoAgent,
+                              <b class="code">DemoModelCustomEdge&lt;RepastHPCDemoAgent&gt;,
+                              DemoModelCustomEdgeContent&lt;RepastHPCDemoAgent&gt;,
+                              DemoModelCustomEdgeContentManager&lt;RepastHPCDemoAgent&gt;</b> &gt; *network){
+    std::vector&lt;RepastHPCDemoAgent*&gt; agentsToPlay;
+    network-&gt;successors(this, agentsToPlay);
+
+    double cPayoff     = 0;
+    double totalPayoff = 0;
+    std::vector&lt;RepastHPCDemoAgent*&gt;::iterator agentToPlay = agentsToPlay.begin();
+    while(agentToPlay != agentsToPlay.end()){
+        <b class="code">boost::shared_ptr&lt;DemoModelCustomEdge&lt;RepastHPCDemoAgent&gt; &gt;</b> edge = network-&gt;findEdge(this, *agentToPlay);
+        double edgeWeight = edge-&gt;weight();
+        <b class="code">int confidence = edge-&gt;getConfidence();</b>
+        
+        bool iCooperated = cooperate();                          // Do I cooperate?
+        double payoff = (iCooperated ?
+						 ((*agentToPlay)-&gt;cooperate() ?  7 : 1) :     // If I cooperated, did my opponent?
+						 ((*agentToPlay)-&gt;cooperate() ? 10 : 3));     // If I didn't cooperate, did my opponent?
+        if(iCooperated) cPayoff += payoff <b class="code">* confidence * confidence</b> * edgeWeight;
+        totalPayoff             += payoff <b class="code">* confidence * confidence</b> * edgeWeight;
+		
+        agentToPlay++;
+    }
+    c      += cPayoff;
+    total  += totalPayoff;
+	
+}
+</pre></code></div>    
+
+    <p>There is one, final but crucial step. You <b>must</b> replace the 'BOOST_CLASS_EXPORT_GUID' line at the top of the Model.cpp file so that it now exports the correct class:</p>
+
+<div class="code"><code><pre>
+  BOOST_CLASS_EXPORT_GUID(repast::SpecializedProjectionInfoPacket&lt;<b class="code">DemoModelCustomEdgeContent&lt;RepastHPCDemoAgent&gt; </b>&gt;, "<b class="code">SpecializedProjectionInfoPacket_CUSTOM_EDGE</b>");</b>
+</pre></code></div>    
+    <p>Note that the name (in quotation marks) is arbitrary, and hence it doesn't have to be changed, as long as it is unique for all BOOST_CLASS_EXPORT_GUID statements (we only have one).</p>
+
+
+
+    <script type="text/javascript">footer("RepastHPC_Demo_02_Step_05");</script>
+  </body>
+</html>

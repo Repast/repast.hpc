@@ -1,0 +1,65 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_02_Step_04");</script>
+    <p>In the preceding demos, all edges are considered equivalent. In this demo, we consider an attribute of an edge, termed the 'Edge Weight'. An Edge Weight is a value that is associated with an edge. Weighted graphs are useful in a wide array of domains, and analysis routines that calculate network structure using edge weights are also common.</p>
+    <p>Repast HPC's native implementation of an edge includes a 'weight' attribute; all that is needed is to make use of it.</p>
+    <p>For our demo, we will simply set the edge weight when the edge is corrected. This can be done by simply adding the weight as an additional argument to the addEdge method call in the RepastHPCDemoModel::connectAgentNetwork method:</p>
+
+<div class="code"><code><pre>
+void RepastHPCDemoModel::connectAgentNetwork(){
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_local_iterator iter    = context.localBegin();
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_local_iterator iterEnd = context.localEnd();
+	while(iter != iterEnd) {
+		RepastHPCDemoAgent* ego = &**iter;
+		std::vector&lt;RepastHPCDemoAgent*&gt; agents;
+		agents.push_back(ego);                          // Omit self
+		context.selectAgents(5, agents, true);          // Choose 5 other agents randomly
+		// Make an undirected connection
+		for(size_t i = 0; i &lt; agents.size(); i++){
+         	    <b class="temp">std::cout &lt;&lt; "CONNECTING: " &lt;&lt; ego-&gt;getId() &lt;&lt; " to " &lt;&lt; agents[i]-&gt;getId() &lt;&lt; std::endl;</b>
+  	  	    agentNetwork-&gt;addEdge(ego, agents[i], <b class="code">i + 1</b>);	
+		}
+		iter++;
+	}	
+}
+</pre></code></div>
+  <p>In this case we are simply setting the edge weight to whatever the value of 'i' happens to be plus one (to avoid zero), which means we will get one edge with a weight of 1, one with a weight of 1, etc.</p>
+  <p>To make use of this value, we need only retrieve the edge from the network and call the weight() method of it, which we will do in our play() method:</p>
+
+<div class="code"><code><pre>
+void RepastHPCDemoAgent::play(repast::SharedNetwork&ltRepastHPCDemoAgent,
+                              repast::RepastEdge&ltRepastHPCDemoAgent&gt,
+                              repast::RepastEdgeContent&ltRepastHPCDemoAgent&gt,
+                              repast::RepastEdgeContentManager&ltRepastHPCDemoAgent&gt &gt *network){
+    std::vector&ltRepastHPCDemoAgent*&gt agentsToPlay;
+    network-&gtsuccessors(this, agentsToPlay);
+
+    double cPayoff     = 0;
+    double totalPayoff = 0;
+    std::vector&ltRepastHPCDemoAgent*&gt::iterator agentToPlay = agentsToPlay.begin();
+    while(agentToPlay != agentsToPlay.end()){
+        <b class="code">double edgeWeight = network-&gtfindEdge(this, *agentToPlay)-&gtweight();</b>
+        bool iCooperated = cooperate();                          // Do I cooperate?
+        double payoff = (iCooperated ?
+						 ((*agentToPlay)-&gtcooperate() ?  7 : 1) :     // If I cooperated, did my opponent?
+						 ((*agentToPlay)-&gtcooperate() ? 10 : 3));     // If I didn't cooperate, did my opponent?
+        if(iCooperated) cPayoff += payoff <b class="code">+ weight * weight</b>;
+        totalPayoff             += payoff <b class="code">+ weight * weight</b>;
+		
+        agentToPlay++;
+    }
+    c      += cPayoff;
+    total  += totalPayoff;
+	
+}
+</pre></code></div>
+  <p>Here we are multiplying the payoff by the weight squared (to make the differences profound). Results should be identical to earlier runs, but with much larger numbers for total payoffs.</p>
+
+    <script type="text/javascript">footer("RepastHPC_Demo_02_Step_04");</script>
+  </body>
+</html>

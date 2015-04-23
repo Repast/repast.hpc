@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_00_Step_11");</script>
+    <p>Typically it will be necessary to do multiple runs that are different; it is helpful to configure the simulation so that it can be run with alternative sets of parameters. A common method for doing this is to specify the values that are needed in a 'properties' file; the values in this file are read into the simulation and determine how it runs.</p>
+    <p>Repast HPC provides a built-in mechanism for reading properties files; the code that uses this looks like:</p>
+<div class="code"><code><pre>
+#include &lt;stdio.h&gt;
+#include &lt;boost/mpi.hpp&gt;
+#include "RepastProcess.h"
+<b class="code">#include "Utilities.h"
+#include "Properties.h"</b>
+
+class RepastHPCDemoModel{
+	<b class="code">int stopAt;</b>
+public:
+	<b class="code">RepastHPCDemoModel(std::string propsFile){
+		repast::Properties props(propsFile);
+		stopAt = repast::strToInt(props.getProperty("stop.at"));
+	}</b>
+	~RepastHPCDemoModel(){}
+	void init(){}
+	void doSomething(){
+		std::cout << "Rank " << repast::RepastProcess::instance()->rank() << " is doing something." << std::endl;
+	}
+	void initSchedule(repast::ScheduleRunner& runner){
+		runner.scheduleEvent(1, 1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::doSomething)));
+		<b class="code">runner.scheduleStop(stopAt);</b>
+	}
+};
+
+int main(int argc, char** argv){
+	
+	std::string configFile = argv[1]; // The name of the configuration file is Arg 1
+	<b class="code">std::string propsFile  = argv[2]; // The name of the properties file is Arg 2</b>
+	
+	boost::mpi::environment env(argc, argv);
+	boost::mpi::communicator world;
+
+	repast::RepastProcess::init(configFile);
+	
+	RepastHPCDemoModel* model = new RepastHPCDemoModel(<b class="code">propsFile</b>);
+	repast::ScheduleRunner& runner = repast::RepastProcess::instance()->getScheduleRunner();
+	
+	model->init();
+	model->initSchedule(runner);
+	
+	runner.run();
+	
+	delete model;
+	
+	repast::RepastProcess::instance()->done();
+	
+}
+</pre></code></div>
+    <p>The main change is that the model class now takes a properties file name as an argument to its constructor; it then creates an instance of the 'Properties' class that will contain all the values specified in this file. It uses this class to get the value for a new instance variable, 'stopAt'. This is then used in the schedule initialization to specify when the model should stop. Note that the 'Properties.h' file must be included to use the Properties class, and the 'Utilities.h' file is included for the repast::strToInt function (which takes a property in the form of a string and converts it to an integer).</p>
+    <p>To use this, you must run the code with a second argument, in addition to the configuration file, like:</p>
+    <div class="code"><code><pre>/usr/bin/local/mpirun -n 4 Demo_00.exe config.props model.props</pre></code></div>
+    <p>Or:</p>
+    <div class="code"><code><pre>qsub -A MyProject -n 4 -cwd /pvfs-surveyor/ -o Demo_00 -t 10 ./Demo_00.exe config.props model.props</pre></code></div>
+    <p>An example properties file is included in the directory for this step; its contents are:</p>
+<div class="code"><code><pre>
+#Properties file
+stop.at = 2
+</pre></code></div>
+    <p>The first line (marked by a '#') is a comment. The second line contains the definition of the property 'stop.ap' and its value. Properties and values are separated by an '=' sign and whitespace.</p>
+    <p>You can run this code with different values in the properties file; the code will run for different numbers of timesteps accordingly.</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_00_Step_11");</script>
+  </body>
+</html>

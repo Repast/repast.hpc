@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_00_Step_07");</script>
+    <h2>Initializing a schedule</h2>
+    <p>Our next step will be to make our model do something under the control of Repast HPC. In this step we lay the foundation for this. To the code from the previous example we add:</p>
+<div class="code"><code><pre>
+#include &lt;stdio.h&gt;
+#include &lt;boost/mpi.hpp&gt;
+#include "RepastProcess.h"
+
+class RepastHPCDemoModel{
+public:
+	RepastHPCDemoModel(){}
+	~RepastHPCDemoModel(){}
+	void init(){}
+	<b class="code">void initSchedule(repast::ScheduleRunner& runner){}</b>
+};
+
+int main(int argc, char** argv){
+	
+	std::string configFile = argv[1]; // The name of the configuration file is Arg 1
+	
+	boost::mpi::environment env(argc, argv);
+	boost::mpi::communicator world;
+
+	repast::RepastProcess::init(configFile);
+	
+	RepastHPCDemoModel* model = new RepastHPCDemoModel();
+	<b class="code">repast::ScheduleRunner& runner = repast::RepastProcess::instance()->getScheduleRunner();</b>
+	
+	model->init();
+	<b class="code">model->initSchedule(runner);</b>
+	
+	delete model;
+	
+	repast::RepastProcess::instance()->done();
+	
+}
+</pre></code></div>
+    <p>This provides the model class that we have created with a way to initialize a schedule, via the new 'initSchedule' method. The call to RepastProcess::instance()->getScheduleRunner() retrieves a handle to an object that manages the timing by which events in RepastHPC take place. This is then passed to the model, so the model can add events to the schedule.</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_00_Step_07");</script>
+  </body>
+</html>

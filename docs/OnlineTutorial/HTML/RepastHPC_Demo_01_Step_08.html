@@ -1,0 +1,198 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_01_Step_08");</script>
+    <p>Now that there is an agent 'package' that can be sent from process to process, we need to provide the code that can play the role of sender and receiver.</p>
+    <p>At a conceptual level, this means creating a class or classes that provide four required functions (assuming 'Agent' represents the class of agents being exchanged):</p>
+    <ul>
+      <li><div class="code"><code>void providePackage(Agent * agent, std::vector<AgentPackage>& out);</code></div></li>
+      <li><div class="code"><code>void provideContent(repast::AgentRequest req, std::vector<AgentPackage>& out);</code></div></li>
+      <li><div class="code"><code>Agent * createAgent(AgentPackage package);</code></div></li>
+      <li><div class="code"><code>void updateAgent(AgentPackage package);</code></div></li>
+    </ul>
+    <p>The first two act to facilitate 'sending'. The 'providePackage' function is expected to take a pointer to an Agent, find that agent in the context, create an agent 'package', and add that package to the vector of agent packages. The second is very similar, except that it is given an 'AgentRequest'. An AgentRequest will contain a collection of AgentId, and the assumption is that the code will loop through this collection and retrieve the package for each of the agents listed (possibly by calling the 'providePackage' function.</p>
+    <p>The last two functions act to facilitate 'receiving'. The 'createAgent' function must take an agent 'package' and make an agent out of it, returning a pointer to it. This is used when an agent is being sent from one process to another; it will be destroyed on the original process and recreated on the new process. The 'updateAgent' function is used when a copy of an agent is already on the receiving process, and it needs only to be updated with the information that is being received from the sending process.</p>
+    <p>Any class or classes that provide these functions can be used. One variation, sometimes employed, is for the model class itself to provide these functions. However, for this demo, we will create classes that have as their only functions playing the 'sender' and 'receiver' roles.</p>
+    <p>The code we will use is added to the Model.h and Model.cpp files:</p>
+<div class="code"><code><pre>
+/* Demo_01_Model.h */
+
+#ifndef DEMO_01_MODEL
+#define DEMO_01_MODEL
+
+#include &lt;boost/mpi.hpp&gt;
+#include "Schedule.h"
+#include "Properties.h"
+#include "SharedContext.h"
+<b class="code">#include "AgentRequest.h"</b>
+
+#include "Demo_01_Agent.h"
+
+<b class="code">/* Agent Package Provider */
+class RepastHPCDemoAgentPackageProvider {
+	
+private:
+    repast::SharedContext&lt;RepastHPCDemoAgent&gt;* agents;
+	
+public:
+	
+    RepastHPCDemoAgentPackageProvider(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* agentPtr);
+	
+    void providePackage(RepastHPCDemoAgent * agent, std::vector&lt;RepastHPCDemoAgentPackage&gt;& out);
+	
+    void provideContent(repast::AgentRequest req, std::vector&lt;RepastHPCDemoAgentPackage&gt;& out);
+	
+};</b>
+
+<b class="code">/* Agent Package Receiver */
+class RepastHPCDemoAgentPackageReceiver {
+	
+private:
+    repast::SharedContext&lt;RepastHPCDemoAgent&gt;* agents;
+	
+public:
+	
+    RepastHPCDemoAgentPackageReceiver(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* agentPtr);
+	
+    RepastHPCDemoAgent * createAgent(RepastHPCDemoAgentPackage package);
+	
+    void updateAgent(RepastHPCDemoAgentPackage package);
+	
+};</b>
+
+
+class RepastHPCDemoModel{
+	int stopAt;
+	int countOfAgents;
+	repast::Properties* props;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt; context;
+	
+	<b class="code">RepastHPCDemoAgentPackageProvider* provider;</b>
+	<b class="code">RepastHPCDemoAgentPackageReceiver* receiver;</b>
+	
+public:
+	RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm);
+	~RepastHPCDemoModel();
+	void init();
+	void doSomething();
+	void initSchedule(repast::ScheduleRunner& runner);
+	void recordResults();
+};
+
+#endif
+
+</pre></code></div>
+
+    <p>And</p>
+<div class="code"><code><pre>
+/* Demo_01_Model.cpp */
+
+#include &lt;stdio.h&gt;
+#include &lt;vector&gt;
+#include &lt;boost/mpi.hpp&gt;
+#include "AgentId.h"
+#include "RepastProcess.h"
+#include "Utilities.h"
+#include "Properties.h"
+#include "initialize_random.h"
+
+#include "Demo_01_Model.h"
+
+
+<b class="code">RepastHPCDemoAgentPackageProvider::RepastHPCDemoAgentPackageProvider(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* agentPtr): agents(agentPtr){ }
+
+void RepastHPCDemoAgentPackageProvider::providePackage(RepastHPCDemoAgent * agent, std::vector&lt;RepastHPCDemoAgentPackage&gt;& out){
+    repast::AgentId id = agent->getId();
+    RepastHPCDemoAgentPackage package(id.id(), id.startingRank(), id.agentType(), id.currentRank(), agent->getC(), agent->getTotal());
+    out.push_back(package);
+}
+
+void RepastHPCDemoAgentPackageProvider::provideContent(repast::AgentRequest req, std::vector&lt;RepastHPCDemoAgentPackage&gt;& out){
+    std::vector&lt;repast::AgentId&gt; ids = req.requestedAgents();
+    for(size_t i = 0; i < ids.size(); i++){
+        providePackage(agents->getAgent(ids[i]), out);
+    }
+}
+
+
+RepastHPCDemoAgentPackageReceiver::RepastHPCDemoAgentPackageReceiver(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* agentPtr): agents(agentPtr){}
+
+RepastHPCDemoAgent * RepastHPCDemoAgentPackageReceiver::createAgent(RepastHPCDemoAgentPackage package){
+    repast::AgentId id(package.id, package.rank, package.type, package.currentRank);
+    return new RepastHPCDemoAgent(id, package.c, package.total);
+}
+
+void RepastHPCDemoAgentPackageReceiver::updateAgent(RepastHPCDemoAgentPackage package){
+    repast::AgentId id(package.id, package.rank, package.type);
+    RepastHPCDemoAgent * agent = agents->getAgent(id);
+    agent->set(package.currentRank, package.c, package.total);
+}</b>
+
+
+RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm): context(comm){
+	props = new repast::Properties(propsFile, argc, argv, comm);
+	stopAt = repast::strToInt(props->getProperty("stop.at"));
+	countOfAgents = repast::strToInt(props->getProperty("count.of.agents"));
+	initializeRandom(*props, comm);
+	if(repast::RepastProcess::instance()->rank() == 0) props->writeToSVFile("./output/record.csv");
+	<b class="code">provider = new RepastHPCDemoAgentPackageProvider(&context);</b>
+	<b class="code">receiver = new RepastHPCDemoAgentPackageReceiver(&context);</b>
+}
+
+RepastHPCDemoModel::~RepastHPCDemoModel(){
+	delete props;
+	<b class="code">delete provider;</b>
+	<b class="code">delete receiver;</b>
+
+}
+
+void RepastHPCDemoModel::init(){
+	int rank = repast::RepastProcess::instance()->rank();
+	for(int i = 0; i < countOfAgents; i++){
+		repast::AgentId id(i, rank, 0);
+		id.currentRank(rank);
+		RepastHPCDemoAgent* agent = new RepastHPCDemoAgent(id);
+		context.addAgent(agent);
+	}
+}
+
+void RepastHPCDemoModel::doSomething(){
+	std::vector&lt;RepastHPCDemoAgent*&gt; agents;
+	context.selectAgents(countOfAgents, agents);
+	std::vector&lt;RepastHPCDemoAgent*&gt;::iterator it = agents.begin();
+	while(it != agents.end()){
+		(*it)->play(&context);
+		it++;
+    }
+}
+
+void RepastHPCDemoModel::initSchedule(repast::ScheduleRunner& runner){
+	runner.scheduleEvent(1, 1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::doSomething)));
+	runner.scheduleEndEvent(repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::recordResults)));
+	runner.scheduleStop(stopAt);
+}
+
+void RepastHPCDemoModel::recordResults(){
+	if(repast::RepastProcess::instance()->rank() == 0){
+		props->putProperty("Result","Passed");
+		std::vector&lt;std::string&gt; keyOrder;
+		keyOrder.push_back("RunNumber");
+		keyOrder.push_back("stop.at");
+		keyOrder.push_back("Result");
+		props->writeToSVFile("./output/results.csv", keyOrder);
+    }
+}
+</pre></code></div>
+    <p>A few notes are in order to clarify this new code. First, notice that the model class has a pointer to a provider and receiver object; just like the 'Properties' object, the actual instance is created using the 'new' keyword, and thus has to be destroyed in the destructor using 'delete.'<p>
+    <p>Next, notice that the 'providePackage' and 'provideContent' functions work together: the first simply takes a pointer to an agent and makes a package out of it, and the second takes a list of agents (from the 'agent request' object), gets pointers to them, and uses 'providePackage' to generate and package the content to be sent.</p>
+
+    <div class="sidebar" id="WhatsSizeT" onClick=toggleSidebar("WhatsSizeT")><b>What's 'size_t'?</b></div>
+    <div class="defHIDDEN" id="WhatsSizeT_DEF" onClick=toggleSidebar("WhatsSizeT")>If you're used to Java, the loop through the list of agents in the agent request will look funny: what is 'size_t'? C and C++ are much pickier about variable types than Java. In Java you can loop through the indexes of a collection's members using an int; this will (probably) work in C++ (it depends on your compiler), but technically there are differences between an 'int' and the index of a collection: an int can be negative, for example, and the maximum possible size of a collection may be larger (or smaller) than an 'int' can represent. To reflect this, there is a data type specifically for collection indexes: size_t. You should use this in loops like the one here.</div>
+    <p>Notice also that the 'create agent' method creates a new AgentId instance for the agent, matching its original ID (except for the 'current rank' variable, which will be reset automatically to the current rank). If, in the 'updateAgent' function, the specified agent is not found, the program will crash due to a null pointer exception (we will omit the error trap for this here; it should never happen.)</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_01_Step_08");</script>
+  </body>
+</html>

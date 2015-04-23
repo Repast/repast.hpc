@@ -1,0 +1,188 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_01_Step_17");</script>
+    <p>An important and obvious component of running simulations is collecting data. Collecting data, however, can be difficult in a parallel environment. Data must be collected across processes, and this could require extensive MPI programming. Repast HPC contains features that automate this procedure and render the cross-process parts of data collection invisible to the user.</p>
+    <p>The first step to implementing this is to give the RepastHPCDemoModel an instance of SVDataSet, which will act as the data collector. First we modify Demo_01_Model.h:</p>
+
+<div class="code"><code><pre>
+<b class="code">#include "TDataSource.h"
+#include "SVDataSet.h"</b>
+</pre></code></div> 
+
+<p>And:</p>
+
+<div class="code"><code><pre>
+class RepastHPCDemoModel{
+	int stopAt;
+	int countOfAgents;
+	repast::Properties* props;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt; context;
+	
+	RepastHPCDemoAgentPackageProvider* provider;
+	RepastHPCDemoAgentPackageReceiver* receiver;
+    
+   	<b class="code">repast::SVDataSet* agentValues;</b>
+	
+public:
+	RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm);
+	~RepastHPCDemoModel();
+	void init();
+	void requestAgents();
+	void cancelAgentRequests();
+	void removeLocalAgents();
+	void moveAgents();
+	void doSomething();
+	void initSchedule(repast::ScheduleRunner& runner);
+	void recordResults();
+};
+</pre></code></div> 
+    
+    <p>Data sets contain data sources. We will need to create two custom classes as instances of these data sources, also in Demo_01_Model.h:</p>
+
+<div class="code"><code><pre>
+<b class="code">/* Data Collection */
+class DataSource_AgentTotals : public repast::TDataSource&lt;int&gt;{
+private:
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt;* context;
+    
+public:
+	DataSource_AgentTotals(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* c);
+	int getData();
+};
+
+
+class DataSource_AgentCTotals : public repast::TDataSource&lt;int&gt;{
+private:
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt;* context;
+	
+public:
+	DataSource_AgentCTotals(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* c);
+	int getData();
+};
+</b>
+</pre></code></div> 
+
+
+    <p>We need to add their implementation in Demo_01_Model.cpp:</p>
+<div class="code"><code><pre>
+<b class="code">DataSource_AgentTotals::DataSource_AgentTotals(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* c) : context(c){ }
+
+int DataSource_AgentTotals::getData(){
+	int sum = 0;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_local_iterator iter    = context-&gt;localBegin();
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_local_iterator iterEnd = context-&gt;localEnd();
+	while( iter != iterEnd) {
+		sum+= (*iter)-&gt;getTotal();
+		iter++;
+	}
+	return sum;
+}
+
+DataSource_AgentCTotals::DataSource_AgentCTotals(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* c) : context(c){ }
+
+int DataSource_AgentCTotals::getData(){
+	int sum = 0;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_local_iterator iter    = context-&gt;localBegin();
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_local_iterator iterEnd = context-&gt;localEnd();
+	while( iter != iterEnd) {
+		sum+= (*iter)-&gt;getC();
+		iter++;
+	}
+	return sum;
+}
+</b>
+</pre></code></div> 
+
+
+    <p>Each of these does the same thing: loops through all agents, getting a value from each agent and adding it to the sum. It then returns the total.</p>
+    <p>The key, however, is that this is run on all processes, and then a collective operation is performed to sum the results from all processe
+globally; the data set will include the appropriate global values automatically.</p>
+
+    <p>To create the instances of this, we modify the RepastHPCDemoModel constructor in Demo_01_Model.cpp. This requires a new include:</p>
+
+<div class="code"><code><pre>
+<b class="code">#include "SVDataSetBuilder.h"</b>
+</pre></code></div> 
+
+<p>And:</p>
+
+<div class="code"><code><pre>
+RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm): context(comm){
+	props = new repast::Properties(propsFile, argc, argv, comm);
+	stopAt = repast::strToInt(props-&gt;getProperty("stop.at"));
+	countOfAgents = repast::strToInt(props-&gt;getProperty("count.of.agents"));
+	initializeRandom(*props, comm);
+	if(repast::RepastProcess::instance()-&gt;rank() == 0) props-&gt;writeToSVFile("./output/record.csv");
+	provider = new RepastHPCDemoAgentPackageProvider(&context);
+	receiver = new RepastHPCDemoAgentPackageReceiver(&context);
+
+<b class="code">    
+        // Data collection
+	// Create the data set builder
+	std::string fileOutputName("./output/agent_total_data.csv");
+	repast::SVDataSetBuilder builder(fileOutputName.c_str(), ",", repast::RepastProcess::instance()-&gt;getScheduleRunner().schedule());
+	
+	// Create the individual data sets to be added to the builder
+	DataSource_AgentTotals* agentTotals_DataSource = new DataSource_AgentTotals(&context);
+	builder.addDataSource(createSVDataSource("Total", agentTotals_DataSource, std::plus&lt;int&gt;()));
+    
+	DataSource_AgentCTotals* agentCTotals_DataSource = new DataSource_AgentCTotals(&context);
+	builder.addDataSource(createSVDataSource("C", agentCTotals_DataSource, std::plus&lt;int&gt;()));
+    
+	// Use the builder to create the data set
+	agentValues = builder.createDataSet();</b>
+	   
+}
+</pre></code></div> 
+
+     <p>Note the sequence: first, individual a <em>data set builder</em> is created; next, individual <em>data sources</em> are created and added to the builder; then the builder is used to create the instance of the data set.</p>
+
+
+     <p>Cleanup:</p>
+
+<div class="code"><code><pre>
+RepastHPCDemoModel::~RepastHPCDemoModel(){
+	delete props;
+	delete provider;
+	delete receiver;
+    
+<b class="code">	delete agentValues;</b>
+}
+</pre></code></div> 
+
+     <p>After this, the only thing that must be done is to schedule when data collection occurs:</p>
+
+<div class="code"><code><pre>
+void RepastHPCDemoModel::initSchedule(repast::ScheduleRunner& runner){
+	runner.scheduleEvent(1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::requestAgents)));
+	runner.scheduleEvent(2, 1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::doSomething)));
+	runner.scheduleEvent(3, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::moveAgents)));
+	runner.scheduleEndEvent(repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::recordResults)));
+	runner.scheduleStop(stopAt);
+    
+<b class="code">        // Data collection
+	runner.scheduleEvent(1.5, 5, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;repast::DataSet&gt;(agentValues, &repast::DataSet::record)));
+	runner.scheduleEvent(10.6, 10, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;repast::DataSet&gt;(agentValues, &repast::DataSet::write)));
+	runner.scheduleEndEvent(repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;repast::DataSet&gt;(agentValues, &repast::DataSet::write)));</b>
+}
+</pre></code></div> 
+
+    <p>When run, the data set will write to a file with the specified file name; the output will look like this:</p>
+<div class="code"><code><pre>
+"tick","Total","C"
+1.5,16000,8000
+6.5,21863,10180
+11.5,27731,12198
+16.5,33262,13879
+</pre></code></div> 
+
+    <p>The first column gives the simulation time tick at which the data were collected; the secomd gives the total agent amount, and the third gives the total 'C' values for all agents. This represents the total for the entire simulation (all processes); the data have been collected from across the processes invisibly.</p>
+
+    <script type="text/javascript">footer("RepastHPC_Demo_01_Step_17");</script>
+  </body>
+</html>

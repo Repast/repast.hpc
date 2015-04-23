@@ -1,0 +1,434 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_01_Step_12");</script>
+    <p>Issuing an agent request to 'borrow' agents from another process does two things. Of these, the most visible one is that a copy of the new agent is created an added to the context on the process making the request. The second, which we have just demonstrated, is that the process that 'owns' the agent is instructed that it should send updates of that agent's information to the local context anytime 'syncAgents' is called. This second aspect is both more important and subtler than it seems, in some ways that the next few demo steps will illustrate.</p>
+    <p>First, let's assume that for some reason related to your desired simulation dynamics, you only need to 'borrow' these agents temporarily; after some number of time steps, you no longer need them. After that, maintaining them on your process and continuing to receive information about them is wasteful. What is needed is a way to 'Cancel' the agent request.</p>
+    <p>In RepastHPC you can 'cancel' agent requests using much the same procedure as is used in making the original request: an 'AgentRequest' object is created and passed via the 'requestAgents' method. The difference is in the way that the AgentRequest object is used: each AgentRequest object has a list of agents being requested and a second list for agent requests that are being cancelled. To cancel a request, the agent ID should be added to this second list.</p>
+    <p>To demonstrate this, let's add a function to the RepastHPCDemoModel object that cancels agent requests; the algorithm will be to loop through all the non-local agents and add their IDs to the cancellation. To begin this, add the new function signature to the declaration in the Demo_01_Model.h file:</p>
+<div class="code"><code><pre>
+class RepastHPCDemoModel{
+	int stopAt;
+	int countOfAgents;
+	repast::Properties* props;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt; context;
+	
+	RepastHPCDemoAgentPackageProvider* provider;
+	RepastHPCDemoAgentPackageReceiver* receiver;
+	
+public:
+	RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm);
+	~RepastHPCDemoModel();
+	void init();
+	void requestAgents();
+	<b class="code">void cancelAgentRequests();</b>
+	void doSomething();
+	void initSchedule(repast::ScheduleRunner& runner);
+	void recordResults();
+};
+</pre></code></div>
+    <p>The code to create and issue the request is:</p>
+<div class="code"><code><pre>
+<b class="code">void RepastHPCDemoModel::cancelAgentRequests(){
+	int rank = repast::RepastProcess::instance()->rank();
+	if(rank == 0) std::cout << "CANCELING AGENT REQUESTS" << std::endl;
+	repast::AgentRequest req(rank);
+	
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_state_aware_iterator non_local_agents_iter  = context.begin(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::NON_LOCAL);
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt;::const_state_aware_iterator non_local_agents_end   = context.end(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::NON_LOCAL);
+	while(non_local_agents_iter != non_local_agents_end){
+		req.addCancellation((*non_local_agents_iter)->getId());
+		non_local_agents_iter++;
+	}
+	repast::RepastProcess::instance()->requestAgents&lt;RepastHPCDemoAgent, RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(context, req, *provider, *receiver, *receiver);
+}</b>
+</pre></code></div>
+    <p>With an additional change to the 'initSchedule' function, to make the agent cancellation happen (one time) at step 5:<p>
+<div class="code"><code><pre>
+void RepastHPCDemoModel::initSchedule(repast::ScheduleRunner& runner){
+	runner.scheduleEvent(1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::requestAgents)));
+	runner.scheduleEvent(2, 1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::doSomething)));
+	<b class="code">runner.scheduleEvent(4, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::cancelAgentRequests)));</b>
+	runner.scheduleEndEvent(repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::recordResults)));
+	runner.scheduleStop(stopAt);
+}
+</pre></code></div>
+    <p>The following output (with annotations added) illustrates the first <em>Very Important Thing</em> about cancelling agent requests:</p>
+<div class="code"><code><pre>
+ TICK 2
+ BEFORE PLAY: 
+AgentId(3, 0, 0, 0) 100 200
+AgentId(4, 0, 0, 0) 100 200
+AgentId(5, 0, 0, 0) 100 200
+AgentId(6, 0, 0, 0) 100 200
+AgentId(7, 0, 0, 0) 100 200
+AgentId(0, 0, 0, 0) 100 200
+AgentId(8, 0, 0, 0) 100 200
+AgentId(1, 0, 0, 0) 100 200
+AgentId(9, 0, 0, 0) 100 200
+AgentId(2, 0, 0, 0) 100 200
+AgentId(8, 3, 0, 3) 100 200
+AgentId(2, 3, 0, 3) 100 200
+AgentId(3, 1, 0, 1) 100 200
+AgentId(4, 2, 0, 2) 100 200
+AgentId(5, 2, 0, 2) 100 200
+AgentId(5, 3, 0, 3) 100 200
+AgentId(6, 1, 0, 1) 100 200
+AgentId(6, 2, 0, 2) 100 200
+AgentId(7, 1, 0, 1) 100 200
+AgentId(7, 2, 0, 2) 100 200
+AgentId(7, 3, 0, 3) 100 200
+AgentId(8, 1, 0, 1) 100 200
+AgentId(0, 3, 0, 3) 100 200
+AgentId(1, 1, 0, 1) 100 200
+AgentId(1, 2, 0, 2) 100 200
+ AFTER PLAY, BEFORE SYNC: 
+AgentId(3, 0, 0, 0) 114 224 <b class="note"><-Local agents' values change with play</b>
+AgentId(4, 0, 0, 0) 100 230
+AgentId(5, 0, 0, 0) 100 223
+AgentId(6, 0, 0, 0) 108 211
+AgentId(7, 0, 0, 0) 114 224
+AgentId(0, 0, 0, 0) 114 217
+AgentId(8, 0, 0, 0) 108 211
+AgentId(1, 0, 0, 0) 107 220
+AgentId(9, 0, 0, 0) 114 217
+AgentId(2, 0, 0, 0) 107 220
+AgentId(8, 3, 0, 3) 100 200 <b class="note"><-Non-Local agents' values don't change yet</b>
+AgentId(2, 3, 0, 3) 100 200
+AgentId(3, 1, 0, 1) 100 200
+AgentId(4, 2, 0, 2) 100 200
+AgentId(5, 2, 0, 2) 100 200
+AgentId(5, 3, 0, 3) 100 200
+AgentId(6, 1, 0, 1) 100 200
+AgentId(6, 2, 0, 2) 100 200
+AgentId(7, 1, 0, 1) 100 200
+AgentId(7, 2, 0, 2) 100 200
+AgentId(7, 3, 0, 3) 100 200
+AgentId(8, 1, 0, 1) 100 200
+AgentId(0, 3, 0, 3) 100 200
+AgentId(1, 1, 0, 1) 100 200
+AgentId(1, 2, 0, 2) 100 200
+ AFTER SYNC: 
+AgentId(3, 0, 0, 0) 114 224
+AgentId(4, 0, 0, 0) 100 230
+AgentId(5, 0, 0, 0) 100 223
+AgentId(6, 0, 0, 0) 108 211
+AgentId(7, 0, 0, 0) 114 224
+AgentId(0, 0, 0, 0) 114 217
+AgentId(8, 0, 0, 0) 108 211
+AgentId(1, 0, 0, 0) 107 220
+AgentId(9, 0, 0, 0) 114 217
+AgentId(2, 0, 0, 0) 107 220
+AgentId(8, 3, 0, 3) 107 220 <b class="note"><-Non-Local agents' values change with sync</b>
+AgentId(2, 3, 0, 3) 108 218
+AgentId(3, 1, 0, 1) 103 203
+AgentId(4, 2, 0, 2) 102 212
+AgentId(5, 2, 0, 2) 100 223
+AgentId(5, 3, 0, 3) 108 218
+AgentId(6, 1, 0, 1) 101 221
+AgentId(6, 2, 0, 2) 101 214
+AgentId(7, 1, 0, 1) 108 218
+AgentId(7, 2, 0, 2) 109 209
+AgentId(7, 3, 0, 3) 100 216
+AgentId(8, 1, 0, 1) 114 224
+AgentId(0, 3, 0, 3) 102 212
+AgentId(1, 1, 0, 1) 100 223
+AgentId(1, 2, 0, 2) 101 207
+ TICK 3
+ BEFORE PLAY: 
+AgentId(3, 0, 0, 0) 114 224
+AgentId(4, 0, 0, 0) 100 230
+AgentId(5, 0, 0, 0) 100 223
+AgentId(6, 0, 0, 0) 108 211
+AgentId(7, 0, 0, 0) 114 224
+AgentId(0, 0, 0, 0) 114 217
+AgentId(8, 0, 0, 0) 108 211
+AgentId(1, 0, 0, 0) 107 220
+AgentId(9, 0, 0, 0) 114 217
+AgentId(2, 0, 0, 0) 107 220
+AgentId(8, 3, 0, 3) 107 220
+AgentId(2, 3, 0, 3) 108 218
+AgentId(3, 1, 0, 1) 103 203
+AgentId(4, 2, 0, 2) 102 212
+AgentId(5, 2, 0, 2) 100 223
+AgentId(5, 3, 0, 3) 108 218
+AgentId(6, 1, 0, 1) 101 221
+AgentId(6, 2, 0, 2) 101 214
+AgentId(7, 1, 0, 1) 108 218
+AgentId(7, 2, 0, 2) 109 209
+AgentId(7, 3, 0, 3) 100 216
+AgentId(8, 1, 0, 1) 114 224
+AgentId(0, 3, 0, 3) 102 212
+AgentId(1, 1, 0, 1) 100 223
+AgentId(1, 2, 0, 2) 101 207
+ AFTER PLAY, BEFORE SYNC: 
+AgentId(3, 0, 0, 0) 128 248
+AgentId(4, 0, 0, 0) 107 250
+AgentId(5, 0, 0, 0) 107 236
+AgentId(6, 0, 0, 0) 116 222
+AgentId(7, 0, 0, 0) 115 245
+AgentId(0, 0, 0, 0) 116 229
+AgentId(8, 0, 0, 0) 110 223
+AgentId(1, 0, 0, 0) 108 234
+AgentId(9, 0, 0, 0) 122 235
+AgentId(2, 0, 0, 0) 122 235
+AgentId(8, 3, 0, 3) 107 220 <b class="note"><-Non-Local agents' values don't change yet</b>
+AgentId(2, 3, 0, 3) 108 218
+AgentId(3, 1, 0, 1) 103 203
+AgentId(4, 2, 0, 2) 102 212
+AgentId(5, 2, 0, 2) 100 223
+AgentId(5, 3, 0, 3) 108 218
+AgentId(6, 1, 0, 1) 101 221
+AgentId(6, 2, 0, 2) 101 214
+AgentId(7, 1, 0, 1) 108 218
+AgentId(7, 2, 0, 2) 109 209
+AgentId(7, 3, 0, 3) 100 216
+AgentId(8, 1, 0, 1) 114 224
+AgentId(0, 3, 0, 3) 102 212
+AgentId(1, 1, 0, 1) 100 223
+AgentId(1, 2, 0, 2) 101 207
+ AFTER SYNC: 
+AgentId(3, 0, 0, 0) 128 248
+AgentId(4, 0, 0, 0) 107 250
+AgentId(5, 0, 0, 0) 107 236
+AgentId(6, 0, 0, 0) 116 222
+AgentId(7, 0, 0, 0) 115 245
+AgentId(0, 0, 0, 0) 116 229
+AgentId(8, 0, 0, 0) 110 223
+AgentId(1, 0, 0, 0) 108 234
+AgentId(9, 0, 0, 0) 122 235
+AgentId(2, 0, 0, 0) 122 235
+AgentId(8, 3, 0, 3) 114 233 <b class="note"><-Non-Local agents' values change with sync</b>
+AgentId(2, 3, 0, 3) 115 231
+AgentId(3, 1, 0, 1) 104 217
+AgentId(4, 2, 0, 2) 123 233
+AgentId(5, 2, 0, 2) 101 237
+AgentId(5, 3, 0, 3) 109 232
+AgentId(6, 1, 0, 1) 108 241
+AgentId(6, 2, 0, 2) 101 237
+AgentId(7, 1, 0, 1) 116 236
+AgentId(7, 2, 0, 2) 109 225
+AgentId(7, 3, 0, 3) 100 232
+AgentId(8, 1, 0, 1) 115 231
+AgentId(0, 3, 0, 3) 104 217
+AgentId(1, 1, 0, 1) 101 230
+AgentId(1, 2, 0, 2) 109 225
+CANCELING AGENT REQUESTS
+ TICK 4
+ BEFORE PLAY: 
+AgentId(3, 0, 0, 0) 128 248
+AgentId(4, 0, 0, 0) 107 250
+AgentId(5, 0, 0, 0) 107 236
+AgentId(6, 0, 0, 0) 116 222
+AgentId(7, 0, 0, 0) 115 245
+AgentId(0, 0, 0, 0) 116 229
+AgentId(8, 0, 0, 0) 110 223
+AgentId(1, 0, 0, 0) 108 234
+AgentId(9, 0, 0, 0) 122 235
+AgentId(2, 0, 0, 0) 122 235
+AgentId(8, 3, 0, 3) 114 233
+AgentId(2, 3, 0, 3) 115 231
+AgentId(3, 1, 0, 1) 104 217
+AgentId(4, 2, 0, 2) 123 233
+AgentId(5, 2, 0, 2) 101 237
+AgentId(5, 3, 0, 3) 109 232
+AgentId(6, 1, 0, 1) 108 241
+AgentId(6, 2, 0, 2) 101 237
+AgentId(7, 1, 0, 1) 116 236
+AgentId(7, 2, 0, 2) 109 225
+AgentId(7, 3, 0, 3) 100 232
+AgentId(8, 1, 0, 1) 115 231
+AgentId(0, 3, 0, 3) 104 217
+AgentId(1, 1, 0, 1) 101 230
+AgentId(1, 2, 0, 2) 109 225
+ AFTER PLAY, BEFORE SYNC: 
+AgentId(3, 0, 0, 0) 129 255
+AgentId(4, 0, 0, 0) 107 273
+AgentId(5, 0, 0, 0) 114 256
+AgentId(6, 0, 0, 0) 117 236
+AgentId(7, 0, 0, 0) 116 259
+AgentId(0, 0, 0, 0) 116 259
+AgentId(8, 0, 0, 0) 111 244
+AgentId(1, 0, 0, 0) 116 245
+AgentId(9, 0, 0, 0) 122 258
+AgentId(2, 0, 0, 0) 136 259
+AgentId(8, 3, 0, 3) 114 233 <b class="note"><-Non-Local agents' values don't change...</b>
+AgentId(2, 3, 0, 3) 115 231
+AgentId(3, 1, 0, 1) 104 217
+AgentId(4, 2, 0, 2) 123 233
+AgentId(5, 2, 0, 2) 101 237
+AgentId(5, 3, 0, 3) 109 232
+AgentId(6, 1, 0, 1) 108 241
+AgentId(6, 2, 0, 2) 101 237
+AgentId(7, 1, 0, 1) 116 236
+AgentId(7, 2, 0, 2) 109 225
+AgentId(7, 3, 0, 3) 100 232
+AgentId(8, 1, 0, 1) 115 231
+AgentId(0, 3, 0, 3) 104 217
+AgentId(1, 1, 0, 1) 101 230
+AgentId(1, 2, 0, 2) 109 225
+ AFTER SYNC: 
+AgentId(3, 0, 0, 0) 129 255
+AgentId(4, 0, 0, 0) 107 273
+AgentId(5, 0, 0, 0) 114 256
+AgentId(6, 0, 0, 0) 117 236
+AgentId(7, 0, 0, 0) 116 259
+AgentId(0, 0, 0, 0) 116 259
+AgentId(8, 0, 0, 0) 111 244
+AgentId(1, 0, 0, 0) 116 245
+AgentId(9, 0, 0, 0) 122 258
+AgentId(2, 0, 0, 0) 136 259
+AgentId(8, 3, 0, 3) 114 233 <b class="note"><-Non-Local agents' values don't change!!!</b>
+AgentId(2, 3, 0, 3) 115 231
+AgentId(3, 1, 0, 1) 104 217
+AgentId(4, 2, 0, 2) 123 233
+AgentId(5, 2, 0, 2) 101 237
+AgentId(5, 3, 0, 3) 109 232
+AgentId(6, 1, 0, 1) 108 241
+AgentId(6, 2, 0, 2) 101 237
+AgentId(7, 1, 0, 1) 116 236
+AgentId(7, 2, 0, 2) 109 225
+AgentId(7, 3, 0, 3) 100 232
+AgentId(8, 1, 0, 1) 115 231
+AgentId(0, 3, 0, 3) 104 217
+AgentId(1, 1, 0, 1) 101 230
+AgentId(1, 2, 0, 2) 109 225
+</pre></code></div>
+    <p>After the 'cancellation' is issued, what has changed is that the parent process of the borrowed agent no longer sends updating information about the agents whose requests were 'cancelled'. The <em>Very Important Thing</em> to keep in mind is that this is what canceling the request means: it means that the parent process is instructed to not send update information about a particular agent anymore. It does <em>NOT</em> mean that the copy of the agent on the local process is removed from the context; this must be done manually (and will be demonstrated in the next step of this demo). If the agent is not removed, it persists in the local context, but is never synchronized with the original on the parent process.</p>
+<h2>Some advanced notes on canceling agent requests (optional)</h2>
+    <p>The ability to request agents and then cancel the requests for agents leads to a range of 
+possibilities- and a range of possible problems. This is fundamentally a <i>semantic</i> issue,
+in that the meaning of a request or cancellation can change. Repast HPC permits different
+meanings to be applied, and different strategies to be selected.</p>
+    <p>To understand the issue, consider the following sequence:</p>
+    <ul>
+      <li>Process 0 requests Agent 'A' from Process 1</li>
+      <li>Process 0 requests Agent 'A' <em>a second time</em> from Process 1</li>
+      <li>Process 0 cancels its request for Agent 'A' from Process 1</li>
+    </ul>
+    <p>Under one interpretation, Process 0 has requested an agent from Process 1, and then
+cancelled that request, and the agent should not be shared. Under the second interpretation,
+Process 0 needs the Agent 'twice' (perhaps for two different purposes); cancelling the
+agent request only once (when, perhaps, one of the purposes ceases) should leave the other
+request in place, and the agent should continue to be shared.</p>
+    <p>Which is the correct interpretation? One response is to say that the model
+implementation should track requests for agents and should ensure that the requests issued
+to RepastHPC conform to its semantics; originally this meant that no agent should be requested
+twice (and unpredictable behavior could result if this was violated; moreover, a cancellation
+<em>without</em> a request could also be problematic). However, this imposes a burden on the 
+user; more than one semantic strategy can be chosen, and each one can 
+be useful in different situations.</p>
+    <p>Additionally, performance concerns can dictate whether a relatively simple or
+a relatively burdensome strategy is preferable. It may be adequate to keep track only
+of the count of agents request, vs. a list of the actual agents requested.</p>
+    <p>To accommodate the variety of different alternatives, Repast HPC can be compiled
+using different compiler switches to select different variants for the agent request
+'bookkeeping' that is being done. (Note that there is an additional way to use different
+semantics, if your copy of RepastHPC is pre-installed and you are unable to compile the
+different Repast HPC variants as needed; we will use this second approach in the next tutorial
+step.) There are, essentially, two different semantic approaches. In the first, multiple requests 
+for a given agent are tracked and tabulated and require multiple, matching cancellations 
+to render void. In the second, multiple requests for a given agent are considered 
+meaningless, and a single cancellation will stop sharing the agent in question.</p>
+    <p>Under the hood, these are implemented in five ways, based on whether the 'import' side
+of the bookkeeping tracks specific agents or only counts of requests:</p>
+    <ol>
+      <li><em>COUNT-LIST</em>: Multiple requests require multiple cancellations; only a count is 
+kept on the import side</li>
+      <li><em>COUNT-SET</em>: Multiple requests are considered duplicates, and only a single
+cancellation is needed; only a count is kept on the import side</li>
+      <li><em>LIST</em>: Multiple requests require multiple cancellations; import
+and export sides keep list of requested agents</li>
+      <li><em>SET</em>: Multiple requests are considered duplicates, and only a single
+cancellation is needed; import and export sides keep (unique) set of requested agent IDs</li>
+      <li><em>MAP(int)</em>: Multiple requests require multiple cancellations; import
+and export sides keep unique set of requested agent IDs and count of the number of times each
+is requested</li>
+    </ol>
+    <p>Performance concerns should dictate whether you select COUNT-LIST, LIST, or MAP if the
+first kind of semantics is needed, and COUNT-SET or SET if the need is for the second.</p>
+    <p>Note that for those semantic strategies where multiple cancellations are generally required,
+a compilation option can be used to enable a 'full' cancellation, which immediately cancels
+all requests for an agent and stops that agent from being shared no matter how many times it
+has been requested.</p>
+    <p>For this step in the tutorial, the student is advised to compile and re-compile the 
+Repast libraries (if possible) repeatedly using the different variants of the code. The variants
+can be specified in several ways. The most direct way is by editing the AgentImporterExporter.h file,
+following the instructions in the header:</p>
+
+<div class="code"><code><pre>
+/*
+ * If you wish to select the default
+ * kind of Importer/Exporter, use one
+ * of the valid values here (default
+ * if not specified is 1):
+ *          
+ *  1 = COUNT_LIST
+ *  2 = COUNT_SET
+ *  3 = LIST
+ *  4 = SET
+ *  5 = MAP(int)  
+ */
+//#define DEFAULT_IMPORTER_EXPORTER 1
+
+/*
+ * If defined, allow multiple importer/exporter
+ * instances managing distinct sets of agents
+ */
+//#define SHARE_AGENTS_BY_SET
+
+/*
+ * If you wish to allow a single cancellation to be used
+ * to cancel all of an agent's requests (for semantics
+ * where multiple cancellations would ordinarily be
+ * required), define this flag
+ */
+//#define ALLOW_FULL_AGENT_REQUEST_CANCELLATION
+</pre></code></div>
+
+    <p>For example, to allow management by set, with the default kind of manager
+being 'LIST', and full cancellations enabled, use:</p>
+<div class="code"><code><pre>
+/*
+ * If you wish to select the default
+ * kind of Importer/Exporter, use one
+ * of the valid values here (default
+ * if not specified is 1):
+ *          
+ *  1 = COUNT_LIST
+ *  2 = COUNT_SET
+ *  3 = LIST
+ *  4 = SET
+ *  5 = MAP(int)  
+ */
+#define DEFAULT_IMPORTER_EXPORTER 3
+
+/*
+ * If defined, allow multiple importer/exporter
+ * instances managing distinct sets of agents
+ */
+#define SHARE_AGENTS_BY_SET
+
+/*
+ * If you wish to allow a single cancellation to be used
+ * to cancel all of an agent's requests (for semantics
+ * where multiple cancellations would ordinarily be
+ * required), define this flag
+ */
+#define ALLOW_FULL_AGENT_REQUEST_CANCELLATION
+</pre></code></div>
+    <p>These same values can be set from the command line when compilation is initiated. Using the 
+'MANUAL INSTALLATION' provided in the Repast HPC distribution, change the value for the CXX flag to:</p>
+<div class="code"><code><pre>
+CXX=/usr/local/bin/mpicxx -D DEFAULT_IMPORTER_EXPORTER=3 -D SHARE_AGENTS_BY_SET -D ALLOW_FULL_AGENT_REQUEST_CANCELLATION
+</pre></code></div>
+<p>Replace '/usr/local/bin/mpicxx' with the path to invoke your compiler.</p>
+
+
+    <script type="text/javascript">footer("RepastHPC_Demo_01_Step_12");</script>
+  </body>
+</html>

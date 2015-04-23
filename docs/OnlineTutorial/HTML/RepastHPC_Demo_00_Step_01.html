@@ -1,0 +1,104 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_00_Step_01");</script>
+    <p>To start Demo 00, create a file called 'Demo_00.cpp' in the tutorial work directory. Add the following code:</p>
+    <div class="code"><code><pre>
+#include &lt;stdio.h&gt;
+
+int main(int argc, char** argv){
+  printf("Hello, world!\n");
+}
+    </pre></code></div>
+    <p>We want eventually to use the 'make' utility to build our programs, but right now let's do it manually. The first step is to compile the code; this will take
+the '.cpp' file and make an object file ('.o') out of it.</p>
+
+    <div class="sidebar" id="WhatsAnObjectFile" onClick=toggleSidebar("WhatsAnObjectFile")><b>What's an 'Object File'?</b></div>
+    <div class="defHIDDEN" id="WhatsAnObjectFile_DEF" onClick=toggleSidebar("WhatsAnObjectFile")>An object file is a file that contains the compiled code from a source file. This is very commonly only pieces of code, which can be treated as separate objects, and not the entire code needed to create a runnable program. "Linking" puts together pieces from multiple object files.</div>
+
+    <p>To compile this you must first <em>find out what is the way to invoke your MPI-compatible compiler</em>. Often an MPI installation will provide a compiler 'wrapper' that invokes the correct compiler and uses the correct settings to make use of the MPI version that is installed on the specific machine. (Also, you may find that your system will cross-compile: that is, it will perform the compilation on one machine, but the code will be compiled so that it runs on a different machine. A special compiler 'wrapper' may be used for this.)</p>
+    <p>Here is an example but on a Mac OS X laptop with OpenMPI installed:</p>
+    <div class="code"><code><pre>/usr/local/bin/mpicxx -c -o Demo_00.o Demo_00.cpp</pre></code></div>
+    <p>Here is the same example  but as it was done on Argonne National Laboratory's Blue Gene/P login nodes:</p>
+    <div class="code"><code><pre>mpixlcxx -c -o Demo_00.o Demo_00.cpp</pre></code></div>
+    <p>The 'mpixlcxx' (or 'mpicxx') command invokes the mpi-enabled compiler. The "-c" switch means that only compilation will take place, not linking (they are often done with one command, but we are dealing with them individually here). The "-o" option tells the compiler what to name the file it creates (we will use '.o' as the extension for object files). The final argument is the name of the file to be compiled.</p>
+    <div class="sidebar" id="BGPRIP" onClick=toggleSidebar("BGPRIP")><b>Is the BlueGene/P still running?</b></div>
+    <div class="defHIDDEN" id="BGPRIP_DEF" onClick=toggleSidebar("BGPRIP")>The BG/P was retired several years ago, but the examples here are still useful illustrations. The new computer at Argonne is a BlueGene/Q, and the commands are virtually identical.</div>
+    <div class="sidebar" id="WhatsAnMPICompiler" onClick=toggleSidebar("WhatsAnMPICompiler")><b>What's an 'MPI Enabled Compiler'?</b></div>
+    <div class="defHIDDEN" id="WhatsAnMPICompiler_DEF" onClick=toggleSidebar("WhatsAnMPICompiler")>It's a 'normal' compiler (probably one that you can invoke on your own) that is invoked with special commands and switches that tell it where to find mpi-related resources. These special commands are then 'wrapped' in a special name that acts as a shortcut, so all you have to do is type this single, simple name and it will compile using the properly installed MPI files and libraries.</div>
+    <p>Next let's link this into an executable file. To do this, invoke the compiler (which is also used to link), but omit the '-c' option, provide a different name for the output file, and use the name of the object file as the input file:</p>
+    <div class="code"><code><pre>mpixlcxx -o Demo_00.exe Demo_00.o</pre></code></div>
+    <p>The output from this should be another file, Demo_00.exe. This is an executable file.</p>
+    <p>Before going further, let's use these files to show how this tutorial and its supporting files should work. The Demo_00.cpp code you typed in should also be in the SRC/RepastHPC/Demo_00/Step_01 directory. You can compare your copy with the copy in that directory using 'diff', by typing:</p>
+    <div class="code"><code><pre>make compare_RepastHPC_Demo_00_Step_01</pre></code></div>
+    <p>If you typed the code in exactly, there should be no differences, and you should only see a message like "Comparing Demo_00/Step_01/Demo_00.cpp…". Open the Demo_00.cpp file and make a change to:
+    <div class="code"><code><pre>
+#include &lt;stdio.h&gt;
+
+int main(int argc, char** argv){
+  printf("Hello, everybody!\n");
+}
+    </pre></code></div>
+    <p>Now execute the 'compare' again; you will see something like:</p>
+    <div class="code"><code><pre>
+4c4
+<   printf("Hello, world!\n");
+---
+>   printf("Hello, everybody!\n");
+5a6
+>
+    </pre></code></div>
+    <p>This indicates that the line with 'Hello, World!' was taken out and the line with 'Hello, everybody!' was put in.</p>
+
+    <div class="sidebar" id="WhatsDiff" onClick=toggleSidebar("WhatsDiff")><b>What's 'diff'?</b></div>
+    <div class="defHIDDEN" id="WhatsDiff_DEF" onClick=toggleSidebar("WhatsDiff")>'diff' is a program that compares files and produces output that can be used to specify exactly what has changed from one file to another; this is often used in version control. The normal way to use it is to type 'diff File1 File2'.</div>
+
+    <p>Now type:</p>
+    <div class="code"><code><pre>make copy_RepastHPC_Demo_00_Step_01</pre></code></div>
+    <p>This will copy the original code from the SRC directory to the work directory. Running the 'compare' command now will show no differences. <em>IMPORTANT</em>: The 'copy' command also performs a 'clean'. A clean can be manually done by typing:</p>
+    <div class="code"><code><pre>make clean</pre></code></div>
+    <p>This removes all code, object, and executable files from the work directory. You can always copy the original files back, but you will lose any modifications you made. (You will also have to recompile.)</p>
+    <p>Retrieve the copy from the source folder, then recompile and re-link using the same commands as above. The next step is to run the executable.</p>
+    <p>Under some systems, you can run this code just by typing:</p>
+    <div class="code"><code><pre>./Demo_00.exe</pre></code></div>
+    <p>The output should be:</p>
+    <div class="code"><code><pre>Hello, world!</pre></code></div>
+    <p>However, you should know that most of the time this method of running the executable will <em>not</em> work. The reason is that it runs only a single process; to make use of parallel processing the program must be started on multiple processes simultaneously, making use of MPI.</p>
+    <p>How this is done will depend on your system. Commonly, the MPI installation will provide a way to run programs by doing something like:</p>
+    <div class="code"><code><pre>/usr/bin/local/mpirun -n 4 Demo_00.exe</pre></code></div>
+    <p>The '-n 4' switch indicates that the code is to be started on four processes. MPI handles the behind-the-scenes magic of getting the program started on all of them. The output from this should be:</p>
+<div class="code"><code><pre>
+Hello, world!
+Hello, world!
+Hello, world!
+Hello, world!
+</pre></code></div>
+    <p><em>But- importantly- IT MIGHT NOT LOOK LIKE THIS AT ALL!</em> The output above is nice and neat, and indicates that each of the processes took a turn outputting. This isn't required: the parallel processes execute simultaneously, so the output may actually be garbled:</p>
+<div class="code"><code><pre>
+HellHello, wo, world!
+orlHellod!
+, woHello, world!
+rld!
+</pre></code></div>
+    <p>All of the processes are writing more or less simultaneously, so they may step on each other's toes. It is important to keep this in mind when considering all of the program structure and output in the remainder of this tutorial.</p>
+    <p>Other systems, especially those on which the code is being cross-compiled, will require a different way to run the program. On the Blue Gene/P at Argonne National Lab, compilation was performed on login nodes, while execution was performed on the 'compute' nodes; to execute code, it had to be submitted as a 'job', which was done like this:</p>
+<div class="code"><code><pre>qsub -A MyProject -n 4 -cwd /pvfs-surveyor/ -o Demo_00 -t 10 ./Demo_00.exe</pre></code></div>
+    <p>The specifics of this command will vary from system to system (in the above example, the '-A MyProject' indicates the project that will be charged for the run, '-n 4' indicates that it should be run on four processes, '-cwd /pvfs-surveyor/' changes the working directory to a place where output can be written, '-o Demo_00' provides a file name for output, and '-t 10' specifies that the code should be allowed to run for no more than ten minutes before being shut down).</p>
+    <p>For the remainder of this demo, when there is an example given of how to run the program, both the multi-process methods given here will be shown.</p>
+    <h3>Setting the compiler variable in the 'env' file</h3>
+    <p>We're not quite done compiling things manually, but we can now set the first variable in the 'env' file. Open the 'env' file and change the line that says:</p>
+    <div class="code"><code><pre>MPICXX=</pre></code></div>
+    <p>so that it has the path to your compiler after the equals sign, like:</p>
+    <div class="code"><code><pre>MPICXX=/usr/local/bin/mpicxx</pre></code></div>
+    <p>Save this, and now type:</p>
+    <div class="code"><code><pre>make RepastHPC_Demo_00_Step_01</pre></code></div>
+    <p>This will clean the directory, copy the Step 01 source file from the SRC directory, and build (compile and link). You can also use:<p>
+    <div class="code"><code><pre>make RepastHPC_Demo_00</pre></code></div>
+    <p>This will compile the 'Demo_00.cpp' file, which could be from any Step in Demo 00. If there is not a Demo_00.cpp file present, it will copy the final step and build it, completing the demo.</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_00_Step_01");</script>
+  </body>
+</html>

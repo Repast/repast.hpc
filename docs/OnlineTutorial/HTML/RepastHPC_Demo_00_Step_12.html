@@ -1,0 +1,64 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_00_Step_12");</script>
+    <p>There is a problem with the preceding code: it will not scale. When the number of processes is low, it will be fine; however, when the number of processes grows very large, there will be difficulties retrieving the properties file. This is because all of the processes perform independent reads on the properties file, leading to a situation where the simulation must open, read, and close a file thousands or tens of thousands of times.</p>
+    <p>Under many conditions better performance will be achieved if the properties file is read by only one process and the information in it distributed to the other processes via MPI. Repast HPC provides a simple way to do this: provide the 'Properties' constructor with an mpi communicator, and it will automatically use this to read the properties file once and send its contents to all processes simultaneously. (Note that the benefit of this can be limited: in cases where many processes begin a simulation by reading properties files, the 'collision' among them may be ameliorated by the fact that the arrive at the 'read' point at different times; using the distributed approach, all processes must wait to be synchronized before proceeding with the rest of their initialization, which can reduce performance.)</p>
+    <p>The code to do this is simply a revision of Step 10 (skipping the complex schedule):</p>
+<div class="code"><code><pre>
+#include &lt;stdio.h&gt;
+#include &lt;boost/mpi.hpp&gt;
+#include "RepastProcess.h"
+#include "Utilities.h"
+#include "Properties.h"
+
+class RepastHPCDemoModel{
+	int stopAt;
+public:
+	RepastHPCDemoModel(std::string propsFile<b class="code">, boost::mpi::communicator* comm</b>){
+		repast::Properties props(propsFile<b class="code">, comm</b>);
+		stopAt = repast::strToInt(props.getProperty("stop.at"));
+	}
+	~RepastHPCDemoModel(){}
+	void init(){}
+	void doSomething(){
+		std::cout << "Rank " << repast::RepastProcess::instance()->rank() << " is doing something." << std::endl;
+	}
+	void initSchedule(repast::ScheduleRunner& runner){
+		runner.scheduleEvent(1, 1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::doSomething)));
+		runner.scheduleStop(stopAt);
+	}
+};
+
+int main(int argc, char** argv){
+	
+	std::string configFile = argv[1]; // The name of the configuration file is Arg 1
+	std::string propsFile  = argv[2]; // The name of the properties file is Arg 2
+	
+	boost::mpi::environment env(argc, argv);
+	boost::mpi::communicator world;
+
+	repast::RepastProcess::init(configFile);
+	
+	RepastHPCDemoModel* model = new RepastHPCDemoModel(propsFile<b class="code">, &world</b>);
+	repast::ScheduleRunner& runner = repast::RepastProcess::instance()->getScheduleRunner();
+	
+	model->init();
+	model->initSchedule(runner);
+	
+	runner.run();
+	
+	delete model;
+	
+	repast::RepastProcess::instance()->done();
+	
+}
+</pre></code></div>
+    <p>That is, simply pass through to the Model constructor a pointer to the 'world' communicator, then use this in the 'Properties' constructor.</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_00_Step_12");</script>
+  </body>
+</html>

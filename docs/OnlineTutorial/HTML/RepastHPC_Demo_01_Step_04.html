@@ -1,0 +1,122 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_01_Step_04");</script>
+    <p>Before we continue with the main guts of Repast HPC, we should address one of its supporting- but still crucial- features: the ability to incorporate randomness in a structured and fully reproducible way. On one hand, it should be possible to run a simulation in which randomness is generated and the results are stochastic; on the other, it should be possible to re-run a given simulation exactly, so that every agent performs exactly the same actions the second time as it did the first.</p>
+    <p>Generally the way simulations incorporate randomness is through a random number generator; these aren't actually random, of course, but they generate sequences of numbers that are distributed in a way that mimics statistical randomness. A key feature is that they can be initialized with a random number 'seed' that can be re-used and if it is will produce duplicate results- the same sequence of numbers as before.</p>
+
+    <div class="sidebar" id="WhyArentTheyRandom" onClick=toggleSidebar("WhyArentTheyRandom")><b>Why isn't a 'random' number generator really random?</b></div>
+    <div class="defHIDDEN" id="WhyArentTheyRandom_DEF" onClick=toggleSidebar("WhyArentTheyRandom")>Computers (at least, in the normal sense) are finite state, deterministic machines. They have a finite number of states that they can be in (it's very, very large, but if you had enough time you could count every one of them). They 'compute' things by moving from one state to another (changing a one to a zero, for example). The way they do this is entirely deterministic: given the same state 'A', the next state will always be 'B'. There is no way to do anything truly 'random'. Having said that, the 'pseudo-random' generators do a good job approximating randomness, if they are handled carefully.</div>
+
+    <p>To handle random number generation, modify the model code as:</p>
+<div class="code"><code><pre>
+/* Demo_01_Model.cpp */
+
+#include &lt;stdio.h&gt;
+#include &lt;vector&gt;
+#include &lt;boost/mpi.hpp&gt;
+#include "AgentId.h"
+#include "RepastProcess.h"
+#include "Utilities.h"
+#include "Properties.h"
+<b class="code">#include "initialize_random.h"</b>
+
+#include "Demo_01_Model.h"
+
+RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm): context(comm){
+	props = new repast::Properties(propsFile, argc, argv, comm);
+	stopAt = repast::strToInt(props->getProperty("stop.at"));
+	countOfAgents = repast::strToInt(props->getProperty("count.of.agents"));
+	<b class="code">initializeRandom(*props, comm);</b>
+	if(repast::RepastProcess::instance()->rank() == 0) props->writeToSVFile("./output/record.csv");
+}
+
+RepastHPCDemoModel::~RepastHPCDemoModel(){
+		delete props;
+}
+
+void RepastHPCDemoModel::init(){
+	int rank = repast::RepastProcess::instance()->rank();
+	for(int i = 0; i < countOfAgents; i++){
+		repast::AgentId id(i, rank, 0);
+		id.currentRank(rank);
+		RepastHPCDemoAgent* agent = new RepastHPCDemoAgent(id);
+		context.addAgent(agent);
+	}
+}
+
+void RepastHPCDemoModel::doSomething(){
+	<b class="code">std::cout << "Rank " << repast::RepastProcess::instance()->rank() << " is doing something: " << repast::Random::instance()->nextDouble() << std::endl;</b>
+
+}
+
+void RepastHPCDemoModel::initSchedule(repast::ScheduleRunner& runner){
+	runner.scheduleEvent(1, 1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::doSomething)));
+	runner.scheduleEndEvent(repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::recordResults)));
+	runner.scheduleStop(stopAt);
+}
+
+void RepastHPCDemoModel::recordResults(){
+	if(repast::RepastProcess::instance()->rank() == 0){
+		props->putProperty("Result","Passed");
+		std::vector&lt;std::string&gt; keyOrder;
+		keyOrder.push_back("RunNumber");
+		keyOrder.push_back("stop.at");
+		keyOrder.push_back("Result");
+		props->writeToSVFile("./output/results.csv", keyOrder);
+    }
+}
+</pre></code></div>
+   <p>There is some subtlety to the way that this operates. The key is that the properties should provide a property called 'random.seed', which will be a number (up to some very large number of digits is OK- exactly how large can depend on your system).</p>
+   <p>To see what is happening, run the code without providing a random.seed property. If this is done, Repast HPC uses the system time to generate a random number seed. No record of this is kept, so the run is not reproducible. Even more important, each process performs this independently: if the processes are all closely synchronized, they may end up with the same random number seed, leading to output like:
+<div class="code"><code><pre>
+Rank 0 is doing something: 0.91303
+Rank 0 is doing something: 0.242843
+Rank 0 is doing something: 0.616498
+Rank 0 is doing something: 0.817469
+Rank 1 is doing something: 0.91303
+Rank 1 is doing something: 0.242843
+Rank 1 is doing something: 0.616498
+Rank 1 is doing something: 0.817469
+Rank 2 is doing something: 0.91303
+Rank 2 is doing something: 0.242843
+Rank 2 is doing something: 0.616498
+Rank 2 is doing something: 0.817469
+Rank 3 is doing something: 0.91303
+Rank 3 is doing something: 0.242843
+Rank 3 is doing something: 0.616498
+Rank 3 is doing something: 0.817469
+</pre></code></div>
+    <p>Notice that all four processes go through the same sequence of numbers. This is usually undesirable. Passing a 'random.seed' value leads to each process having a different sequence:</p>
+<div class="code"><code><pre>
+Rank 0 is doing something: 0.435995
+Rank 0 is doing something: 0.185082
+Rank 0 is doing something: 0.0259262
+Rank 0 is doing something: 0.931541
+Rank 1 is doing something: 0.332168
+Rank 1 is doing something: 0.726902
+Rank 1 is doing something: 0.942415
+Rank 1 is doing something: 0.182131
+Rank 2 is doing something: 0.395512
+Rank 2 is doing something: 0.158968
+Rank 2 is doing something: 0.196111
+Rank 2 is doing something: 0.223906
+Rank 3 is doing something: 0.956451
+Rank 3 is doing something: 0.0546108
+Rank 3 is doing something: 0.282349
+Rank 3 is doing something: 0.8081
+</pre></code></div>
+    <p>This seems counterintuitive- without the random number seed there is consistency, while with it there is not. But the random number seed allows runs to be re-run: try passing the same random number seed twice and you will see exactly the same sequence on each processor as you did before, on successive runs.</p>
+    <p>Technically Repast HPC is taking the random.seed you give it and, on process 0, generating random numbers that serve as seeds for all the processes; this is why the 'initializeRandom' function needs the MPI communicator: process 0 sends the new seeds out to all the other processes.</p>
+    <p>However, there are some cases where you want all processes to have the same random number seed. For these cases, passing a property called 'global.random.seed' will allow all processes to use the same seed. The results will look like the first example above (all processes go through the same sequence of numbers), but this time they are reproducible: run with the same global seed again and you will see the same output.</p>
+
+    <div class="sidebar" id="WhyGlobalSeeds" onClick=toggleSidebar("WhyGlobalSeeds")><b>When would I want a global random number seed?</b></div>
+    <div class="defHIDDEN" id="WhyGlobalSeeds_DEF" onClick=toggleSidebar("WhyGlobalSeeds")>Consider a situation in which the processes are building a giant network. Each process will control only some of the nodes on the network, and the links between nodes are random. If two processes are using the same random number sequence, they will generate the same pattern of connections. So, for example, all processes would be able to 'know' that node 10783 should be connected to 82361; most processes would ignore this, but the process that controls 10783 would know to build its half of the connection to 82361, and the process controlling 82361 would know to build its part, connecting to 10783.</div>
+
+    <script type="text/javascript">footer("RepastHPC_Demo_01_Step_04");</script>
+  </body>
+</html>

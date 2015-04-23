@@ -1,0 +1,27 @@
+*******************************************************
+Repast HPC Self-Guided Tutorial
+
+Version 1.0.1-dev
+
+by John T. Murphy
+*******************************************************
+This directory should contain, in addition to this
+README file, two compressed files (tarballs) called
+HTML and SRC. These contain:
+
+   HTML: The full text of the guide, including
+all instructions and explanations of each step
+to be performed in building the tutorial examples
+   SRC: Read-Only versions of the each step in
+the tutorial examples
+
+To use this guide, it is recommended that you:
+
+1) Copy the HTML tarball to a local machine, expand
+it, and open to the main.html page, from which you can
+navigate through the tutorial as a website
+2) Copy the SRC tarball to the machine on which you
+will be compiling and running the Repast HPC code;
+this may be the local machine or it may be a remote
+machine on which you can run HPC code (i.e. a Blue
+Gene system).

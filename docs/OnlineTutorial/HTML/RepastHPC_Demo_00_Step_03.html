@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_00_Step_03");</script>
+    <h2>Demo_00, Step 03: A little more MPI</h2>
+    <h3>Step 03: Processes can do different things</h3>
+    <p>For Step 03, we'll change this slightly by adding a conditional:</p>
+
+<div class="code"><code><pre>
+#include &lt;stdio.h&gt;
+#include &lt;mpi.h&gt;
+
+int main(int argc, char** argv){
+        int rank;
+	
+	MPI_Init(&argc, &argv);
+	
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	
+        <b class="code">if(rank == 0){</b>
+	    printf("Hello, world! I'm rank %d\n", rank);
+        <b class="code">}</b>
+        <b class="code">else{</b>
+	    <b class="code">printf("Hmm...\n");</b>
+        <b class="code">}</b>
+
+	MPI_Finalize();</b>
+}
+</pre></code></div>
+    <p>The effect of this is that now only rank zero will reach the original output line, while the other ranks will pass to the other 'Hmm...' output. Load Step 03's code into the work directory (manually or using the 'copy' function), then build and run it. The output will be something like:</p>
+<div class="code"><code><pre>
+Hmm...
+Hello, world! I'm rank 0
+Hmm...
+Hmm...
+</pre></code></div>
+    <p>The importance of this example is that it shows a very common technique for constructing MPI programs: one rank (rank 0, usually) performs some operations while the others do something else.</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_00_Step_03");</script>
+  </body>
+</html>

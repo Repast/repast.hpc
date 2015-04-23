@@ -1,0 +1,105 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_01_Step_03");</script>
+    <p>Now that there is a place to put agents, we can create them. This (finally) gives us the opportunity to use the 'init' method of the model class. Here is the adjusted code for the 'model' class:</p>
+<div class="code"><code><pre>
+/* Demo_01_Model.h */
+
+#ifndef DEMO_01_MODEL
+#define DEMO_01_MODEL
+
+#include &lt;boost/mpi.hpp&gt;
+#include "Schedule.h"
+#include "Properties.h"
+#include "SharedContext.h"
+
+#include "Demo_01_Agent.h"
+
+class RepastHPCDemoModel{
+	int stopAt;
+	<b class="code">int countOfAgents;</b>
+	repast::Properties* props;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt; context;
+public:
+	RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm);
+	~RepastHPCDemoModel();
+	void init();
+	void doSomething();
+	void initSchedule(repast::ScheduleRunner& runner);
+	void recordResults();
+};
+
+#endif
+</pre></code></div>
+    <p>And</p>
+<div class="code"><code><pre>
+/* Demo_01_Model.cpp */
+
+#include &lt;stdio.h&gt;
+#include &lt;vector&gt;
+#include &lt;boost/mpi.hpp&gt;
+<b class="code">#include "AgentId.h"</b>
+#include "RepastProcess.h"
+#include "Utilities.h"
+#include "Properties.h"
+
+#include "Demo_01_Model.h"
+
+RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm): context(comm){
+	props = new repast::Properties(propsFile, argc, argv, comm);
+	stopAt = repast::strToInt(props->getProperty("stop.at"));
+	<b class="code">countOfAgents = repast::strToInt(props->getProperty("count.of.agents"));</b>
+	if(repast::RepastProcess::instance()->rank() == 0) props->writeToSVFile("./output/record.csv");
+}
+
+RepastHPCDemoModel::~RepastHPCDemoModel(){
+		delete props;
+}
+
+void RepastHPCDemoModel::init(){
+	<b class="code">int rank = repast::RepastProcess::instance()->rank();
+	for(int i = 0; i < countOfAgents; i++){
+		repast::AgentId id(i, rank, 0);
+		id.currentRank(rank);
+                RepastHPCDemoAgent* agent = new RepastHPCDemoAgent(id);
+		context.addAgent(agent);
+	}</b>
+}
+
+void RepastHPCDemoModel::doSomething(){
+	std::cout << "Rank " << repast::RepastProcess::instance()->rank() << " is doing something." << std::endl;
+
+}
+
+void RepastHPCDemoModel::initSchedule(repast::ScheduleRunner& runner){
+	runner.scheduleEvent(1, 1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::doSomething)));
+	runner.scheduleEndEvent(repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::recordResults)));
+	runner.scheduleStop(stopAt);
+}
+
+void RepastHPCDemoModel::recordResults(){
+	if(repast::RepastProcess::instance()->rank() == 0){
+		props->putProperty("Result","Passed");
+		std::vector&lt;std::string&gt; keyOrder;
+		keyOrder.push_back("RunNumber");
+		keyOrder.push_back("stop.at");
+		keyOrder.push_back("Result");
+		props->writeToSVFile("./output/results.csv", keyOrder);
+    }
+}
+</pre></code></div>
+    <p>There is a relatively minor change, reflected in the change to Demo_01_Model.h: the model class has a new instance variable, countOfAgents. This is read from the properties file (or superseded by the command line properties) and set in the model constructor. The properties file should be modified to include:</p>
+<div class="code"><code><pre>
+#Properties file
+stop.at = 2
+count.of.agents = 100
+</pre></code></div>
+    <p>The real change is in the 'init' method. The creation of agents is accomplished by first creating an agent ID (coded with the appropriate rank and agent type- in this case, all agents are of type '0'). Then the agents are added to the context. Note that the agent instance is actually created on the heap using the 'new' keyword; the pointer is then passed to the addAgent method of the context instance.</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_01_Step_03");</script>
+  </body>
+</html>

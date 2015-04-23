@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_00_Step_13");</script>
+    <p>There is an additional way to provide parameters to individual simulation runs. Sometimes it is useful to be able to run the simulation from a command line (or within a script) and to explicitly specify parameters without modifying a properties file. Repast HPC provides a simple way to do this. If the 'argc' and 'argv' parameters are passed to the Properties constructor, the arguments used on the command line are passed through and parsed. Any command-line argument in the form of 'property=value' is added to the Properties file.</p>
+    <p>Code that does this:</p>
+<div class="code"><code><pre>
+#include &lt;stdio.h&gt;
+#include &lt;boost/mpi.hpp&gt;
+#include "RepastProcess.h"
+#include "Utilities.h"
+#include "Properties.h"
+
+class RepastHPCDemoModel{
+	int stopAt;
+public:
+	RepastHPCDemoModel(std::string propsFile, <b class="code">int argc, char** argv,</b> boost::mpi::communicator* comm){
+		repast::Properties props(propsFile, <b class="code">argc, argv,</b> comm);
+		stopAt = repast::strToInt(props.getProperty("stop.at"));
+	}
+	~RepastHPCDemoModel(){}
+	void init(){}
+	void doSomething(){
+		std::cout << "Rank " << repast::RepastProcess::instance()->rank() << " is doing something." << std::endl;
+	}
+	void initSchedule(repast::ScheduleRunner& runner){
+		runner.scheduleEvent(1, 1, repast::Schedule::FunctorPtr(new repast::MethodFunctor&lt;RepastHPCDemoModel&gt; (this, &RepastHPCDemoModel::doSomething)));
+		runner.scheduleStop(stopAt);
+	}
+};
+
+int main(int argc, char** argv){
+	
+	std::string configFile = argv[1]; // The name of the configuration file is Arg 1
+	std::string propsFile  = argv[2]; // The name of the properties file is Arg 2
+	
+	boost::mpi::environment env(argc, argv);
+	boost::mpi::communicator world;
+
+	repast::RepastProcess::init(configFile);
+	
+	RepastHPCDemoModel* model = new RepastHPCDemoModel(propsFile, <b class="code">argc, argv,</b> &world);
+	repast::ScheduleRunner& runner = repast::RepastProcess::instance()->getScheduleRunner();
+	
+	model->init();
+	model->initSchedule(runner);
+	
+	runner.run();
+	
+	delete model;
+	
+	repast::RepastProcess::instance()->done();
+	
+}
+</pre></code></div>
+    <p>Now it is possible to run the code and specify properties:</p>
+    <div class="code"><code><pre>/usr/bin/local/mpirun -n 4 Demo_00.exe config.props model.props stop.at=6</pre></code></div>
+    <p>Or:</p>
+    <div class="code"><code><pre>qsub -A MyProject -n 4 -cwd /pvfs-surveyor/ -o Demo_00 -t 10 ./Demo_00.exe config.props model.props stop.at=6</pre></code></div>
+    <p>Note that when specifying properties on the command line, no whitespace is permitted between the property name, the '=', and the value.</p>
+    <p>A common use of this approach is to keep a file with 'default' properties, and specify any properties that vary from the default when the simulation is invoked.</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_00_Step_13");</script>
+  </body>
+</html>
