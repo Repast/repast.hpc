@@ -66,39 +66,12 @@ protected:
 	virtual void synchMoveTo(const AgentId& id, const Point<int>& pt);
 
 private:
-	template<typename AgentContent, typename ContentProvider>
-	void sendToNeighbor(GridBufferSyncher<AgentContent, int>& syncher, Neighbors::Location location,
-			ContentProvider& provider, int val);
 
 	typedef SharedBaseGrid<T, GPTransformer, Adder, int> SharedBaseGridType;
 
 public:
 	virtual ~SharedDiscreteSpace();
 	SharedDiscreteSpace(std::string name, GridDimensions gridDims, std::vector<int> processDims, int buffer, boost::mpi::communicator* communicator);
-
-	/**
-	 * Synchronize the buffer area of this SharedDiscreteSpace with its neighbors. This
-	 * will copy the buffer area from the neighbors into this SharedDiscreteSpace.
-	 * This should be called immediately after initSynchBuffer.
-	 *
-	 * @param context the SharedContext that contains the agents in this SharedDiscreteSpace.
-	 * @param provider a class that provides AgentContent for the agents being buffered
-	 * in neighboring grids.
-	 * @param creator a class that creates a agents of type T when given
-	 * AgentContent.
-	 *
-	 * @tparam T the type of agent in this SharedDiscreteSpace
-	 * @tparam AgentContent the serializable struct or class that describes the
-	 * state of agents.
-	 * @tparam Provider a class that provides AgentContent for aagents,
-	 * implementing void provideContent(T* agent, std::vector<AgentContent>& out)
-	 * @tparam AgentsCreator a class that creates agents given AgentContent, implementing
-	 * void createAgents(std::vector<AgentContent>& contents, std::vector<T*>& out). Creating
-	 * agents from the vector of content and placing them in out.
-	 */
-	template<typename AgentContent, typename Provider, typename AgentsCreator>
-	void synchBuffer(SharedContext<T>& context, Provider& provider, AgentsCreator& creator);
-
 
   virtual void getAgentsToPush(std::set<AgentId>& agentsToTest, std::map<int, std::set<AgentId> >& agentsToPush);
 
@@ -120,97 +93,10 @@ void SharedDiscreteSpace<T, GPTransformer, Adder>::synchMoveTo(const AgentId& id
 	}
 }
 
-template<typename T, typename GPTransformer, typename Adder>
-template<typename AgentContent, typename ContentProvider>
-void SharedDiscreteSpace<T, GPTransformer, Adder>::sendToNeighbor(GridBufferSyncher<AgentContent, int>& syncher,
-		Neighbors::Location location, ContentProvider& provider, int val) {
-
-	Neighbor* ngh = SharedBaseGridType::nghs.neighbor(location);
-	if (ngh != 0) {
-		std::vector<CellContents<AgentContent, int> > toSend;
-		GridDimensions bounds = SharedBaseGridType::createSendBufferBounds(location);
-
-		int xEnd = bounds.origin().getX() + bounds.extents().getX();
-		for (int x = bounds.origin().getX(); x < xEnd; x++) {
-			int yEnd = bounds.origin().getY() + bounds.extents().getY();
-			for (int y = bounds.origin().getY(); y < yEnd; y++) {
-				Point<int> pt(x, y);
-				CellContents<AgentContent, int> contents(pt);
-				std::vector<T*> out;
-				SharedBaseGridType::GridBaseType::getObjectsAt(pt, out);
-				for (size_t i = 0, n = out.size(); i < n; ++i) {
-					provider.provideContent(out[i], contents._objs);
-					toSend.push_back(contents);
-				}
-			}
-		}
-		syncher.send(ngh->rank(), toSend, val);
-	}
-}
-
-template<typename T, typename GPTransformer, typename Adder>
-template<typename AgentContent, typename ContentProvider, typename ContentReceiver>
-void SharedDiscreteSpace<T, GPTransformer, Adder>::synchBuffer(SharedContext<T>& context, ContentProvider& provider,
-		ContentReceiver& receiver) {
-
-	GridBufferSyncher<AgentContent, int> syncher(SharedBaseGridType::comm);
-
-	syncher.receive(SharedBaseGridType::nghs.neighbor(Neighbors::E), GRID_BUFFER_SYNC0);
-	sendToNeighbor<AgentContent> (syncher, Neighbors::W, provider, GRID_BUFFER_SYNC0);
-
-	syncher.receive(SharedBaseGridType::nghs.neighbor(Neighbors::W), GRID_BUFFER_SYNC1);
-	sendToNeighbor<AgentContent> (syncher, Neighbors::E, provider, GRID_BUFFER_SYNC1);
-
-	syncher.receive(SharedBaseGridType::nghs.neighbor(Neighbors::N), GRID_BUFFER_SYNC2);
-	sendToNeighbor<AgentContent> (syncher, Neighbors::S, provider, GRID_BUFFER_SYNC2);
-
-	syncher.receive(SharedBaseGridType::nghs.neighbor(Neighbors::S), GRID_BUFFER_SYNC3);
-	sendToNeighbor<AgentContent> (syncher, Neighbors::N, provider, GRID_BUFFER_SYNC3);
-
-	syncher.receive(SharedBaseGridType::nghs.neighbor(Neighbors::NE), GRID_BUFFER_SYNC4);
-	sendToNeighbor<AgentContent> (syncher, Neighbors::SW, provider, GRID_BUFFER_SYNC4);
-
-	syncher.receive(SharedBaseGridType::nghs.neighbor(Neighbors::NW), GRID_BUFFER_SYNC5);
-	sendToNeighbor<AgentContent> (syncher, Neighbors::SE, provider, GRID_BUFFER_SYNC5);
-
-	syncher.receive(SharedBaseGridType::nghs.neighbor(Neighbors::SE), GRID_BUFFER_SYNC6);
-	sendToNeighbor<AgentContent> (syncher, Neighbors::NW, provider, GRID_BUFFER_SYNC6);
-
-	syncher.receive(SharedBaseGridType::nghs.neighbor(Neighbors::SW), GRID_BUFFER_SYNC7);
-	sendToNeighbor<AgentContent> (syncher, Neighbors::NE, provider, GRID_BUFFER_SYNC7);
-
-	syncher.wait();
-
-	for (size_t i = 0; i < syncher.vecsSize(); ++i) {
-		std::vector<CellContents<AgentContent, int> >* contentsList = syncher.received(i);
-		int rank = syncher.nghRank(i);
-		for (size_t j = 0; j < contentsList->size(); ++j) {
-			CellContents<AgentContent, int> contents = (*contentsList)[j];
-			std::vector<T*> out;
-			receiver.createAgents(contents._objs, out);
-			for (typename std::vector<T*>::iterator iter = out.begin(); iter != out.end(); ++iter) {
-				T* obj = *iter;
-				obj->getId().currentRank(rank);
-				AgentId id = obj->getId();
-				SharedBaseGridType::buffered.push_back(id);
-				if (context.addAgent(obj) != obj) {
-					// already exists in the context so delete this one.
-					// this will occur if an obj is in the buffer of > 1
-					// spaces in the same context
-					delete obj;
-				}
-				context.incrementProjRefCount(id);
-				synchMoveTo(id, contents._pt);
-			}
-		}
-	}
-}
 
 template<typename T, typename GPTransformer, typename Adder>
 SharedDiscreteSpace<T, GPTransformer, Adder>::~SharedDiscreteSpace() {
 }
-
-
 
 
 template<typename T, typename GPTransformer, typename Adder>

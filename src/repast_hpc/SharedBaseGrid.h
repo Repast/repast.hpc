@@ -53,57 +53,10 @@
 #include "RepastProcess.h"
 #include "logger.h"
 #include "SRManager.h"
-#include "GridMovePackets.h"
 #include "RepastErrors.h"
 
 namespace repast {
 
-// tags for the pair-wise grid
-// buffer syncs
-const int GRID_BUFFER_SYNC0 = 3000;
-const int GRID_BUFFER_SYNC1 = 3001;
-const int GRID_BUFFER_SYNC2 = 3002;
-const int GRID_BUFFER_SYNC3 = 3003;
-const int GRID_BUFFER_SYNC4 = 3004;
-const int GRID_BUFFER_SYNC5 = 3005;
-const int GRID_BUFFER_SYNC6 = 3006;
-const int GRID_BUFFER_SYNC7 = 3007;
-
-/**
- * _DEPRECATED_ Encapsulates the contents of a grid / space location
- * so that it can be sent between processes.
- *
- * \deprecated
- * Replaced by ProjectionInfoPacket as of Version 2.0
- */
-template<typename AgentContent, typename GPType>
-class CellContents {
-public:
-	friend class boost::serialization::access;
-
-	Point<GPType> _pt;
-	std::vector<AgentContent> _objs;
-
-	template<class Archive>
-	void serialize(Archive& ar, const unsigned int version) {
-		ar & _pt;
-		ar & _objs;
-	}
-
-	// no-arg for serialization
-	CellContents();
-	CellContents(Point<GPType> pt);
-};
-
-template<typename AgentContent, typename GPType>
-CellContents<AgentContent, GPType>::CellContents() :
-	_pt(0) {
-}
-
-template<typename AgentContent, typename GPType>
-CellContents<AgentContent, GPType>::CellContents(Point<GPType> pt) :
-	_pt(pt) {
-}
 
 /**
  * Contains the rank and boundaries of a semantically adjacent
@@ -188,77 +141,6 @@ std::ostream& operator<<(std::ostream& os, const Neighbors& nghs);
 
 
 /**
- * _DEPRECATED_ Helper class that provides support for synchronizing a
- * grid / space buffer.
- *
- * \deprecated
- * As of Version 2.0
- */
-template<typename T, typename GPType>
-class GridBufferSyncher {
-
-private:
-	std::vector<boost::mpi::request> requests;
-	std::vector<std::vector<CellContents<T, GPType> >*> vecs;
-	std::vector<int> nghRanks;
-
-	boost::mpi::communicator* comm;
-
-public:
-	GridBufferSyncher(boost::mpi::communicator* communicator): comm(communicator) {
-	}
-	virtual ~GridBufferSyncher();
-
-	std::vector<CellContents<T, GPType> >* received(size_t index) {
-		return vecs[index];
-	}
-
-	int nghRank(size_t index) {
-		return nghRanks[index];
-	}
-
-	size_t vecsSize() {
-		return vecs.size();
-	}
-
-	/**
-	 * Sends the contents to the rank.
-	 */
-	void send(int rank, std::vector<CellContents<T, GPType> >& contents, int tag);
-	void receive(Neighbor* ngh, int tag);
-	void wait();
-};
-
-template<typename T, typename GPType>
-void GridBufferSyncher<T, GPType>::send(int rank, std::vector<CellContents<T, GPType> >& contents, int tag) {
-	requests.push_back(comm->isend(rank, tag, contents));
-}
-
-template<typename T, typename GPType>
-void GridBufferSyncher<T, GPType>::receive(Neighbor* ngh, int tag) {
-	if (ngh != 0) {
-		std::vector<CellContents<T, GPType> >* vec = new std::vector<CellContents<T, GPType> >();
-		vecs.push_back(vec);
-		nghRanks.push_back(ngh->rank());
-		requests.push_back(comm->irecv(ngh->rank(), tag, *vec));
-	}
-}
-
-template<typename T, typename GPType>
-void GridBufferSyncher<T, GPType>::wait() {
-	boost::mpi::wait_all(requests.begin(), requests.end());
-	requests.clear();
-}
-
-template<typename T, typename GPType>
-GridBufferSyncher<T, GPType>::~GridBufferSyncher() {
-	for (int i = 0, n = vecs.size(); i < n; ++i) {
-		delete vecs[i];
-	}
-}
-
-
-/**
  * Allows retrieval of the position of this process within the
  * MPI Cartesian Topology into which it is placed.
  */
@@ -339,8 +221,6 @@ class SharedBaseGrid: public BaseGrid<T, MultipleOccupancy<T, GPType> , GPTransf
 
 private:
 
-	GridMovePackets<GPType> movePackets;
-
 protected:
 	int _buffer;
 	GridDimensions localBounds;
@@ -355,8 +235,6 @@ protected:
 	typedef typename repast::BaseGrid<T, MultipleOccupancy<T, GPType> , GPTransformer, Adder, GPType> GridBaseType;
 	boost::mpi::communicator* comm;
 
-
-  void getMovingAgentInfo(std::map<int, std::vector<AgentId> > agentsToMove, GridMovePackets<GPType> outgoing);
 
   bool locationIsInBuffer(Point<GPType> pt){ return false; }
   bool agentIsInBuffer(AgentId id){ return false; }
@@ -403,22 +281,6 @@ public:
 	virtual const GridDimensions dimensions() const {
 		return localBounds;
 	}
-
-	/**
-	 * Synchronizes the movement of agents off on one grid and onto another.
-	 * If there is any chance that an agent has moved off the local
-	 * dimensions of this SharedGrid and into those managed by another
-	 * then this must be called.
-	 */
-	void synchMove();
-
-	/**
-	 * Initializes the synch buffer operation. This should be called
-	 * before synchronizing the buffers themselves.
-	 *
-	 * @param the SharedContext that contains this SharedGrid projection.
-	 */
-	void initSynchBuffer(SharedContext<T>& context);
 
 	// doc inherited from BaseGrid.h
 	virtual bool moveTo(const AgentId& id, const std::vector<GPType>& newLocation);
@@ -519,53 +381,6 @@ case Neighbors::SW:
 	return GridDimensions();
 }
 
-template<typename T, typename GPTransformer, typename Adder, typename GPType>
-void SharedBaseGrid<T, GPTransformer, Adder, GPType>::initSynchBuffer(SharedContext<T>& context) {
-
-	// removing from the context should be enough to delete the
-	// pointer correctly because the context uses shared pointers
-	for (std::vector<AgentId>::iterator iter = buffered.begin(); iter != buffered.end(); ++iter) {
-		AgentId id = *iter;
-
-		context.decrementProjRefCount(*iter);
-		context.removeAgent(*iter);
-	}
-	buffered.clear();
-
-}
-
-template<typename T, typename GPTransformer, typename Adder, typename GPType>
-void SharedBaseGrid<T, GPTransformer, Adder, GPType>::synchMove() {
-
-	SRManager manager(comm);
-	std::vector<int> senders;
-
-	std::vector<int> receivers;
-	movePackets.receivers(receivers);
-	manager.retrieveSources(receivers, senders, GRID_MOVE_SYNC_SENDERS);
-
-	std::vector<boost::mpi::request> requests;
-	movePackets.send(requests, *comm);
-
-	std::vector<std::vector<GridMovePacket<GPType> >*> packetList;
-	for (int i = 0, n = senders.size(); i < n; ++i) {
-		std::vector<GridMovePacket<GPType> >* packets = new std::vector<GridMovePacket<GPType> >();
-		requests.push_back(comm->irecv(senders[i], GRID_MOVE_SYNC_PACKETS, *packets));
-		packetList.push_back(packets);
-	}
-	boost::mpi::wait_all(requests.begin(), requests.end());
-	movePackets.clear();
-
-	for (int i = 0, n = packetList.size(); i < n; ++i) {
-		std::vector<GridMovePacket<GPType> >* packets = packetList[i];
-		for (int k = 0, j = packets->size(); k < j; ++k) {
-			GridMovePacket<GPType>& packet = (*packets)[k];
-			synchMoveTo(packet._id, packet._pt);
-		}
-		delete packets;
-	}
-}
-
 
 template<typename T, typename GPTransformer, typename Adder, typename GPType>
 void SharedBaseGrid<T, GPTransformer, Adder, GPType>::balance() {
@@ -573,30 +388,12 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::balance() {
   typename GridBaseType::LocationMapConstIter iterEnd = GridBaseType::locationsEnd();
   for (typename GridBaseType::LocationMapConstIter iter = GridBaseType::locationsBegin(); iter != iterEnd; ++iter) {
     AgentId id = iter->second->ptr->getId();
-
     if(id.currentRank() == r){                                   // Local agents only
       Point<GPType> loc = iter->second->point;
       if(!localBounds.contains(loc)){                            // If inside bounds, ignore
         Neighbor* ngh = nghs.findNeighbor(loc.coords());
         RepastProcess::instance()->moveAgent(id, ngh->rank());
       }
-    }
-  }
-}
-
-template<typename T, typename GPTransformer, typename Adder, typename GPType>
-void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getMovingAgentInfo(std::map<int, std::vector<AgentId> > agentsToMove, GridMovePackets<GPType> outgoing){
-  std::map<int, std::vector<AgentId> >::const_iterator mapIterEnd = agentsToMove.end();
-  for(std::map<int, std::vector<AgentId> >::const_iterator mapIter = agentsToMove.begin(); mapIter != mapIterEnd; ++mapIter){
-
-    std::vector<AgentId> agentIDs = mapIter->second;
-
-    std::vector<AgentId>::const_iterator agentIdIterEnd = agentIDs.end();
-    for(std::vector<AgentId>::const_iterator agentIdIter = agentIDs.begin(); agentIdIter != agentIdIterEnd; ++agentIdIter){
-      AgentId id = *agentIdIter;
-      Point<GPType> loc = GridBaseType::agentToLocation.find(id)->second.point;
-      GridMovePacket<GPType> packet(loc, id, mapIter->first);
-      outgoing.addPacket(packet);
     }
   }
 }
