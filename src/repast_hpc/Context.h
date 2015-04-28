@@ -837,9 +837,10 @@ Context<T>::~Context() {
 
 template<typename T>
 void Context<T>::addProjection(Projection<T>* projection) {
-	if (find(projections.begin(), projections.end(), projection) != projections.end())
-      throw Repast_Error_9(projection->name()); // Projection with specified name already in context
-
+  std::string name = projection->name();
+  for (ProjPtrIter iter = projections.begin(); iter != projections.end(); ++iter){
+      if(name.compare((*iter)->name()) == 0) throw Repast_Error_9(name); // Projection with specified name already in context
+  }
 	for (const_iterator iter = begin(); iter != end(); ++iter) {
 		projection->addAgent(*iter);
 	}
