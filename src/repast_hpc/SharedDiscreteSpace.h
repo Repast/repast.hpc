@@ -102,6 +102,9 @@ SharedDiscreteSpace<T, GPTransformer, Adder>::~SharedDiscreteSpace() {
 template<typename T, typename GPTransformer, typename Adder>
 void SharedDiscreteSpace<T, GPTransformer, Adder>::getAgentsToPush(std::set<AgentId>& agentsToTest, std::map<int, std::set<AgentId> >& agentsToPush){
 
+  int buffer = SharedBaseGrid<T, GPTransformer, Adder, int>::_buffer;
+  if(buffer == 0) return; // A buffer zone of zero means that no agents will be pushed.
+
   // The most efficient algorithm will vary, and
   // can be impacted by the number of agents vs. the
   // number of grid cells and the distribution of agents
@@ -128,8 +131,6 @@ void SharedDiscreteSpace<T, GPTransformer, Adder>::getAgentsToPush(std::set<Agen
   Point<double> localOrigin = SharedBaseGrid<T, GPTransformer, Adder, int>::localBounds.origin();
   Point<double> localExtent = SharedBaseGrid<T, GPTransformer, Adder, int>::localBounds.extents();
 
-  int buffer = SharedBaseGrid<T, GPTransformer, Adder, int>::_buffer;
-
   int X1 = localOrigin.getX();
   int X2 = localOrigin.getX() + buffer;
   int X3 = localOrigin.getX() + localExtent.getX() - buffer;
@@ -140,14 +141,34 @@ void SharedDiscreteSpace<T, GPTransformer, Adder>::getAgentsToPush(std::set<Agen
   int Y3 = localOrigin.getY() + localExtent.getY() - buffer;
   int Y4 = localOrigin.getY() + localExtent.getY();
 
-  int NW_rank = SharedBaseGrid<T, GPTransformer, Adder, int>::nghs.neighbor(Neighbors::NW)->rank(); std::set<AgentId> NW_set;
-  int N_rank  = SharedBaseGrid<T, GPTransformer, Adder, int>::nghs.neighbor(Neighbors::N)->rank();  std::set<AgentId> N_set;
-  int NE_rank = SharedBaseGrid<T, GPTransformer, Adder, int>::nghs.neighbor(Neighbors::NE)->rank(); std::set<AgentId> NE_set;
-  int E_rank  = SharedBaseGrid<T, GPTransformer, Adder, int>::nghs.neighbor(Neighbors::E)->rank();  std::set<AgentId> E_set;
-  int SE_rank = SharedBaseGrid<T, GPTransformer, Adder, int>::nghs.neighbor(Neighbors::SE)->rank(); std::set<AgentId> SE_set;
-  int S_rank  = SharedBaseGrid<T, GPTransformer, Adder, int>::nghs.neighbor(Neighbors::S)->rank();  std::set<AgentId> S_set;
-  int SW_rank = SharedBaseGrid<T, GPTransformer, Adder, int>::nghs.neighbor(Neighbors::SW)->rank(); std::set<AgentId> SW_set;
-  int W_rank  = SharedBaseGrid<T, GPTransformer, Adder, int>::nghs.neighbor(Neighbors::W)->rank();  std::set<AgentId> W_set;
+  Neighbor* neighbor;
+
+  neighbor = SharedBaseGrid<T, GPTransformer, Adder, int>::nghs.neighbor(Neighbors::NW);
+  int NW_rank = (neighbor == 0 ? -1 : neighbor->rank());
+  neighbor = SharedBaseGrid<T, GPTransformer, Adder, int>::nghs.neighbor(Neighbors::N );
+  int N_rank  = (neighbor == 0 ? -1 : neighbor->rank());
+  neighbor = SharedBaseGrid<T, GPTransformer, Adder, int>::nghs.neighbor(Neighbors::NE);
+  int NE_rank = (neighbor == 0 ? -1 : neighbor->rank());
+  neighbor = SharedBaseGrid<T, GPTransformer, Adder, int>::nghs.neighbor(Neighbors::E );
+  int E_rank  = (neighbor == 0 ? -1 : neighbor->rank());
+  neighbor = SharedBaseGrid<T, GPTransformer, Adder, int>::nghs.neighbor(Neighbors::SE);
+  int SE_rank = (neighbor == 0 ? -1 : neighbor->rank());
+  neighbor = SharedBaseGrid<T, GPTransformer, Adder, int>::nghs.neighbor(Neighbors::S );
+  int S_rank  = (neighbor == 0 ? -1 : neighbor->rank());
+  neighbor = SharedBaseGrid<T, GPTransformer, Adder, int>::nghs.neighbor(Neighbors::SW);
+  int SW_rank = (neighbor == 0 ? -1 : neighbor->rank());
+  neighbor = SharedBaseGrid<T, GPTransformer, Adder, int>::nghs.neighbor(Neighbors::W );
+  int W_rank  = (neighbor == 0 ? -1 : neighbor->rank());
+
+
+  std::set<AgentId> NW_set;
+  std::set<AgentId> N_set;
+  std::set<AgentId> NE_set;
+  std::set<AgentId> E_set;
+  std::set<AgentId> SE_set;
+  std::set<AgentId> S_set;
+  std::set<AgentId> SW_set;
+  std::set<AgentId> W_set;
 
 
   // NW
@@ -256,34 +277,36 @@ void SharedDiscreteSpace<T, GPTransformer, Adder>::getAgentsToPush(std::set<Agen
   }
 
   if(NW_set.size() > 0){
-    agentsToPush[ W_rank].insert(NW_set.begin(), NW_set.end());
-    agentsToPush[NW_rank].insert(NW_set.begin(), NW_set.end());
-    agentsToPush[ N_rank].insert(NW_set.begin(), NW_set.end());
+    if(W_rank  > -1) agentsToPush[ W_rank].insert(NW_set.begin(), NW_set.end());
+    if(NW_rank > -1) agentsToPush[NW_rank].insert(NW_set.begin(), NW_set.end());
+    if(N_rank  > -1) agentsToPush[ N_rank].insert(NW_set.begin(), NW_set.end());
   }
   if( N_set.size() > 0){
-    agentsToPush[ N_rank].insert( N_set.begin(),  N_set.end());
+    if(N_rank  > -1) agentsToPush[ N_rank].insert( N_set.begin(),  N_set.end());
   }
   if(NE_set.size() > 0){
-    agentsToPush[ N_rank].insert(NE_set.begin(), NE_set.end());
-    agentsToPush[NE_rank].insert(NE_set.begin(), NE_set.end());
-    agentsToPush[ E_rank].insert(NE_set.begin(), NE_set.end());
+    if(N_rank  > -1) agentsToPush[ N_rank].insert(NE_set.begin(), NE_set.end());
+    if(NE_rank > -1) agentsToPush[NE_rank].insert(NE_set.begin(), NE_set.end());
+    if(E_rank  > -1) agentsToPush[ E_rank].insert(NE_set.begin(), NE_set.end());
   }
   if( E_set.size() > 0){
-    agentsToPush[ E_rank].insert( E_set.begin(),  E_set.end());
+    if(E_rank  > -1) agentsToPush[ E_rank].insert( E_set.begin(),  E_set.end());
   }
   if(SE_set.size() > 0){
-    agentsToPush[ E_rank].insert(SE_set.begin(), SE_set.end());
-    agentsToPush[SE_rank].insert(SE_set.begin(), SE_set.end());
-    agentsToPush[ S_rank].insert(SE_set.begin(), SE_set.end());
+    if(E_rank  > -1) agentsToPush[ E_rank].insert(SE_set.begin(), SE_set.end());
+    if(SE_rank > -1) agentsToPush[SE_rank].insert(SE_set.begin(), SE_set.end());
+    if(S_rank  > -1) agentsToPush[ S_rank].insert(SE_set.begin(), SE_set.end());
   }
-  if( S_set.size() > 0) agentsToPush[ S_rank].insert( S_set.begin(),  S_set.end());
+  if( S_set.size() > 0){
+    if(S_rank > -1) agentsToPush[ S_rank].insert( S_set.begin(),  S_set.end());
+  }
   if(SW_set.size() > 0){
-    agentsToPush[ S_rank].insert(SW_set.begin(), SW_set.end());
-    agentsToPush[SW_rank].insert(SW_set.begin(), SW_set.end());
-    agentsToPush[ W_rank].insert(SW_set.begin(), SW_set.end());
+    if(S_rank  > -1) agentsToPush[ S_rank].insert(SW_set.begin(), SW_set.end());
+    if(SW_rank > -1) agentsToPush[SW_rank].insert(SW_set.begin(), SW_set.end());
+    if(W_rank  > -1) agentsToPush[ W_rank].insert(SW_set.begin(), SW_set.end());
   }
   if( W_set.size() > 0){
-    agentsToPush[ W_rank].insert( W_set.begin(),  W_set.end());
+    if(W_rank > -1)  agentsToPush[ W_rank].insert( W_set.begin(),  W_set.end());
   }
 
 }

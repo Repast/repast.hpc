@@ -466,11 +466,9 @@ double BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::getDistanceSq(co
 	for (int i = 0, n = pt1.dimensionCount(); i < n; i++) {
 		double diff = pt1.getCoordinate(i) - pt2.getCoordinate(i);
 		if (gpTransformer.isPeriodic()) {
-			int dim = dimensions_.extents(i);
-			double absDiff = abs(diff);
-			if (absDiff > dim / 2) {
-				diff = dim - absDiff;
-			}
+			double dim = dimensions_.extents(i);
+			double absDiff = ((diff < 0.00) ? (-1.0 * diff) : diff); //abs(diff);
+			if (absDiff > dim / 2.0)	diff = dim - absDiff;
 		}
 		sum += diff * diff;
 	}
@@ -487,11 +485,9 @@ void BaseGrid<T, CellAccessor, GPTransformer, Adder, GPType>::getDisplacement(co
 	for (int i = 0, n = pt1.dimensionCount(); i < n; i++) {
 		GPType diff = pt2.getCoordinate(i) - pt1.getCoordinate(i);
 		if (gpTransformer.isPeriodic()) {
-			int dim = dimensions_.extents(i);
-			GPType absDiff = abs(diff);
-			if (absDiff > dim / ((GPType) 2)) {
-				diff = dim - absDiff;
-			}
+			double dim = dimensions_.extents(i);
+			GPType absDiff = ((diff < 0.00) ? (-1.0 * diff) : diff); //abs(diff);
+			if (absDiff > dim / ((GPType) 2))	diff = dim - absDiff;
 		}
 		out[i] = diff;
 	}

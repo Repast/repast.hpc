@@ -6,7 +6,8 @@
 #include "AgentId.h"
 #include "SharedContext.h"
 #include "SharedDiscreteSpace.h"
-
+#include "SharedContinuousSpace.h"
+#include "SharedNetwork.h"
 
 /* Agents */
 class RepastHPCDemoAgent{
@@ -37,8 +38,20 @@ public:
     /* Actions */
     bool cooperate();                                                 // Will indicate whether the agent cooperates or not; probability determined by = c / total
     void play(repast::SharedContext<RepastHPCDemoAgent>* context,
-              repast::SharedDiscreteSpace<RepastHPCDemoAgent, repast::StrictBorders, repast::SimpleAdder<RepastHPCDemoAgent> >* space);    // Choose three other agents from the given context and see if they cooperate or not
-    void move(repast::SharedDiscreteSpace<RepastHPCDemoAgent, repast::StrictBorders, repast::SimpleAdder<RepastHPCDemoAgent> >* space);
+              repast::SharedDiscreteSpace<RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder<RepastHPCDemoAgent> >* discreteSpace,
+              repast::SharedContinuousSpace<RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder<RepastHPCDemoAgent> >* continuousSpace,
+              repast::SharedContinuousSpace<RepastHPCDemoAgent, repast::StrictBorders, repast::SimpleAdder<RepastHPCDemoAgent> >* opinionSpace,
+              repast::SharedNetwork<RepastHPCDemoAgent,
+              repast::RepastEdge<RepastHPCDemoAgent>,
+              repast::RepastEdgeContent<RepastHPCDemoAgent>,
+              repast::RepastEdgeContentManager<RepastHPCDemoAgent> > *network);    // Choose three other agents from the given context and see if they cooperate or not
+    void move(repast::SharedDiscreteSpace<RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder<RepastHPCDemoAgent> >* discreteSpace,
+              repast::SharedContinuousSpace<RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder<RepastHPCDemoAgent> >* continuousSpace);
+    void modifyOpinion(repast::SharedNetwork<RepastHPCDemoAgent,
+                       repast::RepastEdge<RepastHPCDemoAgent>,
+                       repast::RepastEdgeContent<RepastHPCDemoAgent>,
+                       repast::RepastEdgeContentManager<RepastHPCDemoAgent> > *network,
+                       repast::SharedContinuousSpace<RepastHPCDemoAgent, repast::StrictBorders, repast::SimpleAdder<RepastHPCDemoAgent> >* opinionSpace);
     
 };
 

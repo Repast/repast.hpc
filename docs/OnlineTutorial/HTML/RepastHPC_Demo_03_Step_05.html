@@ -1,0 +1,181 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_03_Step_05");</script>
+<p>In the previous steps we have used <b>discrete</b> spaces. These are, essentially, grids on which agents can be placed, but only at specific intervals: coordinates must all be integers. Repast HPC also implements <b>continuous</b> spaces, in which agent coordinates can be any value.</p>
+    <div class="sidebar" id="NotReallyContinuous" onClick=toggleSidebar("NotReallyContinuous")><b>Really- any value?</b></div>
+    <div class="defHIDDEN" id="NotReallyContinuous_DEF" onClick=toggleSidebar("NotReallyContinuous")>OK, technically it can be any value represented by a C++ 'double'; this is not really continuous in a strict mathematical sense, but it is presumed to be close enough.</div>
+    <p>The method for implementing a continuous space is almost identical to the method for implementing a discrete space. We merely need to modify Step 2 of this Demo by changing all the references to 'SharedDiscreteSpace' to 'SharedContinuousSpace':</p>
+    <p>In Model.h</p>
+<div class="code"><code><pre>
+#include <boost/mpi.hpp>
+#include "Schedule.h"
+#include "Properties.h"
+#include "SharedContext.h"
+#include "AgentRequest.h"
+#include "TDataSource.h"
+#include "SVDataSet.h"
+<b class="code">#include "SharedContinuousSpace.h"</b>
+#include "GridComponents.h"
+</pre></code></div>
+
+<div class="code"><code><pre>
+class RepastHPCDemoModel{
+	int stopAt;
+	int countOfAgents;
+	repast::Properties* props;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt; context;
+	
+	RepastHPCDemoAgentPackageProvider* provider;
+	RepastHPCDemoAgentPackageReceiver* receiver;
+
+	repast::SVDataSet* agentValues;
+        <b class="code">repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* continuousSpace;</b>
+</pre></code></div>
+
+    <p>In Agent.h:</p>
+<div class="code"><code><pre>
+#include "AgentId.h"
+#include "SharedContext.h"
+#include "SharedContinuousSpace.h"
+</pre></code></div>
+
+<div class="code"><code><pre>
+    /* Actions */
+    bool cooperate();                                                 // Will indicate whether the agent cooperates or not; probability determined by = c / total
+    void play(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* context);    // Choose three other agents from the given context and see if they cooperate or not
+    <b class="code">void move(repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* space);</b>
+</pre></code></div>
+
+    <p>In Model.cpp:</p>
+
+<div class="code"><code><pre>
+RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm): context(comm){
+	props = new repast::Properties(propsFile, argc, argv, comm);
+	stopAt = repast::strToInt(props-&gt;getProperty("stop.at"));
+	countOfAgents = repast::strToInt(props-&gt;getProperty("count.of.agents"));
+	initializeRandom(*props, comm);
+	if(repast::RepastProcess::instance()-&gt;rank() == 0) props-&gt;writeToSVFile("./output/record.csv");
+	provider = new RepastHPCDemoAgentPackageProvider(&context);
+	receiver = new RepastHPCDemoAgentPackageReceiver(&context);
+	
+        repast::Point&lt;double&gt; origin(-100,-100);
+        repast::Point&lt;double&gt; extent(200, 200);
+    
+        repast::GridDimensions gd(origin, extent);
+    
+        std::vector&lt;int&gt; processDims;
+        processDims.push_back(2);
+        processDims.push_back(2);
+    
+        <b class="code">continuousSpace = new repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;("AgentContinuousSpace", gd, processDims, 2, comm);</b>
+	
+        std::cout &lt;&lt; "RANK " &lt;&lt; repast::RepastProcess::instance()-&gt;rank() &lt;&lt; " BOUNDS: " &lt;&lt; <b class="code">continuousSpace</b>-&gt;bounds().origin() &lt;&lt; " " &lt;&lt; <b class="code">continuousSpace</b>-&gt;bounds().extents() &lt;&lt; std::endl;
+    
+   	<b class="code">context.addProjection(continuousSpace);</b>
+</pre></code></div>
+
+
+    <p>In the 'init' method:</p>
+<div class="code"><code><pre>
+void RepastHPCDemoModel::init(){
+	int rank = repast::RepastProcess::instance()-&gt;rank();
+	for(int i = 0; i &lt; countOfAgents; i++){
+        repast::Point&lt;<b class="code">double</b><&gt; initialLocation((<b class="code">double</b>)<b class="code">continuousSpace</b>-&gt;bounds().origin().getX() + i,(<b class="code">double</b>)<b class="code">continuousSpace</b>-&gt;bounds().origin().getY() + i);
+		repast::AgentId id(i, rank, 0);
+		id.currentRank(rank);
+		RepastHPCDemoAgent* agent = new RepastHPCDemoAgent(id);
+		context.addAgent(agent);
+                <b class="code">continuousSpace</b>-&gt;moveTo(id, initialLocation);
+	}
+}
+</pre></code></div>
+
+  <p>Still in the Model.cpp file, we have to make some additional changes to the doSomething method:</p>
+
+
+<div class="code"><code><pre>
+void RepastHPCDemoModel::doSomething(){
+	int whichRank = 0;
+	if(repast::RepastProcess::instance()-&gt;rank() == whichRank) std::cout &lt;&lt; " TICK " &lt;&lt; repast::RepastProcess::instance()-&gt;getScheduleRunner().currentTick() &lt;&lt; std::endl;
+
+	if(repast::RepastProcess::instance()-&gt;rank() == whichRank){
+		std::cout &lt;&lt; "LOCAL AGENTS:" &lt;&lt; std::endl;
+		for(int r = 0; r &lt; 4; r++){
+			for(int i = 0; i &lt; 10; i++){
+			    repast::AgentId toDisplay(i, r, 0);
+			    RepastHPCDemoAgent* agent = context.getAgent(toDisplay);
+			    if((agent != 0) && (agent-&gt;getId().currentRank() == whichRank)){
+                                std::vector&lt;<b class="code">double</b>&gt; agentLoc;
+                                continuousSpace-&gt;getLocation(agent-&gt;getId(), agentLoc);
+                                repast::Point&lt;<b class="code">double</b>&gt; agentLocation(agentLoc);
+                                std::cout &lt;&lt; agent-&gt;getId() &lt;&lt; " " &lt;&lt; agent-&gt;getC() &lt;&lt; " " &lt;&lt; agent-&gt;getTotal() &lt;&lt; " AT " &lt;&lt; agentLocation &lt;&lt; std::endl;
+                            }
+			}
+		}
+		
+		std::cout &lt;&lt; "NON LOCAL AGENTS:" &lt;&lt; std::endl;
+		for(int r = 0; r &lt; 4; r++){
+			for(int i = 0; i &lt; 10; i++){
+			    repast::AgentId toDisplay(i, r, 0);
+			    RepastHPCDemoAgent* agent = context.getAgent(toDisplay);
+			    if((agent != 0) && (agent-&gt;getId().currentRank() != whichRank)){
+                                std::vector&lt;<b class="code">double</b>&gt; agentLoc;
+                                continuousSpace-&gt;getLocation(agent-&gt;getId(), agentLoc);
+                                repast::Point&lt;<b class="code">double</b>&gt; agentLocation(agentLoc);
+                                std::cout &lt;&lt; agent-&gt;getId() &lt;&lt; " " &lt;&lt; agent-&gt;getC() &lt;&lt; " " &lt;&lt; agent-&gt;getTotal() &lt;&lt; " AT " &lt;&lt; agentLocation &lt;&lt; std::endl;
+                            }
+			}
+		}
+	}
+
+	
+	
+	std::vector&lt;RepastHPCDemoAgent*&gt; agents;
+	context.selectAgents(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::LOCAL, countOfAgents, agents);
+	std::vector&lt;RepastHPCDemoAgent*&gt;::iterator it = agents.begin();
+	while(it != agents.end()){
+        (*it)-&gt;play(&context);
+		it++;
+    }
+
+    it = agents.begin();
+    while(it != agents.end()){
+		(*it)-&gt;move(<b class="code">continuousSpace</b>);
+		it++;
+    }
+
+    <b class="code">continuousSpace</b>-&gt;balance();
+    repast::RepastProcess::instance()-&gt;synchronizeAgentStatus&lt;RepastHPCDemoAgent, RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(context, *provider, *receiver, *receiver);
+    
+    repast::RepastProcess::instance()-&gt;synchronizeProjectionInfo&lt;RepastHPCDemoAgent, RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(context, *provider, *receiver, *receiver);
+
+    repast::RepastProcess::instance()-&gt;synchronizeAgentStates&lt;RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver>(*provider, *receiver);
+    
+}
+</pre></code></div>
+
+    <p>Notice that the reference to 'int' keywords in the init function and here, in the Vector and Point classes used to get and display the agent location, have been replaced with 'double' keyword. This is because the underlying data type of the continuous space is a double, not an int, and the data structures must reflect this. This is exactly the same reason why we must make these changes in the Agent.cpp file:</p>
+
+<div class="code"><code><pre>
+void RepastHPCDemoAgent::move(repast::<b class="code">SharedContinuousSpace</b>&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* space){
+
+    std::vector&lt;<b class="code">double</b>&gt; agentLoc;
+    space-&gt;getLocation(id_, agentLoc);
+    std::vector&lt;<b class="code">double</b>&gt; agentNewLoc;
+    agentNewLoc.push_back(agentLoc[0] + (repast::Random::instance()->nextDouble() - .5) * 1.5</b>));
+    agentNewLoc.push_back(agentLoc[1] + (repast::Random::instance()->nextDouble() - .5) * 1.5</b>));
+    space-&gt;moveTo(id_,agentNewLoc);
+    
+}
+</pre></code></div>
+
+    <p>Notice that we also now have the agents move in fractional intervals.</p>
+
+    <script type="text/javascript">footer("RepastHPC_Demo_03_Step_04");</script>
+  </body>
+</html>

@@ -80,16 +80,16 @@ public:
 template<typename T>
 Grid2DQuery<T>::Grid2DQuery(const Grid<T, int>* grid) :
 	_grid(grid) {
-	if (grid->dimensions().dimensionCount() != 2)
-      throw Repast_Error_10(grid->dimensions().dimensionCount()); // Grid2DQuery only accepts 2D grids
+	if (grid->bounds().dimensionCount() != 2)
+      throw Repast_Error_10(grid->bounds().dimensionCount()); // Grid2DQuery only accepts 2D grids
 
-	GridDimensions dimensions = grid->dimensions();
+	GridDimensions bounds = grid->bounds();
 
 	for (size_t i = 0; i < 2; i++) {
-		int origin = dimensions.origin(i);
+		int origin = bounds.origin(i);
 		minMax[i][0] = origin;
 		// max is EXCLUSIVE
-		minMax[i][1] = (dimensions.extents(i) + dimensions.origin(i));
+		minMax[i][1] = (bounds.extents(i) + bounds.origin(i));
 	}
 }
 

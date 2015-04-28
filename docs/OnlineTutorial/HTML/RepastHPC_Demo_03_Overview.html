@@ -66,6 +66,28 @@
      </center>
     <p>Although the example here only uses four processes, the procedure is the same when the number of processes is larger. Also, the example here has used a non-toroidal space; in a toroidal space, the coordinates 'wrap around' so that the highest coordinate is adjacent to the lowest, and the buffer zones also extend into all adjacent processes.</p>
     <p>In the current implementation of Repast HPC space is always divided evenly across processes: each process's space is the same size in the x and y directions. In theory, this is not necessary: each process could be responsible for a portion of space that is unique in size, and, in theory, this might be useful if the distribution of agents in space is not even. The apportionment of space could also be re-calculated on-the-fly if the distribution of agents changes. However, these advanced techniques are not implemented in Repast HPC.</p>
+<h1>Boundaries</h1>
+    <p>Repast HPC implements two distinct kinds of boundary conditions; the choice of the appropriate condition depends on the simulation:</p>
+    <ul>
+      <li>WrapAroundBorders</li>
+      <li>StrictBorders</li>
+    </ul>
+    <p><b>WrapAroundBorders</b> are also called <i>toroidal</i> or <i>periodic</i>. (Technically, 'periodic' boundaries create 'toroidal' spaces.) If a space goes from 0,0 to 100,100 and has 'WrapAroundBorders', an agent moving upward along the x-axis in intervals of 1 unit would pass from x=97 to x=98, x=99, and then x=0, passing back to the other end of the space. (Moving in the reverse direction is equivalent, passing from x=0 to x=99.) Space that is toroidal is in one sense infinite: movement in one direction can continue without stopping. Equally important, distances and queries are all calculated as if there is no boundary at all. An agent at x=99 is adjacent to an agent at x=0.</p>
+    <p><b>StrictBorders</b>, conversely, suppose an end to the space. Movement past the specified boundaries is prohibited. An agent at x=99 and an agent at x=0 are 99 units apart.</p>
+    <p>Buffer zones are passed across WrapAround borders but are <b>not</b> passed across StrictBorders.</p>
+    <p>In theory, a space could be created with one dimension using one kind of boundary and another with a different boundary- 'WrapAround' for the x dimension, but 'Strict' for the y dimension. Repast HPC, however, does not permit this: the boundary is specified for the space as a whole and applies to all axes.</p>
+    <p>The depiction above shows the case with StrictBorders; with WrapAround borders the picture is more complicated, as there are buffer zones on all sides of a given process. In our simple demonstration, with only four processes, the buffer zones on either side of a given process along one axis are, in fact, the same process; in a larger simulation, with more processes in each axis dimension, this would not be the case. This figure illustrates the 4 process case, taking the view of Process 1, at the center. Note that Process 2 is adjacent at all four corners (NW, NE, SE, SW):</p>
+ <center>
+       <table width="2" border="1">
+          <tr><th bgcolor="red">Process 2</th><th bgcolor="yellow">Process 3</th><th bgcolor="red">Process 2</th></tr>
+          <tr><td bgcolor="red"><center><img src="./img/P2_Wrap.png"/></center></td><td bgcolor="yellow"><center><img src="./img/P3_Wrap.png"/></center></td><td bgcolor="red"><center><img src="./img/P2_Wrap.png"/></center></td></tr>          
+          <tr><th bgcolor="red">Process 2</th><th bgcolor="yellow">Process 3</th><th bgcolor="red">Process 2</th></tr>
+          <tr><th bgcolor="blue">Process 0</th><th bgcolor="green">Process 1</th><th bgcolor="blue">Process 0</th></tr>
+          <tr><td bgcolor="blue"><center><img src="./img/P0_Wrap.png"/></center></td><td bgcolor="green"><center><img src="./img/P1_Wrap.png"/></center></td><td bgcolor="blue"><center><img src="./img/P0_Wrap.png"/></center></td></tr>
+          <tr><th bgcolor="blue">Process 0</th><th bgcolor="green">Process 1</th><th bgcolor="blue">Process 0</th></tr>
+          <tr><th bgcolor="red">Process 2</th><th bgcolor="yellow">Process 3</th><th bgcolor="red">Process 2</th></tr>
+          <tr><td bgcolor="red"><center><img src="./img/P2_Wrap.png"/></center></td><td bgcolor="yellow"><center><img src="./img/P3_Wrap.png"/></center></td><td bgcolor="red"><center><img src="./img/P2_Wrap.png"/></center></td></tr>          
+          <tr><th bgcolor="red">Process 2</th><th bgcolor="yellow">Process 3</th><th bgcolor="red">Process 2</th></tr>
     <script type="text/javascript">footer("RepastHPC_Demo_03_Overview");</script>
   </body>
 </html>

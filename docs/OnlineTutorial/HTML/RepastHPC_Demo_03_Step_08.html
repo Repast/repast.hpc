@@ -1,0 +1,342 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_03_Step_08");</script>
+    <p>The final step in Demo 3 is also the culmination of Demo 2: A network and spatial projections will be used simultaneously.</p>
+    <p>The steps to do this are straightforward. First, the model must create the instance of the network.</p>
+
+<div class="code"><code><pre>
+#include <boost/mpi.hpp>
+#include "Schedule.h"
+#include "Properties.h"
+#include "SharedContext.h"
+#include "AgentRequest.h"
+#include "TDataSource.h"
+#include "SVDataSet.h"
+#include "SharedContinuousSpace.h"
+#include "GridComponents.h"
+<b class="code">#include "SharedNetwork.h"</b>
+</pre></code></div>
+
+<div class="code"><code><pre>
+class RepastHPCDemoModel{
+	int stopAt;
+	int countOfAgents;
+	repast::Properties* props;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt; context;
+	
+	RepastHPCDemoAgentPackageProvider* provider;
+	RepastHPCDemoAgentPackageReceiver* receiver;
+
+	repast::SVDataSet* agentValues;
+        repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* discreteSpace;
+        repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* continuousSpace;
+        repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::StrictBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* opinionSpace;
+	
+        <b class="code">repast::RepastEdgeContentManager&lt;RepastHPCDemoAgent&gt; edgeContentManager;    
+	repast::SharedNetwork&lt;RepastHPCDemoAgent, repast::RepastEdge&lt;RepastHPCDemoAgent&gt;, repast::RepastEdgeContent&lt;RepastHPCDemoAgent&gt;, repast::RepastEdgeContentManager&lt;RepastHPCDemoAgent&gt; &gt;* agentNetwork;</b>
+</pre></code></div>
+
+    <p>Create the instance of the network and add it to the context, in Model.cpp:</p>
+<div class="code"><code><pre>
+RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm): context(comm){
+	props = new repast::Properties(propsFile, argc, argv, comm);
+	stopAt = repast::strToInt(props-&gt;getProperty("stop.at"));
+	countOfAgents = repast::strToInt(props-&gt;getProperty("count.of.agents"));
+	initializeRandom(*props, comm);
+	if(repast::RepastProcess::instance()-&gt;rank() == 0) props-&gt;writeToSVFile("./output/record.csv");
+	provider = new RepastHPCDemoAgentPackageProvider(&context);
+	receiver = new RepastHPCDemoAgentPackageReceiver(&context);
+	
+        repast::Point&lt;double&gt; origin(-100,-100);
+        repast::Point&lt;double&gt; extent(200, 200);
+    
+        repast::GridDimensions gd(origin, extent);
+    
+        std::vector&lt;int&gt; processDims;
+        processDims.push_back(2);
+        processDims.push_back(2);
+    
+        discreteSpace = new repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;("AgentDiscreteSpace", gd, processDims, 2, comm);
+        continuousSpace = new repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;("AgentContinuousSpace", gd, processDims, 0, comm);
+    
+        repast::Point&lt;double&gt; opinionOrigin(-1.0,-1.0);
+        repast::Point&lt;double&gt; opinionExtent(2, 2);
+        repast::GridDimensions opinionGD(opinionOrigin, opinionExtent);
+        opinionSpace = new repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::StrictBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;("AgentOpinionSpace", opinionGD, processDims, 0, comm);
+
+        std::cout &lt;&lt; "RANK " &lt;&lt; repast::RepastProcess::instance()-&gt;rank() &lt;&lt; " BOUNDS: " &lt;&lt; continuousSpace-&gt;bounds().origin() &lt;&lt; " " &lt;&lt; continuousSpace-&gt;bounds().extents() &lt;&lt; std::endl;
+    
+        <b class="code">agentNetwork = new repast::SharedNetwork&lt;RepastHPCDemoAgent, repast::RepastEdge&lt;RepastHPCDemoAgent&gt;, repast::RepastEdgeContent&lt;RepastHPCDemoAgent&gt;, repast::RepastEdgeContentManager&lt;RepastHPCDemoAgent&gt; &gt;("agentNetwork", false, &edgeContentManager);
+	context.addProjection(agentNetwork);</b>
+    
+   	context.addProjection(continuousSpace);
+        context.addProjection(discreteSpace);
+        context.addProjection(opinionSpace);
+    
+	// Data collection
+	// Create the data set builder
+	std::string fileOutputName("./output/agent_total_data.csv");
+	repast::SVDataSetBuilder builder(fileOutputName.c_str(), ",", repast::RepastProcess::instance()-&gt;getScheduleRunner().schedule());
+	
+	// Create the individual data sets to be added to the builder
+	DataSource_AgentTotals* agentTotals_DataSource = new DataSource_AgentTotals(&context);
+	builder.addDataSource(createSVDataSource("Total", agentTotals_DataSource, std::plus&lt;int&gt;()));
+
+	DataSource_AgentCTotals* agentCTotals_DataSource = new DataSource_AgentCTotals(&context);
+	builder.addDataSource(createSVDataSource("C", agentCTotals_DataSource, std::plus&lt;int&gt;()));
+
+	// Use the builder to create the data set
+	agentValues = builder.createDataSet();
+	
+}
+</pre></code></div>
+
+   <p>We need to modify the Agent.h file to pass the network to the play method, and also create a new method that we will use to make use of the network:</p>
+
+<div class="code"><code><pre>
+#include "AgentId.h"
+#include "SharedContext.h"
+#include "SharedDiscreteSpace.h"
+#include "SharedContinuousSpace.h"
+<b class="code">#include "SharedNetwork.h"</b>
+</pre></code></div>
+
+<div class="code"><code><pre>
+    /* Actions */
+    bool cooperate();                                                 // Will indicate whether the agent cooperates or not; probability determined by = c / total
+    void play(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* context,
+              repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* discreteSpace,
+              repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* continuousSpace,
+              repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::StrictBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* opinionSpace<b class="code">,
+              repast::SharedNetwork&lt;RepastHPCDemoAgent,
+              repast::RepastEdge&lt;RepastHPCDemoAgent&gt;,
+              repast::RepastEdgeContent&lt;RepastHPCDemoAgent&gt;,
+              repast::RepastEdgeContentManager&lt;RepastHPCDemoAgent&gt; &gt; *network</b>);    // Choose three other agents from the given context and see if they cooperate or not
+    void move(repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* discreteSpace,
+              repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* continuousSpace);
+    <b class="code">void modifyOpinion(repast::SharedNetwork&lt;RepastHPCDemoAgent,
+                       repast::RepastEdge&lt;RepastHPCDemoAgent&gt;,
+                       repast::RepastEdgeContent&lt;RepastHPCDemoAgent&gt;,
+                       repast::RepastEdgeContentManager&lt;RepastHPCDemoAgent&gt; &gt; *network,
+                       repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::StrictBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* opinionSpace);</b>
+
+</pre></code></div>
+
+
+    <p>Having created these methods in the Agent header, we can arrange to call them in Model.cpp:</p>
+
+<div class="code"><code><pre>
+void RepastHPCDemoModel::doSomething(){
+	int whichRank = 0;
+	if(repast::RepastProcess::instance()-&gt;rank() == whichRank) std::cout &lt;&lt; " TICK " &lt;&lt; repast::RepastProcess::instance()-&gt;getScheduleRunner().currentTick() &lt;&lt; std::endl;
+
+	if(repast::RepastProcess::instance()-&gt;rank() == whichRank){
+		std::cout &lt;&lt; "LOCAL AGENTS:" &lt;&lt; std::endl;
+		for(int r = 0; r &lt; 4; r++){
+			for(int i = 0; i &lt; 10; i++){
+				repast::AgentId toDisplay(i, r, 0);
+				RepastHPCDemoAgent* agent = context.getAgent(toDisplay);
+				if((agent != 0) && (agent-&gt;getId().currentRank() == whichRank)){
+                                    std::vector&lt;double&gt; agentLoc;
+                                    continuousSpace-&gt;getLocation(agent-&gt;getId(), agentLoc);
+                                    repast::Point&lt;double&gt; agentLocation(agentLoc);
+                                    std::cout &lt;&lt; agent-&gt;getId() &lt;&lt; " " &lt;&lt; agent-&gt;getC() &lt;&lt; " " &lt;&lt; agent-&gt;getTotal() &lt;&lt; " AT " &lt;&lt; agentLocation &lt;&lt; std::endl;
+                                }
+		        }
+	        }
+		
+		std::cout &lt;&lt; "NON LOCAL AGENTS:" &lt;&lt; std::endl;
+		for(int r = 0; r &lt; 4; r++){
+			for(int i = 0; i &lt; 10; i++){
+				repast::AgentId toDisplay(i, r, 0);
+				RepastHPCDemoAgent* agent = context.getAgent(toDisplay);
+				if((agent != 0) && (agent-&gt;getId().currentRank() != whichRank)){
+                                    std::vector&lt;double&gt; agentLoc;
+                                    continuousSpace-&gt;getLocation(agent-&gt;getId(), agentLoc);
+                                    repast::Point&lt;double&gt; agentLocation(agentLoc);
+                                    std::cout &lt;&lt; agent-&gt;getId() &lt;&lt; " " &lt;&lt; agent-&gt;getC() &lt;&lt; " " &lt;&lt; agent-&gt;getTotal() &lt;&lt; " AT " &lt;&lt; agentLocation &lt;&lt; std::endl;
+                                }
+			}
+		}
+	}
+
+	std::vector&lt;RepastHPCDemoAgent*&gt; agents;
+	context.selectAgents(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::LOCAL, countOfAgents, agents);
+	std::vector&lt;RepastHPCDemoAgent*&gt;::iterator it = agents.begin();
+	while(it != agents.end()){
+            (*it)-&gt;play(&context, discreteSpace, continuousSpace<b class="code">, opinionSpace, agentNetwork</b>);
+            it++;
+        }
+
+        it = agents.begin();
+        while(it != agents.end()){
+	    (*it)-&gt;move(discreteSpace, continuousSpace);
+	    it++;
+        }
+    
+        <b class="code">it = agents.begin();
+        while(it != agents.end()){
+	    (*it)-&gt;modifyOpinion(agentNetwork, opinionSpace);
+	    it++;
+        }</b>
+    
+
+	discreteSpace-&gt;balance();
+        repast::RepastProcess::instance()-&gt;synchronizeAgentStatus&lt;RepastHPCDemoAgent, RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(context, *provider, *receiver, *receiver);
+    
+        repast::RepastProcess::instance()-&gt;synchronizeProjectionInfo&lt;RepastHPCDemoAgent, RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(context, *provider, *receiver, *receiver);
+    
+	repast::RepastProcess::instance()-&gt;synchronizeAgentStates&lt;RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(*provider, *receiver);
+}
+</pre></code></div>
+
+    <p>The modifications to the Agent.cpp file are the most extensive:</p>
+
+<div class="code"><code><pre>
+void RepastHPCDemoAgent::play(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* context,
+                              repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* discreteSpace,
+                              repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* continuousSpace,
+                              repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::StrictBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* opinionSpace<b class="code">,
+                              repast::SharedNetwork&lt;RepastHPCDemoAgent,
+                              repast::RepastEdge&lt;RepastHPCDemoAgent&gt;,
+                              repast::RepastEdgeContent&lt;RepastHPCDemoAgent&gt;,
+                              repast::RepastEdgeContentManager&lt;RepastHPCDemoAgent&gt; &gt; *network</b>){
+    std::vector&lt;RepastHPCDemoAgent*&gt; agentsToPlay;
+    
+    std::vector&lt;int&gt; agentLocDiscrete;
+    discreteSpace-&gt;getLocation(id_, agentLocDiscrete);
+    repast::Point&lt;int&gt; center(agentLocDiscrete);
+    repast::Moore2DGridQuery&lt;RepastHPCDemoAgent&gt; moore2DQuery(discreteSpace);
+    moore2DQuery.query(center, 2, false, agentsToPlay);
+    
+    std::vector&lt;double&gt; agentLocContinuous;
+    continuousSpace-&gt;getLocation(id_, agentLocContinuous);
+    repast::Point&lt;double&gt; agentPointContinuous(agentLocContinuous[0], agentLocContinuous[1]);
+
+    
+    std::vector&lt;double&gt;myOpinion;
+    opinionSpace-&gt;getLocation(id_, myOpinion);
+    repast::Point&lt;double&gt; myOpinionPoint(myOpinion[0], myOpinion[1]);
+
+    
+    <b class="code">// Check the network
+    std::vector&lt;RepastHPCDemoAgent*&gt; connectedAgents;
+    network-&gt;successors(this, connectedAgents);
+   
+    RepastHPCDemoAgent* closestEverAgent = 0;
+    double minDistanceRecorded = std::numeric_limits&lt;double&gt;::max();
+    if(connectedAgents.size() &gt; 0){ // Network may not have an edge yet; if not, just skip
+        closestEverAgent = *(connectedAgents.begin());
+        boost::shared_ptr&lt;repast::RepastEdge&lt;RepastHPCDemoAgent&gt; &gt; edge = network-&gt;findEdge(this, closestEverAgent);
+        minDistanceRecorded = edge-&gt;weight();
+        
+        if(std::find(agentsToPlay.begin(), agentsToPlay.end(), closestEverAgent) == agentsToPlay.end()) agentsToPlay.push_back(closestEverAgent); // Add this agent to the agents to play if it's not there already
+    }</b>
+
+    
+    double cPayoff     = 0;
+    double totalPayoff = 0;
+    std::vector&lt;RepastHPCDemoAgent*&gt;::iterator agentToPlay = agentsToPlay.begin();
+    while(agentToPlay != agentsToPlay.end()){
+        
+        std::vector&lt;double&gt; otherLocContinuous;
+        continuousSpace-&gt;getLocation((*agentToPlay)-&gt;getId(), otherLocContinuous);
+        repast::Point&lt;double&gt; otherPointContinuous(otherLocContinuous[0], otherLocContinuous[1]);
+        double distance = continuousSpace-&gt;getDistance(agentPointContinuous, otherPointContinuous);
+        
+        // Only play if within 1.5
+        if(distance &lt; 1.5){
+            std::cout &lt;&lt; " AGENT " &lt;&lt; id_ &lt;&lt; " AT " &lt;&lt; agentPointContinuous &lt;&lt; " PLAYING " &lt;&lt; ((*agentToPlay)-&gt;getId().currentRank() == id_.currentRank() ? "LOCAL" : "NON-LOCAL") &lt;&lt; " AGENT " &lt;&lt; (*agentToPlay)-&gt;getId() &lt;&lt; " at " &lt;&lt; otherPointContinuous &lt;&lt;  " (distance = " &lt;&lt; distance &lt;&lt; " )" &lt;&lt; std::endl;
+
+            
+            //bool iCooperated = cooperate();                          // Do I cooperate?
+            std::vector&lt;double&gt; otherOpinion;
+            opinionSpace-&gt;getLocation((*agentToPlay)-&gt;getId(), otherOpinion);
+            repast::Point&lt;double&gt; otherOpinionPoint(otherOpinion[0], otherOpinion[1]);
+            
+            double opinionDistance = opinionSpace-&gt;getDistance(myOpinionPoint, otherOpinionPoint);
+            bool iCooperated = (opinionDistance &lt; 1); // Must be within 1 of opinion
+            double payoff = (iCooperated ?
+		    				 ((*agentToPlay)-&gt;cooperate() ?  7 : 1) :     // If I cooperated, did my opponent?
+						 ((*agentToPlay)-&gt;cooperate() ? 10 : 3));     // If I didn't cooperate, did my opponent?
+            if(iCooperated) cPayoff += payoff;
+            totalPayoff             += payoff;
+            std::cout &lt;&lt; "  AGENT " &lt;&lt; id_ &lt;&lt; (iCooperated ? " COOPERATED " : " DID NOT COOPERATE ") &lt;&lt; " with agent " &lt;&lt; (*agentToPlay)-&gt;getId() &lt;&lt; " because our opinion distance was " &lt;&lt; opinionDistance &lt;&lt; " FROM " &lt;&lt; myOpinionPoint &lt;&lt; " TO " &lt;&lt; otherOpinionPoint &lt;&lt; std::endl;
+		}
+        else{
+            std::cout &lt;&lt; " AGENT " &lt;&lt; id_ &lt;&lt; " AT " &lt;&lt; agentPointContinuous &lt;&lt; " NOT PLAYING " &lt;&lt; ((*agentToPlay)-&gt;getId().currentRank() == id_.currentRank() ? "LOCAL" : "NON-LOCAL") &lt;&lt; " AGENT "&lt;&lt; (*agentToPlay)-&gt;getId() &lt;&lt; " at " &lt;&lt; otherPointContinuous &lt;&lt;  " (distance = " &lt;&lt; distance &lt;&lt; " )" &lt;&lt; std::endl;
+
+        }
+        
+        <b class="code">// If the distance to this agent in physical space
+        // is less than the recorded closest distance to another agent, drop any
+        // existing network link and make a new one.
+        if(distance &lt; minDistanceRecorded){
+            if(closestEverAgent != 0) network-&gt;removeEdge(this, closestEverAgent);
+            closestEverAgent = *agentToPlay;
+            minDistanceRecorded = distance;
+            network-&gt;addEdge(this, closestEverAgent, minDistanceRecorded);
+        }</b>
+        
+        agentToPlay++;
+    }
+    c      += cPayoff;
+    total  += totalPayoff;
+	
+}
+
+void RepastHPCDemoAgent::move(repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* discreteSpace,
+                              repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* continuousSpace){
+
+    std::vector&lt;double&gt; agentLoc;
+    continuousSpace-&gt;getLocation(id_, agentLoc);
+    std::vector&lt;double&gt; agentNewLocContinuous;
+    agentNewLocContinuous.push_back(agentLoc[0] + (repast::Random::instance()-&gt;nextDouble() - .5) * 1.5);
+    agentNewLocContinuous.push_back(agentLoc[1] + (repast::Random::instance()-&gt;nextDouble() - .5) * 1.5);
+    continuousSpace-&gt;moveTo(id_,agentNewLocContinuous);
+    std::vector&lt;int&gt; agentNewLocDiscrete;
+    agentNewLocDiscrete.push_back((int)(floor(agentNewLocContinuous[0])));
+    agentNewLocDiscrete.push_back((int)(floor(agentNewLocContinuous[1])));
+    discreteSpace-&gt;moveTo(id_, agentNewLocDiscrete);
+}
+
+
+<b class="code">void RepastHPCDemoAgent::modifyOpinion(repast::SharedNetwork&lt;RepastHPCDemoAgent,
+                                       repast::RepastEdge&lt;RepastHPCDemoAgent&gt;,
+                                       repast::RepastEdgeContent&lt;RepastHPCDemoAgent&gt;,
+                                       repast::RepastEdgeContentManager&lt;RepastHPCDemoAgent&gt; &gt; *network,
+                                       repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::StrictBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* opinionSpace){
+
+    std::vector&lt;RepastHPCDemoAgent*&gt; connectedAgents;
+    network-&gt;successors(this, connectedAgents);
+
+    if(connectedAgents.size() &gt; 0){ // Network may not have an edge yet; if not, just skip
+        std::vector&lt;double&gt; myOpinion;
+        opinionSpace-&gt;getLocation(id_, myOpinion);
+
+        std::vector&lt;RepastHPCDemoAgent*&gt;::iterator agentToMoveToward = connectedAgents.begin();
+        std::vector&lt;double&gt; otherOpinion;
+        opinionSpace-&gt;getLocation((*agentToMoveToward)-&gt;getId(), otherOpinion);
+
+        std::vector&lt;double&gt; newOpinion;
+        for(int i = 0; i &lt; 2; i++){
+            double diff = otherOpinion[i] - myOpinion[i];
+            double absDiff = (diff &lt; 0 ? (-1 * diff) : diff);
+            double delta = absDiff * .5;
+            delta = (delta &gt; .02 ? .02 : delta) * (diff &lt; 0 ? -1 : 1);
+            newOpinion.push_back(myOpinion[i] + delta); // Note: can never go out of bounds because moving toward another agent by less than distance to other agent
+        }
+        std::cout &lt;&lt; "Agent " &lt;&lt; id_ &lt;&lt; " moving in opinion space from " &lt;&lt; (repast::Point&lt;double&gt;(myOpinion)) &lt;&lt; " toward " &lt;&lt; (*agentToMoveToward)-&gt;getId() &lt;&lt; " at " &lt;&lt; (repast::Point&lt;double&gt;(otherOpinion)) &lt;&lt; " arriving at " &lt;&lt; (repast::Point&lt;double&gt;(newOpinion)) &lt;&lt; std::endl;
+        opinionSpace-&gt;moveTo(id_, newOpinion);
+    }
+}</b>
+</pre></code></div>
+    <p>In the 'play' method, the agents now check a record of the closest agent they have encountered in physical space, and establish a network connection with that agent. The weight of the network link records the distance of this encounter. This agent is then always played with in subsequent rounds, until the network link is eliminated and replaced with an agent that has come even closer. In the 'modifyOpinion' method, the agent tends to move toward the agent to which it is connected. Note that physical proximity does not (initially) mean opinion proximity, so the agent may initially be playing with another agent that is not close to it in opinion space. However, through time, as long as the link persists, the agent will move toward the other agent, and they may grow closer in opinion space. (Of course, the other agent may also be moving toward some third agent. As a quick note, if the agent is a <b>local</b> agent, movement will be toward the agent's current location, which may change if the other agent moves first in the 'modifyOpinion' round. If the agent is a non-local agent, movement will be toward the location that the agent occupied during the last sync operation. This approach may not be acceptable in some simulation contexts.)</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_03_Step_08");</script>
+  </body>
+</html>

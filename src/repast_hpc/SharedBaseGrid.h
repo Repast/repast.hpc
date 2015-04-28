@@ -224,6 +224,7 @@ private:
 protected:
 	int _buffer;
 	GridDimensions localBounds;
+	GridDimensions globalBounds;
 	Neighbors nghs;
 	// vector of ids of agents in this spaces buffer
 	std::vector<AgentId> buffered;
@@ -234,10 +235,6 @@ protected:
 	int rank;
 	typedef typename repast::BaseGrid<T, MultipleOccupancy<T, GPType> , GPTransformer, Adder, GPType> GridBaseType;
 	boost::mpi::communicator* comm;
-
-
-  bool locationIsInBuffer(Point<GPType> pt){ return false; }
-  bool agentIsInBuffer(AgentId id){ return false; }
 
 public:
   void balance();
@@ -261,15 +258,14 @@ public:
 	virtual ~SharedBaseGrid();
 
 	/**
-	 * Gets the local bounds of this SharedGrid. The local bounds
-	 * are the dimensions of the section of the pan-process grid represented
-	 * by this SharedGrid.
+	 * Gets the global bounds for this grid
 	 *
-	 * @return  the local bounds of this SharedGrid.
+	 * @return  the global bounds of this SharedGrid.
 	 */
-	GridDimensions bounds() const {
-		return localBounds;
+	virtual GridDimensions const bounds() const {
+		return globalBounds;
 	}
+
 
 	/**
 	 * Gets the local bounds of this SharedGrid. The local bounds
@@ -314,7 +310,7 @@ public:
 template<typename T, typename GPTransformer, typename Adder, typename GPType>
 SharedBaseGrid<T, GPTransformer, Adder, GPType>::SharedBaseGrid(std::string name, GridDimensions gridDims, std::vector<
 		int> processDims, int buffer, boost::mpi::communicator* communicator) :
-	GridBaseType(name, gridDims), _buffer(buffer), comm(communicator) {
+	GridBaseType(name, gridDims), _buffer(buffer), comm(communicator), globalBounds(gridDims) {
 
   rank = comm->rank();
 
@@ -419,6 +415,8 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::removeAgent(T* agent) {
 template<typename T, typename GPTransformer, typename Adder, typename GPType>
 void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<AgentId>& agentsToTest, std::map<int, std::set<AgentId> >& agentsToPush){
 
+  if(_buffer == 0) return; // A buffer zone of zero means that no agents will be pushed.
+
   // In a general case, we might not want to do this, but
   // for the current configuration, we can make this (perhaps much) more efficient
   // this way:
@@ -426,19 +424,46 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<A
   Point<double> localExtent = localBounds.extents();
 
   double xStart = localOrigin.getX() + _buffer;
-  double xEnd   = localOrigin.getX() + localExtent.getX() - _buffer * 2;
+  double xEnd   = localExtent.getX() - _buffer * 2;
   double yStart = localOrigin.getY() + _buffer;
-  double yEnd   = localOrigin.getY() + localExtent.getY() - _buffer * 2;
+  double yEnd   = localExtent.getY() - _buffer * 2;
+
   GridDimensions unbuffered(Point<double> (xStart, yStart), Point<double> (xEnd, yEnd));
 
-  GridDimensions NW_bounds = createSendBufferBounds(Neighbors::NW);  int NW_rank = nghs.neighbor(Neighbors::NW)->rank(); std::set<AgentId> NW_set;
-  GridDimensions N_bounds  = createSendBufferBounds(Neighbors::N);   int N_rank  = nghs.neighbor(Neighbors::N)->rank();  std::set<AgentId> N_set;
-  GridDimensions NE_bounds = createSendBufferBounds(Neighbors::NE);  int NE_rank = nghs.neighbor(Neighbors::NE)->rank(); std::set<AgentId> NE_set;
-  GridDimensions E_bounds  = createSendBufferBounds(Neighbors::E);   int E_rank  = nghs.neighbor(Neighbors::E)->rank();  std::set<AgentId> E_set;
-  GridDimensions SE_bounds = createSendBufferBounds(Neighbors::SE);  int SE_rank = nghs.neighbor(Neighbors::SE)->rank(); std::set<AgentId> SE_set;
-  GridDimensions S_bounds  = createSendBufferBounds(Neighbors::S);   int S_rank  = nghs.neighbor(Neighbors::S)->rank();  std::set<AgentId> S_set;
-  GridDimensions SW_bounds = createSendBufferBounds(Neighbors::SW);  int SW_rank = nghs.neighbor(Neighbors::SW)->rank(); std::set<AgentId> SW_set;
-  GridDimensions W_bounds  = createSendBufferBounds(Neighbors::W);   int W_rank  = nghs.neighbor(Neighbors::W)->rank();  std::set<AgentId> W_set;
+  Neighbor* neighbor;
+
+  neighbor = nghs.neighbor(Neighbors::NW);
+  int NW_rank = (neighbor == 0 ? -1 : neighbor->rank());
+  neighbor = nghs.neighbor(Neighbors::N );
+  int N_rank  = (neighbor == 0 ? -1 : neighbor->rank());
+  neighbor = nghs.neighbor(Neighbors::NE);
+  int NE_rank = (neighbor == 0 ? -1 : neighbor->rank());
+  neighbor = nghs.neighbor(Neighbors::E );
+  int E_rank  = (neighbor == 0 ? -1 : neighbor->rank());
+  neighbor = nghs.neighbor(Neighbors::SE);
+  int SE_rank = (neighbor == 0 ? -1 : neighbor->rank());
+  neighbor = nghs.neighbor(Neighbors::S );
+  int S_rank  = (neighbor == 0 ? -1 : neighbor->rank());
+  neighbor = nghs.neighbor(Neighbors::SW);
+  int SW_rank = (neighbor == 0 ? -1 : neighbor->rank());
+  neighbor = nghs.neighbor(Neighbors::W );
+  int W_rank  = (neighbor == 0 ? -1 : neighbor->rank());
+
+  GridDimensions empty(Point<double>(0,0), Point<double>(0,0));
+
+  GridDimensions N_bounds  = (N_rank  > - 1 ? createSendBufferBounds(Neighbors::N)  : empty);
+  GridDimensions E_bounds  = (E_rank  > - 1 ? createSendBufferBounds(Neighbors::E)  : empty);
+  GridDimensions S_bounds  = (S_rank  > - 1 ? createSendBufferBounds(Neighbors::S)  : empty);
+  GridDimensions W_bounds  = (W_rank  > - 1 ? createSendBufferBounds(Neighbors::W)  : empty);
+
+  std::set<AgentId> NW_set;
+  std::set<AgentId> N_set;
+  std::set<AgentId> NE_set;
+  std::set<AgentId> E_set;
+  std::set<AgentId> SE_set;
+  std::set<AgentId> S_set;
+  std::set<AgentId> SW_set;
+  std::set<AgentId> W_set;
 
 
   // Local agents that are in other processes' 'buffer zones' must be exported to those other processes.

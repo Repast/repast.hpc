@@ -91,11 +91,19 @@ RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** a
     processDims.push_back(2);
     processDims.push_back(2);
     
-    discreteSpace = new repast::SharedDiscreteSpace<RepastHPCDemoAgent, repast::StrictBorders, repast::SimpleAdder<RepastHPCDemoAgent> >("AgentDiscreteSpace", gd, processDims, 5, comm);
-	
-    std::cout << "RANK " << repast::RepastProcess::instance()->rank() << " BOUNDS: " << discreteSpace->bounds().origin() << " " << discreteSpace->bounds().extents() << std::endl;
+    discreteSpace = new repast::SharedDiscreteSpace<RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder<RepastHPCDemoAgent> >("AgentDiscreteSpace", gd, processDims, 2, comm);
+    continuousSpace = new repast::SharedContinuousSpace<RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder<RepastHPCDemoAgent> >("AgentContinuousSpace", gd, processDims, 0, comm);
     
-   	context.addProjection(discreteSpace);
+    repast::Point<double> opinionOrigin(-1.0,-1.0);
+    repast::Point<double> opinionExtent(2, 2);
+    repast::GridDimensions opinionGD(opinionOrigin, opinionExtent);
+    opinionSpace = new repast::SharedContinuousSpace<RepastHPCDemoAgent, repast::StrictBorders, repast::SimpleAdder<RepastHPCDemoAgent> >("AgentOpinionSpace", opinionGD, processDims, 0, comm);
+
+    std::cout << "RANK " << repast::RepastProcess::instance()->rank() << " BOUNDS: " << continuousSpace->bounds().origin() << " " << continuousSpace->bounds().extents() << std::endl;
+    
+   	context.addProjection(continuousSpace);
+    context.addProjection(discreteSpace);
+    context.addProjection(opinionSpace);
     
 	// Data collection
 	// Create the data set builder
@@ -126,12 +134,18 @@ RepastHPCDemoModel::~RepastHPCDemoModel(){
 void RepastHPCDemoModel::init(){
 	int rank = repast::RepastProcess::instance()->rank();
 	for(int i = 0; i < countOfAgents; i++){
-        repast::Point<int> initialLocation((int)discreteSpace->bounds().origin().getX() + i,(int)discreteSpace->bounds().origin().getY() + i);
+        repast::Point<int> initialLocationDiscrete((int)discreteSpace->bounds().origin().getX() + i,(int)discreteSpace->bounds().origin().getY() + i);
+        repast::Point<double> initialLocationContinuous((double)continuousSpace->bounds().origin().getX() + i,(double)continuousSpace->bounds().origin().getY() + i);
+        repast::Point<double> initialLocationOpinion((-1) + (repast::Random::instance()->nextDouble() * 2), (-1) + (repast::Random::instance()->nextDouble() * 2));
+        
 		repast::AgentId id(i, rank, 0);
 		id.currentRank(rank);
 		RepastHPCDemoAgent* agent = new RepastHPCDemoAgent(id);
 		context.addAgent(agent);
-        discreteSpace->moveTo(id, initialLocation);
+        discreteSpace->moveTo(id, initialLocationDiscrete);
+        continuousSpace->moveTo(id, initialLocationContinuous);
+        opinionSpace->moveTo(id, initialLocationOpinion);
+        std::cout << " MOVING AGENT " << id << " TO " << initialLocationOpinion << std::endl;
 	}
 }
 
@@ -199,9 +213,9 @@ void RepastHPCDemoModel::doSomething(){
 				repast::AgentId toDisplay(i, r, 0);
 				RepastHPCDemoAgent* agent = context.getAgent(toDisplay);
 				if((agent != 0) && (agent->getId().currentRank() == whichRank)){
-                    std::vector<int> agentLoc;
-                    discreteSpace->getLocation(agent->getId(), agentLoc);
-                    repast::Point<int> agentLocation(agentLoc);
+                    std::vector<double> agentLoc;
+                    continuousSpace->getLocation(agent->getId(), agentLoc);
+                    repast::Point<double> agentLocation(agentLoc);
                     std::cout << agent->getId() << " " << agent->getC() << " " << agent->getTotal() << " AT " << agentLocation << std::endl;
                 }
 			}
@@ -213,9 +227,9 @@ void RepastHPCDemoModel::doSomething(){
 				repast::AgentId toDisplay(i, r, 0);
 				RepastHPCDemoAgent* agent = context.getAgent(toDisplay);
 				if((agent != 0) && (agent->getId().currentRank() != whichRank)){
-                    std::vector<int> agentLoc;
-                    discreteSpace->getLocation(agent->getId(), agentLoc);
-                    repast::Point<int> agentLocation(agentLoc);
+                    std::vector<double> agentLoc;
+                    continuousSpace->getLocation(agent->getId(), agentLoc);
+                    repast::Point<double> agentLocation(agentLoc);
                     std::cout << agent->getId() << " " << agent->getC() << " " << agent->getTotal() << " AT " << agentLocation << std::endl;
                 }
 			}
@@ -228,13 +242,13 @@ void RepastHPCDemoModel::doSomething(){
 	context.selectAgents(repast::SharedContext<RepastHPCDemoAgent>::LOCAL, countOfAgents, agents);
 	std::vector<RepastHPCDemoAgent*>::iterator it = agents.begin();
 	while(it != agents.end()){
-        (*it)->play(&context, discreteSpace);
+        (*it)->play(&context, discreteSpace, continuousSpace, opinionSpace);
 		it++;
     }
 
     it = agents.begin();
     while(it != agents.end()){
-		(*it)->move(discreteSpace);
+		(*it)->move(discreteSpace, continuousSpace);
 		it++;
     }
 
@@ -242,9 +256,8 @@ void RepastHPCDemoModel::doSomething(){
     repast::RepastProcess::instance()->synchronizeAgentStatus<RepastHPCDemoAgent, RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver>(context, *provider, *receiver, *receiver);
     
     repast::RepastProcess::instance()->synchronizeProjectionInfo<RepastHPCDemoAgent, RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver>(context, *provider, *receiver, *receiver);
-
-	repast::RepastProcess::instance()->synchronizeAgentStates<RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver>(*provider, *receiver);
     
+	repast::RepastProcess::instance()->synchronizeAgentStates<RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver>(*provider, *receiver);
 }
 
 void RepastHPCDemoModel::initSchedule(repast::ScheduleRunner& runner){

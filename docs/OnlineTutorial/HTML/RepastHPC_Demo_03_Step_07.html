@@ -1,0 +1,184 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_03_Step_07");</script>
+  <p>In the previous demo we have made use of two spatial projections for efficiency. However, in doing so we were actually making use of the more general ability in Repast HPC to use multiple spatial projections. In this demo we will add another, continuous spatial projection, but use it for a different purpose. Where we previously moved agents to matching locations in both the discrete and continuous spaces, in this demo we will allow  agents to be found in another spatial projection independently of their movements in the other spaces.</p>
+  <p>The reasons that one might do this will be dependent on the specific simulation. However, a simple example might be a simulation in which agents have a physical location in a 2-D space, while also have a position in an 'opinion space' that represents their attitudes, positive or negative, toward two topics. Agents can be located near to or far from one another in physical space, but also near to or far from one another in opinion space. The simulation may allow agents to move in physical space and encounter other agents and engage in a conversation with them, which might result in a movement of the agents in opinion space.<p>
+  <p>The important consideration here is that the physical space- represented by the discrete and continuous spaces, as in the previous demo- is used to manage load balancing and parallelism in the simulation. The opinion space, however, is not. On a given process, agents that fall within the process's local boundaries in the physical space (and, technically, in the discrete space which is used for load balancing and synchronization) can fall anywhere in the opinion space. Non-local agents that are on a process because they are on adjacent process but in the buffer zones are copied to the local process, and these copies include <i>all</i> projection information, including the position of the agent in opinion space. Hence the local agents can find non-local agents near them in physical space and determine their positions in opinion space as well.</p>
+  <p>One important part of this, however, is that globally there may be many agents that fall near a local agent in opinion space, but because they are not near the agent in physical space, they are not copied to the local process. It is not possible to know how many agents are near a given agent in opinion space without polling them in some way outside of Repast HPC's built-in capabilities. If proximity in opinion space were to matter, a different synchronization scheme would be needed.</p>
+
+  <p>The changes in this case are simple. First, add another instance variable to represent the opinion space in the Model class, Model.h file:</p>
+
+<div class="code"><code><pre>
+class RepastHPCDemoModel{
+	int stopAt;
+	int countOfAgents;
+	repast::Properties* props;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt; context;
+	
+	RepastHPCDemoAgentPackageProvider* provider;
+	RepastHPCDemoAgentPackageReceiver* receiver;
+
+	repast::SVDataSet* agentValues;
+        repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* discreteSpace;
+        repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* continuousSpace;
+        <b class="code">repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::StrictBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* opinionSpace;</b>
+</pre></code></div>
+
+  <p>Note that we are using 'strict' borders here instead of wraparound borders. WrapAround borders are used when the space is toroidal, and movement past the upper boundary on one axis puts the agent inside the boundary at the opposite end of the space along that axis. It also impacts the way distances are measured: in a space with WrapAround boundaries at [-100, 100), an agent at -98 is only 4 units away from an agent at +98. However, we do not want agents at opposite ends of our opinion space to be considered near one another; in opinion space, being at opposite ends means being diametrically opposed.</p>
+ 
+  <p>Instantiate the model in the Model.h initialization:</p>
+
+<div class="code"><code><pre>
+RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm): context(comm){
+	props = new repast::Properties(propsFile, argc, argv, comm);
+	stopAt = repast::strToInt(props-&gt;getProperty("stop.at"));
+	countOfAgents = repast::strToInt(props-&gt;getProperty("count.of.agents"));
+	initializeRandom(*props, comm);
+	if(repast::RepastProcess::instance()-&gt;rank() == 0) props-&gt;writeToSVFile("./output/record.csv");
+	provider = new RepastHPCDemoAgentPackageProvider(&context);
+	receiver = new RepastHPCDemoAgentPackageReceiver(&context);
+	
+         repast::Point&lt;double&gt; origin(-100,-100);
+         repast::Point&lt;double&gt; extent(200, 200);
+    
+         repast::GridDimensions gd(origin, extent);
+    
+         std::vector&lt;int&gt; processDims;
+         processDims.push_back(2);
+         processDims.push_back(2);
+    
+         discreteSpace = new repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;("AgentDiscreteSpace", gd, processDims, 2, comm);
+         continuousSpace = new repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;("AgentContinuousSpace", gd, processDims, 0, comm);
+
+         <b class="code">repast::Point&lt;double&gt; opinionOrigin(-1.0,-1.0);
+         repast::Point&lt;double&gt; opinionExtent(2, 2);
+         repast::GridDimensions opinionGD(opinionOrigin, opinionExtent);
+         opinionSpace = new repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::StrictBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;("AgentOpinionSpace", opinionGD, processDims, 0, comm);</b>
+
+   std::cout &lt;&lt; "RANK " &lt;&lt; repast::RepastProcess::instance()-&gt;rank() &lt;&lt; " BOUNDS: " &lt;&lt; continuousSpace-&gt;bounds().origin() &lt;&lt; " " &lt;&lt; continuousSpace-&gt;bounds().extents() &lt;&lt; std::endl;
+    
+   	context.addProjection(continuousSpace);
+        context.addProjection(discreteSpace);
+        context.addProjection(opinionSpace);
+ 
+
+
+</pre></code></div>
+
+  <p>Note that we are using special dimensions for it, from -1 to 1 along both axes, presumably reflecting highly negative opinion to highly positive opinion on two topics.</p>
+
+  <p>Next we change give the agents initial positions in origin space. Note that we do <u>not</u> need to position the agents in opinion space within local boundaries; local boundaries are irrelevant for this projection, because it will never be used for sharing or balancing:</p>
+
+<div class="code"><code><pre>
+void RepastHPCDemoModel::init(){
+	int rank = repast::RepastProcess::instance()-&gt;rank();
+	for(int i = 0; i &lt; countOfAgents; i++){
+        	repast::Point&lt;int&gt; initialLocationDiscrete((int)discreteSpace-&gt;bounds().origin().getX() + i,(int)discreteSpace-&gt;bounds().origin().getY() + i);
+        	repast::Point&lt;double&gt; initialLocationContinuous((double)continuousSpace-&gt;bounds().origin().getX() + i,(double)continuousSpace-&gt;bounds().origin().getY() + i);
+        	<b class="code">repast::Point&lt;double&gt; initialLocationOpinion((-1) + (repast::Random::instance()-&gt;nextDouble() * 2), (-1) + (repast::Random::instance()-&gt;nextDouble() * 2));</b>
+        
+		repast::AgentId id(i, rank, 0);
+		id.currentRank(rank);
+		RepastHPCDemoAgent* agent = new RepastHPCDemoAgent(id);
+		context.addAgent(agent);
+       	        discreteSpace-&gt;moveTo(id, initialLocationDiscrete);
+                continuousSpace-&gt;moveTo(id, initialLocationContinuous);
+                <b class="code">opinionSpace-&gt;moveTo(id, initialLocationOpinion);</b>
+	}
+}
+</pre></code></div>
+
+
+  <p>Next, modify the agent 'play' method to accept a pointer to the opinion space as an argument:</p>
+<div class="code"><code><pre>
+    void play(repast::SharedContext&gl;RepastHPCDemoAgent&gt;* context,
+              repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* discreteSpace,
+              repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* continuousSpace<b class="code">,
+              repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::StrictBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* opinionSpace</b>);    // Choose three other agents from the given context and see if they cooperate or not
+</pre></code></div>
+
+  <p>And change the line of code that calls this in Model.cpp:</p>
+
+<div class="code"><code><pre>
+	std::vector&lt;RepastHPCDemoAgent*&gt; agents;
+	context.selectAgents(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::LOCAL, countOfAgents, agents);
+	std::vector&lt;RepastHPCDemoAgent*&gt;::iterator it = agents.begin();
+	while(it != agents.end()){
+        (*it)-&gt;play(&context, discreteSpace, continuousSpace<b class="code">, opinionSpace</b>);
+		it++;
+    }
+</pre></code></div>
+
+
+
+  <p>And use the space in the 'play' method just as you would any other space, in Agent.cpp:</p>
+
+<div class="code"><code><pre>
+void RepastHPCDemoAgent::play(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* context,
+                              repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* discreteSpace,
+                              repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* continuousSpace<b class="code">,
+                              repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::StrictBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* opinionSpace</b>){
+    std::vector&lt;RepastHPCDemoAgent*&gt; agentsToPlay;
+    
+    std::vector&lt;int&gt; agentLocDiscrete;
+    discreteSpace-&gt;getLocation(id_, agentLocDiscrete);
+    repast::Point&lt;int&gt; center(agentLocDiscrete);
+    repast::Moore2DGridQuery&lt;RepastHPCDemoAgent&gt; moore2DQuery(discreteSpace);
+    moore2DQuery.query(center, 2, false, agentsToPlay);
+    
+    std::vector&lt;double&gt; agentLocContinuous;
+    continuousSpace-&gt;getLocation(id_, agentLocContinuous);
+    repast::Point&lt;double&gt; agentPointContinuous(agentLocContinuous[0], agentLocContinuous[1]);
+
+    
+    <b class="code">std::vector&lt;double&gt;myOpinion;
+    opinionSpace-&gt;getLocation(id_, myOpinion);
+    repast::Point&lt;double&gt; myOpinionPoint(myOpinion[0], myOpinion[1]);</b>
+
+    
+    double cPayoff     = 0;
+    double totalPayoff = 0;
+    std::vector&lt;RepastHPCDemoAgent*&gt;::iterator agentToPlay = agentsToPlay.begin();
+    while(agentToPlay != agentsToPlay.end()){
+        
+        std::vector&lt;double&gt; otherLocContinuous;
+        continuousSpace-&gt;getLocation((*agentToPlay)-&gt;getId(), otherLocContinuous);
+        repast::Point&lt;double&gt; otherPointContinuous(otherLocContinuous[0], otherLocContinuous[1]);
+        double distance = continuousSpace-&gt;getDistance(agentPointContinuous, otherPointContinuous);
+        // Only play if within 1.5
+        if(distance &lt; 1.5){
+            std::cout &lt;&lt; " AGENT " &lt;&lt; id_ &lt;&lt; " AT " &lt;&lt; agentPointContinuous &lt;&lt; " PLAYING " &lt;&lt; (*agentToPlay)-&gt;getId() &lt;&lt; " at " &lt;&lt; otherPointContinuous &lt;&lt;  " (distance = " &lt;&lt; distance &lt;&lt; " )" &lt;&lt; std::endl;
+            
+            <b class="code">//bool iCooperated = cooperate();                          // Do I cooperate?
+            std::vector&lt;double&gt; otherOpinion;
+            opinionSpace-&gt;getLocation((*agentToPlay)-&gt;getId(), otherOpinion);
+            repast::Point&lt;double&gt; otherOpinionPoint(otherOpinion[0], otherOpinion[1]);
+            
+            bool iCooperated = (opinionSpace-&gt;getDistance(myOpinionPoint, otherOpinionPoint) &lt; 1); // Must be within 1 of opinion</b>
+            double payoff = (iCooperated ?
+		    				 ((*agentToPlay)-&gt;cooperate() ?  7 : 1) :     // If I cooperated, did my opponent?
+						 ((*agentToPlay)-&gt;cooperate() ? 10 : 3));     // If I didn't cooperate, did my opponent?
+            if(iCooperated) cPayoff += payoff;
+            totalPayoff             += payoff;
+	}
+        else{
+            std::cout &lt;&lt; " AGENT " &lt;&lt; id_ &lt;&lt; " AT " &lt;&lt; agentPointContinuous &lt;&lt; " NOT PLAYING " &lt;&lt; (*agentToPlay)-&gt;getId() &lt;&lt; " at " &lt;&lt; otherPointContinuous &lt;&lt;  " (distance = " &lt;&lt; distance &lt;&lt; " )" &lt;&lt; std::endl;
+        }
+        agentToPlay++;
+    }
+    c      += cPayoff;
+    total  += totalPayoff;
+	
+}
+</pre></code></div>
+
+    <p>In this case, we use proximity in opinion space to decide whether to cooperate.</p>
+
+    <script type="text/javascript">footer("RepastHPC_Demo_03_Step_06");</script>
+  </body>
+</html>

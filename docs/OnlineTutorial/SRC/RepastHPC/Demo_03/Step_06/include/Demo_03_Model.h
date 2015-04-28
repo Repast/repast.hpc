@@ -10,7 +10,7 @@
 #include "AgentRequest.h"
 #include "TDataSource.h"
 #include "SVDataSet.h"
-#include "SharedDiscreteSpace.h"
+#include "SharedContinuousSpace.h"
 #include "GridComponents.h"
 
 #include "Demo_03_Agent.h"
@@ -78,7 +78,8 @@ class RepastHPCDemoModel{
 	RepastHPCDemoAgentPackageReceiver* receiver;
 
 	repast::SVDataSet* agentValues;
-    repast::SharedDiscreteSpace<RepastHPCDemoAgent, repast::StrictBorders, repast::SimpleAdder<RepastHPCDemoAgent> >* discreteSpace;
+    repast::SharedDiscreteSpace<RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder<RepastHPCDemoAgent> >* discreteSpace;
+    repast::SharedContinuousSpace<RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder<RepastHPCDemoAgent> >* continuousSpace;
 	
 public:
 	RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm);

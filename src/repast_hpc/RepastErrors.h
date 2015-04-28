@@ -213,7 +213,7 @@ public:
   Repast_Error_11(std::vector<int> pt, T dimensions): OUT_OF_RANGE(ERROR_NUMBER 11)
       THROWN_BY     "void Borders::boundsCheck(const vector<int>& pt) const"
       REASON        "The point passed (at " + make_vec_str(pt) + " is outside the dimension range being checked (" + make_str(dimensions) + ")."
-      EXPLANATION   "The point passed to the boundary check is outside the permitted range; it probably" +
+      EXPLANATION   "The point passed to the boundary check is outside the permitted range; it probably " +
                     "falls outside the area of the simulation being managed by this process."
       CAUSE         "Unknown"
       RESOLUTION    "Ensure that no agent is moving outside the boundaries of a process and its buffer zone."
@@ -226,7 +226,7 @@ public:
   Repast_Error_12(std::vector<int> pt, T dimensions): OUT_OF_RANGE(ERROR_NUMBER 12)
       THROWN_BY     "void Borders::boundsCheck(const vector<double>& pt) const"
       REASON        "The point passed (at " + make_vec_str(pt) + ") is outside the dimension range being checked (" + make_str(dimensions) + ")."
-      EXPLANATION   "The point passed to the boundary check is outside the permitted range; it probably" +
+      EXPLANATION   "The point passed to the boundary check is outside the permitted range; it probably " +
                     "falls outside the area of the simulation being managed by this process."
       CAUSE         "Unknown"
       RESOLUTION    "Ensure that no agent is moving outside the boundaries of a process and its buffer zone."

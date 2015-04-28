@@ -1,0 +1,279 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_03_Step_06");</script>
+  <p>Previously we have used <i>either</i> a discrete space <i>or</i> a continuous space. However, there are instances where it may be advantageous to use <i>two</i> spaces, one of which is discrete and the other is continuous. This is true even though the two spaces used both represent the same aspect of the simulation- for example, if the simulation is a depiction of agents in a 2-D space (such as on a landscape).</p>
+  <p>In such a case, the position of an agent in the continuous space might be (1.7, 2.4), while in the discrete space, where the positions must all be integer vaues, it is (1, 2). Although the two spatial projections are completely separate, in such a case the agents' positions in each space represent the same thing. The discrete space coordinate is always updated to match, albeit at coarser resolution, the continuous location.</p>
+  <p>Why would we want to do this? The case in which we would want to do this is one in which an agent will frequently need to find agents around it within a specific distance (as was the case in the earlier step in this demo), and in which the number of agents within this radius is likely to be small compared to the total number of agents on each process. The key aspect is that searches in space can be done much more efficiently in discrete spaces than in continuous ones.</p>
+  <p>The reason this is true has to do with the way the discrete space internally stores data about the locations of agents. The discrete space maps specific locations (e.g. "1, 2") to simple lists of agents at that location. Because of this, it is easy to compile a list of all agents at a small collection of locations (e.g. a neighborhood around 1,1, including: 0,0 + 0,1 + 0,2 + 1,0 + 1,1 + 1,2 + 2,0 + 2,1 + 2,2).</p>
+  <p>Consider a simulation in which agents can only interact with those that are within a short distance of themselves in space. Each agent must poll the space to get a list of agents that are within the specified distance. In a discrete space, a neighborhood of cells can return the list of agents very quickly. In contrast, the continuous space stores only the list of agents and their locations. To determine the list of agents within a given distance, the distance to <b>all</b> of the other agents must be calculated. In a case where each agent needs to make this kind of decision, all of the pairwise distance comparisons would have to be calculated. If the distance required is small compared to the size of the process's portion of the global space, and there are only a few agents that will fall within this distance compared to a large number of agents outside it, this strategy would perform many calculations that were actually unneeded.</p>
+  <p>Note that in some cases employing this strategy will require two steps: Suppose that your simulation requires a non-integer value that acts as a circular radius (e.g. 4.5 units). In this case, the most efficient strategy would be to use the discrete space to retrieve all the agents within a neighborhood <i>that is large enough to include the entire space reachable by the 4.5 unit radius</i>, i.e. 5 units. This neighborhood is rectangular, not circular, and it exceeds the radius that is actually needed (5 units vs. 4.5). However, once you have the list of all agents within this neighborhood, you need then calculate the exact distance <b>only for those agents</b>, rather than for the entire population. You can use this to determine which agents fall within the 4.5 unit radius that the simulation actually requires.</p>
+  <p>As a note: The 'Relogo' implementation in Repast HPC uses two spaces, for exactly this reason.</p>
+  <p>The code to do this is straightforward. The code that sets up the spaces simply creates instances of the two spaces. Each 'move' operation is done twice: the agents are moved in both the continuous space and the discrete space.</p>
+  <p>There is one additional change that can be made to increase efficiency. The buffer zone of the continuous space can be set to zero. From previous demos it should be recalled that the buffer zone is used to mark agents that are to be shared across processes and to move agents that go outside of local boundaries. With respect to first operation, once marked, an agent will be shared along with all of its projection information. There is no need to mark an agent twice; if the discrete space indicates that the agent should be shared, there is no need for the continuous space to also mark it. For the same reason that searches are more efficient in discrete spaces, the process of exporting agents in buffer zones is also more efficient. In most cases, even if the actual buffer zone size required for the simulation would be a non-integer value, it will be more efficient to use the next-largest integer value as the buffer zone size in the discrete space than to use the continuous space. The same logic applies for moving agents across process boundaries: the 'balance' method should be called on the discrete space only; this will mark agents that have moved outside the process's boundaries, and this need only be done once and should be done on the efficient, discrete space. Setting the buffer size to zero means that the continuous space will bypass all internal calls that might require buffer synchronization: all of the agents that it would share or send are already being shared or sent by the discrete space, so the continuous space's efforts are unnecessary.</p>
+  <p>The code to implement this system requires:</p>
+  <p>Add the includes and change the method signatures in the 'Agent' class in Agent.h to both move and play in both spaces
+
+<div class="code"><code><pre>
+#include "AgentId.h"
+#include "SharedContext.h"
+<b class="code">#include "SharedDiscreteSpace.h"
+#include "SharedContinuousSpace.h"</b>
+</pre></code></div>
+
+<div class="code"><code><pre>
+    /* Actions */
+    bool cooperate();                                                 // Will indicate whether the agent cooperates or not; probability determined by = c / total
+    void play(repast::SharedContext&lt;RepastHPCDemoAgent>* context<b class="code">,
+              repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent> >* discreteSpace,
+              repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent> >* continuousSpace</b>);    // Choose three other agents from the given context and see if they cooperate or not
+    void move(<b class="code">repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent> >* discreteSpace,
+              repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent> >* continuousSpace</b>);
+</pre></code></div>
+
+  <p>Similarly, the Model.h file must be changed to include both kinds of spaces:</p>
+
+<div class="code"><code><pre>
+#include &lt;boost/mpi.hpp&gt;
+#include "Schedule.h"
+#include "Properties.h"
+#include "SharedContext.h"
+#include "AgentRequest.h"
+#include "TDataSource.h"
+#include "SVDataSet.h"
+<b class="code">#include "SharedContinuousSpace.h"
+#include "SharedDiscreteSpace.h"</b>
+#include "GridComponents.h"
+</pre></code></div>
+
+<div class="code"><code><pre>
+class RepastHPCDemoModel{
+	int stopAt;
+	int countOfAgents;
+	repast::Properties* props;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt; context;
+	
+	RepastHPCDemoAgentPackageProvider* provider;
+	RepastHPCDemoAgentPackageReceiver* receiver;
+
+	repast::SVDataSet* agentValues;
+        <b class="code">repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* discreteSpace;</b>
+        <b class="code">repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* continuousSpace;</b>
+</pre></code></div>
+
+    <p>The model class itself is modified to instantiate and make use of both of these spaces:</p>
+
+<div class="code"><code><pre>
+RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm): context(comm){
+	props = new repast::Properties(propsFile, argc, argv, comm);
+	stopAt = repast::strToInt(props-&gt;getProperty("stop.at"));
+	countOfAgents = repast::strToInt(props-&gt;getProperty("count.of.agents"));
+	initializeRandom(*props, comm);
+	if(repast::RepastProcess::instance()-&gt;rank() == 0) props-&gt;writeToSVFile("./output/record.csv");
+	provider = new RepastHPCDemoAgentPackageProvider(&context);
+	receiver = new RepastHPCDemoAgentPackageReceiver(&context);
+	
+    repast::Point&lt;double&gt; origin(-100,-100);
+    repast::Point&lt;double&gt; extent(200, 200);
+    
+    repast::GridDimensions gd(origin, extent);
+    
+    std::vector&lt;int&gt; processDims;
+    processDims.push_back(2);
+    processDims.push_back(2);
+    
+    <b class="code">discreteSpace = new repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;("AgentDiscreteSpace", gd, processDims, 2, comm);</b>
+    <b class="code">continuousSpace = new repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;("AgentContinuousSpace", gd, processDims, 0, comm);</b>
+
+    std::cout << "RANK " << repast::RepastProcess::instance()->rank() << " BOUNDS: " << continuousSpace->bounds().origin() << " " << continuousSpace->bounds().extents() << std::endl;
+    
+    <b class="code">context.addProjection(continuousSpace);
+    context.addProjection(discreteSpace);</b>
+    
+	// Data collection
+	// Create the data set builder
+	std::string fileOutputName("./output/agent_total_data.csv");
+	repast::SVDataSetBuilder builder(fileOutputName.c_str(), ",", repast::RepastProcess::instance()-&gt;getScheduleRunner().schedule());
+	
+	// Create the individual data sets to be added to the builder
+	DataSource_AgentTotals* agentTotals_DataSource = new DataSource_AgentTotals(&context);
+	builder.addDataSource(createSVDataSource("Total", agentTotals_DataSource, std::plus&lt;int&gt;()));
+
+	DataSource_AgentCTotals* agentCTotals_DataSource = new DataSource_AgentCTotals(&context);
+	builder.addDataSource(createSVDataSource("C", agentCTotals_DataSource, std::plus&lt;int&gt;()));
+
+	// Use the builder to create the data set
+	agentValues = builder.createDataSet();
+	
+}
+
+</pre></code></div>
+
+    <p> Note the use of '0' as the buffer zone argument for the continuous space.</p>
+
+<div class="code"><code><pre>
+void RepastHPCDemoModel::init(){
+	int rank = repast::RepastProcess::instance()-&gt;rank();
+	for(int i = 0; i &lt; countOfAgents; i++){
+            <b class="code">repast::Point&lt;int&gt; initialLocationDiscrete((int)discreteSpace-&gt;bounds().origin().getX() + i,(int)discreteSpace-&gt;bounds().origin().getY() + i);</b>
+            <b class="code">repast::Point&lt;double&gt; initialLocationContinuous((double)continuousSpace-&gt;bounds().origin().getX() + i,(double)continuousSpace-&gt;bounds().origin().getY() + i);</b>
+	    repast::AgentId id(i, rank, 0);
+            id.currentRank(rank);
+	    RepastHPCDemoAgent* agent = new RepastHPCDemoAgent(id);
+	    context.addAgent(agent);
+            <b class="code">discreteSpace-&gt;moveTo(id, initialLocationDiscrete);</b>
+            <b class="code">continuousSpace-&gt;moveTo(id, initialLocationContinuous);</b>
+	}
+}
+</pre></code></div>
+
+<div class="code"><code><pre>
+void RepastHPCDemoModel::doSomething(){
+	int whichRank = 0;
+	if(repast::RepastProcess::instance()-&gt;rank() == whichRank) std::cout &lt;&lt; " TICK " &lt;&lt; repast::RepastProcess::instance()-&gt;getScheduleRunner().currentTick() &lt;&lt; std::endl;
+
+	if(repast::RepastProcess::instance()-&gt;rank() == whichRank){
+		std::cout &lt;&lt; "LOCAL AGENTS:" &lt;&lt; std::endl;
+		for(int r = 0; r &lt; 4; r++){
+			for(int i = 0; i &lt; 10; i++){
+				repast::AgentId toDisplay(i, r, 0);
+				RepastHPCDemoAgent* agent = context.getAgent(toDisplay);
+				if((agent != 0) && (agent-&gt;getId().currentRank() == whichRank)){
+                    std::vector&lt;double&gt; agentLoc;
+                    continuousSpace-&gt;getLocation(agent-&gt;getId(), agentLoc);
+                    repast::Point&lt;double&gt; agentLocation(agentLoc);
+                    std::cout &lt;&lt; agent-&gt;getId() &lt;&lt; " " &lt;&lt; agent-&gt;getC() &lt;&lt; " " &lt;&lt; agent-&gt;getTotal() &lt;&lt; " AT " &lt;&lt; agentLocation &lt;&lt; std::endl;
+                }
+			}
+		}
+		
+		std::cout &lt;&lt; "NON LOCAL AGENTS:" &lt;&lt; std::endl;
+		for(int r = 0; r &lt; 4; r++){
+			for(int i = 0; i &lt; 10; i++){
+				repast::AgentId toDisplay(i, r, 0);
+				RepastHPCDemoAgent* agent = context.getAgent(toDisplay);
+				if((agent != 0) && (agent-&gt;getId().currentRank() != whichRank)){
+                    std::vector&lt;double&gt; agentLoc;
+                    continuousSpace-&gt;getLocation(agent-&gt;getId(), agentLoc);
+                    repast::Point&lt;double&gt; agentLocation(agentLoc);
+                    std::cout &lt;&lt; agent-&gt;getId() &lt;&lt; " " &lt;&lt; agent-&gt;getC() &lt;&lt; " " &lt;&lt; agent-&gt;getTotal() &lt;&lt; " AT " &lt;&lt; agentLocation &lt;&lt; std::endl;
+                }
+			}
+		}
+	}
+
+	
+	
+	std::vector&lt;RepastHPCDemoAgent*&gt; agents;
+	context.selectAgents(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::LOCAL, countOfAgents, agents);
+	std::vector&lt;RepastHPCDemoAgent*&gt;::iterator it = agents.begin();
+	while(it != agents.end()){
+        (*it)-&gt;play(&context, <b class="code">discreteSpace, continuousSpace</b>);
+		it++;
+    }
+
+    it = agents.begin();
+    while(it != agents.end()){
+		(*it)-&gt;move(<b class="code">discreteSpace, continuousSpace</b>);
+		it++;
+    }
+
+    <b class="code">discreteSpace-&gt;balance();</b>
+    repast::RepastProcess::instance()-&gt;synchronizeAgentStatus&lt;RepastHPCDemoAgent, RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(context, *provider, *receiver, *receiver);
+    
+    repast::RepastProcess::instance()-&gt;synchronizeProjectionInfo&lt;RepastHPCDemoAgent, RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(context, *provider, *receiver, *receiver);
+
+    repast::RepastProcess::instance()-&gt;synchronizeAgentStates&lt;RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(*provider, *receiver);
+    
+}
+</pre></code></div>
+
+  <p>Note that none of the synchronization calls need to be changed; only the movement and play calls to the agents are altered.</p>
+
+  <p>In the Agent class, the changes are:</p>
+
+
+<div class="code"><code><pre>
+#include "Demo_03_Agent.h"
+<b class="code">#include "Moore2DGridQuery.h"
+#include "Point.h"</b>
+</pre></code></div>
+
+  <p>Then to the 'move' method:</p>
+
+<div class="code"><code><pre>
+void RepastHPCDemoAgent::move(<b class="code">repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* discreteSpace,
+                              repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* continuousSpace</b>){
+
+    std::vector&lt;double&gt; agentLoc;
+    <b class="code">continuousSpace</b>-&gt;getLocation(id_, agentLoc);
+    <b class="code">std::vector&lt;double&gt; agentNewLocContinuous;</b>
+    <b class="code">agentNewLocContinuous</b>.push_back(agentLoc[0] + (repast::Random::instance()-&gt;nextDouble() - .5) * 1.5);
+    <b class="code">agentNewLocContinuous</b>.push_back(agentLoc[1] + (repast::Random::instance()-&gt;nextDouble() - .5) * 1.5);
+    <b class="code">continuousSpace-&gt;moveTo(id_,agentNewLocContinuous);
+    std::vector&lt;int&gt; agentNewLocDiscrete;
+    agentNewLocDiscrete.push_back((int)(floor(agentNewLocContinuous[0])));
+    agentNewLocDiscrete.push_back((int)(floor(agentNewLocContinuous[1])));
+    discreteSpace-&gt;moveTo(id_, agentNewLocDiscrete);</b>
+    
+}
+
+<pre></code></div>
+
+  <p>And in the 'play' method:</p>
+
+<div class="code"><code><pre>
+void RepastHPCDemoAgent::play(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* context,
+                              <b class="code">repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* discreteSpace,</b>
+                              <b class="code">repast::SharedContinuousSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* continuousSpace</b>){
+    std::vector&lt;RepastHPCDemoAgent*&gt; agentsToPlay;
+    
+    std::vector&lt;int&gt; <b class="code">agentLocDiscrete</b>;
+    <b class="code">discreteSpace-&gt;getLocation(id_, agentLocDiscrete);</b>
+    repast::Point&lt;int&gt; center(<b class="code">agentLocDiscrete</b>);
+    <b class="code">repast::Moore2DGridQuery&lt;RepastHPCDemoAgent&gt; moore2DQuery(discreteSpace);
+    moore2DQuery.query(center, 2, false, agentsToPlay);</b>
+    
+    <b class="code">std::vector&lt;double&gt; agentLocContinuous;
+    continuousSpace-&gt;getLocation(id_, agentLocContinuous);
+    repast::Point&lt;double&gt; agentPointContinuous(agentLocContinuous[0], agentLocContinuous[1]);</b>
+    
+    double cPayoff     = 0;
+    double totalPayoff = 0;
+    std::vector&lt;RepastHPCDemoAgent*&gt;::iterator agentToPlay = agentsToPlay.begin();
+    while(agentToPlay != agentsToPlay.end()){
+        
+        <b class="code">std::vector&lt;double&gt; otherLocContinuous;
+        continuousSpace-&gt;getLocation((*agentToPlay)-&gt;getId(), otherLocContinuous);
+        repast::Point&lt;double&gt; otherPointContinuous(otherLocContinuous[0], otherLocContinuous[1]);
+        double distance = continuousSpace-&gt;getDistance(agentPointContinuous, otherPointContinuous);
+        // Only play if within 1.5
+        if(distance &lt; 1.5){</b>
+            <b class="code">std::cout &lt;&lt; " AGENT " &lt;&lt; id_ &lt;&lt; " AT " &lt;&lt; agentPointContinuous &lt;&lt; " PLAYING " &lt;&lt; (*agentToPlay)->getId() &lt;&lt; " at " &lt;&lt; otherPointContinuous &lt;&lt;  " (distance = " &lt;&lt; distance &lt;&lt; " )" &lt;&lt; std::endl;</b>
+
+            bool iCooperated = cooperate();                          // Do I cooperate?
+            double payoff = (iCooperated ?
+		    				 ((*agentToPlay)-&gt;cooperate() ?  7 : 1) :     // If I cooperated, did my opponent?
+						 ((*agentToPlay)-&gt;cooperate() ? 10 : 3));     // If I didn't cooperate, did my opponent?
+            if(iCooperated) cPayoff += payoff;
+            totalPayoff             += payoff;
+	<b class="code">}
+        else{
+            std::cout &lt;&lt; " AGENT " &lt;&lt; id_ &lt;&lt; " AT " &lt;&lt; agentPointContinuous &lt;&lt; " NOT PLAYING " &lt;&lt; (*agentToPlay)->getId() &lt;&lt; " at " &lt;&lt; otherPointContinuous &lt;&lt;  " (distance = " &lt;&lt; distance &lt;&lt; " )" &lt;&lt; std::endl;
+        }</b>
+        agentToPlay++;
+    }
+    c      += cPayoff;
+    total  += totalPayoff;
+	
+}
+</pre></code></div>
+
+
+    <script type="text/javascript">footer("RepastHPC_Demo_03_Step_05");</script>
+  </body>
+</html>

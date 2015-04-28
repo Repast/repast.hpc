@@ -52,7 +52,11 @@ void RepastHPCDemoAgent::play(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* c
     double totalPayoff = 0;
     std::<b class="code">vector</b>&lt;RepastHPCDemoAgent*&gt;::iterator agentToPlay = agentsToPlay.begin();
     while(agentToPlay != agentsToPlay.end()){
-        <b class="code">std::cout &lt;&lt; " AGENT " &lt;&lt; id_ &lt;&lt; " AT " &lt;&lt; center &lt;&lt; " PLAYING " &lt;&lt; (*agentToPlay)-&gt;getId() &lt;&lt; std::endl;</b>
+        <b class="code">std::vector&lt;int> otherLoc;
+        space->getLocation((*agentToPlay)->getId(), otherLoc);
+        repast::Point&lt;int> otherPoint(otherLoc);
+        std::cout &lt;&lt; " AGENT " &lt;&lt; id_ &lt;&lt; " AT " &lt;&lt; center &lt;&lt; " PLAYING " &lt;&lt; ((*agentToPlay)->getId().currentRank() == id_.currentRank() ? "LOCAL" : "NON-LOCAL") &lt;&lt; " AGENT " &lt;&lt; (*agentToPlay)->getId() &lt;&lt; " AT " &lt;&lt; otherPoint &lt;&lt; std::endl;</b>
+
         bool iCooperated = cooperate();                          // Do I cooperate?
         double payoff = (iCooperated ?
 						 ((*agentToPlay)-&gt;cooperate() ?  7 : 1) :     // If I cooperated, did my opponent?
@@ -67,7 +71,7 @@ void RepastHPCDemoAgent::play(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* c
 	
 }
 </pre></code></div>
-    <p>Note that the collection of agents that will be played is now a vector rather than a set. The first component of the query is to get the point at which the querying agent is located, which requires a vector to store the result from the space, which is then used to create a point object. After this, the Moore2DGridQuery is created and then called. The four arguments to the query() function are: the center point; the range; whether to include the center cell; and the vector into which the agents in the neighboring cells will be placed. Note that here were are using a range of '1'. We could use '2', but if we needed to use a larger query we would also have to expand the buffer zones of the space to ensure that local agents could 'see' all of the possible neighbors. We are also omitting the center cell; in theory there could be neighboring agents in that cell, but we omit this because it allows us to ensure that the agent doing the search is not included in the results.</p>
+    <p>Note that the collection of agents that will be played is now a vector rather than a set. The first component of the query is to get the point at which the querying agent is located, which requires a vector to store the result from the space, which is then used to create a point object. After this, the Moore2DGridQuery is created and then called. The four arguments to the query() function are: the center point; the range; whether to include the center cell; and the vector into which the agents in the neighboring cells will be placed. Note that here were are using a range of '1'. We could use '2', but if we needed to use a larger query we would also have to expand the buffer zones of the space to ensure that local agents could 'see' all of the possible neighbors. We are also omitting the center cell; in theory there could be neighboring agents in that cell, but we omit this because it allows us to ensure that the agent doing the search is not included in the results. We also add some more information about the agent being played, purely for the display output. A useful exercise is to see which non-local agents are being played.</p>
 
     <script type="text/javascript">footer("RepastHPC_Demo_03_Step_03");</script>
   </body>

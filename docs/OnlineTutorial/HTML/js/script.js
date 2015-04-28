@@ -51,11 +51,11 @@ pages = [["main",                       "Getting Started with Repast HPC"],
          ["RepastHPC_Demo_03_Step_01",  "HPC:D03, Step 01: Creating the spatial projection"],
          ["RepastHPC_Demo_03_Step_02",  "HPC:D03, Step 02: Agents Moving in Space"],
          ["RepastHPC_Demo_03_Step_03",  "HPC:D03, Step 03: Finding agents near each other: Querying spaces"],
-         ["RepastHPC_Demo_03_Step_04",  "HPC:D03, Step 04: Continuous vs. Discrete projections"],
-//         ["RepastHPC_Demo_03_Step_05",  "HPC:D03, Step 05: Multiple spatial projections: coterminous"],
-//         ["RepastHPC_Demo_03_Step_06",  "HPC:D03, Step 06: Multiple spatial projections: non-coterminous"],
-//         ["RepastHPC_Demo_04_Overview", "HPC Demo 04 Overview"],
-//         ["RepastHPC_Demo_04_Step_01",  "HPC:D04, Step 01: Creating the network and spatial projections"]
+         ["RepastHPC_Demo_03_Step_04",  "HPC:D03, Step 04: Strict Borders"],
+         ["RepastHPC_Demo_03_Step_05",  "HPC:D03, Step 05: Continuous Spaces"],
+         ["RepastHPC_Demo_03_Step_06",  "HPC:D03, Step 06: Multiple spatial projections: coterminous"],
+         ["RepastHPC_Demo_03_Step_07",  "HPC:D03, Step 07: Multiple spatial projections: non-coterminous"],
+         ["RepastHPC_Demo_03_Step_08",  "HPC:D03, Step 08: Spatial and network projections in one simulation"]
 ];         
 
 function pageIndex(pageName){

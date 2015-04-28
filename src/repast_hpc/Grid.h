@@ -141,6 +141,9 @@ public:
 	 */
 	virtual const GridDimensions dimensions() const = 0;
 
+  virtual const GridDimensions bounds() const = 0;
+
+
 	/**
 	 * Gets the first object found at the specified point, or NULL if there is no
 	 * such object.
