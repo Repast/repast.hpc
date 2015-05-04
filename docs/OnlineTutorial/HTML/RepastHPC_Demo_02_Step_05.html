@@ -52,7 +52,7 @@ public:
 </pre></code></div>
 
     <p>This new custom edge class contains only one instance variable, which we have arbitrarily named 'confidence'. It is an int, with a basic getter and setter (the last two lines of the class's code). The bulk of the class is the seven different constructors. The empty constructor is needed in order for the class to be serialized by the underlying Boost and mpi libraries. The four constructors that include only 'source', 'target', and 'weight' variables simply extend the RepastEdge's built-in constructors; two of these use standard C++ pointers and two use Boost 'shared' pointers. There are also two functions that include the 'confidence' variable, one using the normal pointer and one using the shared pointer.</p>
-    <p>The class itself is templated to take any object as a vertex. This also mirrors Repast's built-in edges. It means that the name of the class is not DemoModeCustomEdge but DemoModelCustomEdge$lt;ClassName&gt;. This is how it will need to be referred to throughout the code.</p>
+    <p>The class itself is templated to take any object as a vertex. This also mirrors Repast's built-in edges. It means that the name of the class is not DemoModelCustomEdge but DemoModelCustomEdge$lt;ClassName&gt;. This is how it will need to be referred to throughout the code.</p>
     <p>The next section of the code defines the Edge Content that will be associated with this class. Here we will again extend Repast's built-in class:</p>
 
 <div class="code"><code><pre>

@@ -70,7 +70,7 @@ int main(int argc, char** argv){
     <p>However, you should know that most of the time this method of running the executable will <em>not</em> work. The reason is that it runs only a single process; to make use of parallel processing the program must be started on multiple processes simultaneously, making use of MPI.</p>
     <p>How this is done will depend on your system. Commonly, the MPI installation will provide a way to run programs by doing something like:</p>
     <div class="code"><code><pre>/usr/bin/local/mpirun -n 4 Demo_00.exe</pre></code></div>
-    <p>The '-n 4' switch indicates that the code is to be started on four processes. MPI handles the behind-the-scenes magic of getting the program started on all of them. The output from this should be:</p>
+    <p>As above, on some systems you will need to use a pathname, './Demo_00.exe' The '-n 4' switch indicates that the code is to be started on four processes. MPI handles the behind-the-scenes magic of getting the program started on all of them. The output from this should be:</p>
 <div class="code"><code><pre>
 Hello, world!
 Hello, world!

@@ -8,7 +8,13 @@
     <script type="text/javascript">header("RepastHPC_Demo_02_Step_02");</script>
     <p>Our next step will be to establish network connections among the agents.</p>
     <p>There is an important point that should be made here, even if it is entirely semantic: All of the agents are already <em>in</em> the network- that is, they are already in the network projection. The context contains the network projection (or projections, if there happen to be more than one). When an agent is added to the context, it is also added to all of the projections that the context includes. To say that an agent is in the 'network' is to say that it is contained in the projection. However, at the moment, the 'network' does not include any actual links between agents. It is tempting, when looking at a case in which some agents are linked to others, while other agents are not linked, to say that the linked agents are in the network and the unlinked ones are not, but according to the usage here, this is incorrect.</p>
-    <p>In this step we will connect agents together in the network we have just created. This will take place just after the 'borrowing' of agents has occurred, so that there will be some local and some non-local agents in the network. The algorithm for connecting agents will be to loop through the local agents, choose five agents randomly from the other agents on the same process, and make connections with those five. Connections will be undirected, so an agent can end up with more than 5 connections (because it will have the five that it made, plus the connections any other agents have made to it.</p>
+    <p>In this step we will connect agents together in the network we have just created. This will take place just after the 'borrowing' of agents has occurred, so that there will be some local and some non-local agents in the network. The algorithm for connecting agents will be:
+  <ul>
+    <li>Loop through the local agents</li>
+    <li>Choose five agents randomly from the other agents on the same process (including the local and non-local agents)</li>
+    <li>Make connections with each of the five selected agents.</li> 
+  </ul>
+    <p>Connections will be undirected, so an agent can end up with more than 5 connections (because it will have the five that it made, plus the connections any other agents have made to it.)</p>
     <p>To do this, we need to make three changes. First, declare the new, schedulable function of the model class (in model.h):</p>
 <div class="code"><code><pre>
 class RepastHPCDemoModel{
@@ -56,7 +62,7 @@ public:
 	}	
 }</b>
 </pre></code></div>
-  <p>It is important to note that any algorithm to connect edges must trap the case in which an edge would be connected twice- in our case, because the first connection is from A to B and the second from B to A. RepastHPC requires that this not be done. (If it is done, aspects of the network object, such as the count of edges, will be rendered invalid, and a memory leak will occur.)</p>
+  <p>Note: If an edge being added to a network has the same source and target nodes (in the same roles) as an existing edge, the new edge may not be added; if there is a possibility of adding a duplicate edge, a check should be made first to ensure that there is no duplication and, if a duplicate is found, it should be removed first.</p>
 
   <p>Finally, add this function to the schedule of events:</p>
 <div class="code"><code><pre>

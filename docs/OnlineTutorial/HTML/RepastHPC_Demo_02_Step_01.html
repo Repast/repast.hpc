@@ -64,7 +64,7 @@ public:
   <li>The class that will be used for network edge content;</li>
   <li>The class that will be used for managing network edge content;</li>
 </ul>
-<p>In this case the nodes will be our agents; the edges will be a default edge (provided by repast), which also must be informed that it will be connecting elements of a specific type (hence it is, itself, templated). The edge content will be the default, built-in Repast Edge Content, and it will be managed by the default, built-in Repast Edge Content Manager</p>
+<p>In this case the nodes will be our agents; the edges will be a default edge (provided by repast), which also must be informed that it will be connecting elements of a specific type (hence it is, itself, templated). 'Edge Content' refers to the data that is contained in an edge- generally, the source and target vertices plus whatever additional data the edge might contain (e.g. a 'weight' or other value or set of values). In this case the edge content will be the default, built-in Repast Edge Content (which contains the two vertices and a 'weight' value), and it will be managed by the default, built-in Repast Edge Content Manager.</p>
 
     <p>To create the network now requires only two lines in the model constructor, one to create the network instance and one to add it to the context:</p>
 <div class="code"><code><pre>

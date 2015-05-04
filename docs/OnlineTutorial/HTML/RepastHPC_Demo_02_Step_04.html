@@ -8,7 +8,7 @@
     <script type="text/javascript">header("RepastHPC_Demo_02_Step_04");</script>
     <p>In the preceding demos, all edges are considered equivalent. In this demo, we consider an attribute of an edge, termed the 'Edge Weight'. An Edge Weight is a value that is associated with an edge. Weighted graphs are useful in a wide array of domains, and analysis routines that calculate network structure using edge weights are also common.</p>
     <p>Repast HPC's native implementation of an edge includes a 'weight' attribute; all that is needed is to make use of it.</p>
-    <p>For our demo, we will simply set the edge weight when the edge is corrected. This can be done by simply adding the weight as an additional argument to the addEdge method call in the RepastHPCDemoModel::connectAgentNetwork method:</p>
+    <p>For our demo, we will simply set the edge weight when the edge is connected. This can be done by simply adding the weight as an additional argument to the addEdge method call in the RepastHPCDemoModel::connectAgentNetwork method:</p>
 
 <div class="code"><code><pre>
 void RepastHPCDemoModel::connectAgentNetwork(){
@@ -28,7 +28,7 @@ void RepastHPCDemoModel::connectAgentNetwork(){
 	}	
 }
 </pre></code></div>
-  <p>In this case we are simply setting the edge weight to whatever the value of 'i' happens to be plus one (to avoid zero), which means we will get one edge with a weight of 1, one with a weight of 1, etc.</p>
+  <p>In this case we are simply setting the edge weight to whatever the value of 'i' happens to be plus one (to avoid zero), which means we will get one edge with a weight of 1, one with a weight of 2, etc.</p>
   <p>To make use of this value, we need only retrieve the edge from the network and call the weight() method of it, which we will do in our play() method:</p>
 
 <div class="code"><code><pre>

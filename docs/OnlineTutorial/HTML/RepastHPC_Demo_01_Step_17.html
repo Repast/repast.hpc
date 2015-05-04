@@ -172,7 +172,7 @@ void RepastHPCDemoModel::initSchedule(repast::ScheduleRunner& runner){
 }
 </pre></code></div> 
 
-    <p>When run, the data set will write to a file with the specified file name; the output will look like this:</p>
+    <p>When run, the data set will write to a file with the specified file name, and the output (with a higher 'stop.at' value- say, 17) will look like this:</p>
 <div class="code"><code><pre>
 "tick","Total","C"
 1.5,16000,8000
@@ -181,7 +181,7 @@ void RepastHPCDemoModel::initSchedule(repast::ScheduleRunner& runner){
 16.5,33262,13879
 </pre></code></div> 
 
-    <p>The first column gives the simulation time tick at which the data were collected; the secomd gives the total agent amount, and the third gives the total 'C' values for all agents. This represents the total for the entire simulation (all processes); the data have been collected from across the processes invisibly.</p>
+    <p>The first column gives the simulation time tick at which the data were collected; the second gives the total agent amount, and the third gives the total 'C' values for all agents. This represents the total for the entire simulation (all processes); the data have been collected from across the processes invisibly.</p>
 
     <script type="text/javascript">footer("RepastHPC_Demo_01_Step_17");</script>
   </body>

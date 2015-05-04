@@ -74,11 +74,11 @@ the agent 'type', and the rank on which the agent is currently found. All agents
     <p>The last three lines are our main focus. The first prints the number of agents in the context before the exchange, and the last prints the number of agents after the exchange, for illustrative 
 purposes. The real action is in the middle line:</p>
 <div class="code"><code><pre>
-	repast::requestAgents&lt;RepastHPCDemoAgent, RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(context, req, *provider, *receiver);
+	repast::RepastProcess::instance()->requestAgents&lt;RepastHPCDemoAgent, RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(context, req, *provider, *receiver, *receiver);
 </pre></code></div>
 
-    <p>This line calls the 'requestAgents' function, defined in RepastProcess.h (but not a member function of the RepastProcess instance). The function is templated: the types that will be used for the classes that play the roles of 'agent', 'package', 'provider', and 'receiver', must be specified between the brackets. The actual arguments passed are: the context, the request, and the provider and receiver objects.</p>
-    <p>When this line is executed, the agent request is transmitted to the RepastProcess instance; the RepastProcess instance engages in communication with the other processes, and informs them of its requests. It also receives the requests coming from other processes. It then sends out the agent information that was requested of it, and receives the information in reply to its requests.<.p>
+    <p>This line calls the 'requestAgents' function, a member function of the RepastProcess instance. The function is templated: the types that will be used for the classes that play the roles of 'agent', 'package', 'provider', and 'receiver', must be specified between the brackets. The actual arguments passed are: the context, the request, and the provider and receiver objects.</p>
+    <p>When this line is executed, the agent request is transmitted to the RepastProcess instance; the RepastProcess instance engages in communication with the other processes, and informs them of its requests. It also receives the requests coming from other processes. It then sends out the agent information that was requested of it, and receives the information in reply to its requests. Note that the 'serialize' method of the AgentPackage is called by the Boost library as the AgentPackage is being transmitted.<.p>
     <p>When run, the output will look like:</p>
 <div class="code"><code><pre>
 diswl189:work murphy$ /usr/local/bin/mpirun -n 4 ./bin/Demo_01.exe ./props/config.props ./props/model.props stop.at=4 random.seed=2 count.of.agents=10
