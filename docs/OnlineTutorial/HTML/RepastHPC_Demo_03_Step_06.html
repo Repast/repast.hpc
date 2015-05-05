@@ -19,10 +19,10 @@
   <p>Add the includes and change the method signatures in the 'Agent' class in Agent.h to both move and play in both spaces
 
 <div class="code"><code><pre>
-#include "AgentId.h"
-#include "SharedContext.h"
-<b class="code">#include "SharedDiscreteSpace.h"
-#include "SharedContinuousSpace.h"</b>
+#include "repast_hpc/AgentId.h"
+#include "repast_hpc/SharedContext.h"
+<b class="code">#include "repast_hpc/SharedDiscreteSpace.h"
+#include "repast_hpc/SharedContinuousSpace.h"</b>
 </pre></code></div>
 
 <div class="code"><code><pre>
@@ -39,15 +39,15 @@
 
 <div class="code"><code><pre>
 #include &lt;boost/mpi.hpp&gt;
-#include "Schedule.h"
-#include "Properties.h"
-#include "SharedContext.h"
-#include "AgentRequest.h"
-#include "TDataSource.h"
-#include "SVDataSet.h"
-<b class="code">#include "SharedContinuousSpace.h"
-#include "SharedDiscreteSpace.h"</b>
-#include "GridComponents.h"
+#include "repast_hpc/Schedule.h"
+#include "repast_hpc/Properties.h"
+#include "repast_hpc/SharedContext.h"
+#include "repast_hpc/AgentRequest.h"
+#include "repast_hpc/TDataSource.h"
+#include "repast_hpc/SVDataSet.h"
+<b class="code">#include "repast_hpc/SharedContinuousSpace.h"
+#include "repast_hpc/SharedDiscreteSpace.h"</b>
+#include "repast_hpc/GridComponents.h"
 </pre></code></div>
 
 <div class="code"><code><pre>
@@ -199,8 +199,8 @@ void RepastHPCDemoModel::doSomething(){
 
 <div class="code"><code><pre>
 #include "Demo_03_Agent.h"
-<b class="code">#include "Moore2DGridQuery.h"
-#include "Point.h"</b>
+<b class="code">#include "repast_hpc/Moore2DGridQuery.h"
+#include "repast_hpc/Point.h"</b>
 </pre></code></div>
 
   <p>Then to the 'move' method:</p>

@@ -10,9 +10,9 @@
     <p>The main change will be in the Agent 'play' method. Because we will now not be selecting agents from the context, but rather from the network, we need to change the signature of this method to pass a pointer to the network.</p>
     <p>Agent.h will need to import the SharedNetwork header:
 <div class="code"><code><pre>
-#include "AgentId.h"
-#include "SharedContext.h"
-<b class="code">#include "SharedNetwork.h"</b>
+#include "repast_hpc/AgentId.h"
+#include "repast_hpc/SharedContext.h"
+<b class="code">#include "repast_hpc/SharedNetwork.h"</b>
 </pre></code></div>
 
     <p>And the method signature for 'play' will be changed to:</p>

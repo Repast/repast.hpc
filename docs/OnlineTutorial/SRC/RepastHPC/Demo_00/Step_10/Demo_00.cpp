@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <boost/mpi.hpp>
-#include "RepastProcess.h"
+#include "repast_hpc/RepastProcess.h"
 
 class RepastHPCDemoModel{
 public:

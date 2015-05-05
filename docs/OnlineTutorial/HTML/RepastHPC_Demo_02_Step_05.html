@@ -24,8 +24,8 @@
 #ifndef DEMO_02_NETWORK
 #define DEMO_02_NETWORK
 
-#include "SharedContext.h"
-#include "SharedNetwork.h"
+#include "repast_hpc/SharedContext.h"
+#include "repast_hpc/SharedNetwork.h"
 
 
 /* Custom Network Components */
@@ -109,13 +109,13 @@ public:
 #define DEMO_02_MODEL
 
 #include &lt;boost/mpi.hpp&gt;
-#include "Schedule.h"
-#include "Properties.h"
-#include "SharedContext.h"
-#include "AgentRequest.h"
-#include "TDataSource.h"
-#include "SVDataSet.h"
-#include "SharedNetwork.h"
+#include "repast_hpc/Schedule.h"
+#include "repast_hpc/Properties.h"
+#include "repast_hpc/SharedContext.h"
+#include "repast_hpc/AgentRequest.h"
+#include "repast_hpc/TDataSource.h"
+#include "repast_hpc/SVDataSet.h"
+#include "repast_hpc/SharedNetwork.h"
 
 <b class="code">#include "Demo_02_Network.h"</b>
 #include "Demo_02_Agent.h"
@@ -205,9 +205,9 @@ void RepastHPCDemoModel::connectAgentNetwork(){
 #ifndef DEMO_02_AGENT
 #define DEMO_02_AGENT
 
-#include "AgentId.h"
-#include "SharedContext.h"
-#include "SharedNetwork.h"
+#include "repast_hpc/AgentId.h"
+#include "repast_hpc/SharedContext.h"
+#include "repast_hpc/SharedNetwork.h"
 <b class="code">#include "Demo_02_Network.h"</b>
 </pre></code></div>
 

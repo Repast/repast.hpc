@@ -40,8 +40,8 @@
 #define DEMO_01_MODEL
 
 #include &lt;boost/mpi.hpp&gt;
-#include "Schedule.h"
-#include "Properties.h"
+#include "repast_hpc/Schedule.h"
+#include "repast_hpc/Properties.h"
 
 class RepastHPCDemoModel{
 	int stopAt;
@@ -65,9 +65,9 @@ public:
 #include &lt;stdio.h&gt;
 #include &lt;vector&gt;
 #include &lt;boost/mpi.hpp&gt;
-#include "RepastProcess.h"
+#include "repast_hpc/RepastProcess.h"
 #include "Utilities.h.h"
-#include "Properties.h"
+#include "repast_hpc/Properties.h"
 
 #include "Demo_01_Model.h"
 
@@ -112,7 +112,7 @@ void RepastHPCDemoModel::recordResults(){
 /* Demo_01_Main.cpp */
 
 #include &lt;boost/mpi.hpp&gt;
-#include "RepastProcess.h"
+#include "repast_hpc/RepastProcess.h"
 
 #include "Demo_01_Model.h"
 

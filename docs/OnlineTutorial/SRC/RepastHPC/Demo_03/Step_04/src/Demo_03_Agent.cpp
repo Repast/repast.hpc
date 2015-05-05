@@ -1,8 +1,8 @@
 /* Demo_03_Agent.cpp */
 
 #include "Demo_03_Agent.h"
-#include "Moore2DGridQuery.h"
-#include "Point.h"
+#include "repast_hpc/Moore2DGridQuery.h"
+#include "repast_hpc/Point.h"
 
 RepastHPCDemoAgent::RepastHPCDemoAgent(repast::AgentId id): id_(id), c(100), total(200){ }
 

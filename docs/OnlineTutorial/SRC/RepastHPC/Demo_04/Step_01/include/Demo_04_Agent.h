@@ -3,8 +3,8 @@
 #ifndef DEMO_04_AGENT
 #define DEMO_04_AGENT
 
-#include "AgentId.h"
-#include "SharedContext.h"
+#include "repast_hpc/AgentId.h"
+#include "repast_hpc/SharedContext.h"
 
 
 /* Agents */

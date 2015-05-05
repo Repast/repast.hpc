@@ -4,15 +4,15 @@
 #define DEMO_04_MODEL
 
 #include <boost/mpi.hpp>
-#include "Schedule.h"
-#include "Properties.h"
-#include "SharedContext.h"
-#include "AgentRequest.h"
-#include "TDataSource.h"
-#include "SVDataSet.h"
-#include "SharedDiscreteSpace.h"
-#include "GridComponents.h"
-#include "SharedNetwork.h"
+#include "repast_hpc/Schedule.h"
+#include "repast_hpc/Properties.h"
+#include "repast_hpc/SharedContext.h"
+#include "repast_hpc/AgentRequest.h"
+#include "repast_hpc/TDataSource.h"
+#include "repast_hpc/SVDataSet.h"
+#include "repast_hpc/SharedDiscreteSpace.h"
+#include "repast_hpc/GridComponents.h"
+#include "repast_hpc/SharedNetwork.h"
 
 #include "Demo_04_Agent.h"
 

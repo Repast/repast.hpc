@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <boost/mpi.hpp>
-#include "RepastProcess.h"
-#include "Utilities.h"
-#include "Properties.h"
+#include "repast_hpc/RepastProcess.h"
+#include "repast_hpc/Utilities.h"
+#include "repast_hpc/Properties.h"
 
 class RepastHPCDemoModel{
 	int stopAt;

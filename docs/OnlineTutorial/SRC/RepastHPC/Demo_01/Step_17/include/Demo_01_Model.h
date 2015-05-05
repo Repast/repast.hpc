@@ -4,12 +4,12 @@
 #define DEMO_01_MODEL
 
 #include <boost/mpi.hpp>
-#include "Schedule.h"
-#include "Properties.h"
-#include "SharedContext.h"
-#include "AgentRequest.h"
-#include "TDataSource.h"
-#include "SVDataSet.h"
+#include "repast_hpc/Schedule.h"
+#include "repast_hpc/Properties.h"
+#include "repast_hpc/SharedContext.h"
+#include "repast_hpc/AgentRequest.h"
+#include "repast_hpc/TDataSource.h"
+#include "repast_hpc/SVDataSet.h"
 
 
 #include "Demo_01_Agent.h"

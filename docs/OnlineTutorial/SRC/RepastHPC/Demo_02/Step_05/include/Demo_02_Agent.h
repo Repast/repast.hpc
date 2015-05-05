@@ -3,9 +3,9 @@
 #ifndef DEMO_02_AGENT
 #define DEMO_02_AGENT
 
-#include "AgentId.h"
-#include "SharedContext.h"
-#include "SharedNetwork.h"
+#include "repast_hpc/AgentId.h"
+#include "repast_hpc/SharedContext.h"
+#include "repast_hpc/SharedNetwork.h"
 #include "Demo_02_Network.h"
 
 /* Agents */
