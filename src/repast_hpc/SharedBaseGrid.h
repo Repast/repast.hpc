@@ -90,32 +90,24 @@ private:
 
 	std::vector<Neighbor*> nghs;
 
+
 public:
 
-	/**
-	 * Describes the relative location of grid topology
-	 * process neighbors.
-	 */
-	enum Location {
-		E, W, N, S, NE, NW, SE, SW
-	};
-	static const int LOCATION_SIZE = 8;
-
-	Neighbors();
+	Neighbors(int numberOfDimensions);
 	virtual ~Neighbors();
 
 	/**
 	 * Adds a neighbor at the specified location.
 	 *
 	 */
-	void addNeighbor(Neighbor* ngh, Neighbors::Location location);
+	void addNeighbor(Neighbor* ngh, std::vector<int> relativeLocation);
 
 	/**
 	 * Gets the neighbor at the specified location.
 	 *
 	 * @param location the location of the neighbor.
 	 */
-	Neighbor* neighbor(Neighbors::Location location) const;
+	Neighbor* neighbor(std::vector<int> relativeLocation) const;
 
 	/**
 	 * Finds the neighbor that contains the specified point.
@@ -135,6 +127,52 @@ public:
     for(std::vector<Neighbor*>::iterator iter = nghs.begin(), iterEnd=nghs.end(); iter != iterEnd; ++iter) ranks.insert((*iter)->rank());
   }
 
+  /**
+   * Assumes the vector will be of ints that are
+   * all -1, 0, or 1; finds the next vector in
+   * a series. Returns false if the vector is
+   * all 1's.
+   */
+  bool increment(std::vector<int>& relativeLocation);
+
+  /**
+   * Given a relative location of the neighbor,
+   * calculates the index of this neighbor
+   * in the nghs vector.
+   *
+   * Relative locations are specified by listing
+   * the dimensions and indicating whether the neighbor
+   * is before, equal to, or after the coordinate
+   * of the reference process on each dimension,
+   * using -1, 0, and 1. For example, in a
+   * 3-D space, imagining a cube of nine processes
+   * with the reference process in the center,
+   * the process in the upper left back corner would
+   * be [-1, -1, -1].
+   *
+   * Note: 0, 0, 0 is valid even though it is self,
+   * not a neighbor
+   *
+   */
+  int getIndex(std::vector<int> relativeLocation) const;
+
+
+  /**
+   * Gets the max index value.
+   *
+   * Note that there is a slot for relative position
+   * 0,0,0,...; hence the number of neighbors
+   * is 3^N - 1, the number of slots is 3^N,
+   * and the max index is 3^N - 1 (because first
+   * slot is zero).
+   */
+  int maxIndex(){ return nghs.size() - 1; }
+
+  Neighbor* getNeighborByIndex(int index){
+    if(index < 0|| index > maxIndex()) return 0;
+    return nghs[index];
+  }
+
 };
 
 std::ostream& operator<<(std::ostream& os, const Neighbors& nghs);
@@ -152,8 +190,8 @@ private:
   bool               periodic;
   std::vector<int>   procsPerDim;
 
-	int  getRank(std::vector<int>& loc, int rowAdj, int colAdj);
-	void createNeighbor(Neighbors& nghs, int rank, Neighbors::Location location);
+	int  getRank(std::vector<int>& loc, std::vector<int>& relLoc);
+	void createNeighbor(Neighbors* nghs, int rank, std::vector<int> relativeLocation);
 
 public:
 	// x major
@@ -177,7 +215,7 @@ public:
    */
   GridDimensions getDimensions(std::vector<int>& pCoordinates);
 
-	void createNeighbors(Neighbors& nghs);
+	void createNeighbors(Neighbors* nghs);
 
 };
 
@@ -211,10 +249,10 @@ protected:
 	int _buffer;
 	GridDimensions localBounds;
 	GridDimensions globalBounds;
-	Neighbors nghs;
+	Neighbors* nghs;
 	// vector of ids of agents in this spaces buffer
 	std::vector<AgentId> buffered;
-	GridDimensions createSendBufferBounds(Neighbors::Location location);
+//	GridDimensions createSendBufferBounds(std::vector<int> relativeLocation);
 
 	virtual void synchMoveTo(const AgentId& id, const Point<GPType>& pt) = 0;
 
@@ -280,13 +318,13 @@ public:
 
 
   virtual void getInfoExchangePartners(std::set<int>& psToSendTo, std::set<int>& psToReceiveFrom){
-    nghs.getNeighborRanks(psToSendTo);
-    nghs.getNeighborRanks(psToReceiveFrom);
+    nghs->getNeighborRanks(psToSendTo);
+    nghs->getNeighborRanks(psToReceiveFrom);
   }
 
   virtual void getAgentStatusExchangePartners(std::set<int>& psToSendTo, std::set<int>& psToReceiveFrom){
-    nghs.getNeighborRanks(psToSendTo);
-    nghs.getNeighborRanks(psToReceiveFrom);
+    nghs->getNeighborRanks(psToSendTo);
+    nghs->getNeighborRanks(psToReceiveFrom);
   }
 
   virtual void updateProjectionInfo(ProjectionInfoPacket* pip, Context<T>* context);
@@ -302,8 +340,8 @@ SharedBaseGrid<T, GPTransformer, Adder, GPType>::SharedBaseGrid(std::string name
 
   size_t dimCount = gridDims.dimensionCount();
 
-  if (dimCount > 2)
-      throw Repast_Error_49<GridDimensions>(dimCount, gridDims); // Number of grid dimensions must be 1 or 2
+//  if (dimCount > 2)
+//      throw Repast_Error_49<GridDimensions>(dimCount, gridDims); // Number of grid dimensions must be 1 or 2
 	if (processDims.size() != gridDims.dimensionCount())
       throw Repast_Error_50<GridDimensions>(dimCount, gridDims, processDims.size()); // Number of grid dimensions must be equal to number of process dimensions
 
@@ -315,53 +353,56 @@ SharedBaseGrid<T, GPTransformer, Adder, GPType>::SharedBaseGrid(std::string name
 	localBounds = topology.getDimensions(coords);
 	GridBaseType::adder.init(localBounds, this);
 
+	nghs = new Neighbors(dimCount);
 	topology.createNeighbors(nghs);
 }
 
 template<typename T, typename GPTransformer, typename Adder, typename GPType>
-SharedBaseGrid<T, GPTransformer, Adder, GPType>::~SharedBaseGrid() { }
-
-
-template<typename T, typename GPTransformer, typename Adder, typename GPType>
-GridDimensions SharedBaseGrid<T, GPTransformer, Adder, GPType>::createSendBufferBounds(Neighbors::Location location) {
-	Point<double> localOrigin = localBounds.origin();
-	Point<double> localExtent = localBounds.extents();
-
-	switch (location) {
-	double xStart, yStart;
-case Neighbors::E:
-	xStart = localOrigin.getX() + localExtent.getX() - _buffer;
-	return GridDimensions(Point<double> (xStart, localOrigin.getY()), Point<double> (_buffer, localExtent.getY()));
-
-case Neighbors::W:
-	return GridDimensions(localOrigin, Point<double> (_buffer, localExtent.getY()));
-
-case Neighbors::N:
-	return GridDimensions(localOrigin, Point<double> (localExtent.getX(), _buffer));
-
-case Neighbors::S:
-	yStart = localOrigin.getY() + localExtent.getY() - _buffer;
-	return GridDimensions(Point<double> (localOrigin.getX(), yStart), Point<double> (localExtent.getX(), _buffer));
-
-case Neighbors::NE:
-	xStart = localOrigin.getX() + localExtent.getX() - _buffer;
-	return GridDimensions(Point<double> (xStart, localOrigin.getY()), Point<double> (_buffer, _buffer));
-
-case Neighbors::NW:
-	return GridDimensions(Point<double> (localOrigin.getX(), localOrigin.getY()), Point<double> (_buffer, _buffer));
-
-case Neighbors::SE:
-	xStart = localOrigin.getX() + localExtent.getX() - _buffer;
-	yStart = localOrigin.getY() + localExtent.getY() - _buffer;
-	return GridDimensions(Point<double> (xStart, yStart), Point<double> (_buffer, _buffer));
-
-case Neighbors::SW:
-	yStart = localOrigin.getY() + localExtent.getY() - _buffer;
-	return GridDimensions(Point<double> (localOrigin.getX(), yStart), Point<double> (_buffer, _buffer));
-	}
-
-	return GridDimensions();
+SharedBaseGrid<T, GPTransformer, Adder, GPType>::~SharedBaseGrid() {
+  delete nghs;
 }
+
+
+//template<typename T, typename GPTransformer, typename Adder, typename GPType>
+//GridDimensions SharedBaseGrid<T, GPTransformer, Adder, GPType>::createSendBufferBounds(std::vector<int> relativeLocation) {
+//	Point<double> localOrigin = localBounds.origin();
+//	Point<double> localExtent = localBounds.extents();
+//
+////	switch (location) {
+////	double xStart, yStart;
+////case Neighbors::E:
+////	xStart = localOrigin.getX() + localExtent.getX() - _buffer;
+////	return GridDimensions(Point<double> (xStart, localOrigin.getY()), Point<double> (_buffer, localExtent.getY()));
+////
+////case Neighbors::W:
+////	return GridDimensions(localOrigin, Point<double> (_buffer, localExtent.getY()));
+////
+////case Neighbors::N:
+////	return GridDimensions(localOrigin, Point<double> (localExtent.getX(), _buffer));
+////
+////case Neighbors::S:
+////	yStart = localOrigin.getY() + localExtent.getY() - _buffer;
+////	return GridDimensions(Point<double> (localOrigin.getX(), yStart), Point<double> (localExtent.getX(), _buffer));
+////
+////case Neighbors::NE:
+////	xStart = localOrigin.getX() + localExtent.getX() - _buffer;
+////	return GridDimensions(Point<double> (xStart, localOrigin.getY()), Point<double> (_buffer, _buffer));
+////
+////case Neighbors::NW:
+////	return GridDimensions(Point<double> (localOrigin.getX(), localOrigin.getY()), Point<double> (_buffer, _buffer));
+////
+////case Neighbors::SE:
+////	xStart = localOrigin.getX() + localExtent.getX() - _buffer;
+////	yStart = localOrigin.getY() + localExtent.getY() - _buffer;
+////	return GridDimensions(Point<double> (xStart, yStart), Point<double> (_buffer, _buffer));
+////
+////case Neighbors::SW:
+////	yStart = localOrigin.getY() + localExtent.getY() - _buffer;
+////	return GridDimensions(Point<double> (localOrigin.getX(), yStart), Point<double> (_buffer, _buffer));
+////	}
+//
+//	return GridDimensions();
+//}
 
 
 template<typename T, typename GPTransformer, typename Adder, typename GPType>
@@ -373,7 +414,7 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::balance() {
     if(id.currentRank() == r){                                   // Local agents only
       Point<GPType> loc = iter->second->point;
       if(!localBounds.contains(loc)){                            // If inside bounds, ignore
-        Neighbor* ngh = nghs.findNeighbor(loc.coords());
+        Neighbor* ngh = nghs->findNeighbor(loc.coords());
         RepastProcess::instance()->moveAgent(id, ngh->rank());
       }
     }
@@ -403,53 +444,66 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<A
 
   if(_buffer == 0) return; // A buffer zone of zero means that no agents will be pushed.
 
-  // In a general case, we might not want to do this, but
-  // for the current configuration, we can make this (perhaps much) more efficient
-  // this way:
-  Point<double> localOrigin = localBounds.origin();
-  Point<double> localExtent = localBounds.extents();
+  int numDims = localBounds.dimensionCount();
 
-  double xStart = localOrigin.getX() + _buffer;
-  double xEnd   = localExtent.getX() - _buffer * 2;
-  double yStart = localOrigin.getY() + _buffer;
-  double yEnd   = localExtent.getY() - _buffer * 2;
+  // First, create a zone around the center of this process, inside all of
+  // of the buffer zones
+  std::vector<double> unbufferedOrigin;
+  std::vector<double> unbufferedExtents;
 
-  GridDimensions unbuffered(Point<double> (xStart, yStart), Point<double> (xEnd, yEnd));
+  for(int i = 0; i < numDims; i++){
+    unbufferedOrigin.push_back(localBounds.origin(i) + _buffer);
+    unbufferedExtents.push_back(localBounds.extents(i) - (_buffer * 2));
+  }
 
-  Neighbor* neighbor;
+  Point<double> ubO(unbufferedOrigin);
+  Point<double> ubE(unbufferedExtents);
+  GridDimensions unbuffered(ubO, ubE);
 
-  neighbor = nghs.neighbor(Neighbors::NW);
-  int NW_rank = (neighbor == 0 ? -1 : neighbor->rank());
-  neighbor = nghs.neighbor(Neighbors::N );
-  int N_rank  = (neighbor == 0 ? -1 : neighbor->rank());
-  neighbor = nghs.neighbor(Neighbors::NE);
-  int NE_rank = (neighbor == 0 ? -1 : neighbor->rank());
-  neighbor = nghs.neighbor(Neighbors::E );
-  int E_rank  = (neighbor == 0 ? -1 : neighbor->rank());
-  neighbor = nghs.neighbor(Neighbors::SE);
-  int SE_rank = (neighbor == 0 ? -1 : neighbor->rank());
-  neighbor = nghs.neighbor(Neighbors::S );
-  int S_rank  = (neighbor == 0 ? -1 : neighbor->rank());
-  neighbor = nghs.neighbor(Neighbors::SW);
-  int SW_rank = (neighbor == 0 ? -1 : neighbor->rank());
-  neighbor = nghs.neighbor(Neighbors::W );
-  int W_rank  = (neighbor == 0 ? -1 : neighbor->rank());
+  // And create grid boundaries for all the buffer zones
+  int numOutgoing = nghs->maxIndex() + 1;
+  GridDimensions** outgoing = new GridDimensions*[numOutgoing];
+  int*            outRanks = new int[numOutgoing];
 
-  GridDimensions empty(Point<double>(0,0), Point<double>(0,0));
+  std::vector<int> relativeLocation;
+  relativeLocation.assign(numDims, -1);
+  do{
+    std::vector<double> bufferOrigin;
+    std::vector<double> bufferExtents;
 
-  GridDimensions N_bounds  = (N_rank  > - 1 ? createSendBufferBounds(Neighbors::N)  : empty);
-  GridDimensions E_bounds  = (E_rank  > - 1 ? createSendBufferBounds(Neighbors::E)  : empty);
-  GridDimensions S_bounds  = (S_rank  > - 1 ? createSendBufferBounds(Neighbors::S)  : empty);
-  GridDimensions W_bounds  = (W_rank  > - 1 ? createSendBufferBounds(Neighbors::W)  : empty);
+    bool isEgo = true;
+    for(int i = 0; i < numDims; i++){
+      int rel = relativeLocation[i];
+      if(rel == 0){
+        bufferOrigin.push_back(localBounds.origin(i));
+        bufferExtents.push_back(localBounds.extents(i));
+      }
+      else{
+        if(rel < 0){
+          bufferOrigin.push_back(localBounds.origin(i));
+        }
+        else{
+          bufferOrigin.push_back(localBounds.origin(i) + localBounds.extents(i) - _buffer);
+        }
+        bufferExtents.push_back(_buffer);
+        isEgo = false;
+      }
+    }
 
-  std::set<AgentId> NW_set;
-  std::set<AgentId> N_set;
-  std::set<AgentId> NE_set;
-  std::set<AgentId> E_set;
-  std::set<AgentId> SE_set;
-  std::set<AgentId> S_set;
-  std::set<AgentId> SW_set;
-  std::set<AgentId> W_set;
+    // Should not add self!
+    int index = nghs->getIndex(relativeLocation);
+    if(!isEgo){
+      outgoing[index] = new GridDimensions(Point<double>(bufferOrigin), Point<double> (bufferExtents));
+      outRanks[index]  =nghs->getNeighborByIndex(index)->rank();
+    }
+    else{
+      outgoing[index] = 0;
+      outRanks[index] = 0;
+    }
+
+  }while(nghs->increment(relativeLocation));
+
+
 
 
   // Local agents that are in other processes' 'buffer zones' must be exported to those other processes.
@@ -463,46 +517,10 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<A
       GridBaseType::getLocation(id, locationVector);
       Point<GPType> loc(locationVector);
       if(!unbuffered.contains(loc)){
-        if(W_bounds.contains(loc)){
-          found = true;
-          W_set.insert(id);
-          if(N_bounds.contains(loc)){
-            N_set.insert(id);
-            NW_set.insert(id);
-          }
-          else{
-            if(S_bounds.contains(loc)){
-              S_set.insert(id);
-              SW_set.insert(id);
-            }
-          }
-        }
-        else{
-          if(E_bounds.contains(loc)){
+        for(int i = 0; i < numOutgoing; i++){
+          if((outgoing[i] > 0) && (outgoing[i]->contains(loc))){
+            agentsToPush[outRanks[i]].insert(id);
             found = true;
-            E_set.insert(id);
-            if(N_bounds.contains(loc)){
-              N_set.insert(id);
-              NE_set.insert(id);
-            }
-            else{
-              if(S_bounds.contains(loc)){
-                S_set.insert(id);
-                SE_set.insert(id);
-              }
-            }
-          }
-          else{
-            if(N_bounds.contains(loc)){
-              found = true;
-              N_set.insert(id);
-            }
-            else{
-              if(S_bounds.contains(loc)){
-                found = true;
-                S_set.insert(id);
-              }
-            }
           }
         }
       }
@@ -516,17 +534,9 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<A
       idIter++;
     }
   }
-
-  if(NW_set.size() > 0) agentsToPush[NW_rank].insert(NW_set.begin(), NW_set.end());
-  if( N_set.size() > 0) agentsToPush[ N_rank].insert( N_set.begin(),  N_set.end());
-  if(NE_set.size() > 0) agentsToPush[NE_rank].insert(NE_set.begin(), NE_set.end());
-  if( E_set.size() > 0) agentsToPush[ E_rank].insert( E_set.begin(),  E_set.end());
-  if(SE_set.size() > 0) agentsToPush[SE_rank].insert(SE_set.begin(), SE_set.end());
-  if( S_set.size() > 0) agentsToPush[ S_rank].insert( S_set.begin(),  S_set.end());
-  if(SW_set.size() > 0) agentsToPush[SW_rank].insert(SW_set.begin(), SW_set.end());
-  if( W_set.size() > 0) agentsToPush[ W_rank].insert( W_set.begin(),  W_set.end());
-
-
+//  if(NW_set.size() > 0) agentsToPush[NW_rank].insert(NW_set.begin(), NW_set.end());
+  delete[] outgoing;
+  delete[] outRanks;
 }
 
 template<typename T, typename GPTransformer, typename Adder, typename GPType>

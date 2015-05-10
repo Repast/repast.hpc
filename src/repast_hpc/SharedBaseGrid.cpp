@@ -47,18 +47,6 @@ using namespace std;
 
 namespace repast {
 
-Neighbors::Location sendDirections[8] = {
-    Neighbors::NW, Neighbors::N, Neighbors::NE,
-    Neighbors::W,                Neighbors::E,
-    Neighbors::SW, Neighbors::S, Neighbors::SE
-};
-
-Neighbors::Location recvDirections[8] = {
-    Neighbors::SE, Neighbors::S, Neighbors::SW,
-    Neighbors::E,                Neighbors::W,
-    Neighbors::NE, Neighbors::N, Neighbors::NW
-};
-
 
 CartTopology::CartTopology(vector<int> processesPerDim, vector<double> origin, vector<double> extents, bool spaceIsPeriodic, boost::mpi::communicator* comm) :
   periodic(spaceIsPeriodic), procsPerDim(processesPerDim) {
@@ -97,15 +85,17 @@ GridDimensions CartTopology::getDimensions(vector<int>& pCoordinates) {
 	return GridDimensions(Point<double> (origins), Point<double> (extents));
 }
 
-int CartTopology::getRank(vector<int>& loc, int rowAdj, int colAdj) {
-	int* coord = new int[2];
-	coord[0] = loc[0] + rowAdj;
-	coord[1] = loc[1] + colAdj;
-	if (!periodic) {
-		if (coord[0] < 0 || coord[0] > procsPerDim[0] - 1 || coord[1] < 0 || coord[1] > procsPerDim[1] - 1){
-		  delete[] coord;
-			return MPI_PROC_NULL;
-		}
+int CartTopology::getRank(vector<int>& loc, std::vector<int>& relLoc) {
+  int numDims = relLoc.size();
+	int* coord = new int[numDims];
+	for(int i = 0; i < numDims; i++){
+	  coord[i] = loc[i] + relLoc[i];
+	  if(!periodic){
+	    if((coord[i] < 0) || (coord[i] > (procsPerDim[i] - 1))){
+	      delete[] coord;
+	      return MPI_PROC_NULL;
+	    }
+	  }
 	}
 	int rank;
 	MPI_Cart_rank(topologyComm, coord, &rank);
@@ -113,32 +103,25 @@ int CartTopology::getRank(vector<int>& loc, int rowAdj, int colAdj) {
 	return rank;
 }
 
-void CartTopology::createNeighbors(Neighbors& nghs) {
-  int eRank, wRank, nRank, sRank;
-  MPI_Cart_shift(topologyComm, 0,  1, &wRank, &eRank);
-	MPI_Cart_shift(topologyComm, 1, -1, &sRank, &nRank);
+void CartTopology::createNeighbors(Neighbors* nghs) {
+  int numDims = procsPerDim.size();
+  std::vector<int> relativeLocation;
+  relativeLocation.assign(numDims, -1);
 
-	createNeighbor(nghs, eRank, Neighbors::E);
-	createNeighbor(nghs, wRank, Neighbors::W);
-	createNeighbor(nghs, nRank, Neighbors::N);
-	createNeighbor(nghs, sRank, Neighbors::S);
+  int myRank = RepastProcess::instance()->rank();
+  vector<int> myMPICoordinates;
+  getCoordinates(myRank, myMPICoordinates);
+  do{
+    int rankOfNeighbor = getRank(myMPICoordinates, relativeLocation);
+    if(rankOfNeighbor != myRank && rankOfNeighbor != MPI_PROC_NULL) createNeighbor(nghs, rankOfNeighbor, relativeLocation);
+  }while(nghs->increment(relativeLocation));
 
-	int rank = RepastProcess::instance()->rank();
-	vector<int> pCoordinates;
-	getCoordinates(rank, pCoordinates);
-
-	createNeighbor(nghs, getRank(pCoordinates, -1, -1), Neighbors::NW);
-	createNeighbor(nghs, getRank(pCoordinates, -1, 1), Neighbors::NE);
-	createNeighbor(nghs, getRank(pCoordinates, 1, -1), Neighbors::SW);
-	createNeighbor(nghs, getRank(pCoordinates, 1, 1), Neighbors::SE);
-
-	std::cout << nghs << std::endl;
 }
 
-void CartTopology::createNeighbor(Neighbors& nghs, int rank, Neighbors::Location location) {
+void CartTopology::createNeighbor(Neighbors* nghs, int rank, std::vector<int> relativeLocation) {
 	if (rank != MPI_PROC_NULL) {
 		Neighbor* ngh = new Neighbor(rank, getDimensions(rank));
-		nghs.addNeighbor(ngh, location);
+		nghs->addNeighbor(ngh, relativeLocation);
 	}
 }
 
@@ -146,19 +129,43 @@ Neighbor::Neighbor(int rank, GridDimensions bounds) :
 	_rank(rank), _bounds(bounds) {
 }
 
+int Neighbors::getIndex(std::vector<int> relativeLocation) const{
+  int index = 0;
+  int base = 1;
+  for(int i = 0; i < relativeLocation.size(); i++){
+    index += (relativeLocation[i] + 1) * base;
+    base *= 3;
+  }
+  return index;
+}
 
-Neighbors::Neighbors() {
-	for (int i = 0; i < Neighbors::LOCATION_SIZE; i++) {
+bool Neighbors::increment(std::vector<int>& relativeLocation){
+  int i = 0;
+  bool addNext = true;
+  while((addNext) && (i < relativeLocation.size())){
+    relativeLocation[i] = relativeLocation[i] + 1;
+    if(relativeLocation[i] < 2) addNext = false;
+    else(relativeLocation[i] = -1);
+    i++;
+  }
+  return ((i < relativeLocation.size()) || (addNext == false));
+
+}
+
+Neighbors::Neighbors(int numDimensions){
+  int dimCount = 1;
+  for(int i = 0; i < numDimensions; i++) dimCount *= 3;
+  for (int i = 0; i < dimCount; i++) {
 		nghs.push_back(0);
 	}
 }
 
-void Neighbors::addNeighbor(Neighbor* ngh, Neighbors::Location location) {
-	nghs[location] = ngh;
+void Neighbors::addNeighbor(Neighbor* ngh, std::vector<int> relativeLocation) {
+	nghs[getIndex(relativeLocation)] = ngh;
 }
 
-Neighbor* Neighbors::neighbor(Neighbors::Location location) const {
-	return nghs[location];
+Neighbor* Neighbors::neighbor(std::vector<int> relativeLocation) const {
+	return nghs[getIndex(relativeLocation)];
 }
 
 Neighbor* Neighbors::findNeighbor(const std::vector<int>& pt) {
@@ -187,45 +194,45 @@ Neighbors::~Neighbors() {
 }
 
 ostream& operator<<(ostream& os, const Neighbors& nghs) {
-	Neighbor* ngh = nghs.neighbor(Neighbors::NW);
-	if (ngh != 0) {
-		os << "\tNW ngh: " << ngh->rank() << ": " << ngh->bounds() << "\n";
-	}
-
-	ngh = nghs.neighbor(Neighbors::NE);
-	if (ngh != 0) {
-		os << "\tNE ngh: " << ngh->rank() << ": " << ngh->bounds() << "\n";
-	}
-
-	ngh = nghs.neighbor(Neighbors::SW);
-	if (ngh != 0) {
-		os << "\tSW ngh: " << ngh->rank() << ": " << ngh->bounds() << "\n";
-	}
-
-	ngh = nghs.neighbor(Neighbors::SE);
-	if (ngh != 0) {
-		os << "\tSE ngh: " << ngh->rank() << ": " << ngh->bounds() << "\n";
-	}
-
-	ngh = nghs.neighbor(Neighbors::N);
-	if (ngh != 0) {
-		os << "\tN ngh: " << ngh->rank() << ": " << ngh->bounds() << "\n";
-	}
-
-	ngh = nghs.neighbor(Neighbors::S);
-	if (ngh != 0) {
-		os << "\tS ngh: " << ngh->rank() << ": " << ngh->bounds() << "\n";
-	}
-
-	ngh = nghs.neighbor(Neighbors::E);
-	if (ngh != 0) {
-		os << "\tE ngh: " << ngh->rank() << ": " << ngh->bounds() << "\n";
-	}
-
-	ngh = nghs.neighbor(Neighbors::W);
-	if (ngh != 0) {
-		os << "\tW ngh: " << ngh->rank() << ": " << ngh->bounds() << "\n";
-	}
+//	Neighbor* ngh = nghs.neighbor(Neighbors::NW);
+//	if (ngh != 0) {
+//		os << "\tNW ngh: " << ngh->rank() << ": " << ngh->bounds() << "\n";
+//	}
+//
+//	ngh = nghs.neighbor(Neighbors::NE);
+//	if (ngh != 0) {
+//		os << "\tNE ngh: " << ngh->rank() << ": " << ngh->bounds() << "\n";
+//	}
+//
+//	ngh = nghs.neighbor(Neighbors::SW);
+//	if (ngh != 0) {
+//		os << "\tSW ngh: " << ngh->rank() << ": " << ngh->bounds() << "\n";
+//	}
+//
+//	ngh = nghs.neighbor(Neighbors::SE);
+//	if (ngh != 0) {
+//		os << "\tSE ngh: " << ngh->rank() << ": " << ngh->bounds() << "\n";
+//	}
+//
+//	ngh = nghs.neighbor(Neighbors::N);
+//	if (ngh != 0) {
+//		os << "\tN ngh: " << ngh->rank() << ": " << ngh->bounds() << "\n";
+//	}
+//
+//	ngh = nghs.neighbor(Neighbors::S);
+//	if (ngh != 0) {
+//		os << "\tS ngh: " << ngh->rank() << ": " << ngh->bounds() << "\n";
+//	}
+//
+//	ngh = nghs.neighbor(Neighbors::E);
+//	if (ngh != 0) {
+//		os << "\tE ngh: " << ngh->rank() << ": " << ngh->bounds() << "\n";
+//	}
+//
+//	ngh = nghs.neighbor(Neighbors::W);
+//	if (ngh != 0) {
+//		os << "\tW ngh: " << ngh->rank() << ": " << ngh->bounds() << "\n";
+//	}
 
 	return os;
 

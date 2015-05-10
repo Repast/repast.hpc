@@ -101,12 +101,13 @@ RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** a
 	provider = new RepastHPCDemoAgentPackageProvider(&context);
 	receiver = new RepastHPCDemoAgentPackageReceiver(&context);
 	
-  repast::Point<double> origin(-100,-100);
-  repast::Point<double> extent(200, 200);
+  repast::Point<double> origin(-100,-100, -100);
+  repast::Point<double> extent(200, 200, 200);
     
   repast::GridDimensions gd(origin, extent);
     
   std::vector<int> processDims;
+  processDims.push_back(2);
   processDims.push_back(2);
   processDims.push_back(2);
     
@@ -153,8 +154,8 @@ void RepastHPCDemoModel::init(){
 		id.currentRank(rank);
 		RepastHPCDemoAgent* agent = new RepastHPCDemoAgent(id);
 		context.addAgent(agent);
-        repast::Point<int> initialLocation((int)discreteSpace->bounds().origin().getX() + i,(int)discreteSpace->bounds().origin().getY() + i);
-        discreteSpace->moveTo(id, initialLocation);
+    repast::Point<int> initialLocation((int)discreteSpace->bounds().origin().getX() + i,(int)discreteSpace->bounds().origin().getY() + i, (int)discreteSpace->bounds().origin().getZ() + i);
+    discreteSpace->moveTo(id, initialLocation);
 	}
 }
 
@@ -204,7 +205,7 @@ void RepastHPCDemoModel::doSomething(){
 
 	if(repast::RepastProcess::instance()->rank() == whichRank){
 		std::cout << "LOCAL AGENTS:" << std::endl;
-		for(int r = 0; r < 4; r++){
+		for(int r = 0; r < 7; r++){
 			for(int i = 0; i < 10; i++){
 				repast::AgentId toDisplay(i, r, 0);
 				RepastHPCDemoAgent* agent = context.getAgent(toDisplay);
@@ -218,7 +219,7 @@ void RepastHPCDemoModel::doSomething(){
 		}
 		
 		std::cout << "NON LOCAL AGENTS:" << std::endl;
-		for(int r = 0; r < 4; r++){
+		for(int r = 0; r < 7; r++){
 			for(int i = 0; i < 10; i++){
 				repast::AgentId toDisplay(i, r, 0);
 				RepastHPCDemoAgent* agent = context.getAgent(toDisplay);
