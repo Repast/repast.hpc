@@ -1019,56 +1019,6 @@ compare_RepastHPC_Demo_04_Step_01:
 	-@diff ../RepastHPC/Demo_04/Step_01/src/Demo_04_main.cpp ./src/Demo_04_main.cpp
 
 
-.PHONY: RepastHPC_Demo_05
-RepastHPC_Demo_05: clean_compiled_files
-	$(MPICXX) $(REPAST_HPC_DEFINES) $(BOOST_INCLUDE) $(REPAST_HPC_INCLUDE) -I./include -c ./src/Demo_05_Main.cpp -o ./objects/Demo_05_Main.o
-	$(MPICXX) $(REPAST_HPC_DEFINES) $(BOOST_INCLUDE) $(REPAST_HPC_INCLUDE) -I./include -c ./src/Demo_05_Model.cpp -o ./objects/Demo_05_Model.o
-	$(MPICXX) $(REPAST_HPC_DEFINES) $(BOOST_INCLUDE) $(REPAST_HPC_INCLUDE) -I./include -c ./src/Demo_05_Agent.cpp -o ./objects/Demo_05_Agent.o
-	$(MPICXX) $(BOOST_LIB_DIR) $(REPAST_HPC_LIB_DIR) -o ./bin/Demo_05.exe  ./objects/Demo_05_Main.o ./objects/Demo_05_Model.o ./objects/Demo_05_Agent.o $(REPAST_HPC_LIB) $(BOOST_LIBS)
-
-
-.PHONY: RepastHPC_Demo_05_Step_01
-RepastHPC_Demo_05_Step_01 : copy_RepastHPC_Demo_05_Step_01 RepastHPC_Demo_05
-
-.PHONY: copy_RepastHPC_Demo_05_Step_01
-copy_RepastHPC_Demo_05_Step_01 : clean
-	cp -r ../RepastHPC/Demo_05/Step_01/* ./
-
-
-.PHONY: compare_RepastHPC_Demo_05_Step_01
-compare_RepastHPC_Demo_05_Step_01:
-	@echo "Comparing Demo_05/Step_01/Demo_05_Agent.h:"
-	-@diff ../RepastHPC/Demo_05/Step_01/include/Demo_05_Agent.h ./include/Demo_05_Agent.h
-	@echo "Comparing Demo_05/Step_01/Demo_05_Model.h:"
-	-@diff ../RepastHPC/Demo_05/Step_01/include/Demo_05_Model.h ./include/Demo_05_Model.h
-	@echo "Comparing Demo_05/Step_01/Demo_05_Agent.cpp:"
-	-@diff ../RepastHPC/Demo_05/Step_01/src/Demo_05_Agent.cpp ./src/Demo_05_Agent.cpp
-	@echo "Comparing Demo_05/Step_01/Demo_05_Model.cpp:"
-	-@diff ../RepastHPC/Demo_05/Step_01/src/Demo_05_Model.cpp ./src/Demo_05_Model.cpp
-	@echo "Comparing Demo_05/Step_01/Demo_05_main.cpp:"
-	-@diff ../RepastHPC/Demo_05/Step_01/src/Demo_05_main.cpp ./src/Demo_05_main.cpp
-
-
-.PHONY: RepastHPC_Demo_05_Step_02
-RepastHPC_Demo_05_Step_02 : copy_RepastHPC_Demo_05_Step_02 RepastHPC_Demo_05
-
-.PHONY: copy_RepastHPC_Demo_05_Step_02
-copy_RepastHPC_Demo_05_Step_02 : clean
-	cp -r ../RepastHPC/Demo_05/Step_02/* ./
-
-
-.PHONY: compare_RepastHPC_Demo_05_Step_02
-compare_RepastHPC_Demo_05_Step_02:
-	@echo "Comparing Demo_05/Step_02/Demo_05_Agent.h:"
-	-@diff ../RepastHPC/Demo_05/Step_02/include/Demo_05_Agent.h ./include/Demo_05_Agent.h
-	@echo "Comparing Demo_05/Step_02/Demo_05_Model.h:"
-	-@diff ../RepastHPC/Demo_05/Step_02/include/Demo_05_Model.h ./include/Demo_05_Model.h
-	@echo "Comparing Demo_05/Step_02/Demo_05_Agent.cpp:"
-	-@diff ../RepastHPC/Demo_05/Step_02/src/Demo_05_Agent.cpp ./src/Demo_05_Agent.cpp
-	@echo "Comparing Demo_05/Step_02/Demo_05_Model.cpp:"
-	-@diff ../RepastHPC/Demo_05/Step_02/src/Demo_05_Model.cpp ./src/Demo_05_Model.cpp
-	@echo "Comparing Demo_05/Step_02/Demo_05_main.cpp:"
-	-@diff ../RepastHPC/Demo_05/Step_02/src/Demo_05_main.cpp ./src/Demo_05_main.cpp
 
 
 

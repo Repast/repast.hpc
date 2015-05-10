@@ -152,9 +152,6 @@ private:
   bool               periodic;
   std::vector<int>   procsPerDim;
 
-	template <typename T>
-	void swapXY(std::vector<T>& vec);
-
 	int  getRank(std::vector<int>& loc, int rowAdj, int colAdj);
 	void createNeighbor(Neighbors& nghs, int rank, Neighbors::Location location);
 
@@ -183,17 +180,6 @@ public:
 	void createNeighbors(Neighbors& nghs);
 
 };
-
-template <typename T>
-void CartTopology::swapXY(std::vector<T>& vec) {
-  if (vec.size() > 1) {
-    T tmp = vec[0];
-    vec[0] = vec[1];
-    vec[1] = tmp;
-  }
-}
-
-
 
 
 

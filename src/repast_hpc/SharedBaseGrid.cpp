@@ -68,10 +68,6 @@ CartTopology::CartTopology(vector<int> processesPerDim, vector<double> origin, v
   for (int i = 0; i < numDims; i++) periods[i] = periodicFlag;
 
 	// swap xy so row major
-	swapXY(processesPerDim);
-	swapXY(procsPerDim);
-	swapXY(origin);
-	swapXY(extents);
 
 	MPI_Cart_create(*comm, numDims, &processesPerDim[0], periods, 0, &topologyComm);
 	delete[] periods;
@@ -98,8 +94,6 @@ GridDimensions CartTopology::getDimensions(vector<int>& pCoordinates) {
     extents.push_back(upper - lower);
   }
 
-	swapXY(origins);
-	swapXY(extents);
 	return GridDimensions(Point<double> (origins), Point<double> (extents));
 }
 
@@ -121,8 +115,8 @@ int CartTopology::getRank(vector<int>& loc, int rowAdj, int colAdj) {
 
 void CartTopology::createNeighbors(Neighbors& nghs) {
   int eRank, wRank, nRank, sRank;
-  MPI_Cart_shift(topologyComm, 1,  1, &wRank, &eRank);
-	MPI_Cart_shift(topologyComm, 0, -1, &sRank, &nRank);
+  MPI_Cart_shift(topologyComm, 0,  1, &wRank, &eRank);
+	MPI_Cart_shift(topologyComm, 1, -1, &sRank, &nRank);
 
 	createNeighbor(nghs, eRank, Neighbors::E);
 	createNeighbor(nghs, wRank, Neighbors::W);
@@ -137,6 +131,8 @@ void CartTopology::createNeighbors(Neighbors& nghs) {
 	createNeighbor(nghs, getRank(pCoordinates, -1, 1), Neighbors::NE);
 	createNeighbor(nghs, getRank(pCoordinates, 1, -1), Neighbors::SW);
 	createNeighbor(nghs, getRank(pCoordinates, 1, 1), Neighbors::SE);
+
+	std::cout << nghs << std::endl;
 }
 
 void CartTopology::createNeighbor(Neighbors& nghs, int rank, Neighbors::Location location) {

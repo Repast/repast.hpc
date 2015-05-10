@@ -77,14 +77,12 @@ class RepastHPCDemoModel{
 	
 	RepastHPCDemoAgentPackageProvider* provider;
 	RepastHPCDemoAgentPackageReceiver* receiver;
-
-    
     
 	repast::SVDataSet* agentValues;
-    repast::SharedDiscreteSpace<RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder<RepastHPCDemoAgent> >* discreteSpace;
+  repast::SharedDiscreteSpace<RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder<RepastHPCDemoAgent> >* discreteSpace;
    	
-    repast::RepastEdgeContentManager<RepastHPCDemoAgent> edgeContentManager;
-    repast::SharedNetwork<RepastHPCDemoAgent, repast::RepastEdge<RepastHPCDemoAgent>, repast::RepastEdgeContent<RepastHPCDemoAgent>, repast::RepastEdgeContentManager<RepastHPCDemoAgent> >* agentNetwork;
+  repast::RepastEdgeContentManager<RepastHPCDemoAgent> edgeContentManager;
+  repast::SharedNetwork<RepastHPCDemoAgent, repast::RepastEdge<RepastHPCDemoAgent>, repast::RepastEdgeContent<RepastHPCDemoAgent>, repast::RepastEdgeContentManager<RepastHPCDemoAgent> >* agentNetwork;
 	
 public:
 	RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm);
@@ -92,10 +90,8 @@ public:
 	void init();
 	void requestAgents();
 	void cancelAgentRequests();
-	void removeLocalAgents();
-	void moveAgents();
 	void doSomething();
-    void connectAgentNetwork();
+  void connectAgentNetwork();
 	void initSchedule(repast::ScheduleRunner& runner);
 	void recordResults();
 };
