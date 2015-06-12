@@ -111,11 +111,13 @@ RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** a
   processDims.push_back(2);
   processDims.push_back(2);
     
-  discreteSpace = new repast::SharedDiscreteSpace<RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder<RepastHPCDemoAgent> >("AgentDiscreteSpace", gd, processDims, 2, comm);
+  discreteSpace   = new repast::SharedDiscreteSpace<RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder<RepastHPCDemoAgent> >("AgentDiscreteSpace", gd, processDims, 2, comm);
+  continuousSpace = new repast::SharedContinuousSpace<RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder<RepastHPCDemoAgent> >("AgentContinuousSpace", gd, processDims, 2, comm);
 	
   std::cout << "RANK " << repast::RepastProcess::instance()->rank() << " BOUNDS: " << discreteSpace->bounds().origin() << std::endl;
     
  	context.addProjection(discreteSpace);
+ 	context.addProjection(continuousSpace);
     
   agentNetwork = new repast::SharedNetwork<RepastHPCDemoAgent, repast::RepastEdge<RepastHPCDemoAgent>, repast::RepastEdgeContent<RepastHPCDemoAgent>, repast::RepastEdgeContentManager<RepastHPCDemoAgent> >("agentNetwork", false, &edgeContentManager);
 	context.addProjection(agentNetwork);
@@ -156,6 +158,8 @@ void RepastHPCDemoModel::init(){
 		context.addAgent(agent);
     repast::Point<int> initialLocation((int)discreteSpace->bounds().origin().getX() + i,(int)discreteSpace->bounds().origin().getY() + i, (int)discreteSpace->bounds().origin().getZ() + i);
     discreteSpace->moveTo(id, initialLocation);
+    repast::Point<double> initialContinuousLoc(continuousSpace->bounds().origin().getX() + (double)i + ((double)i)/10.0,continuousSpace->bounds().origin().getY() + (double)i + ((double)i)/10.0, continuousSpace->bounds().origin().getZ() + i + i/10.0);
+    continuousSpace->moveTo(id, initialContinuousLoc);
 	}
 }
 
@@ -210,11 +214,14 @@ void RepastHPCDemoModel::doSomething(){
 				repast::AgentId toDisplay(i, r, 0);
 				RepastHPCDemoAgent* agent = context.getAgent(toDisplay);
 				if((agent != 0) && (agent->getId().currentRank() == whichRank)){
-                    std::vector<int> agentLoc;
-                    discreteSpace->getLocation(agent->getId(), agentLoc);
-                    repast::Point<int> agentLocation(agentLoc);
-                    std::cout << agent->getId() << " " << agent->getC() << " " << agent->getTotal() << " AT " << agentLocation << std::endl;
-                }
+            std::vector<int> agentLoc;
+            discreteSpace->getLocation(agent->getId(), agentLoc);
+            repast::Point<int> agentLocation(agentLoc);
+            std::vector<double> agentCLoc;
+            continuousSpace->getLocation(agent->getId(), agentCLoc);
+            repast::Point<double> agentCLocation(agentCLoc);
+            std::cout << agent->getId() << " " << agent->getC() << " " << agent->getTotal() << " AT " << agentLocation << " and " << agentCLocation << std::endl;
+        }
 			}
 		}
 		
@@ -224,11 +231,14 @@ void RepastHPCDemoModel::doSomething(){
 				repast::AgentId toDisplay(i, r, 0);
 				RepastHPCDemoAgent* agent = context.getAgent(toDisplay);
 				if((agent != 0) && (agent->getId().currentRank() != whichRank)){
-                    std::vector<int> agentLoc;
-                    discreteSpace->getLocation(agent->getId(), agentLoc);
-                    repast::Point<int> agentLocation(agentLoc);
-                    std::cout << agent->getId() << " " << agent->getC() << " " << agent->getTotal() << " AT " << agentLocation << std::endl;
-                }
+            std::vector<int> agentLoc;
+            discreteSpace->getLocation(agent->getId(), agentLoc);
+            repast::Point<int> agentLocation(agentLoc);
+            std::vector<double> agentCLoc;
+            continuousSpace->getLocation(agent->getId(), agentCLoc);
+            repast::Point<double> agentCLocation(agentCLoc);
+            std::cout << agent->getId() << " " << agent->getC() << " " << agent->getTotal() << " AT " << agentLocation << " and " << agentCLocation << std::endl;
+        }
 			}
 		}
 	}

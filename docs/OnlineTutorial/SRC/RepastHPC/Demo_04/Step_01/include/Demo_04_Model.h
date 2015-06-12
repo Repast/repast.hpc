@@ -11,6 +11,7 @@
 #include "TDataSource.h"
 #include "SVDataSet.h"
 #include "SharedDiscreteSpace.h"
+#include "SharedContinuousSpace.h"
 #include "GridComponents.h"
 #include "SharedNetwork.h"
 
@@ -80,6 +81,7 @@ class RepastHPCDemoModel{
     
 	repast::SVDataSet* agentValues;
   repast::SharedDiscreteSpace<RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder<RepastHPCDemoAgent> >* discreteSpace;
+  repast::SharedContinuousSpace<RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder<RepastHPCDemoAgent> >* continuousSpace;
    	
   repast::RepastEdgeContentManager<RepastHPCDemoAgent> edgeContentManager;
   repast::SharedNetwork<RepastHPCDemoAgent, repast::RepastEdge<RepastHPCDemoAgent>, repast::RepastEdgeContent<RepastHPCDemoAgent>, repast::RepastEdgeContentManager<RepastHPCDemoAgent> >* agentNetwork;
