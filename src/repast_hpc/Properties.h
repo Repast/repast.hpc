@@ -287,6 +287,30 @@ public:
    */
   void writeToSVFile(std::string fileName, std::vector<std::string> &keysToWrite, std::string separator = ",");
 
+  /**
+   * Writes the contents of this properties object to a file
+   * that could be read as another properties file. If a file
+   * with the specified name already exists, the existing file
+   * will not be changed and 'false' will be returned.
+   */
+  bool writeToPropsFile(std::string filename, std::string header = "");
+
+  /**
+   * Writes the contents of this properties object
+   * to a file that could be read as another properties file,
+   * writing only the keys specified, in the order specified.
+   * If a file with the specified name already exists, the existing file
+   * will not be changed and 'false' will be returned.
+   */
+  bool writeToPropsFile(std::string filename, std::vector<std::string> &keysToWrite, std::string header="");
+
+  /**
+   * Gets the string that will be written to a properties
+   * file using the writeToPropsFile methods
+   */
+
+  std::string propsFileString(std::vector<std::string> &keysToWrite, std::string header="");
+
 
 };
 
