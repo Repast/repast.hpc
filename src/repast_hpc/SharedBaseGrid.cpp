@@ -59,25 +59,24 @@ CartTopology::CartTopology(vector<int> processesPerDim, vector<double> origin, v
 
 	MPI_Cart_create(*comm, numDims, &processesPerDim[0], periods, 0, &topologyComm);
 	delete[] periods;
-	globalBounds = GridDimensions(origin, extents);
 }
 
-void CartTopology::getCoordinates(int rank, std::vector<int>& coords) {
-	coords.assign(globalBounds.dimensionCount(), 0);
-	MPI_Cart_coords(topologyComm, rank, globalBounds.dimensionCount(), &coords[0]);
+void CartTopology::getCoordinates(int rank, std::vector<int>& coords, GridDimensions globalBoundaries) {
+	coords.assign(globalBoundaries.dimensionCount(), 0);
+	MPI_Cart_coords(topologyComm, rank, globalBoundaries.dimensionCount(), &coords[0]);
 }
 
-GridDimensions CartTopology::getDimensions(int rank) {
+GridDimensions CartTopology::getDimensions(int rank, GridDimensions globalBoundaries) {
 	vector<int> coords;
-	getCoordinates(rank, coords);
-	return getDimensions(coords);
+	getCoordinates(rank, coords, globalBoundaries);
+	return getDimensions(coords, globalBoundaries);
 }
 
-GridDimensions CartTopology::getDimensions(vector<int>& pCoordinates) {
+GridDimensions CartTopology::getDimensions(vector<int>& pCoordinates, GridDimensions globalBoundaries) {
   vector<double> origins, extents;
   for (size_t i = 0; i < pCoordinates.size(); i++) {
-    double lower = globalBounds.origin(i) + ((double)pCoordinates[i] / (double)procsPerDim[i]) * globalBounds.extents(i);
-    double upper = globalBounds.origin(i) + (((double)pCoordinates[i] + 1 )/ (double)procsPerDim[i]) * globalBounds.extents(i);
+    double lower = globalBoundaries.origin(i) + ((double)pCoordinates[i] / (double)procsPerDim[i]) * globalBoundaries.extents(i);
+    double upper = globalBoundaries.origin(i) + (((double)pCoordinates[i] + 1 )/ (double)procsPerDim[i]) * globalBoundaries.extents(i);
     origins.push_back(lower);
     extents.push_back(upper - lower);
   }
@@ -103,24 +102,24 @@ int CartTopology::getRank(vector<int>& loc, std::vector<int>& relLoc) {
 	return rank;
 }
 
-void CartTopology::createNeighbors(Neighbors* nghs) {
+void CartTopology::createNeighbors(Neighbors* nghs, GridDimensions globalBoundaries) {
   int numDims = procsPerDim.size();
   std::vector<int> relativeLocation;
   relativeLocation.assign(numDims, -1);
 
   int myRank = RepastProcess::instance()->rank();
   vector<int> myMPICoordinates;
-  getCoordinates(myRank, myMPICoordinates);
+  getCoordinates(myRank, myMPICoordinates, globalBoundaries);
   do{
     int rankOfNeighbor = getRank(myMPICoordinates, relativeLocation);
-    if(rankOfNeighbor != myRank && rankOfNeighbor != MPI_PROC_NULL) createNeighbor(nghs, rankOfNeighbor, relativeLocation);
+    if(rankOfNeighbor != myRank && rankOfNeighbor != MPI_PROC_NULL) createNeighbor(nghs, rankOfNeighbor, relativeLocation, globalBoundaries);
   }while(nghs->increment(relativeLocation));
 
 }
 
-void CartTopology::createNeighbor(Neighbors* nghs, int rank, std::vector<int> relativeLocation) {
+void CartTopology::createNeighbor(Neighbors* nghs, int rank, std::vector<int> relativeLocation, GridDimensions globalBoundaries) {
 	if (rank != MPI_PROC_NULL) {
-		Neighbor* ngh = new Neighbor(rank, getDimensions(rank));
+		Neighbor* ngh = new Neighbor(rank, getDimensions(rank, globalBoundaries));
 		nghs->addNeighbor(ngh, relativeLocation);
 	}
 }

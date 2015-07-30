@@ -186,12 +186,11 @@ class CartTopology {
 
 private:
   MPI_Comm           topologyComm;
-  GridDimensions     globalBounds;
   bool               periodic;
   std::vector<int>   procsPerDim;
 
 	int  getRank(std::vector<int>& loc, std::vector<int>& relLoc);
-	void createNeighbor(Neighbors* nghs, int rank, std::vector<int> relativeLocation);
+	void createNeighbor(Neighbors* nghs, int rank, std::vector<int> relativeLocation, GridDimensions globalBoundaries);
 
 public:
 	// x major
@@ -201,21 +200,21 @@ public:
    * Gets the coordinates in the MPI Cartesian Communicator
    * for the specified rank
    */
-  void getCoordinates(int rank, std::vector<int>& coords);
+  void getCoordinates(int rank, std::vector<int>& coords, GridDimensions globalBoundaries);
 
   /**
    * Gets the GridDimensions boundaries for the specified
    * rank
    */
-  GridDimensions getDimensions(int rank);
+  GridDimensions getDimensions(int rank, GridDimensions globalBoundaries);
 
   /**
    * Gets the GridDimensions boundaries for the specified
    * MPI coordinates
    */
-  GridDimensions getDimensions(std::vector<int>& pCoordinates);
+  GridDimensions getDimensions(std::vector<int>& pCoordinates, GridDimensions globalBoundaries);
 
-	void createNeighbors(Neighbors* nghs);
+	void createNeighbors(Neighbors* nghs, GridDimensions globalBoundaries);
 
 };
 
@@ -349,12 +348,12 @@ SharedBaseGrid<T, GPTransformer, Adder, GPType>::SharedBaseGrid(std::string name
 	CartTopology topology(processDims, gridDims.origin().coords(), gridDims.extents().coords(), periodic, comm);
 
 	std::vector<int> coords;
-	topology.getCoordinates(rank, coords);
-	localBounds = topology.getDimensions(coords);
+	topology.getCoordinates(rank, coords, gridDims);
+	localBounds = topology.getDimensions(coords, gridDims);
 	GridBaseType::adder.init(localBounds, this);
 
 	nghs = new Neighbors(dimCount);
-	topology.createNeighbors(nghs);
+	topology.createNeighbors(nghs, gridDims);
 }
 
 template<typename T, typename GPTransformer, typename Adder, typename GPType>
