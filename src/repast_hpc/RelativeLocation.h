@@ -143,6 +143,9 @@ public:
    */
   bool increment();
 
+  bool increment(bool skipZero);
+
+
   /**
    * Set the current value. Will return false
    * if the number of dimensions does not match the existing

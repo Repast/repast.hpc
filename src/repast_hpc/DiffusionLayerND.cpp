@@ -46,16 +46,42 @@ using namespace std;
 
 namespace repast {
 
-DiffusionLayerND::DiffusionLayerND(GridDimensions globalBoundaries, GridDimensions localBoundaries, int bufferSize, bool strictBoundaries){
-//  boost::mpi::communicator* comm         = RepastProcess::instance()->communicator();
-//  boost::mpi::communicator* topologyComm = RepastProcess::instance()->communicator();
-//  int numDims = globalBoundaries.extents().coords().size();
-//  int* periods = new int[numDims];
-//  int periodicFlag = strictBoundaries ? 0 : 1;
-//  for (int i = 0; i < numDims; i++) periods[i] = periodicFlag;
-//
-//  MPI_Cart_create(*comm, numDims, &processesPerDim[0], periods, 0, &topologyComm);
-//  delete[] periods;
+DiffusionLayerND::DiffusionLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic, double initialValue): globalSpaceIsPeriodic(periodic){
+  CartesianTopology* cartTopology = RepastProcess::instance()->getCartesianTopology(processesPerDim, periodic);
+  int rank = RepastProcess::instance()->rank();
+  GridDimensions localBoundaries = cartTopology->getDimensions(rank, globalBoundaries);
+
+  // Calculate the size to be used for the buffers
+  numDims = processesPerDim.size();
+  RelativeLocation relLoc(numDims);
+  RelativeLocation relLocTrimmed = cartTopology->trim(rank, relLoc); // Initialized to minima
+
+  vector<int> minima = relLocTrimmed.getCurrentValue();
+  while(relLocTrimmed.increment());
+  vector<int> maxima = relLocTrimmed.getCurrentValue();
+
+  vector<int> outerLowerBounds;
+  vector<int> localLowerBounds;
+  vector<int> innerLowerBounds;
+  vector<int> innerUpperBounds;
+  vector<int> localUpperBounds;
+  vector<int> outerUpperBounds;
+  for(int i = 0; i < numDims; i++){
+    outerLowerBounds.push_back(localBoundaries.origin(i) + minima[i] * bufferSize); // Note: minima and maxima will be -1 or 0
+    localLowerBounds.push_back(localBoundaries.origin(i));
+    innerLowerBounds.push_back(localBoundaries.origin(i) + bufferSize);
+    innerUpperBounds.push_back(localBoundaries.origin(i) + localBoundaries.extents(i) - bufferSize);
+    localUpperBounds.push_back(localBoundaries.origin(i) + localBoundaries.extents(i));
+    outerUpperBounds.push_back(localBoundaries.origin(i) + localBoundaries.extents(i) + maxima * bufferSize);
+  }
+
+  vector<int> receiveWidths; // The whole width of the data array
+  vector<int> sendWidths;
+
+
+
+
+  initialize(initialValue);
 
 }
 
@@ -64,8 +90,21 @@ DiffusionLayerND::~DiffusionLayerND(){
   delete[] otherDataSpace;
 }
 
-void initialize(double initialValue){
 
+void DiffusionLayerND::setPlaces(){
+  places.clear();
+  int val = 1;
+  for(int i = 0; i < numDims; i++){
+    places.push_back(val);
+    val *= (int)(floor(overallGridDimensions.extents(i) + .1));
+  }
+}
+
+void DiffusionLayerND::initialize(double initialValue){
+  for(int i = 0; i < length; i++){ // TODO Optimize
+    dataSpace1[i] = initialValue;
+    dataSpace2[i] = initialValue;
+  }
 }
 
 void DiffusionLayerND::diffuse(){
@@ -73,9 +112,22 @@ void DiffusionLayerND::diffuse(){
 
 
   // Switch the data banks
-  tempDataSpace    = currentDataSpace;
+  double* tempDataSpace    = currentDataSpace;
   currentDataSpace = otherDataSpace;
   otherDataSpace   = tempDataSpace;
+}
+
+
+vector<int> DiffusionLayerND::transform(vector<int> location){
+
+
+}
+
+int DiffusionLayerND::getIndex(vector<int> location){
+  int val = 0;
+  for(int i = numDims - 1; i >= 0; i--){
+    val += location[i] * places[i];
+  }
 }
 
 }

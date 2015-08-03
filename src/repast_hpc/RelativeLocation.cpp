@@ -37,6 +37,7 @@
  *  Created on: July 28, 2008
  *      Author: jtm
  */
+#include <iostream>
 
 #include "RelativeLocation.h"
 
@@ -87,17 +88,39 @@ bool RelativeLocation::increment(){
   bool addNext = true;
   while((addNext) && (i < countOfDimensions)){
     currentValue[i] = currentValue[i] + 1;
-    if(currentValue[i] < maxima[i]) addNext = false;
-    else(currentValue[i] = minima[i]);
+    if(currentValue[i] <= maxima[i])   addNext = false;
+    else                               currentValue[i] = minima[i];
     i++;
   }
-  if(!(i < countOfDimensions) || (addNext == false)){
+  if(addNext == true){
     currentValue.clear();
     currentValue.insert(currentValue.begin(), minima.begin(), minima.end());
     return false;
   }
   else return true;
 }
+
+bool RelativeLocation::increment(bool skipZero){
+  if(!skipZero) return increment(); // Silly to call this with 'false'
+  int i = 0;
+  bool addNext = true;
+  while((addNext) && (i < countOfDimensions)){
+    currentValue[i] = currentValue[i] + 1;
+    if(currentValue[i] <= maxima[i])   addNext = false;
+    else                               currentValue[i] = minima[i];
+    i++;
+  }
+  if(addNext == true){ // Rolled over
+    currentValue.clear();
+    currentValue.insert(currentValue.begin(), minima.begin(), minima.end());
+    return false;
+  }
+  else{
+    return (validNonCenter() ? true : increment()); // If it's zero, increment again before returning
+  }
+}
+
+
 
 bool RelativeLocation::set(vector<int> newValues){
   if(newValues.size() != countOfDimensions) return false;
@@ -142,7 +165,7 @@ int RelativeLocation::getTotalValues(){
 int RelativeLocation::getIndex(vector<int> value){
   if(value.size() != countOfDimensions) return -1;
   int index = 0;
-  for(size_t i = countOfDimensions - 1; i >= 0; i--){
+  for(int i = countOfDimensions - 1; i >= 0; i--){
     if(value[i] < minima[i] || value[i] > maxima[i]) return -1; // Error
     index += (value[i] - minima[i]) * places[i];
   }

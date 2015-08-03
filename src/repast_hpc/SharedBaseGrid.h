@@ -54,6 +54,8 @@
 #include "logger.h"
 #include "SRManager.h"
 #include "RepastErrors.h"
+#include "RelativeLocation.h"
+#include "CartesianTopology.h"
 
 namespace repast {
 
@@ -100,14 +102,14 @@ public:
 	 * Adds a neighbor at the specified location.
 	 *
 	 */
-	void addNeighbor(Neighbor* ngh, std::vector<int> relativeLocation);
+	void addNeighbor(Neighbor* ngh, RelativeLocation relLoc);
 
 	/**
 	 * Gets the neighbor at the specified location.
 	 *
 	 * @param location the location of the neighbor.
 	 */
-	Neighbor* neighbor(std::vector<int> relativeLocation) const;
+	Neighbor* neighbor(RelativeLocation) const;
 
 	/**
 	 * Finds the neighbor that contains the specified point.
@@ -127,96 +129,14 @@ public:
     for(std::vector<Neighbor*>::iterator iter = nghs.begin(), iterEnd=nghs.end(); iter != iterEnd; ++iter) ranks.insert((*iter)->rank());
   }
 
-  /**
-   * Assumes the vector will be of ints that are
-   * all -1, 0, or 1; finds the next vector in
-   * a series. Returns false if the vector is
-   * all 1's.
-   */
-  bool increment(std::vector<int>& relativeLocation);
-
-  /**
-   * Given a relative location of the neighbor,
-   * calculates the index of this neighbor
-   * in the nghs vector.
-   *
-   * Relative locations are specified by listing
-   * the dimensions and indicating whether the neighbor
-   * is before, equal to, or after the coordinate
-   * of the reference process on each dimension,
-   * using -1, 0, and 1. For example, in a
-   * 3-D space, imagining a cube of nine processes
-   * with the reference process in the center,
-   * the process in the upper left back corner would
-   * be [-1, -1, -1].
-   *
-   * Note: 0, 0, 0 is valid even though it is self,
-   * not a neighbor
-   *
-   */
-  int getIndex(std::vector<int> relativeLocation) const;
-
-
-  /**
-   * Gets the max index value.
-   *
-   * Note that there is a slot for relative position
-   * 0,0,0,...; hence the number of neighbors
-   * is 3^N - 1, the number of slots is 3^N,
-   * and the max index is 3^N - 1 (because first
-   * slot is zero).
-   */
-  int maxIndex(){ return nghs.size() - 1; }
-
   Neighbor* getNeighborByIndex(int index){
-    if(index < 0|| index > maxIndex()) return 0;
+    if(index < 0|| index >= nghs.size()) return 0;
     return nghs[index];
   }
 
 };
 
 std::ostream& operator<<(std::ostream& os, const Neighbors& nghs);
-
-
-/**
- * Allows retrieval of the position of this process within the
- * MPI Cartesian Topology into which it is placed.
- */
-class CartTopology {
-
-private:
-  MPI_Comm           topologyComm;
-  bool               periodic;
-  std::vector<int>   procsPerDim;
-
-	int  getRank(std::vector<int>& loc, std::vector<int>& relLoc);
-	void createNeighbor(Neighbors* nghs, int rank, std::vector<int> relativeLocation, GridDimensions globalBoundaries);
-
-public:
-	// x major
-	CartTopology(std::vector<int> processesPerDim, std::vector<double> origin, std::vector<double> extents, bool spaceIsPeriodic, boost::mpi::communicator* world);
-
-  /**
-   * Gets the coordinates in the MPI Cartesian Communicator
-   * for the specified rank
-   */
-  void getCoordinates(int rank, std::vector<int>& coords, GridDimensions globalBoundaries);
-
-  /**
-   * Gets the GridDimensions boundaries for the specified
-   * rank
-   */
-  GridDimensions getDimensions(int rank, GridDimensions globalBoundaries);
-
-  /**
-   * Gets the GridDimensions boundaries for the specified
-   * MPI coordinates
-   */
-  GridDimensions getDimensions(std::vector<int>& pCoordinates, GridDimensions globalBoundaries);
-
-	void createNeighbors(Neighbors* nghs, GridDimensions globalBoundaries);
-
-};
 
 
 
@@ -335,25 +255,38 @@ SharedBaseGrid<T, GPTransformer, Adder, GPType>::SharedBaseGrid(std::string name
 		int> processDims, int buffer, boost::mpi::communicator* communicator) :
 	GridBaseType(name, gridDims), _buffer(buffer), comm(communicator), globalBounds(gridDims) {
 
-  rank = comm->rank();
-
-  size_t dimCount = gridDims.dimensionCount();
-
-//  if (dimCount > 2)
-//      throw Repast_Error_49<GridDimensions>(dimCount, gridDims); // Number of grid dimensions must be 1 or 2
-	if (processDims.size() != gridDims.dimensionCount())
+  int dimCount = gridDims.dimensionCount();
+	if (processDims.size() != dimCount)
       throw Repast_Error_50<GridDimensions>(dimCount, gridDims, processDims.size()); // Number of grid dimensions must be equal to number of process dimensions
 
+  rank = comm->rank();
 	bool periodic = GridBaseType::gpTransformer.isPeriodic();
-	CartTopology topology(processDims, gridDims.origin().coords(), gridDims.extents().coords(), periodic, comm);
+
+	CartesianTopology* cartTopology = RepastProcess::instance()->getCartesianTopology(processDims, periodic);
 
 	std::vector<int> coords;
-	topology.getCoordinates(rank, coords, gridDims);
-	localBounds = topology.getDimensions(coords, gridDims);
+	cartTopology->getCoordinates(rank, coords);
+
+	localBounds = cartTopology->getDimensions(rank, gridDims);
 	GridBaseType::adder.init(localBounds, this);
 
 	nghs = new Neighbors(dimCount);
-	topology.createNeighbors(nghs, gridDims);
+
+  RelativeLocation relLoc(dimCount);
+
+  do{
+    vector<int> relLocVec = relLoc.getCurrentValue();
+    int rankOfNeighbor = cartTopology->getRank(coords, relLocVec);
+    if(rankOfNeighbor != rank && rankOfNeighbor != MPI_PROC_NULL){
+      Neighbor* ngh = new Neighbor(rankOfNeighbor, cartTopology->getDimensions(rankOfNeighbor, gridDims));
+      nghs->addNeighbor(ngh, relLoc);
+    }
+  }while(relLoc.increment());
+
+
+
+
+
 }
 
 template<typename T, typename GPTransformer, typename Adder, typename GPType>
@@ -444,6 +377,7 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<A
   if(_buffer == 0) return; // A buffer zone of zero means that no agents will be pushed.
 
   int numDims = localBounds.dimensionCount();
+  RelativeLocation relLoc(numDims);
 
   // First, create a zone around the center of this process, inside all of
   // of the buffer zones
@@ -460,19 +394,18 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<A
   GridDimensions unbuffered(ubO, ubE);
 
   // And create grid boundaries for all the buffer zones
-  int numOutgoing = nghs->maxIndex() + 1;
+  int numOutgoing = relLoc.getMaxIndex() + 1;
   GridDimensions** outgoing = new GridDimensions*[numOutgoing];
-  int*            outRanks = new int[numOutgoing];
+  int*             outRanks = new int[numOutgoing];
 
-  std::vector<int> relativeLocation;
-  relativeLocation.assign(numDims, -1);
   do{
     std::vector<double> bufferOrigin;
     std::vector<double> bufferExtents;
 
     bool isEgo = true;
     for(int i = 0; i < numDims; i++){
-      int rel = relativeLocation[i];
+      int rel = relLoc[i];
+
       if(rel == 0){
         bufferOrigin.push_back(localBounds.origin(i));
         bufferExtents.push_back(localBounds.extents(i));
@@ -490,7 +423,7 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<A
     }
 
     // Should not add self!
-    int index = nghs->getIndex(relativeLocation);
+    int index = relLoc.getIndex();
     if(!isEgo){
       outgoing[index] = new GridDimensions(Point<double>(bufferOrigin), Point<double> (bufferExtents));
       outRanks[index]  =nghs->getNeighborByIndex(index)->rank();
@@ -500,7 +433,7 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<A
       outRanks[index] = 0;
     }
 
-  }while(nghs->increment(relativeLocation));
+  }while(relLoc.increment());
 
 
 

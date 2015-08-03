@@ -59,8 +59,6 @@ private:
   bool               periodic;
   std::vector<int>   procsPerDim;
 
-
-
 public:
   CartesianTopology(std::vector<int> processesPerDim, bool spaceIsPeriodic, boost::mpi::communicator* world);
   virtual ~CartesianTopology();
@@ -95,9 +93,18 @@ public:
    * but if part of the relative location falls outside the
    * boundaries of a (nonperiodic) Cartesian Topology, the
    * RelativeLocation returned will include only the locations
-   * that fall within the boundaries
+   * that fall within the boundaries and will be initialized
+   * to the minima values
    */
   RelativeLocation trim(int rank, RelativeLocation volume);
+
+  /**
+   * Returns true only if the periodicity specified matches
+   * the periodicity of this CartesianTopology, the size
+   * of the vector of processes per dimension matches, and
+   * the value for each dimension matches.
+   */
+  bool matches(std::vector<int> processesPerDim, bool spaceIsPeriodic);
 };
 }
 

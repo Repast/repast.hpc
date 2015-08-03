@@ -309,7 +309,19 @@ RepastProcess::~RepastProcess() {
 	delete procsToSendAgentStatusInfoTo;
 	delete procsToRecvAgentStatusInfoFrom;
 
+	for(size_t i = 0; i < cartesianTopologies.size(); i++) delete cartesianTopologies[i];
+
 	_instance = 0;
+}
+
+CartesianTopology* RepastProcess::getCartesianTopology(std::vector<int> processesPerDim, bool spaceIsPeriodic){
+  for(size_t i = 0; i < cartesianTopologies.size(); i++){
+    if(cartesianTopologies[i]->matches(processesPerDim, spaceIsPeriodic)) return cartesianTopologies[i];
+  }
+  // If there were no matches
+  CartesianTopology* newCartTop = new CartesianTopology(processesPerDim, spaceIsPeriodic, world);
+  cartesianTopologies.push_back(newCartTop);
+  return newCartTop;
 }
 
 }

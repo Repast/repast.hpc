@@ -64,6 +64,7 @@
 #include "SRManager.h"
 #include "RepastErrors.h"
 #include "AgentImporterExporter.h"
+#include "CartesianTopology.h"
 
 // these are for the timings logging
 #include "Utilities.h"
@@ -275,6 +276,8 @@ private:
 	std::vector<int>* procsToSendAgentStatusInfoTo;
 	std::vector<int>* procsToRecvAgentStatusInfoFrom;
 
+	std::vector<CartesianTopology*> cartesianTopologies;
+
 protected:
 	RepastProcess(boost::mpi::communicator* comm = 0);
 
@@ -402,6 +405,10 @@ public:
 	boost::mpi::communicator* getCommunicator() {
 		return world;
 	}
+
+
+	CartesianTopology* getCartesianTopology(std::vector<int> processesPerDim, bool spaceIsPeriodic);
+
 
 #ifdef SHARE_AGENTS_BY_SET
 	void dropImporterExporterSet(std::string setName) {

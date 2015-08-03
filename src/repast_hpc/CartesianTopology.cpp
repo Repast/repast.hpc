@@ -80,6 +80,7 @@ int CartesianTopology::getRank(vector<int>& loc, std::vector<int>& relLoc) {
 
 void CartesianTopology::getCoordinates(int rank, std::vector<int>& coords) {
   int numDims = procsPerDim.size();
+  coords.resize(numDims);
   MPI_Cart_coords(topologyComm, rank, numDims, &coords[0]);
 }
 
@@ -134,5 +135,14 @@ RelativeLocation CartesianTopology::trim(int rank, RelativeLocation volume){
   delete max;
   return ret;
 }
+
+bool CartesianTopology::matches(std::vector<int> processesPerDim, bool spaceIsPeriodic){
+    if(spaceIsPeriodic != periodic) return false;
+    if(processesPerDim.size() != procsPerDim.size()) return false;
+    for(size_t i = 0; i < procsPerDim.size(); i++){
+      if(processesPerDim[i] != procsPerDim[i]) return false;
+    }
+    return true;
+  }
 
 }
