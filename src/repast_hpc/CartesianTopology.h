@@ -55,11 +55,12 @@ namespace repast {
 class CartesianTopology {
 
 private:
-  MPI_Comm           topologyComm;
   bool               periodic;
   std::vector<int>   procsPerDim;
 
 public:
+  MPI_Comm           topologyComm;
+
   CartesianTopology(std::vector<int> processesPerDim, bool spaceIsPeriodic, boost::mpi::communicator* world);
   virtual ~CartesianTopology();
 

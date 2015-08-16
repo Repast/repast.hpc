@@ -189,6 +189,8 @@ public:
    * are all zeroes, true otherwise
    */
   bool validNonCenter();
+
+  std::string report();
 };
 
 }

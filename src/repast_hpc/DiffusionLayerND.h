@@ -43,6 +43,7 @@
 
 #include "GridDimensions.h"
 #include "RelativeLocation.h"
+#include "CartesianTopology.h"
 #include <vector>
 #include <map>
 #include "mpi.h"
@@ -51,11 +52,50 @@ using namespace std;
 
 namespace repast {
 
-struct TypeStore {
+/**
+ * The DimensionDatum class stores all of the data that the
+ * DiffusionLayerND class will need for each dimension in the
+ * N-dimensional space. This mainly includes coordinate boundaries
+ * along each dimension, but these boundaries include local,
+ * global, and a few other memoized variants.
+ */
+class DimensionDatum{
 public:
-  double*      sendAddress;
-  double*      receiveAddress;
-  MPI_Datatype mpiDatatype;
+  DimensionDatum(int indx, GridDimensions globalBoundaries, GridDimensions localBoundaries, int buffer, bool isPeriodic);
+  virtual ~DimensionDatum(){}
+
+  int  globalCoordinateMin, globalCoordinateMax;            // Coordinates of the global simulation boundaries
+  int  localBoundariesMin, localBoundariesMax;              // Coordinates of the local process boundaries in this layer
+  int  simplifiedBoundariesMin, simplifiedBoundariesMax;    // Coordinates of the 'simplified' coordinates (assuming local boundary origins and NO wrapping)
+  int  leftBufferSize, rightBufferSize;                     // Buffer size
+  int  matchingCoordinateMin, matchingCoordinateMax;        // Region within simplified boundaries within which coordinates match Global Simulation Coordinate system
+  bool periodic;                                            // True if the global simulation space is periodic on this dimension
+  bool atLeftBound, atRightBound;                           // True if the local boundaries abut the global boundaries (whether periodic or not)
+  bool spaceContinuesLeft, spaceContinuesRight;             // False if the local boundaries abut the (non-periodic) global boundaries
+  int  globalWidth;                                         // Global width of the simulation boundaries in simulation units
+  int  localWidth;                                          // Width of the local boundaries
+  int  width;                                               // Total width (units = double) on this dimension (local extents + buffer sizes if not against global nonperiodic bounds)
+  int  widthInBytes;
+
+  int  getSendReceiveSize(int relativeLocation);
+
+  int getTransformedCoord(int originalCoord);
+};
+
+
+/**
+ * The RankDatum struct stores the data that the DiffusionLayerND
+ * class will need for each of its 3^N - 1 neighboring ranks.
+ * N.B.: We could use a map from rank to the rest of the data, but
+ * we will rarely need to index it that way, and instead can just
+ * loop through it
+ *
+ */
+struct RankDatum{
+  int            rank;
+  MPI_Datatype   datatype;
+  int            sendPtrOffset;
+  int            receivePtrOffset;
 };
 
 /**
@@ -64,7 +104,7 @@ public:
  * space. Diffusion is a synchronous updating of cells
  * based on adjacent cells' values.
  *
- * The asynchronous update is achieved through bank switching:
+ * The synchronous update is achieved through bank switching:
  * two separate grids are maintained, and at any time one of
  * them is 'active' and the other is obsolete and ready to
  * accept the next round of values.
@@ -89,7 +129,8 @@ public:
  *    l1 * M1 + l2 * M2 + l3 * M3 ... lN * MN
  *
  * A volume in this space will not occupy a contiguous
- * block of memory. However, the MPI specification indicates
+ * block of memory. It would be more convenient for the MPI
+ * call if it did. However, the MPI specification indicates
  * that derived data types can be used to define complex
  * regions of memory; the MPI implementation can optimize
  * the sending and receiving of these.
@@ -100,58 +141,104 @@ public:
  *
  * One important note is that the send and receive data types
  * for a given exchange partner will be identical; only the
- * starting pointer need be changed.
+ * starting pointer need be changed to switch from sending
+ * to receiving.
  *
  * (It should be noted that MPI allows these data types to
  * 'match' if they are structurally compatible. They need
  * not actually be identical. So, consider a send/receive
  * pair where one of the pair is against the global
- * simulation boundaries
+ * simulation boundaries but the other is not. The actual
+ * pattern of loops and steps that creates the send will
+ * be different from the pattern that creates the receive,
+ * but MPI will recognize that these are 'matchable' and
+ * will perform the communication.)
  *
  * The data type can be defined recursively using MPI's
  * HVector function for all types except the innermost,
  * which is a contiguous block of double values.
  *
- *
  */
 class DiffusionLayerND{
 
 private:
-  double*        dataSpace1;             // Permanent pointer to bank 1 of the data space
-  double*        dataSpace2;             // Permanent pointer to bank 2 of the data space
-  double*        currentDataSpace;       // Temporary pointer to the active data space
-  double*        otherDataSpace;         // Temporary pointer to the inactive data space
-  int            length;                 // Total length of the entire array (one data space)
-  GridDimensions overallGridDimensions;  // Origin in global sim coordinates + extents
-  int            numDims;                // Number of dimensions
-  bool           globalSpaceIsPeriodic;  // True if the global space is periodic
-
-  vector<int>    places;                 // Multipliers to calculate index, for each dimension
+  CartesianTopology*     cartTopology;
+  double*                dataSpace1;             // Permanent pointer to bank 1 of the data space
+  double*                dataSpace2;             // Permanent pointer to bank 2 of the data space
+  double*                currentDataSpace;       // Temporary pointer to the active data space
+  double*                otherDataSpace;         // Temporary pointer to the inactive data space
+  int                    length;                 // Total length of the entire array (one data space)
 
 
-  // Note that although the send and receive data types must 'match', they needn't be identical
-  // They can bring in different swatches of memory. The MPI implementation will handle this
+  int                    numDims;                // Number of dimensions
+  bool                   globalSpaceIsPeriodic;  // True if the global space is periodic
 
-  map<int, TypeStore> typeStores; // Map of neighbors, by rank, with MPI datatypes for receives
+  vector<int>            places;                 // Multipliers to calculate index, for each dimension
+  vector<int>            strides;                // Sizes of each dimensions, in bytes
+  vector<DimensionDatum> dimensionData;          // List of data for each dimension
+  RankDatum*             neighborData;           // List of data for each adjacent rank
+  int                    neighborCount;          // Count of adjacent ranks
+  MPI_Request*           requests;               // Pointer to MPI requests (for wait operations)
 
 
 public:
   DiffusionLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic, double initialValue = 0);
   virtual ~DiffusionLayerND();
 
+  /**
+   * Initializes the entire array to the specified value
+   */
   void initialize(double initialValue);
+
+  /**
+   * Performs the diffusion operation on the entire
+   * grid (only within local boundaries)
+   */
   void diffuse();
 
+  /**
+   * Gets the value in the grid at a specific location
+   */
   double getValueAt(Point<int> location);
+
+  /**
+   * Gets the value in the grid at a specific location
+   */
   double getValueAt(vector<int> location);
 
-  double* getSendStart(RelativeLocation relLoc);
-  double* getReceiveStart(RelativeLocation relLoc);
-  MPI_Datatype getMPIDataType();
+
+  /**
+   * Add to the value in the grid at a specific location
+   * Returns the new value.
+   */
+  double addValueAt(double val, Point<int> location);
+
+  /**
+   * Add to the value in the grid at the specific location
+   * Returns the new value.
+   */
+  double addValueAt(double val, vector<int> location);
+
+  /**
+   * Add to the value in the grid at a specific location
+   * Returns the new value.
+   */
+  double setValueAt(double val, Point<int> location);
+
+  /**
+   * Add to the value in the grid at the specific location
+   * Returns the new value.
+   */
+  double setValueAt(double val, vector<int> location);
+
+
+
+  /**
+   * Synchronize across processes
+   */
+  void synchronize();
 
 private:
-
-  void setPlaces();
 
   /**
    * Takes a location in global simulation coordinates,
@@ -166,6 +253,49 @@ private:
    * position in the global array representing that location
    */
   int getIndex(vector<int> location);
+
+
+  /**
+   * Given a location in global simulation coordinates,
+   * get the offset from the global base pointer to the
+   * position in the global array representing that location
+   */
+  int getIndex(Point<int> location);
+
+  /**
+   * Gets an MPI data type given the RelativeLocation
+   * and an index indicating which entry in the RelativeLocation
+   * is being requested. Typical use will be recursive: if
+   * there are N dimensions, this class will be called with
+   * dimensionIndex = N - 1, which will call itself with N-2,
+   * repeating until N = 0.
+   */
+  void getMPIDataType(RelativeLocation relLoc, int dimensionIndex, MPI_Datatype &datatype);
+
+  /**
+   * Given a relative location, calculates the index value for the
+   * first unit that should be in the 'send' buffer. Generally,
+   * if the relative location value for a given dimension is
+   * -1 or 0, the offset in that dimension should be equal to the
+   * buffer zone width, and if it is 1, the offset should be equal
+   * to the local width (technically buffer + local - buffer)
+   * Note: Assumes RelativeLocation will only include values
+   * of -1, 0, and 1
+   */
+  int getSendPointerOffset(RelativeLocation relLoc);
+
+  /**
+   * Given a relative location, calculates the index value for the
+   * first unit that should be in the 'receive' buffer. Generally,
+   * if the relative location value for a given dimension is
+   * -1, the offset should be zero; if it is 0, the offset should
+   * be equal to the buffer width; and if it is 1, the offset
+   * should be equal to the buffer width + the local width
+   * (or, equivalently, the total width - buffer width)
+   * Note: Assumes RelativeLocation will only include values
+   * of -1, 0, and 1
+   */
+  int getReceivePointerOffset(RelativeLocation relLoc);
 
 };
 

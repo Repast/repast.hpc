@@ -38,6 +38,7 @@
  *      Author: jtm
  */
 #include <iostream>
+#include <sstream>
 
 #include "RelativeLocation.h"
 
@@ -181,4 +182,9 @@ bool RelativeLocation::validNonCenter(){
   return false;
 }
 
+std::string RelativeLocation::report(){
+  std::stringstream ret;
+  for(int i = 0; i < countOfDimensions; i++) ret << currentValue[i] << (i < (countOfDimensions - 1) ? " " : "");
+  return ret.str();
+}
 }

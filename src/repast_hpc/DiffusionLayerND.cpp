@@ -40,47 +40,116 @@
 
 #include "DiffusionLayerND.h"
 #include "RepastProcess.h"
+#include "Point.h"
 #include <boost/mpi.hpp>
 
 using namespace std;
 
 namespace repast {
 
+DimensionDatum::DimensionDatum(int indx, GridDimensions globalBoundaries, GridDimensions localBoundaries, int buffer, bool isPeriodic):
+    leftBufferSize(buffer), rightBufferSize(buffer), periodic(isPeriodic){
+  globalCoordinateMin = globalBoundaries.origin(indx);
+  globalCoordinateMax = globalBoundaries.origin(indx) + globalBoundaries.extents(indx);
+  localBoundariesMin  = localBoundaries.origin(indx);
+  localBoundariesMax  = localBoundaries.origin(indx) + localBoundaries.extents(indx);
+
+  atLeftBound  = localBoundariesMin == globalCoordinateMin;
+  atRightBound = localBoundariesMax == globalCoordinateMax;
+
+  spaceContinuesLeft  = !atLeftBound  || periodic;
+  spaceContinuesRight = !atRightBound || periodic;
+
+  // Set these provisionally; adjust below if needed
+  simplifiedBoundariesMin  = localBoundariesMin;
+  if(spaceContinuesLeft)  simplifiedBoundariesMin -= leftBufferSize;
+
+  simplifiedBoundariesMax  = localBoundariesMax;
+  if(spaceContinuesRight) simplifiedBoundariesMax += rightBufferSize;
+
+  matchingCoordinateMin    = localBoundariesMin;
+  if(spaceContinuesLeft  && !atLeftBound ) matchingCoordinateMin -= leftBufferSize;
+
+  matchingCoordinateMax    = localBoundariesMax;
+  if(spaceContinuesRight && !atRightBound) matchingCoordinateMax += rightBufferSize;
+
+  globalWidth = globalCoordinateMax - globalCoordinateMin;
+  localWidth = localBoundariesMax - localBoundariesMin;
+  width = simplifiedBoundariesMax - simplifiedBoundariesMin;
+  widthInBytes = width * (sizeof(double));
+}
+
+int DimensionDatum::getSendReceiveSize(int relativeLocation){
+  switch(relativeLocation){
+    case -1:  return leftBufferSize;
+    case  1:  return rightBufferSize;
+    case  0:
+    default:
+      return localWidth;
+  }
+}
+
+int DimensionDatum::getTransformedCoord(int originalCoord){
+  if(originalCoord < matchingCoordinateMin){        // Assume (!) original is on right (!) side of periodic boundary, starting at some value
+    return matchingCoordinateMax + (originalCoord - globalCoordinateMin);
+  }
+  else if(originalCoord > matchingCoordinateMax){
+    return matchingCoordinateMin - (globalCoordinateMax - originalCoord);
+  }
+  else return originalCoord; // Within matching boundaries; no need to transform
+
+}
+
+
 DiffusionLayerND::DiffusionLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic, double initialValue): globalSpaceIsPeriodic(periodic){
-  CartesianTopology* cartTopology = RepastProcess::instance()->getCartesianTopology(processesPerDim, periodic);
+  cartTopology = RepastProcess::instance()->getCartesianTopology(processesPerDim, periodic);
   int rank = RepastProcess::instance()->rank();
   GridDimensions localBoundaries = cartTopology->getDimensions(rank, globalBoundaries);
 
   // Calculate the size to be used for the buffers
   numDims = processesPerDim.size();
+
+  // First create the basic coordinate data per dimension
+  length = 1;
+  int val = 1;
+  for(int i = 0; i < numDims; i++){
+    DimensionDatum datum(i, globalBoundaries, localBoundaries, bufferSize, periodic);
+    length *= datum.width;
+    dimensionData.push_back(datum);
+    places.push_back(val);
+    strides.push_back(val * sizeof(double));
+    val *= dimensionData[i].width;
+  }
+
+  // Now create the rank-based data per neighbor
   RelativeLocation relLoc(numDims);
   RelativeLocation relLocTrimmed = cartTopology->trim(rank, relLoc); // Initialized to minima
 
-  vector<int> minima = relLocTrimmed.getCurrentValue();
-  while(relLocTrimmed.increment());
-  vector<int> maxima = relLocTrimmed.getCurrentValue();
+  neighborData = new RankDatum[relLoc.getMaxIndex() - 1];
+  neighborCount = 0;
+  int i = 0;
+  do{
+    if(relLoc.validNonCenter()){ // Skip 0,0,0,0,0
+      RankDatum* datum;
+      datum = &neighborData[i];
+      // Collect the information about this rank here
+      getMPIDataType(relLoc, numDims - 1, datum->datatype);
+      datum->sendPtrOffset    = getSendPointerOffset(relLoc);
+      datum->receivePtrOffset = getReceivePointerOffset(relLoc);
+      neighborCount++;
+    }
+  }while(relLoc.increment());
 
-  vector<int> outerLowerBounds;
-  vector<int> localLowerBounds;
-  vector<int> innerLowerBounds;
-  vector<int> innerUpperBounds;
-  vector<int> localUpperBounds;
-  vector<int> outerUpperBounds;
-  for(int i = 0; i < numDims; i++){
-    outerLowerBounds.push_back(localBoundaries.origin(i) + minima[i] * bufferSize); // Note: minima and maxima will be -1 or 0
-    localLowerBounds.push_back(localBoundaries.origin(i));
-    innerLowerBounds.push_back(localBoundaries.origin(i) + bufferSize);
-    innerUpperBounds.push_back(localBoundaries.origin(i) + localBoundaries.extents(i) - bufferSize);
-    localUpperBounds.push_back(localBoundaries.origin(i) + localBoundaries.extents(i));
-    outerUpperBounds.push_back(localBoundaries.origin(i) + localBoundaries.extents(i) + maxima * bufferSize);
-  }
+  // Create the actual arrays for the data
+  dataSpace1 = new double[length];
+  dataSpace2 = new double[length];
+  currentDataSpace = dataSpace1;
+  otherDataSpace   = dataSpace2;
 
-  vector<int> receiveWidths; // The whole width of the data array
-  vector<int> sendWidths;
+  // Create arrays for MPI requests and results (statuses)
+  requests = new MPI_Request[neighborCount];
 
-
-
-
+  // Finally, fill the data with the initial values
   initialize(initialValue);
 
 }
@@ -88,17 +157,10 @@ DiffusionLayerND::DiffusionLayerND(vector<int> processesPerDim, GridDimensions g
 DiffusionLayerND::~DiffusionLayerND(){
   delete[] currentDataSpace;
   delete[] otherDataSpace;
+  delete[] neighborData; // Should Free MPI Datatypes first...
+  delete[] requests;
 }
 
-
-void DiffusionLayerND::setPlaces(){
-  places.clear();
-  int val = 1;
-  for(int i = 0; i < numDims; i++){
-    places.push_back(val);
-    val *= (int)(floor(overallGridDimensions.extents(i) + .1));
-  }
-}
 
 void DiffusionLayerND::initialize(double initialValue){
   for(int i = 0; i < length; i++){ // TODO Optimize
@@ -109,25 +171,109 @@ void DiffusionLayerND::initialize(double initialValue){
 
 void DiffusionLayerND::diffuse(){
 
-
-
   // Switch the data banks
-  double* tempDataSpace    = currentDataSpace;
-  currentDataSpace = otherDataSpace;
-  otherDataSpace   = tempDataSpace;
+  double* tempDataSpace = currentDataSpace;
+  currentDataSpace      = otherDataSpace;
+  otherDataSpace        = tempDataSpace;
+
+  synchronize();
 }
 
 
 vector<int> DiffusionLayerND::transform(vector<int> location){
-
-
+  vector<int> ret;
+  ret.assign(numDims, 0); // Make the right amount of space
+  for(int i = 0; i < numDims; i++) ret[i] = dimensionData[i].getTransformedCoord(location[i]);
+  return ret;
 }
 
 int DiffusionLayerND::getIndex(vector<int> location){
+  vector<int> transformed = transform(location);
   int val = 0;
   for(int i = numDims - 1; i >= 0; i--){
-    val += location[i] * places[i];
+    val += transformed[i] * places[i];
   }
 }
+
+int DiffusionLayerND::getIndex(Point<int> location){
+  return getIndex(location.coords());
+}
+
+void DiffusionLayerND::getMPIDataType(RelativeLocation relLoc, int dimensionIndex, MPI_Datatype& datatype){
+
+  if(dimensionIndex == 0){
+    MPI_Type_contiguous(dimensionData[dimensionIndex].getSendReceiveSize(relLoc[dimensionIndex]), MPI_DOUBLE, &datatype);
+  }
+  else{
+    MPI_Datatype innerType;
+    getMPIDataType(relLoc, dimensionIndex - 1, innerType);
+    MPI_Type_hvector(dimensionData[dimensionIndex].getSendReceiveSize(relLoc[dimensionIndex]), // Count
+                     1,                                                                        // BlockLength: just one of the inner data type
+                     strides[dimensionIndex],                                                  // Stride, in bytes
+                     innerType,                                                                // Inner Datatype
+                     &datatype);
+  }
+  // Commit?
+  MPI_Type_commit(&datatype);
+}
+
+void DiffusionLayerND::synchronize(){
+  // For each entry in neighbors:
+  MPI_Status* statuses = new MPI_Status[neighborCount];
+  for(int i = 0; i < neighborCount; i++){
+    MPI_Isend(&currentDataSpace[neighborData[i].sendPtrOffset], 1, neighborData[i].datatype,
+        neighborData[i].rank, 10101, cartTopology->topologyComm, &requests[i]);
+    MPI_Irecv(&currentDataSpace[neighborData[i].receivePtrOffset], 1, neighborData[i].datatype,
+        neighborData[i].rank, 10101, cartTopology->topologyComm, &requests[i + 1]);
+  }
+  // Wait
+  MPI_Waitall(neighborCount, requests, statuses);
+  delete[] statuses;
+
+  // Done! Data will be in the new buffer in the current data space
+}
+
+int DiffusionLayerND::getSendPointerOffset(RelativeLocation relLoc){
+  int rank = repast::RepastProcess::instance()->rank();
+  int ret = 0;
+  for(int i = 0; i < numDims; i++){
+    DimensionDatum* datum = &dimensionData[i];
+    ret += (relLoc[i] <= 0 ? datum->leftBufferSize : datum->width - datum->rightBufferSize) * places[i];
+  }
+  return ret;
+}
+
+int DiffusionLayerND::getReceivePointerOffset(RelativeLocation relLoc){
+  int rank = repast::RepastProcess::instance()->rank();
+  int ret = 0;
+  for(int i = 0; i < numDims; i++){
+    DimensionDatum* datum = &dimensionData[i];
+    ret += (relLoc[i] < 0 ? 0 : (relLoc[i] == 0 ? datum->leftBufferSize : datum->width - datum->rightBufferSize)) * places[i];
+  }
+  return ret;
+}
+
+
+double DiffusionLayerND::addValueAt(double val, Point<int> location){
+  double* pt = &currentDataSpace[getIndex(location)];
+  return (*pt = *pt + val);
+}
+
+double DiffusionLayerND::addValueAt(double val, vector<int> location){
+  double* pt = &currentDataSpace[getIndex(location)];
+  return (*pt = *pt + val);
+}
+
+double DiffusionLayerND::setValueAt(double val, Point<int> location){
+  double* pt = &currentDataSpace[getIndex(location)];
+  return (*pt = val);
+
+}
+
+double DiffusionLayerND::setValueAt(double val, vector<int> location){
+  double* pt = &currentDataSpace[getIndex(location)];
+  return (*pt = val);
+}
+
 
 }
