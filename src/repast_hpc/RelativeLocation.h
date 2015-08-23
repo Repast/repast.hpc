@@ -190,6 +190,9 @@ public:
    */
   bool validNonCenter();
 
+  int getMinimumAt(int index);
+  int getMaximumAt(int index);
+
   std::string report();
 };
 

@@ -182,6 +182,15 @@ bool RelativeLocation::validNonCenter(){
   return false;
 }
 
+int RelativeLocation::getMinimumAt(int index){
+  return minima[index];
+}
+
+int RelativeLocation::getMaximumAt(int index){
+  return maxima[index];
+}
+
+
 std::string RelativeLocation::report(){
   std::stringstream ret;
   for(int i = 0; i < countOfDimensions; i++) ret << currentValue[i] << (i < (countOfDimensions - 1) ? " " : "");

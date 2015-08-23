@@ -53,12 +53,8 @@ Neighbor::Neighbor(int rank, GridDimensions bounds) :
 	_rank(rank), _bounds(bounds) {
 }
 
-Neighbors::Neighbors(int numDimensions){
-  int dimCount = 1;
-  for(int i = 0; i < numDimensions; i++) dimCount *= 3;
-  for (int i = 0; i < dimCount; i++) {
-		nghs.push_back(0);
-	}
+Neighbors::Neighbors(int numberOfNeighbors){
+  nghs.assign(numberOfNeighbors, 0);
 }
 
 void Neighbors::addNeighbor(Neighbor* ngh, RelativeLocation relLoc) {

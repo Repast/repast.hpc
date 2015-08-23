@@ -95,7 +95,7 @@ private:
 
 public:
 
-	Neighbors(int numberOfDimensions);
+	Neighbors(int numberOfNeighbors);
 	virtual ~Neighbors();
 
 	/**
@@ -163,6 +163,7 @@ template<typename T, typename GPTransformer, typename Adder, typename GPType>
 class SharedBaseGrid: public BaseGrid<T, MultipleOccupancy<T, GPType> , GPTransformer, Adder, GPType> {
 
 private:
+  CartesianTopology* cartTopology;
 
 protected:
 	int _buffer;
@@ -262,7 +263,7 @@ SharedBaseGrid<T, GPTransformer, Adder, GPType>::SharedBaseGrid(std::string name
   rank = comm->rank();
 	bool periodic = GridBaseType::gpTransformer.isPeriodic();
 
-	CartesianTopology* cartTopology = RepastProcess::instance()->getCartesianTopology(processDims, periodic);
+	cartTopology = RepastProcess::instance()->getCartesianTopology(processDims, periodic);
 
 	std::vector<int> coords;
 	cartTopology->getCoordinates(rank, coords);
@@ -270,22 +271,19 @@ SharedBaseGrid<T, GPTransformer, Adder, GPType>::SharedBaseGrid(std::string name
 	localBounds = cartTopology->getDimensions(rank, gridDims);
 	GridBaseType::adder.init(localBounds, this);
 
-	nghs = new Neighbors(dimCount);
+  RelativeLocation relLocUntrimmed(dimCount);
+  RelativeLocation relLoc = cartTopology->trim(rank, relLocUntrimmed);
 
-  RelativeLocation relLoc(dimCount);
+	nghs = new Neighbors(relLoc.getMaxIndex() + 1);
 
   do{
-    vector<int> relLocVec = relLoc.getCurrentValue();
-    int rankOfNeighbor = cartTopology->getRank(coords, relLocVec);
-    if(rankOfNeighbor != rank && rankOfNeighbor != MPI_PROC_NULL){
+    vector<int> currentVal = relLoc.getCurrentValue();
+    int rankOfNeighbor = cartTopology->getRank(coords, currentVal);
+    if(rankOfNeighbor != rank && rankOfNeighbor != MPI_PROC_NULL){ // Note: the test for MPI_PROC_NULL is vestigial; by trimming the Relative Location, there should never be any
       Neighbor* ngh = new Neighbor(rankOfNeighbor, cartTopology->getDimensions(rankOfNeighbor, gridDims));
       nghs->addNeighbor(ngh, relLoc);
     }
   }while(relLoc.increment());
-
-
-
-
 
 }
 
@@ -377,7 +375,9 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<A
   if(_buffer == 0) return; // A buffer zone of zero means that no agents will be pushed.
 
   int numDims = localBounds.dimensionCount();
-  RelativeLocation relLoc(numDims);
+  RelativeLocation relLocOrig(numDims);
+
+  RelativeLocation relLoc = cartTopology->trim(comm->rank(), relLocOrig);
 
   // First, create a zone around the center of this process, inside all of
   // of the buffer zones
@@ -385,8 +385,10 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<A
   std::vector<double> unbufferedExtents;
 
   for(int i = 0; i < numDims; i++){
-    unbufferedOrigin.push_back(localBounds.origin(i) + _buffer);
-    unbufferedExtents.push_back(localBounds.extents(i) - (_buffer * 2));
+    bool hasLeft  = relLoc.getMinimumAt(i) < 0;
+    bool hasRight = relLoc.getMaximumAt(i) > 0;
+    unbufferedOrigin.push_back(localBounds.origin(i) + (hasLeft ? _buffer : 0));
+    unbufferedExtents.push_back(localBounds.extents(i) - (hasLeft ? _buffer : 0) - (hasRight ? _buffer : 0));
   }
 
   Point<double> ubO(unbufferedOrigin);
@@ -395,6 +397,7 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<A
 
   // And create grid boundaries for all the buffer zones
   int numOutgoing = relLoc.getMaxIndex() + 1;
+
   GridDimensions** outgoing = new GridDimensions*[numOutgoing];
   int*             outRanks = new int[numOutgoing];
 
@@ -434,8 +437,6 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<A
     }
 
   }while(relLoc.increment());
-
-
 
 
   // Local agents that are in other processes' 'buffer zones' must be exported to those other processes.
