@@ -15,13 +15,13 @@
 #define DEMO_02_MODEL
 
 #include <boost/mpi.hpp>
-#include "Schedule.h"
-#include "Properties.h"
-#include "SharedContext.h"
-#include "AgentRequest.h"
-#include "TDataSource.h"
-#include "SVDataSet.h"
-<b class="code">#include "SharedNetwork.h"</b>
+#include "repast_hpc/Schedule.h"
+#include "repast_hpc/Properties.h"
+#include "repast_hpc/SharedContext.h"
+#include "repast_hpc/AgentRequest.h"
+#include "repast_hpc/TDataSource.h"
+#include "repast_hpc/SVDataSet.h"
+<b class="code">#include "repast_hpc/SharedNetwork.h"</b>
 
 #include "Demo_02_Agent.h"
 </pre></code></div>
@@ -102,8 +102,8 @@ RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** a
 
     <p>There is one final but <em>very important</em> step. You must add the following line to the <top> of the DemoModel.cpp file, <em>after the includes but before the rest of the code</em>:
 <div class="code"><code><pre>
-#include "initialize_random.h"
-#include "SVDataSetBuilder.h"
+#include "repast_hpc/initialize_random.h"
+#include "repast_hpc/SVDataSetBuilder.h"
 
 #include "Demo_02_Model.h"
 

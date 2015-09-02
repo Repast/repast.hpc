@@ -11,15 +11,15 @@
 
 <div class="code"><code><pre>
 #include <boost/mpi.hpp>
-#include "Schedule.h"
-#include "Properties.h"
-#include "SharedContext.h"
-#include "AgentRequest.h"
-#include "TDataSource.h"
-#include "SVDataSet.h"
-#include "SharedContinuousSpace.h"
-#include "GridComponents.h"
-<b class="code">#include "SharedNetwork.h"</b>
+#include "repast_hpc/Schedule.h"
+#include "repast_hpc/Properties.h"
+#include "repast_hpc/SharedContext.h"
+#include "repast_hpc/AgentRequest.h"
+#include "repast_hpc/TDataSource.h"
+#include "repast_hpc/SVDataSet.h"
+#include "repast_hpc/SharedContinuousSpace.h"
+#include "repast_hpc/GridComponents.h"
+<b class="code">#include "repast_hpc/SharedNetwork.h"</b>
 </pre></code></div>
 
 <div class="code"><code><pre>
@@ -99,11 +99,11 @@ RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** a
    <p>We need to modify the Agent.h file to pass the network to the play method, and also create a new method that we will use to make use of the network:</p>
 
 <div class="code"><code><pre>
-#include "AgentId.h"
-#include "SharedContext.h"
-#include "SharedDiscreteSpace.h"
-#include "SharedContinuousSpace.h"
-<b class="code">#include "SharedNetwork.h"</b>
+#include "repast_hpc/AgentId.h"
+#include "repast_hpc/SharedContext.h"
+#include "repast_hpc/SharedDiscreteSpace.h"
+#include "repast_hpc/SharedContinuousSpace.h"
+<b class="code">#include "repast_hpc/SharedNetwork.h"</b>
 </pre></code></div>
 
 <div class="code"><code><pre>

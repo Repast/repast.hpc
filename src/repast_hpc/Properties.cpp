@@ -197,5 +197,44 @@ void Properties::writeToSVFile(std::string fileName, std::vector<std::string> &k
 
 }
 
+bool Properties::writeToPropsFile(std::string fileName, std::string header){
+  std::vector<std::string> keysToWrite;
+  std::map<std::string, std::string>::iterator iter    = map.begin();
+  std::map<std::string, std::string>::iterator iterEnd = map.end();
+  while(iter != iterEnd){
+    keysToWrite.push_back(iter->first);
+    iter++;
+  }
+  return writeToPropsFile(fileName, keysToWrite, header);
+}
+
+bool Properties::writeToPropsFile(std::string fileName, std::vector<std::string> &keysToWrite, std::string header){
+  if(boost::filesystem::exists(fileName)) return false;
+  std::ofstream outfile;
+  outfile.open(fileName.c_str(), std::ios::app);
+  outfile << propsFileString(keysToWrite, header);
+  outfile.close();
+  return true;
+}
+
+std::string Properties::propsFileString(std::vector<std::string> &keysToWrite, std::string header){
+  stringstream outstring;
+  outstring << header;
+  std::vector<std::string>::iterator keys = keysToWrite.begin();
+  int maxKeyWidth = 0;
+  while(keys != keysToWrite.end()){
+    maxKeyWidth = (*keys).length() > maxKeyWidth ? (*keys).length() : (maxKeyWidth + 1); // Note: maxWidth gets padded by an additional space
+    keys++;
+  }
+  std::string pad = "                                                  ";
+  while(pad.length() < maxKeyWidth) pad = pad + pad;
+  keys = keysToWrite.begin();
+  while(keys != keysToWrite.end()){
+    outstring << (*keys + pad).substr(0, maxKeyWidth) << " = " << getProperty(*keys) << std::endl;
+    keys++;
+  }
+  return outstring.str();
+}
+
 
 }

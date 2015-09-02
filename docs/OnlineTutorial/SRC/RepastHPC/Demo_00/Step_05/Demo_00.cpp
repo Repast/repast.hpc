@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <boost/mpi.hpp>
-#include "RepastProcess.h"
+#include "repast_hpc/RepastProcess.h"
 
 int main(int argc, char** argv){
 	

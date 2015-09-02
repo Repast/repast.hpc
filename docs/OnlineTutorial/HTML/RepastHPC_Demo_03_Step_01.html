@@ -8,8 +8,8 @@
     <script type="text/javascript">header("RepastHPC_Demo_03_Step_01");</script>
 	Because a spatial projection is conceptually very similar to a network projection, and because they are implemented according to a common paradigm in Repast HPC, using a spatial projection is basically the same as using a network projection. The first step is to create an instance variable for the projection in the Model object. In the Model.h file, this requires two new include statements and a new variable:</p>
 <div class="code"><code><pre>
-<b class="code">#include "SharedDiscreteSpace.h"</b>
-<b class="code">#include "GridComponents.h"</b>
+<b class="code">#include "repast_hpc/SharedDiscreteSpace.h"</b>
+<b class="code">#include "repast_hpc/GridComponents.h"</b>
 </pre></code></div>
 
 
@@ -42,7 +42,7 @@ public:
 
 <p>The changes in the Model.cpp file are similar to those done for the network projection. There is one additional include:</p>
 <div class="code"><code><pre>
-<b class="code">#include "Point.h"</b>
+<b class="code">#include "repast_hpc/Point.h"</b>
 </pre></code></div>
 
 <p>The instance of the projection is created in the DemoModel constructor:</p>

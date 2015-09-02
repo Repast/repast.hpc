@@ -10,8 +10,8 @@
     <p>The first step to implementing this is to give the RepastHPCDemoModel an instance of SVDataSet, which will act as the data collector. First we modify Demo_01_Model.h:</p>
 
 <div class="code"><code><pre>
-<b class="code">#include "TDataSource.h"
-#include "SVDataSet.h"</b>
+<b class="code">#include "repast_hpc/TDataSource.h"
+#include "repast_hpc/SVDataSet.h"</b>
 </pre></code></div> 
 
 <p>And:</p>
@@ -106,7 +106,7 @@ globally; the data set will include the appropriate global values automatically.
     <p>To create the instances of this, we modify the RepastHPCDemoModel constructor in Demo_01_Model.cpp. This requires a new include:</p>
 
 <div class="code"><code><pre>
-<b class="code">#include "SVDataSetBuilder.h"</b>
+<b class="code">#include "repast_hpc/SVDataSetBuilder.h"</b>
 </pre></code></div> 
 
 <p>And:</p>

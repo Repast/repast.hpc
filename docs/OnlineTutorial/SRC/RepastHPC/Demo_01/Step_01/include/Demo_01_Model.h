@@ -4,8 +4,8 @@
 #define DEMO_01_MODEL
 
 #include <boost/mpi.hpp>
-#include "Schedule.h"
-#include "Properties.h"
+#include "repast_hpc/Schedule.h"
+#include "repast_hpc/Properties.h"
 
 class RepastHPCDemoModel{
 	int stopAt;

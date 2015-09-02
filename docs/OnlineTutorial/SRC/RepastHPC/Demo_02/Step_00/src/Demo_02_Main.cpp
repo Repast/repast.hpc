@@ -1,7 +1,7 @@
 /* Demo_02_Main.cpp */
 
 #include <boost/mpi.hpp>
-#include "RepastProcess.h"
+#include "repast_hpc/RepastProcess.h"
 
 #include "Demo_02_Model.h"
 

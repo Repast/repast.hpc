@@ -3,8 +3,8 @@
 #ifndef DEMO_02_NETWORK
 #define DEMO_02_NETWORK
 
-#include "SharedContext.h"
-#include "SharedNetwork.h"
+#include "repast_hpc/SharedContext.h"
+#include "repast_hpc/SharedNetwork.h"
 
 
 /* Custom Network Components */

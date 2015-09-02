@@ -3,11 +3,11 @@
 #ifndef DEMO_03_AGENT
 #define DEMO_03_AGENT
 
-#include "AgentId.h"
-#include "SharedContext.h"
-#include "SharedDiscreteSpace.h"
-#include "SharedContinuousSpace.h"
-#include "SharedNetwork.h"
+#include "repast_hpc/AgentId.h"
+#include "repast_hpc/SharedContext.h"
+#include "repast_hpc/SharedDiscreteSpace.h"
+#include "repast_hpc/SharedContinuousSpace.h"
+#include "repast_hpc/SharedNetwork.h"
 
 /* Agents */
 class RepastHPCDemoAgent{
