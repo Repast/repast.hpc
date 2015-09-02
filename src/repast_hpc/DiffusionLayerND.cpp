@@ -37,6 +37,7 @@
  *  Created on: July 25, 2008
  *      Author: jtm
  */
+#include <fstream>
 
 #include "DiffusionLayerND.h"
 #include "RepastProcess.h"
@@ -100,6 +101,32 @@ int DimensionDatum::getTransformedCoord(int originalCoord){
 
 }
 
+int DimensionDatum::getIndexedCoord(int originalCoord, bool isSimplified){
+  //std::cout << " GETTING INDEXED COORD FOR ORIGINAL COORD " << originalCoord << " IS SIMPLE? " << isSimplified << " WITH SIMPLE BOUNDS " << simplifiedBoundariesMin << " RET = " << (isSimplified ? originalCoord : getTransformedCoord(originalCoord)) - simplifiedBoundariesMin << endl;
+  return (isSimplified ? originalCoord : getTransformedCoord(originalCoord)) - simplifiedBoundariesMin;
+}
+
+/**
+ * Empty constructor
+ */
+Diffusor::Diffusor(){}
+
+/**
+ * No-Op Destructor
+ */
+Diffusor::~Diffusor(){}
+
+/**
+ * Default radius is one
+ */
+int Diffusor::getRadius(){
+  return 1;
+}
+
+bool Diffusor::skip(vector<int> location){
+  return false;
+}
+
 
 DiffusionLayerND::DiffusionLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic, double initialValue): globalSpaceIsPeriodic(periodic){
   cartTopology = RepastProcess::instance()->getCartesianTopology(processesPerDim, periodic);
@@ -119,6 +146,7 @@ DiffusionLayerND::DiffusionLayerND(vector<int> processesPerDim, GridDimensions g
     places.push_back(val);
     strides.push_back(val * sizeof(double));
     val *= dimensionData[i].width;
+    datum.report(i);
   }
 
   // Now create the rank-based data per neighbor
@@ -169,7 +197,56 @@ void DiffusionLayerND::initialize(double initialValue){
   }
 }
 
-void DiffusionLayerND::diffuse(){
+void DiffusionLayerND::diffuse(Diffusor* diffusor){
+  vector<int> globalMinima;
+  vector<int> globalMaxima;
+  vector<int> localMinima;
+  vector<int> localMaxima;
+  for(int i = 0; i < numDims; i++){
+    DimensionDatum* datum = &dimensionData[i];
+    globalMinima.push_back(datum->simplifiedBoundariesMin);
+    globalMaxima.push_back(datum->simplifiedBoundariesMax);
+    localMinima.push_back(datum->localBoundariesMin);
+    localMaxima.push_back(datum->localBoundariesMax);
+  }
+  RelativeLocation trimmer(globalMinima, globalMaxima);
+  RelativeLocation looper(localMinima, localMaxima);
+
+  int preferredRadius = diffusor->getRadius();
+  vector<int> localRadiusMinima;
+  vector<int> localRadiusMaxima;
+  for(int i = 0; i < numDims; i++){
+    localRadiusMinima.push_back(-1 * preferredRadius);
+    localRadiusMaxima.push_back(     preferredRadius);
+  }
+
+  // BaseLocal is a basic RelativeLocation that has the needed radius,
+  // usually 1.
+  RelativeLocation baseLocal(localRadiusMinima, localRadiusMaxima);
+
+  int c = 0;
+
+  std::cout << " ABOUT TO ENTER DIFFUSOR LOOP ON RANK " << repast::RepastProcess::instance()->rank() << std::endl;
+  do{
+    if(!diffusor->skip(looper.getCurrentValue())){
+      c++;
+      RelativeLocation currentLocal(baseLocal);
+//      currentLocal.translate(looper.getCurrentValue());
+//      RelativeLocation trimmedLocal = trimmer.trim(currentLocal);
+
+
+//      double* vals = new double[trimmedLocal.getMaxIndex()];
+//
+//      int indx = 0;
+//      do{
+//        vals[indx] = currentDataSpace[getIndex(trimmedLocal.getCurrentValue(), true)];
+//        indx++;
+//      }while(trimmedLocal.increment());
+//      otherDataSpace[getIndex(looper.getCurrentValue(), true)] = diffusor->getNewValue(trimmedLocal, vals);
+//      delete vals;
+    }
+  }while(looper.increment());
+  std::cout << " COUNT ON RANK " << repast::RepastProcess::instance()->rank() << " IS " << c << std::endl;
 
   // Switch the data banks
   double* tempDataSpace = currentDataSpace;
@@ -180,19 +257,19 @@ void DiffusionLayerND::diffuse(){
 }
 
 
-vector<int> DiffusionLayerND::transform(vector<int> location){
+vector<int> DiffusionLayerND::getIndexes(vector<int> location, bool isSimplified){
   vector<int> ret;
   ret.assign(numDims, 0); // Make the right amount of space
-  for(int i = 0; i < numDims; i++) ret[i] = dimensionData[i].getTransformedCoord(location[i]);
+  for(int i = 0; i < numDims; i++) ret.push_back(dimensionData[i].getIndexedCoord(location[i], isSimplified));
   return ret;
 }
 
-int DiffusionLayerND::getIndex(vector<int> location){
-  vector<int> transformed = transform(location);
+int DiffusionLayerND::getIndex(vector<int> location, bool isSimplified){
+  vector<int> indexed = getIndexes(location, isSimplified);
   int val = 0;
-  for(int i = numDims - 1; i >= 0; i--){
-    val += transformed[i] * places[i];
-  }
+  for(int i = numDims - 1; i >= 0; i--)  val += indexed[i] * places[i];
+
+  return val;
 }
 
 int DiffusionLayerND::getIndex(Point<int> location){
@@ -262,7 +339,7 @@ double DiffusionLayerND::addValueAt(double val, Point<int> location){
 double DiffusionLayerND::addValueAt(double val, vector<int> location){
   double* pt = &currentDataSpace[getIndex(location)];
   return (*pt = *pt + val);
-}
+  }
 
 double DiffusionLayerND::setValueAt(double val, Point<int> location){
   double* pt = &currentDataSpace[getIndex(location)];
@@ -275,5 +352,45 @@ double DiffusionLayerND::setValueAt(double val, vector<int> location){
   return (*pt = val);
 }
 
+double DiffusionLayerND::getValueAt(vector<int> location){
+  return currentDataSpace[getIndex(location)];
+}
+
+void DiffusionLayerND::write(string fileLocation, string fileTag, bool writeSharedBoundaryAreas){
+  std::ofstream outfile;
+  std::ostringstream stream;
+  int rank = repast::RepastProcess::instance()->rank();
+  stream << fileLocation << "DiffusionLayer_" << fileTag << "_" << rank << ".csv";
+  std::string filename = stream.str();
+
+  const char * c = filename.c_str();
+  outfile.open(c, std::ios_base::trunc | std::ios_base::out); // it will not delete the content of file, will add a new line
+
+  // Write headers
+  for(int i = 0; i < numDims; i++) outfile << "DIM_" << i << ",";
+  outfile << "VALUE" << endl;
+
+  // Create a RelativeLocation object will all the values
+  vector<int> min;
+  vector<int> max;
+  for(int i = 0; i < numDims; i++){
+    DimensionDatum* datum = &dimensionData[i];
+    min.push_back(writeSharedBoundaryAreas ? datum->simplifiedBoundariesMin : datum->localBoundariesMin);
+    max.push_back(writeSharedBoundaryAreas ? datum->simplifiedBoundariesMax : datum->localBoundariesMax);
+  }
+  RelativeLocation relLoc(min, max);
+  do{
+    vector<int> currentLocation = relLoc.getCurrentValue();
+    repast::Point<int> locPoint(currentLocation);
+//    std::cout << " Attempting to deal with : " << locPoint << " at " << getIndex(currentLocation, false) << endl;
+    for(int i = 0; i < numDims; i++) outfile << currentLocation[i] << ",";
+    outfile << currentDataSpace[getIndex(currentLocation, true)] << endl;
+  }while(relLoc.increment());
+
+
+  outfile.close();
+
+
+}
 
 }

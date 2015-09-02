@@ -132,7 +132,12 @@ public:
    */
   RelativeLocation(vector<int> minima, vector<int> maxima);
 
+  /**
+   * Copy Constructor
+   */
   RelativeLocation(const RelativeLocation& original);
+
+  void translate(vector<int> displacement);
 
   virtual ~RelativeLocation();
 
@@ -192,6 +197,28 @@ public:
 
   int getMinimumAt(int index);
   int getMaximumAt(int index);
+
+  /**
+   * Returns a new RelativeLocation object
+   * based on the one passed, but trimmed
+   * so that it fits within the boundaries
+   * of this one.
+   *
+   * If the result would be invalid (because the
+   * one to be trimmed falls outside of this
+   * one) the return value will be a RelativeLocation
+   * with the original number of dimensions, but
+   * all zeroes in the values.
+   *
+   * Trimming is done only on the first N dimensions,
+   * where N is the smaller of the number of dimensions
+   * in this or the passed RelativeLocation; extra
+   * dimensions are ignored
+   *
+   */
+  RelativeLocation trim(RelativeLocation toBeTrimmed);
+
+
 
   std::string report();
 };

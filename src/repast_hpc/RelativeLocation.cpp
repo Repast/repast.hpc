@@ -82,6 +82,17 @@ RelativeLocation::RelativeLocation(const RelativeLocation& original){
   maxIndex = original.maxIndex;
 }
 
+void RelativeLocation::translate(vector<int> displacement){
+  int otherSize = displacement.size();
+  int dims = countOfDimensions < otherSize ? countOfDimensions : otherSize;
+  for(int i = 0; i < dims; i++){
+    minima[i]       += displacement[i];
+    maxima[i]       += displacement[i];
+    currentValue[i] += displacement[i];
+  }
+}
+
+
 RelativeLocation::~RelativeLocation(){}
 
 bool RelativeLocation::increment(){
@@ -190,6 +201,27 @@ int RelativeLocation::getMaximumAt(int index){
   return maxima[index];
 }
 
+RelativeLocation RelativeLocation::trim(RelativeLocation toBeTrimmed){
+  bool isValid = true;
+  int dims = toBeTrimmed.countOfDimensions < countOfDimensions ? toBeTrimmed.countOfDimensions : countOfDimensions;
+  vector<int> newMinima;
+  vector<int> newMaxima;
+  for(int i = 0; i < dims; i++){
+    int originalMin = toBeTrimmed.getMinimumAt(i);
+    int originalMax = toBeTrimmed.getMaximumAt(i);
+    isValid = isValid && originalMax >= minima[i] && originalMin <= maxima[i];
+    newMinima.push_back(originalMin >= minima[i] ? originalMin : minima[i]);
+    newMaxima.push_back(originalMax <= maxima[i] ? originalMax : maxima[i]);
+  }
+  if(!isValid){
+    vector<int> dummy;
+    dummy.assign(toBeTrimmed.countOfDimensions, 0);
+    RelativeLocation ret(dummy, dummy);
+    return ret;
+  }
+  RelativeLocation ret(newMinima, newMaxima);
+  return ret;
+}
 
 std::string RelativeLocation::report(){
   std::stringstream ret;

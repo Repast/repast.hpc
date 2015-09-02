@@ -44,6 +44,7 @@
 #include "GridDimensions.h"
 #include "RelativeLocation.h"
 #include "CartesianTopology.h"
+#include "RepastProcess.h"
 #include <vector>
 #include <map>
 #include "mpi.h"
@@ -79,7 +80,41 @@ public:
 
   int  getSendReceiveSize(int relativeLocation);
 
+  /**
+   * Given a coordinate in global simulation coordinates,
+   * returns the value in simplified coordinates.
+   *
+   * For example, suppose the global space is from 0 to 100,
+   * and the local space is from 0 to 10, and the buffer
+   * zone value is 3. The simplified coordinates for
+   * this region of the local space will be -3 to 13.
+   * If the value passed to this function
+   * is 99, this function will return -1.
+   */
   int getTransformedCoord(int originalCoord);
+
+  /**
+   * Given a coordinate, returns the index of that coordinate.
+   * The original coordinate may be in global simulation coordinates
+   * or in 'simplified' coordinates. If it is not in simplified
+   * coordinates, the first step is to simplify.
+   *
+   * For example, suppose the global space is from 0 to 100,
+   * and the local space is from 0 to 10, and the buffer zone
+   * value is 3. Passing 99 in global coordinates is equivalent
+   * to passing -1 in simplified coordinates. The index value
+   * in both cases is ((-1) - (-3)) or 2.
+   */
+  int getIndexedCoord(int originalCoord, bool isSimplified = false);
+
+  void report(int dimensionNumber){
+    std::cout << repast::RepastProcess::instance()->rank() << " " << dimensionNumber << " " <<
+                 "global (" << globalCoordinateMin     << ", " << globalCoordinateMax     << ") " <<
+                 "local  (" << localBoundariesMin      << ", " << localBoundariesMax      << ") " <<
+                 "simple (" << simplifiedBoundariesMin << ", " << simplifiedBoundariesMax << ") " <<
+                 "match  (" << matchingCoordinateMin   << ", " << matchingCoordinateMax   << ") " <<
+                 "globalWidth = " << globalWidth << " localWidth = " << localWidth << " width = " << width << " bytes = " << widthInBytes << std::endl;
+  }
 };
 
 
@@ -97,6 +132,29 @@ struct RankDatum{
   int            sendPtrOffset;
   int            receivePtrOffset;
 };
+
+
+
+class Diffusor{
+
+public:
+
+  Diffusor();
+  virtual ~Diffusor();
+
+  virtual int getRadius();
+
+  /**
+   * If the diffusor can tell that it doesn't need to do
+   * anything at a particular point, it should
+   * return true at that point; this will save the
+   * processing time required to populate the array, etc.
+   */
+  virtual bool skip(vector<int> location);
+
+  virtual double getNewValue(RelativeLocation localArea, double* values) = 0;
+};
+
 
 /**
  * The DiffusionLayerND class is an N-dimensional layer of
@@ -194,7 +252,7 @@ public:
    * Performs the diffusion operation on the entire
    * grid (only within local boundaries)
    */
-  void diffuse();
+  void diffuse(Diffusor* diffusor);
 
   /**
    * Gets the value in the grid at a specific location
@@ -238,21 +296,29 @@ public:
    */
   void synchronize();
 
+
+  /**
+   * Write this rank's data to a CSV file
+   */
+  void write(string fileLocation, string filetag, bool writeSharedBoundaryAreas = false);
+
 private:
 
   /**
-   * Takes a location in global simulation coordinates,
-   * which may cross periodic boundaries, and transforms
-   * it into local coordinates, which must be absolute.
+   * Gets a vector of the indexed locations. If the
+   * value passed is already simplified (transformed),
+   * does not transform.
    */
-  vector<int> transform(vector<int> location);
+  vector<int> getIndexes(vector<int> location, bool isSimplified = false);
 
   /**
    * Given a location in global simulation coordinates,
    * get the offset from the global base pointer to the
-   * position in the global array representing that location
+   * position in the global array representing that location.
+   * The location may be simplified (transformed); if it is
+   * not, it is first simplified before the index is calculated.
    */
-  int getIndex(vector<int> location);
+  int getIndex(vector<int> location, bool isSimplified = false);
 
 
   /**
