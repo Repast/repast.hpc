@@ -41,10 +41,30 @@
 #include <sstream>
 
 #include "RelativeLocation.h"
+#include "RepastProcess.h" // DEBUGGING ONLY
 
 using namespace std;
 
 namespace repast {
+
+
+int RelativeLocation::getDirectionIndex(vector<int> dirVec){
+  RelativeLocation baseline(dirVec.size());
+  for(int i = 0; i < dirVec.size(); i++){
+    int original = dirVec[i];
+    dirVec[i] = original < 0 ? -1 : original == 0 ? 0 : 1;
+  }
+  return baseline.getIndex(dirVec);
+}
+
+int RelativeLocation::getReverseDirectionIndex(vector<int> dirVec){
+  RelativeLocation baseline(dirVec.size());
+  for(int i = 0; i < dirVec.size(); i++){
+    int original = dirVec[i];
+    dirVec[i] = original > 0 ? -1 : original == 0 ? 0 : 1;
+  }
+  return baseline.getIndex(dirVec);
+}
 
 void RelativeLocation::setPlaces(){
   int v = 1;
@@ -54,7 +74,7 @@ void RelativeLocation::setPlaces(){
   }
 }
 
-RelativeLocation::RelativeLocation(int dimensions): countOfDimensions(dimensions), maxIndex(-1){
+RelativeLocation::RelativeLocation(int dimensions): countOfDimensions(dimensions), maxIndex(-1), indexOfCenter(-1){
   for(int i = 0; i < dimensions; i++){
     currentValue.push_back(-1);
     minima.push_back(-1);
@@ -63,7 +83,7 @@ RelativeLocation::RelativeLocation(int dimensions): countOfDimensions(dimensions
   setPlaces();
 }
 
-RelativeLocation::RelativeLocation(vector<int> minimaVals, vector<int> maximaVals): maxIndex(-1){
+RelativeLocation::RelativeLocation(vector<int> minimaVals, vector<int> maximaVals): maxIndex(-1), indexOfCenter(-1){
   countOfDimensions = minimaVals.size() < maximaVals.size() ? minimaVals.size() : maximaVals.size();
   for(int i = 0; i < countOfDimensions; i++){
     currentValue.push_back(minimaVals[i]);
@@ -73,14 +93,14 @@ RelativeLocation::RelativeLocation(vector<int> minimaVals, vector<int> maximaVal
   setPlaces();
 }
 
-RelativeLocation::RelativeLocation(const RelativeLocation& original){
-  countOfDimensions = original.countOfDimensions;
-  currentValue.insert(currentValue.begin(), original.currentValue.begin(), original.currentValue.end());
-  minima.insert(minima.begin(), original.minima.begin(), original.minima.end());
-  maxima.insert(maxima.begin(), original.maxima.begin(), original.maxima.end());
-  places.insert(places.begin(), original.places.begin(), original.places.end());
-  maxIndex = original.maxIndex;
-}
+RelativeLocation::RelativeLocation(const RelativeLocation& original):
+  countOfDimensions(original.countOfDimensions),
+  currentValue(original.currentValue),
+  minima(original.minima),
+  maxima(original.maxima),
+  places(original.places),
+  maxIndex(original.maxIndex),
+  indexOfCenter(original.indexOfCenter){}
 
 void RelativeLocation::translate(vector<int> displacement){
   int otherSize = displacement.size();
@@ -186,6 +206,14 @@ int RelativeLocation::getIndex(vector<int> value){
 
 int RelativeLocation::getIndex(){
   return getIndex(currentValue);
+}
+
+int RelativeLocation::getIndexOfCenter(){
+  if(indexOfCenter != -1) return indexOfCenter;
+  vector<int> center;
+  center.assign(countOfDimensions, 0);
+  indexOfCenter = getIndex(center);
+  return indexOfCenter;
 }
 
 bool RelativeLocation::validNonCenter(){

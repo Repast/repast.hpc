@@ -41,13 +41,16 @@
 #ifndef DIFFUSIONLAYERND_H_
 #define DIFFUSIONLAYERND_H_
 
+#include <fstream>
+#include <vector>
+#include <map>
+
+#include "mpi.h"
+
 #include "GridDimensions.h"
 #include "RelativeLocation.h"
 #include "CartesianTopology.h"
 #include "RepastProcess.h"
-#include <vector>
-#include <map>
-#include "mpi.h"
 
 using namespace std;
 
@@ -107,6 +110,13 @@ public:
    */
   int getIndexedCoord(int originalCoord, bool isSimplified = false);
 
+  /**
+   * Returns true if the specified coordinate is within the local boundaries
+   * on this dimension.
+   */
+  bool isInLocalBounds(int originalCoord);
+
+
   void report(int dimensionNumber){
     std::cout << repast::RepastProcess::instance()->rank() << " " << dimensionNumber << " " <<
                  "global (" << globalCoordinateMin     << ", " << globalCoordinateMax     << ") " <<
@@ -131,6 +141,8 @@ struct RankDatum{
   MPI_Datatype   datatype;
   int            sendPtrOffset;
   int            receivePtrOffset;
+  int            sendDir;  // Integer representing the direction a send will be sent, in N-space
+  int            recvDir;  // Integer representing the directtion a receive will have been sent, in N-space
 };
 
 
@@ -144,15 +156,7 @@ public:
 
   virtual int getRadius();
 
-  /**
-   * If the diffusor can tell that it doesn't need to do
-   * anything at a particular point, it should
-   * return true at that point; this will save the
-   * processing time required to populate the array, etc.
-   */
-  virtual bool skip(vector<int> location);
-
-  virtual double getNewValue(RelativeLocation localArea, double* values) = 0;
+  virtual double getNewValue(double* values) = 0;
 };
 
 
@@ -216,6 +220,25 @@ public:
  * HVector function for all types except the innermost,
  * which is a contiguous block of double values.
  *
+ * The memory space allocated by this object includes
+ * buffer zones on all 2N sides and all intercardinal
+ * directions, even if the space is adjacent to a strict
+ * boundary edge. This is to simplify the diffusion routine.
+ *
+ * The diffusion routine uses an MPI_Datatype to collect
+ * the cells within the defined radius and assemble them
+ * into a single buffer. For convenience and performance
+ * it uses an MPI send to self- that is, the process
+ * performs the send to itself. MPI is used to collect
+ * the information from its nested, looped memory and
+ * put it into a contiguous and linear buffer. It is
+ * up to the diffusor to parse this buffer. Note that
+ * if the space is at the edge of a strict boundary,
+ * the values in the buffer will be NaN values.
+ *
+ * The radius of diffusion must be less than or equal to
+ * the size of the buffer zone.
+ *
  */
 class DiffusionLayerND{
 
@@ -240,13 +263,32 @@ private:
 
 
 public:
-  DiffusionLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic, double initialValue = 0);
+  static int syncCount;
+
+  DiffusionLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic, double initialValue = 0, double initialBufferZoneValue = 0);
   virtual ~DiffusionLayerND();
 
   /**
-   * Initializes the entire array to the specified value
+   * Initializes the array to the specified value
+   *
+   * Usage:
+   *
+   * initialize(val);               // Initializes only the local space
+   * initialize(val, true);         // Initializes the entire space
+   * initialize(val, false);        // Initializes only the local space (default)
+   * initialize(val, true, false);  // Initializes only the buffer zone
+   * initialize(val, false, true);  // Initializes only the local space (default)
+   * initialize(val, true, true);   // Initializes the entire space
+   * initialize(val, false, false); // Does nothing
    */
-  void initialize(double initialValue);
+  void initialize(double initialValue, bool fillBufferZone = false, bool fillLocal = true);
+
+  /**
+   * Initializes the array to the specified values
+   *
+   * initialize(val1, val2); // Initializes the local space to val1 and the buffer zones to val2
+   */
+  void initialize(double initialLocalValue, double initialBufferZoneValue);
 
   /**
    * Performs the diffusion operation on the entire
@@ -254,16 +296,16 @@ public:
    */
   void diffuse(Diffusor* diffusor);
 
-  /**
-   * Gets the value in the grid at a specific location
-   */
-  double getValueAt(Point<int> location);
 
   /**
-   * Gets the value in the grid at a specific location
+   * Returns true only if the coordinates given are within the local boundaries
    */
-  double getValueAt(vector<int> location);
+  bool isInLocalBounds(vector<int> coords);
 
+  /*
+   * Returns true only if the coordinates given are within the local boundaries
+   */
+  bool isInLocalBounds(Point<int> location);
 
   /**
    * Add to the value in the grid at a specific location
@@ -289,6 +331,15 @@ public:
    */
   double setValueAt(double val, vector<int> location);
 
+  /**
+   * Gets the value in the grid at a specific location
+   */
+  double getValueAt(Point<int> location);
+
+  /**
+   * Gets the value in the grid at a specific location
+   */
+  double getValueAt(vector<int> location);
 
 
   /**
@@ -301,6 +352,8 @@ public:
    * Write this rank's data to a CSV file
    */
   void write(string fileLocation, string filetag, bool writeSharedBoundaryAreas = false);
+
+  void writeDimension(std::ofstream& outfile, double* dataSpace1Pointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas = false);
 
 private:
 
@@ -335,8 +388,21 @@ private:
    * there are N dimensions, this class will be called with
    * dimensionIndex = N - 1, which will call itself with N-2,
    * repeating until N = 0.
+
    */
-  void getMPIDataType(RelativeLocation relLoc, int dimensionIndex, MPI_Datatype &datatype);
+  void getMPIDataType(RelativeLocation relLoc, MPI_Datatype &datatype);
+
+  /**
+   * A variant of the getMPIDataType function, this
+   *  one assumes that you are retrieving a block with side
+   *  2 x radius + 1 in all dimensions;
+   */
+  void getMPIDataType(int radius, MPI_Datatype &datatype);
+
+  /**
+   * Gets an MPI data type given the list of side lengths
+   */
+  void getMPIDataType(vector<int> sideLengths, MPI_Datatype &datatype, int dimensionIndex);
 
   /**
    * Given a relative location, calculates the index value for the
@@ -363,6 +429,12 @@ private:
    */
   int getReceivePointerOffset(RelativeLocation relLoc);
 
+  void fillDimension(double localValue, double bufferZoneValue, bool doBufferZone, bool doLocal, double* dataSpace1Pointer, double* dataSpace2Pointer, int dimIndex);
+
+  void diffuseDimension(double* currentDataSpacePointer, double* otherDataSpacePointer, double* vals, Diffusor* diffusor, int dimIndex);
+
+
+  void grabDimensionData(double*& destinationPointer, double* startPointer, int radius, int dimIndex);
 };
 
 }

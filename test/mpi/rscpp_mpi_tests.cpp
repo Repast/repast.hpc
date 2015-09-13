@@ -47,7 +47,7 @@ namespace mpi = boost::mpi;
 using namespace std;
 using namespace repast;
 
-class RSMPITests: public ::testing::Test {
+class RSMPITests: public ::testing::Test  {
 
 protected:
 	Model* model;

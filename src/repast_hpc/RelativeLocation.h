@@ -101,6 +101,25 @@ namespace repast {
  *  [  1,  2,  3 ]
  */
 class RelativeLocation{
+
+public:
+  /**
+   * Assumes that the vector given can be reduced to a 'unit' vector
+   * (in which all values are either -1, 0, or 1); returns the index
+   * value of this vector assuming a RelativeLocation with
+   * minima of -1, -,1 -1, ... and maxima of 1, 1, 1.
+   */
+  static int getDirectionIndex(vector<int> dirVec);
+
+  /**
+   * Assumes that the vector given can be reduced to a 'unit' vector
+   * (in which all values are either -1, 0, or 1); returns the index
+   * value of the negative of this vector (all values multiplied
+   * by -1), assuming a RelativeLocation with
+   * minima of -1, -,1 -1, ... and maxima of 1, 1, 1.
+   */
+  static int getReverseDirectionIndex(vector<int> dirVec);
+
 private:
   vector<int> currentValue;
   vector<int> minima;
@@ -108,6 +127,7 @@ private:
   int         countOfDimensions;
   vector<int> places;
   int         maxIndex;           // Memoize
+  int         indexOfCenter;      // Memoize
 
   void setPlaces();
 
@@ -189,6 +209,9 @@ public:
 
   int getIndex();
 
+  int getIndexOfCenter();
+
+
   /**
    * Returns false when the values
    * are all zeroes, true otherwise
@@ -217,8 +240,6 @@ public:
    *
    */
   RelativeLocation trim(RelativeLocation toBeTrimmed);
-
-
 
   std::string report();
 };
