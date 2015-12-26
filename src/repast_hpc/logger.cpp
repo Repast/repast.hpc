@@ -148,7 +148,7 @@ ConfigLexer::ConfigLexer(const string& file_name, boost::mpi::communicator* comm
   }
 
   std::string P(CONFIGFILEBUFFER);
-  delete CONFIGFILEBUFFER;
+  delete[] CONFIGFILEBUFFER;
 
   in = new istringstream(P, ios_base::in);
 

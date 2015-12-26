@@ -41,8 +41,6 @@
 #include "RepastProcess.h"
 #include "Point.h"
 
-#include <gtest/gtest.h>
-
 #include <boost/mpi.hpp>
 
 using namespace std;
@@ -153,7 +151,7 @@ DiffusionLayerND::DiffusionLayerND(vector<int> processesPerDim, GridDimensions g
   vector<int> myCoordinates;
   cartTopology->getCoordinates(rank, myCoordinates);
 
-  neighborData = new RankDatum[relLoc.getMaxIndex() - 1];
+  neighborData = new RankDatum[relLoc.getMaxIndex()];
   neighborCount = 0;
   int i = 0;
   do{
@@ -219,7 +217,7 @@ void DiffusionLayerND::diffuse(Diffusor* diffusor){
   otherDataSpace        = tempDataSpace;
   synchronize();
 
-  delete vals;
+  delete[] vals;
 }
 
 
@@ -528,8 +526,8 @@ void DiffusionLayerND::diffuseDimension(double* currentDataSpacePointer, double*
   for(; i < localEdge; i++){
     if(dimIndex == 0){
       // Populate the vals array
-      double* destLocation = vals;
-      grabDimensionData(destLocation, currentDataSpacePointer, 1, numDims - 1); // NOTE: DIFFUSOR SHOULD PROVIDE RADIUS...
+      double* destLocation = vals; // Note: This gets passed as a handle and changed
+      grabDimensionData(destLocation, currentDataSpacePointer, diffusor->getRadius(), numDims - 1);
       *otherDataSpacePointer = diffusor->getNewValue(vals);
     }
     else{

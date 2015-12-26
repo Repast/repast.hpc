@@ -199,16 +199,38 @@ public:
    */
   int operator[](int index);
 
+  /**
+   * Returns the count of dimensions
+   */
   int getCountOfDimensions();
 
+  /**
+   * Gets the maximum index value; this will be one
+   * less than the total number of values
+   */
   int getMaxIndex();
 
+  /**
+   * Gets the total number of relative location values
+   * (including the center spot)
+   */
   int getTotalValues();
 
+  /**
+   * Gets the index value associated with the specified
+   * position
+   */
   int getIndex(vector<int> value);
 
+  /**
+   * Gets the index value associated with the current
+   * position
+   */
   int getIndex();
 
+  /**
+   * Gets the index value of the 0,0,0... position
+   */
   int getIndexOfCenter();
 
 
@@ -218,7 +240,16 @@ public:
    */
   bool validNonCenter();
 
+  /**
+   * Gets the lower bound in the
+   * specified dimension
+   */
   int getMinimumAt(int index);
+
+  /** Gets the upper bound in the
+   * specified dimension
+   *
+   */
   int getMaximumAt(int index);
 
   /**
@@ -241,6 +272,10 @@ public:
    */
   RelativeLocation trim(RelativeLocation toBeTrimmed);
 
+  /**
+   * Gets a string describing this object for human-readable
+   * output
+   */
   std::string report();
 };
 

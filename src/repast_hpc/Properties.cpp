@@ -118,7 +118,7 @@ void Properties::readFile(const std::string& file, boost::mpi::communicator* com
   }
 
   std::string P(PROPFILEBUFFER);
-  delete PROPFILEBUFFER;
+  delete[] PROPFILEBUFFER;
 
   istringstream in(P);
   string line;

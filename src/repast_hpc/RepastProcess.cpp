@@ -255,7 +255,7 @@ void RepastProcess::initiateAgentRequest(AgentRequest& request
 	// Exchange data
 	MPI_Alltoall(data, dataElementSize, MPI_INT, rec, dataElementSize, MPI_INT,
 			*world);
-	delete data; // Done with this...
+	delete[] data; // Done with this...
 
 	// Now re-package the received data as the vector<AgentRequest> that is needed
 
@@ -287,8 +287,8 @@ void RepastProcess::initiateAgentRequest(AgentRequest& request
 		}
 	}
 
-	delete countsOfRequests;
-	delete rec;
+	delete[] countsOfRequests;
+	delete[] rec;
 
 	// Set up export of agents requested by other processes
 #ifndef SHARE_AGENTS_BY_SET

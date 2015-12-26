@@ -146,7 +146,10 @@ struct RankDatum{
 };
 
 
-
+/**
+ * A Diffusor is a custom class that performs diffusion.
+ *
+ */
 class Diffusor{
 
 public:
@@ -154,8 +157,22 @@ public:
   Diffusor();
   virtual ~Diffusor();
 
+  /**
+   * Implementing classes must return the value that is the
+   * number of concentric layers that are used in diffusion
+   * calculations. Typically this will be 1, meaning that
+   * only immediately adjacent grid cells are considered.
+   */
   virtual int getRadius();
 
+  /**
+   * Given a list of values that represent the values in
+   * adjacent cells, return the value that should be placed
+   * in the central cell. The list of values should be in
+   * the order defined by a RelativeLocation object of the
+   * specified radius with the central cell being at
+   * (0, 0, 0, ...)
+   */
   virtual double getNewValue(double* values) = 0;
 };
 
@@ -343,7 +360,12 @@ public:
 
 
   /**
-   * Synchronize across processes
+   * Synchronize across processes. This copies
+   * the values in the interior 'buffer zones' from
+   * self and sends to adjacent processes, while
+   * receiving data from adjacent processes and
+   * placing it in the appropriate exterior buffer
+   * zones.
    */
   void synchronize();
 
@@ -353,6 +375,9 @@ public:
    */
   void write(string fileLocation, string filetag, bool writeSharedBoundaryAreas = false);
 
+  /*
+   * Writes one dimension's information to the specified csv file.
+   */
   void writeDimension(std::ofstream& outfile, double* dataSpace1Pointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas = false);
 
 private:
@@ -394,8 +419,8 @@ private:
 
   /**
    * A variant of the getMPIDataType function, this
-   *  one assumes that you are retrieving a block with side
-   *  2 x radius + 1 in all dimensions;
+   * one assumes that you are retrieving a block with side
+   * 2 x radius + 1 in all dimensions;
    */
   void getMPIDataType(int radius, MPI_Datatype &datatype);
 
@@ -429,10 +454,14 @@ private:
    */
   int getReceivePointerOffset(RelativeLocation relLoc);
 
+  /**
+   * Fills a dimension of space with the given value. Used for initialization
+   * and clearing only.
+   */
   void fillDimension(double localValue, double bufferZoneValue, bool doBufferZone, bool doLocal, double* dataSpace1Pointer, double* dataSpace2Pointer, int dimIndex);
 
-  void diffuseDimension(double* currentDataSpacePointer, double* otherDataSpacePointer, double* vals, Diffusor* diffusor, int dimIndex);
 
+  void diffuseDimension(double* currentDataSpacePointer, double* otherDataSpacePointer, double* vals, Diffusor* diffusor, int dimIndex);
 
   void grabDimensionData(double*& destinationPointer, double* startPointer, int radius, int dimIndex);
 };
