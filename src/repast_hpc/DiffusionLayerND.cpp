@@ -204,8 +204,7 @@ void DiffusionLayerND::initialize(double initialLocalValue, double initialBuffer
   fillDimension(initialLocalValue, initialBufferZoneValue, true, true, dataSpace1, dataSpace2, numDims - 1);
 }
 
-void DiffusionLayerND::diffuse(Diffusor* diffusor){
-  int rank = repast::RepastProcess::instance()->rank();
+void DiffusionLayerND::diffuse(Diffusor* diffusor, bool omitSynchronize){
   int countOfVals = (int)(pow(diffusor->getRadius() * 2 + 1, numDims));
   double* vals = new double[countOfVals];
 
@@ -215,7 +214,8 @@ void DiffusionLayerND::diffuse(Diffusor* diffusor){
   double* tempDataSpace = currentDataSpace;
   currentDataSpace      = otherDataSpace;
   otherDataSpace        = tempDataSpace;
-  synchronize();
+
+  if(!omitSynchronize) synchronize();
 
   delete[] vals;
 }
@@ -253,10 +253,6 @@ void DiffusionLayerND::getMPIDataType(int radius, MPI_Datatype &datatype){
 }
 
 void DiffusionLayerND::getMPIDataType(vector<int> sideLengths, MPI_Datatype &datatype, int dimensionIndex){
-  int rank = repast::RepastProcess::instance()->rank();
-//  if(rank == 0){
-//    std::cout << " GETTING MPI DATA TYPE: " << dimensionIndex << " sidelengths: " << sideLengths[dimensionIndex] << std::endl;
-//  }
   if(dimensionIndex == 0){
     MPI_Type_contiguous(sideLengths[dimensionIndex], MPI_DOUBLE, &datatype);
   }
@@ -275,7 +271,6 @@ void DiffusionLayerND::getMPIDataType(vector<int> sideLengths, MPI_Datatype &dat
 
 
 void DiffusionLayerND::synchronize(){
-  int rank = repast::RepastProcess::instance()->rank();
   syncCount++;
   if(syncCount > 9) syncCount = 0;
   // Note: the syncCount and send/recv directions are used to create a unique tag value for the
@@ -304,7 +299,6 @@ int DiffusionLayerND::getSendPointerOffset(RelativeLocation relLoc){
     DimensionDatum* datum = &dimensionData[i];
     ret += (relLoc[i] <= 0 ? datum->leftBufferSize : datum->width - (2 * datum->rightBufferSize)) * places[i];
   }
-//  if(rank == 0) std::cout << "RANK " << rank << " GETTING SEND POINTER OFFSET FOR " << relLoc.report() << " RET " << ret << std::endl;
   return ret;
 }
 
@@ -315,7 +309,6 @@ int DiffusionLayerND::getReceivePointerOffset(RelativeLocation relLoc){
     DimensionDatum* datum = &dimensionData[i];
     ret += (relLoc[i] < 0 ? 0 : (relLoc[i] == 0 ? datum->leftBufferSize : datum->width - datum->rightBufferSize)) * places[i];
   }
-//  if(rank == 0) std::cout << "RANK " << rank << " GETTING RCV POINTER OFFSET FOR " << relLoc.report() << " RET " << ret << std::endl;
   return ret;
 }
 
@@ -383,16 +376,6 @@ void DiffusionLayerND::write(string fileLocation, string fileTag, bool writeShar
   for(int i = 0; i < numDims; i++) positions[i] = 0;
 
   writeDimension(outfile, currentDataSpace, positions, numDims - 1, writeSharedBoundaryAreas);
-
-  // FOR TESTING ONLY
-  outfile << "-1,-1,-1,1" << std::endl;
-  outfile << "160,-1,-1,1" << std::endl;
-  outfile << "-1,400,-1,1" << std::endl;
-  outfile << "160,400,-1,1" << std::endl;
-  outfile << "-1,-1,100,1" << std::endl;
-  outfile << "160,-1,100,1" << std::endl;
-  outfile << "-1,400,100,1" << std::endl;
-  outfile << "160,400,100,1" << std::endl;
 
   outfile.close();
 }
