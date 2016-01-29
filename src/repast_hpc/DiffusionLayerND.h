@@ -310,8 +310,12 @@ public:
   /**
    * Performs the diffusion operation on the entire
    * grid (only within local boundaries)
+   * If omit synchronize is set to 'true' will not perform
+   * a synchronization after diffusion- this is mainly
+   * useful for performance testing, as a synchronization
+   * is required to complete diffusion
    */
-  void diffuse(Diffusor* diffusor);
+  void diffuse(Diffusor* diffusor, bool omitSynchronize = false);
 
 
   /**
