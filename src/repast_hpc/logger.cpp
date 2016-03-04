@@ -63,6 +63,8 @@ namespace fs = boost::filesystem;
 
 using namespace std;
 
+namespace repast {
+
 typedef enum _TOKEN {
 	END = 0, ROOT, LOGGER, APPENDER, APPENDER_FILE, APPENDER_SIZE, APPENDER_BIDX, ERRORT
 } TOKEN;
@@ -808,6 +810,8 @@ void Log4CL::close() {
 		Logger *logger = iter->second;
 		logger->close();
 	}
+}
+
 }
 
 /*
