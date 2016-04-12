@@ -4,15 +4,16 @@
 #define DEMO_04_MODEL
 
 #include <boost/mpi.hpp>
-#include "repast_hpc/Schedule.h"
-#include "repast_hpc/Properties.h"
-#include "repast_hpc/SharedContext.h"
-#include "repast_hpc/AgentRequest.h"
-#include "repast_hpc/TDataSource.h"
-#include "repast_hpc/SVDataSet.h"
-#include "repast_hpc/SharedDiscreteSpace.h"
-#include "repast_hpc/GridComponents.h"
-#include "repast_hpc/SharedNetwork.h"
+#include "Schedule.h"
+#include "Properties.h"
+#include "SharedContext.h"
+#include "AgentRequest.h"
+#include "TDataSource.h"
+#include "SVDataSet.h"
+#include "SharedDiscreteSpace.h"
+#include "SharedContinuousSpace.h"
+#include "GridComponents.h"
+#include "SharedNetwork.h"
 
 #include "Demo_04_Agent.h"
 
@@ -77,14 +78,13 @@ class RepastHPCDemoModel{
 	
 	RepastHPCDemoAgentPackageProvider* provider;
 	RepastHPCDemoAgentPackageReceiver* receiver;
-
-    
     
 	repast::SVDataSet* agentValues;
-    repast::SharedDiscreteSpace<RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder<RepastHPCDemoAgent> >* discreteSpace;
+  repast::SharedDiscreteSpace<RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder<RepastHPCDemoAgent> >* discreteSpace;
+  repast::SharedContinuousSpace<RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder<RepastHPCDemoAgent> >* continuousSpace;
    	
-    repast::RepastEdgeContentManager<RepastHPCDemoAgent> edgeContentManager;
-    repast::SharedNetwork<RepastHPCDemoAgent, repast::RepastEdge<RepastHPCDemoAgent>, repast::RepastEdgeContent<RepastHPCDemoAgent>, repast::RepastEdgeContentManager<RepastHPCDemoAgent> >* agentNetwork;
+  repast::RepastEdgeContentManager<RepastHPCDemoAgent> edgeContentManager;
+  repast::SharedNetwork<RepastHPCDemoAgent, repast::RepastEdge<RepastHPCDemoAgent>, repast::RepastEdgeContent<RepastHPCDemoAgent>, repast::RepastEdgeContentManager<RepastHPCDemoAgent> >* agentNetwork;
 	
 public:
 	RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm);
@@ -92,10 +92,8 @@ public:
 	void init();
 	void requestAgents();
 	void cancelAgentRequests();
-	void removeLocalAgents();
-	void moveAgents();
 	void doSomething();
-    void connectAgentNetwork();
+  void connectAgentNetwork();
 	void initSchedule(repast::ScheduleRunner& runner);
 	void recordResults();
 };

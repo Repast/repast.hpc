@@ -63,6 +63,8 @@ namespace fs = boost::filesystem;
 
 using namespace std;
 
+namespace repast {
+
 typedef enum _TOKEN {
 	END = 0, ROOT, LOGGER, APPENDER, APPENDER_FILE, APPENDER_SIZE, APPENDER_BIDX, ERRORT
 } TOKEN;
@@ -148,7 +150,7 @@ ConfigLexer::ConfigLexer(const string& file_name, boost::mpi::communicator* comm
   }
 
   std::string P(CONFIGFILEBUFFER);
-  delete CONFIGFILEBUFFER;
+  delete[] CONFIGFILEBUFFER;
 
   in = new istringstream(P, ios_base::in);
 
@@ -808,6 +810,8 @@ void Log4CL::close() {
 		Logger *logger = iter->second;
 		logger->close();
 	}
+}
+
 }
 
 /*

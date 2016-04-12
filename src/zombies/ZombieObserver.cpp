@@ -126,8 +126,11 @@ void ZombieObserver::setup(Properties& props) {
 RelogoAgent* ZombieObserver::createAgent(const AgentPackage& content) {
 	if (content.type == zombieType) {
 		return new Zombie(content.getId(), this);
-	} else {
+	} else if (content.type == humanType) {
 		return new Human(content.getId(), this, content);
+	} else {
+		// it's a patch.
+		return new Patch(content.getId(), this);
 	}
 }
 
@@ -164,7 +167,7 @@ void ZombieObserver::createAgents(std::vector<AgentPackage>& contents, std::vect
 		} else if (content.type == humanType) {
 			out.push_back(new Human(content.getId(), this, content));
 		} else {
-			// its a patch.
+			// it's a patch.
 			out.push_back(new Patch(content.getId(), this));
 		}
 	}

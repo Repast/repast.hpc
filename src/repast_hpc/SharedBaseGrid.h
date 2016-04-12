@@ -54,6 +54,8 @@
 #include "logger.h"
 #include "SRManager.h"
 #include "RepastErrors.h"
+#include "RelativeLocation.h"
+#include "CartesianTopology.h"
 
 namespace repast {
 
@@ -90,32 +92,24 @@ private:
 
 	std::vector<Neighbor*> nghs;
 
+
 public:
 
-	/**
-	 * Describes the relative location of grid topology
-	 * process neighbors.
-	 */
-	enum Location {
-		E, W, N, S, NE, NW, SE, SW
-	};
-	static const int LOCATION_SIZE = 8;
-
-	Neighbors();
+	Neighbors(int numberOfNeighbors);
 	virtual ~Neighbors();
 
 	/**
 	 * Adds a neighbor at the specified location.
 	 *
 	 */
-	void addNeighbor(Neighbor* ngh, Neighbors::Location location);
+	void addNeighbor(Neighbor* ngh, RelativeLocation relLoc);
 
 	/**
 	 * Gets the neighbor at the specified location.
 	 *
 	 * @param location the location of the neighbor.
 	 */
-	Neighbor* neighbor(Neighbors::Location location) const;
+	Neighbor* neighbor(RelativeLocation) const;
 
 	/**
 	 * Finds the neighbor that contains the specified point.
@@ -135,65 +129,14 @@ public:
     for(std::vector<Neighbor*>::iterator iter = nghs.begin(), iterEnd=nghs.end(); iter != iterEnd; ++iter) ranks.insert((*iter)->rank());
   }
 
+  Neighbor* getNeighborByIndex(int index){
+    if(index < 0|| index >= nghs.size()) return 0;
+    return nghs[index];
+  }
+
 };
 
 std::ostream& operator<<(std::ostream& os, const Neighbors& nghs);
-
-
-/**
- * Allows retrieval of the position of this process within the
- * MPI Cartesian Topology into which it is placed.
- */
-class CartTopology {
-
-private:
-  MPI_Comm           topologyComm;
-  GridDimensions     globalBounds;
-  bool               periodic;
-  std::vector<int>   procsPerDim;
-
-	template <typename T>
-	void swapXY(std::vector<T>& vec);
-
-	int  getRank(std::vector<int>& loc, int rowAdj, int colAdj);
-	void createNeighbor(Neighbors& nghs, int rank, Neighbors::Location location);
-
-public:
-	// x major
-	CartTopology(std::vector<int> processesPerDim, std::vector<double> origin, std::vector<double> extents, bool spaceIsPeriodic, boost::mpi::communicator* world);
-
-  /**
-   * Gets the coordinates in the MPI Cartesian Communicator
-   * for the specified rank
-   */
-  void getCoordinates(int rank, std::vector<int>& coords);
-
-  /**
-   * Gets the GridDimensions boundaries for the specified
-   * rank
-   */
-  GridDimensions getDimensions(int rank);
-
-  /**
-   * Gets the GridDimensions boundaries for the specified
-   * MPI coordinates
-   */
-  GridDimensions getDimensions(std::vector<int>& pCoordinates);
-
-	void createNeighbors(Neighbors& nghs);
-
-};
-
-template <typename T>
-void CartTopology::swapXY(std::vector<T>& vec) {
-  if (vec.size() > 1) {
-    T tmp = vec[0];
-    vec[0] = vec[1];
-    vec[1] = tmp;
-  }
-}
-
-
 
 
 
@@ -220,15 +163,16 @@ template<typename T, typename GPTransformer, typename Adder, typename GPType>
 class SharedBaseGrid: public BaseGrid<T, MultipleOccupancy<T, GPType> , GPTransformer, Adder, GPType> {
 
 private:
+  CartesianTopology* cartTopology;
 
 protected:
 	int _buffer;
 	GridDimensions localBounds;
 	GridDimensions globalBounds;
-	Neighbors nghs;
+	Neighbors* nghs;
 	// vector of ids of agents in this spaces buffer
 	std::vector<AgentId> buffered;
-	GridDimensions createSendBufferBounds(Neighbors::Location location);
+//	GridDimensions createSendBufferBounds(std::vector<int> relativeLocation);
 
 	virtual void synchMoveTo(const AgentId& id, const Point<GPType>& pt) = 0;
 
@@ -294,13 +238,13 @@ public:
 
 
   virtual void getInfoExchangePartners(std::set<int>& psToSendTo, std::set<int>& psToReceiveFrom){
-    nghs.getNeighborRanks(psToSendTo);
-    nghs.getNeighborRanks(psToReceiveFrom);
+    nghs->getNeighborRanks(psToSendTo);
+    nghs->getNeighborRanks(psToReceiveFrom);
   }
 
   virtual void getAgentStatusExchangePartners(std::set<int>& psToSendTo, std::set<int>& psToReceiveFrom){
-    nghs.getNeighborRanks(psToSendTo);
-    nghs.getNeighborRanks(psToReceiveFrom);
+    nghs->getNeighborRanks(psToSendTo);
+    nghs->getNeighborRanks(psToReceiveFrom);
   }
 
   virtual void updateProjectionInfo(ProjectionInfoPacket* pip, Context<T>* context);
@@ -312,70 +256,83 @@ SharedBaseGrid<T, GPTransformer, Adder, GPType>::SharedBaseGrid(std::string name
 		int> processDims, int buffer, boost::mpi::communicator* communicator) :
 	GridBaseType(name, gridDims), _buffer(buffer), comm(communicator), globalBounds(gridDims) {
 
-  rank = comm->rank();
-
-  size_t dimCount = gridDims.dimensionCount();
-
-  if (dimCount > 2)
-      throw Repast_Error_49<GridDimensions>(dimCount, gridDims); // Number of grid dimensions must be 1 or 2
-	if (processDims.size() != gridDims.dimensionCount())
+  int dimCount = gridDims.dimensionCount();
+	if (processDims.size() != dimCount)
       throw Repast_Error_50<GridDimensions>(dimCount, gridDims, processDims.size()); // Number of grid dimensions must be equal to number of process dimensions
 
+  rank = comm->rank();
 	bool periodic = GridBaseType::gpTransformer.isPeriodic();
-	CartTopology topology(processDims, gridDims.origin().coords(), gridDims.extents().coords(), periodic, comm);
+
+	cartTopology = RepastProcess::instance()->getCartesianTopology(processDims, periodic);
 
 	std::vector<int> coords;
-	topology.getCoordinates(rank, coords);
-	localBounds = topology.getDimensions(coords);
+	cartTopology->getCoordinates(rank, coords);
+
+	localBounds = cartTopology->getDimensions(rank, gridDims);
 	GridBaseType::adder.init(localBounds, this);
 
-	topology.createNeighbors(nghs);
+  RelativeLocation relLocUntrimmed(dimCount);
+  RelativeLocation relLoc = cartTopology->trim(rank, relLocUntrimmed);
+
+	nghs = new Neighbors(relLoc.getMaxIndex() + 1);
+
+  do{
+    vector<int> currentVal = relLoc.getCurrentValue();
+    int rankOfNeighbor = cartTopology->getRank(coords, currentVal);
+    if(rankOfNeighbor != rank && rankOfNeighbor != MPI_PROC_NULL){ // Note: the test for MPI_PROC_NULL is vestigial; by trimming the Relative Location, there should never be any
+      Neighbor* ngh = new Neighbor(rankOfNeighbor, cartTopology->getDimensions(rankOfNeighbor, gridDims));
+      nghs->addNeighbor(ngh, relLoc);
+    }
+  }while(relLoc.increment());
+
 }
 
 template<typename T, typename GPTransformer, typename Adder, typename GPType>
-SharedBaseGrid<T, GPTransformer, Adder, GPType>::~SharedBaseGrid() { }
-
-
-template<typename T, typename GPTransformer, typename Adder, typename GPType>
-GridDimensions SharedBaseGrid<T, GPTransformer, Adder, GPType>::createSendBufferBounds(Neighbors::Location location) {
-	Point<double> localOrigin = localBounds.origin();
-	Point<double> localExtent = localBounds.extents();
-
-	switch (location) {
-	double xStart, yStart;
-case Neighbors::E:
-	xStart = localOrigin.getX() + localExtent.getX() - _buffer;
-	return GridDimensions(Point<double> (xStart, localOrigin.getY()), Point<double> (_buffer, localExtent.getY()));
-
-case Neighbors::W:
-	return GridDimensions(localOrigin, Point<double> (_buffer, localExtent.getY()));
-
-case Neighbors::N:
-	return GridDimensions(localOrigin, Point<double> (localExtent.getX(), _buffer));
-
-case Neighbors::S:
-	yStart = localOrigin.getY() + localExtent.getY() - _buffer;
-	return GridDimensions(Point<double> (localOrigin.getX(), yStart), Point<double> (localExtent.getX(), _buffer));
-
-case Neighbors::NE:
-	xStart = localOrigin.getX() + localExtent.getX() - _buffer;
-	return GridDimensions(Point<double> (xStart, localOrigin.getY()), Point<double> (_buffer, _buffer));
-
-case Neighbors::NW:
-	return GridDimensions(Point<double> (localOrigin.getX(), localOrigin.getY()), Point<double> (_buffer, _buffer));
-
-case Neighbors::SE:
-	xStart = localOrigin.getX() + localExtent.getX() - _buffer;
-	yStart = localOrigin.getY() + localExtent.getY() - _buffer;
-	return GridDimensions(Point<double> (xStart, yStart), Point<double> (_buffer, _buffer));
-
-case Neighbors::SW:
-	yStart = localOrigin.getY() + localExtent.getY() - _buffer;
-	return GridDimensions(Point<double> (localOrigin.getX(), yStart), Point<double> (_buffer, _buffer));
-	}
-
-	return GridDimensions();
+SharedBaseGrid<T, GPTransformer, Adder, GPType>::~SharedBaseGrid() {
+  delete nghs;
 }
+
+
+//template<typename T, typename GPTransformer, typename Adder, typename GPType>
+//GridDimensions SharedBaseGrid<T, GPTransformer, Adder, GPType>::createSendBufferBounds(std::vector<int> relativeLocation) {
+//	Point<double> localOrigin = localBounds.origin();
+//	Point<double> localExtent = localBounds.extents();
+//
+////	switch (location) {
+////	double xStart, yStart;
+////case Neighbors::E:
+////	xStart = localOrigin.getX() + localExtent.getX() - _buffer;
+////	return GridDimensions(Point<double> (xStart, localOrigin.getY()), Point<double> (_buffer, localExtent.getY()));
+////
+////case Neighbors::W:
+////	return GridDimensions(localOrigin, Point<double> (_buffer, localExtent.getY()));
+////
+////case Neighbors::N:
+////	return GridDimensions(localOrigin, Point<double> (localExtent.getX(), _buffer));
+////
+////case Neighbors::S:
+////	yStart = localOrigin.getY() + localExtent.getY() - _buffer;
+////	return GridDimensions(Point<double> (localOrigin.getX(), yStart), Point<double> (localExtent.getX(), _buffer));
+////
+////case Neighbors::NE:
+////	xStart = localOrigin.getX() + localExtent.getX() - _buffer;
+////	return GridDimensions(Point<double> (xStart, localOrigin.getY()), Point<double> (_buffer, _buffer));
+////
+////case Neighbors::NW:
+////	return GridDimensions(Point<double> (localOrigin.getX(), localOrigin.getY()), Point<double> (_buffer, _buffer));
+////
+////case Neighbors::SE:
+////	xStart = localOrigin.getX() + localExtent.getX() - _buffer;
+////	yStart = localOrigin.getY() + localExtent.getY() - _buffer;
+////	return GridDimensions(Point<double> (xStart, yStart), Point<double> (_buffer, _buffer));
+////
+////case Neighbors::SW:
+////	yStart = localOrigin.getY() + localExtent.getY() - _buffer;
+////	return GridDimensions(Point<double> (localOrigin.getX(), yStart), Point<double> (_buffer, _buffer));
+////	}
+//
+//	return GridDimensions();
+//}
 
 
 template<typename T, typename GPTransformer, typename Adder, typename GPType>
@@ -387,7 +344,7 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::balance() {
     if(id.currentRank() == r){                                   // Local agents only
       Point<GPType> loc = iter->second->point;
       if(!localBounds.contains(loc)){                            // If inside bounds, ignore
-        Neighbor* ngh = nghs.findNeighbor(loc.coords());
+        Neighbor* ngh = nghs->findNeighbor(loc.coords());
         RepastProcess::instance()->moveAgent(id, ngh->rank());
       }
     }
@@ -417,53 +374,69 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<A
 
   if(_buffer == 0) return; // A buffer zone of zero means that no agents will be pushed.
 
-  // In a general case, we might not want to do this, but
-  // for the current configuration, we can make this (perhaps much) more efficient
-  // this way:
-  Point<double> localOrigin = localBounds.origin();
-  Point<double> localExtent = localBounds.extents();
+  int numDims = localBounds.dimensionCount();
+  RelativeLocation relLocOrig(numDims);
 
-  double xStart = localOrigin.getX() + _buffer;
-  double xEnd   = localExtent.getX() - _buffer * 2;
-  double yStart = localOrigin.getY() + _buffer;
-  double yEnd   = localExtent.getY() - _buffer * 2;
+  RelativeLocation relLoc = cartTopology->trim(comm->rank(), relLocOrig);
 
-  GridDimensions unbuffered(Point<double> (xStart, yStart), Point<double> (xEnd, yEnd));
+  // First, create a zone around the center of this process, inside all of
+  // of the buffer zones
+  std::vector<double> unbufferedOrigin;
+  std::vector<double> unbufferedExtents;
 
-  Neighbor* neighbor;
+  for(int i = 0; i < numDims; i++){
+    bool hasLeft  = relLoc.getMinimumAt(i) < 0;
+    bool hasRight = relLoc.getMaximumAt(i) > 0;
+    unbufferedOrigin.push_back(localBounds.origin(i) + (hasLeft ? _buffer : 0));
+    unbufferedExtents.push_back(localBounds.extents(i) - (hasLeft ? _buffer : 0) - (hasRight ? _buffer : 0));
+  }
 
-  neighbor = nghs.neighbor(Neighbors::NW);
-  int NW_rank = (neighbor == 0 ? -1 : neighbor->rank());
-  neighbor = nghs.neighbor(Neighbors::N );
-  int N_rank  = (neighbor == 0 ? -1 : neighbor->rank());
-  neighbor = nghs.neighbor(Neighbors::NE);
-  int NE_rank = (neighbor == 0 ? -1 : neighbor->rank());
-  neighbor = nghs.neighbor(Neighbors::E );
-  int E_rank  = (neighbor == 0 ? -1 : neighbor->rank());
-  neighbor = nghs.neighbor(Neighbors::SE);
-  int SE_rank = (neighbor == 0 ? -1 : neighbor->rank());
-  neighbor = nghs.neighbor(Neighbors::S );
-  int S_rank  = (neighbor == 0 ? -1 : neighbor->rank());
-  neighbor = nghs.neighbor(Neighbors::SW);
-  int SW_rank = (neighbor == 0 ? -1 : neighbor->rank());
-  neighbor = nghs.neighbor(Neighbors::W );
-  int W_rank  = (neighbor == 0 ? -1 : neighbor->rank());
+  Point<double> ubO(unbufferedOrigin);
+  Point<double> ubE(unbufferedExtents);
+  GridDimensions unbuffered(ubO, ubE);
 
-  GridDimensions empty(Point<double>(0,0), Point<double>(0,0));
+  // And create grid boundaries for all the buffer zones
+  int numOutgoing = relLoc.getMaxIndex() + 1;
 
-  GridDimensions N_bounds  = (N_rank  > - 1 ? createSendBufferBounds(Neighbors::N)  : empty);
-  GridDimensions E_bounds  = (E_rank  > - 1 ? createSendBufferBounds(Neighbors::E)  : empty);
-  GridDimensions S_bounds  = (S_rank  > - 1 ? createSendBufferBounds(Neighbors::S)  : empty);
-  GridDimensions W_bounds  = (W_rank  > - 1 ? createSendBufferBounds(Neighbors::W)  : empty);
+  GridDimensions** outgoing = new GridDimensions*[numOutgoing];
+  int*             outRanks = new int[numOutgoing];
 
-  std::set<AgentId> NW_set;
-  std::set<AgentId> N_set;
-  std::set<AgentId> NE_set;
-  std::set<AgentId> E_set;
-  std::set<AgentId> SE_set;
-  std::set<AgentId> S_set;
-  std::set<AgentId> SW_set;
-  std::set<AgentId> W_set;
+  do{
+    std::vector<double> bufferOrigin;
+    std::vector<double> bufferExtents;
+
+    bool isEgo = true;
+    for(int i = 0; i < numDims; i++){
+      int rel = relLoc[i];
+
+      if(rel == 0){
+        bufferOrigin.push_back(localBounds.origin(i));
+        bufferExtents.push_back(localBounds.extents(i));
+      }
+      else{
+        if(rel < 0){
+          bufferOrigin.push_back(localBounds.origin(i));
+        }
+        else{
+          bufferOrigin.push_back(localBounds.origin(i) + localBounds.extents(i) - _buffer);
+        }
+        bufferExtents.push_back(_buffer);
+        isEgo = false;
+      }
+    }
+
+    // Should not add self!
+    int index = relLoc.getIndex();
+    if(!isEgo){
+      outgoing[index] = new GridDimensions(Point<double>(bufferOrigin), Point<double> (bufferExtents));
+      outRanks[index]  =nghs->getNeighborByIndex(index)->rank();
+    }
+    else{
+      outgoing[index] = 0;
+      outRanks[index] = 0;
+    }
+
+  }while(relLoc.increment());
 
 
   // Local agents that are in other processes' 'buffer zones' must be exported to those other processes.
@@ -477,46 +450,10 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<A
       GridBaseType::getLocation(id, locationVector);
       Point<GPType> loc(locationVector);
       if(!unbuffered.contains(loc)){
-        if(W_bounds.contains(loc)){
-          found = true;
-          W_set.insert(id);
-          if(N_bounds.contains(loc)){
-            N_set.insert(id);
-            NW_set.insert(id);
-          }
-          else{
-            if(S_bounds.contains(loc)){
-              S_set.insert(id);
-              SW_set.insert(id);
-            }
-          }
-        }
-        else{
-          if(E_bounds.contains(loc)){
+        for(int i = 0; i < numOutgoing; i++){
+          if((outgoing[i] > 0) && (outgoing[i]->contains(loc))){
+            agentsToPush[outRanks[i]].insert(id);
             found = true;
-            E_set.insert(id);
-            if(N_bounds.contains(loc)){
-              N_set.insert(id);
-              NE_set.insert(id);
-            }
-            else{
-              if(S_bounds.contains(loc)){
-                S_set.insert(id);
-                SE_set.insert(id);
-              }
-            }
-          }
-          else{
-            if(N_bounds.contains(loc)){
-              found = true;
-              N_set.insert(id);
-            }
-            else{
-              if(S_bounds.contains(loc)){
-                found = true;
-                S_set.insert(id);
-              }
-            }
           }
         }
       }
@@ -530,17 +467,9 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<A
       idIter++;
     }
   }
-
-  if(NW_set.size() > 0) agentsToPush[NW_rank].insert(NW_set.begin(), NW_set.end());
-  if( N_set.size() > 0) agentsToPush[ N_rank].insert( N_set.begin(),  N_set.end());
-  if(NE_set.size() > 0) agentsToPush[NE_rank].insert(NE_set.begin(), NE_set.end());
-  if( E_set.size() > 0) agentsToPush[ E_rank].insert( E_set.begin(),  E_set.end());
-  if(SE_set.size() > 0) agentsToPush[SE_rank].insert(SE_set.begin(), SE_set.end());
-  if( S_set.size() > 0) agentsToPush[ S_rank].insert( S_set.begin(),  S_set.end());
-  if(SW_set.size() > 0) agentsToPush[SW_rank].insert(SW_set.begin(), SW_set.end());
-  if( W_set.size() > 0) agentsToPush[ W_rank].insert( W_set.begin(),  W_set.end());
-
-
+//  if(NW_set.size() > 0) agentsToPush[NW_rank].insert(NW_set.begin(), NW_set.end());
+  delete[] outgoing;
+  delete[] outRanks;
 }
 
 template<typename T, typename GPTransformer, typename Adder, typename GPType>

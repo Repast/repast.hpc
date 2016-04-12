@@ -17,7 +17,7 @@ private:
 	
 public:
     RepastHPCDemoAgent(repast::AgentId id);
-	RepastHPCDemoAgent(){}
+	  RepastHPCDemoAgent(){}
     RepastHPCDemoAgent(repast::AgentId id, double newC, double newTotal);
 	
     ~RepastHPCDemoAgent();

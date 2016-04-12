@@ -47,6 +47,8 @@
 
 #define MAX_CONFIG_FILE_SIZE 16384
 
+namespace repast {
+
 typedef enum _LogLevel {DEBUG, INFO, WARN, ERROR, FATAL} LOG_LEVEL;
 
 class Appender {
@@ -154,6 +156,7 @@ private:
 	std::map<std::string, Logger*> logger_map;
 	std::vector<Appender *> appenders;
 };
+}
 
 
 #endif /* LOGGER_H_ */
