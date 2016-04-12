@@ -75,6 +75,7 @@ std::string make_str(const T t){
 
 // Some syntactic sugar to make the error definitions clean
 #define INVALID_ARG(_VAL) std::invalid_argument(err_msg(_VAL
+#define INVALID_ARG_OMIT_RANK(_VAL) std::invalid_argument(err_msg_omit_rank(_VAL
 #define DOMAIN_ERR(_VAL) std::domain_error(err_msg(_VAL
 #define DOMAIN_ERR_OMIT_RANK(_VAL) std::domain_error(err_msg_omit_rank(_VAL
 #define OUT_OF_RANGE(_VAL) std::out_of_range(err_msg(_VAL
@@ -653,7 +654,7 @@ END_ERR
 /* Error 41 */
 class Repast_Error_41: public std::invalid_argument{
 public:
-  Repast_Error_41(int max, int actual, std::string name): INVALID_ARG(ERROR_NUMBER 41)
+  Repast_Error_41(int max, int actual, std::string name): INVALID_ARG_OMIT_RANK(ERROR_NUMBER 41)
       THROWN_BY     "ConfigLexer::ConfigLexer(const string& file_name, boost::mpi::communicator* comm, int maxConfigFileSize)"
       REASON        "The properties file '" + name + " has an actual file size of " + VAL(actual) +
                     ", which exceeds the size passed as a maximum (" + VAL(max) + ")"
@@ -669,7 +670,7 @@ END_ERR
 /* Error 42 */
 class Repast_Error_42: public std::invalid_argument{
 public:
-  Repast_Error_42(std::string configFileName): INVALID_ARG(ERROR_NUMBER 42)
+  Repast_Error_42(std::string configFileName): INVALID_ARG_OMIT_RANK(ERROR_NUMBER 42)
       THROWN_BY     "ConfigLexer::ConfigLexer(const string& file_name, boost::mpi::communicator* comm, int maxConfigFileSize)"
       REASON        "The file '" + configFileName + "' was not found."
       EXPLANATION   "The file to be used for configuring the logger was not found."
@@ -681,7 +682,7 @@ END_ERR
 /* Error 43 */
 class Repast_Error_43: public std::invalid_argument{
 public:
-  Repast_Error_43(std::string file_name): INVALID_ARG(ERROR_NUMBER 43)
+  Repast_Error_43(std::string file_name): INVALID_ARG_OMIT_RANK(ERROR_NUMBER 43)
       THROWN_BY     "ConfigLexer::ConfigLexer(const string& file_name, boost::mpi::communicator* comm, int maxConfigFileSize)"
       REASON        "An unknown error occurred while reading the config file '" + file_name +"'"
       EXPLANATION   "The file could not be read."
