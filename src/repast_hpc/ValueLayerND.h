@@ -41,6 +41,8 @@
 #ifndef VALUELAYERND_H_
 #define VALUELAYERND_H_
 
+#include <fstream>
+
 #include "mpi.h"
 
 #include "Point.h"
@@ -232,6 +234,248 @@ protected:
   virtual void write(string fileLocation, string filetag, bool writeSharedBoundaryAreas = false) = 0;
 
 };
+
+
+
+
+
+/**
+ * The ValueLayerND class is an N-dimensional layer of
+ * double values.
+ *
+ * The most complex part of the ValueLayerND class is the
+ * interaction with MPI. Cross-process synchronization requires
+ * that blocks of cells (technically volumes in N-space) be
+ * sent across processes. MPI Derived Datatypes are used
+ * to achieve this.
+ *
+ * The memory for the N-Dimensional array is organized
+ * as a nested loop. Assume that the dimensions for
+ * the array are d1, d2, d3 ... dN. The extent of the grid
+ * in each dimension is e1, e2, e3 ... eN. Note that this
+ * includes both the space within the local boundaries
+ * and the adjacent buffer zones. For convenience
+ * we pre-calculate a vector M1, M2, M3 ... MN of multipliers; each
+ * entry is equal to the product of all the extents of
+ * lower-numbered dimensions, with M1 = 1. The address of a cell
+ * a locations l1, l2, l3 ... lN will be:
+ *
+ *    l1 * M1 + l2 * M2 + l3 * M3 ... lN * MN
+ *
+ * A volume in this space will not occupy a contiguous
+ * block of memory. It would be more convenient for the MPI
+ * call if it did. However, the MPI specification indicates
+ * that derived data types can be used to define complex
+ * regions of memory; the MPI implementation can optimize
+ * the sending and receiving of these.
+ *
+ * In this class, an MPI Datatype is defined to represent
+ * the volume of space being sent to and received from
+ * each of the 3N - 1 adjacent processes.
+ *
+ * One important note is that the send and receive data types
+ * for a given exchange partner will be identical; only the
+ * starting pointer need be changed to switch from sending
+ * to receiving.
+ *
+ * (It should be noted that MPI allows these data types to
+ * 'match' if they are structurally compatible. They need
+ * not actually be identical. So, consider a send/receive
+ * pair where one of the pair is against the global
+ * simulation boundaries but the other is not. The actual
+ * pattern of loops and steps that creates the send will
+ * be different from the pattern that creates the receive,
+ * but MPI will recognize that these are 'matchable' and
+ * will perform the communication.)
+ *
+ * The data type can be defined recursively using MPI's
+ * HVector function for all types except the innermost,
+ * which is a contiguous block of double values.
+ *
+ * The memory space allocated by this object includes
+ * buffer zones on all 2N sides and all intercardinal
+ * directions, even if the space is adjacent to a strict
+ * boundary edge.
+ */
+class ValueLayerND: public AbstractValueLayerND{
+
+private:
+  CartesianTopology*     cartTopology;
+  double*                dataSpace;              // Pointer to the data space
+  int                    length;                 // Total length of the entire array (one data space)
+
+  int                    numDims;                // Number of dimensions
+  bool                   globalSpaceIsPeriodic;  // True if the global space is periodic
+
+  vector<int>            places;                 // Multipliers to calculate index, for each dimension
+  vector<int>            strides;                // Sizes of each dimensions, in bytes
+  vector<DimensionDatum> dimensionData;          // List of data for each dimension
+  RankDatum*             neighborData;           // List of data for each adjacent rank
+  int                    neighborCount;          // Count of adjacent ranks
+  MPI_Request*           requests;               // Pointer to MPI requests (for wait operations)
+
+
+public:
+  static int syncCount;
+
+  ValueLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize,
+      bool periodic, double initialValue = 0, double initialBufferZoneValue = 0);
+  virtual ~ValueLayerND();
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual void initialize(double initialValue, bool fillBufferZone = false, bool fillLocal = true);
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual void initialize(double initialLocalValue, double initialBufferZoneValue);
+
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual bool isInLocalBounds(vector<int> coords);
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual bool isInLocalBounds(Point<int> location);
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual double addValueAt(double val, Point<int> location);
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual double addValueAt(double val, vector<int> location);
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual double setValueAt(double val, Point<int> location);
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual double setValueAt(double val, vector<int> location);
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual double getValueAt(Point<int> location);
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual double getValueAt(vector<int> location);
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual void synchronize();
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual void write(string fileLocation, string filetag, bool writeSharedBoundaryAreas = false);
+
+  /*
+   * Writes one dimension's information to the specified csv file.
+   */
+  void writeDimension(std::ofstream& outfile, double* dataSpacePointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas = false);
+
+private:
+
+  /**
+   * Gets a vector of the indexed locations. If the
+   * value passed is already simplified (transformed),
+   * does not transform.
+   */
+  vector<int> getIndexes(vector<int> location, bool isSimplified = false);
+
+  /**
+   * Given a location in global simulation coordinates,
+   * get the offset from the global base pointer to the
+   * position in the global array representing that location.
+   * The location may be simplified (transformed); if it is
+   * not, it is first simplified before the index is calculated.
+   */
+  int getIndex(vector<int> location, bool isSimplified = false);
+
+
+  /**
+   * Given a location in global simulation coordinates,
+   * get the offset from the global base pointer to the
+   * position in the global array representing that location
+   */
+  int getIndex(Point<int> location);
+
+  /**
+   * Gets an MPI data type given the RelativeLocation
+   * and an index indicating which entry in the RelativeLocation
+   * is being requested. Typical use will be recursive: if
+   * there are N dimensions, this class will be called with
+   * dimensionIndex = N - 1, which will call itself with N-2,
+   * repeating until N = 0.
+
+   */
+  void getMPIDataType(RelativeLocation relLoc, MPI_Datatype &datatype);
+
+  /**
+   * A variant of the getMPIDataType function, this
+   * one assumes that you are retrieving a block with side
+   * 2 x radius + 1 in all dimensions;
+   */
+  void getMPIDataType(int radius, MPI_Datatype &datatype);
+
+  /**
+   * Gets an MPI data type given the list of side lengths
+   */
+  void getMPIDataType(vector<int> sideLengths, MPI_Datatype &datatype, int dimensionIndex);
+
+  /**
+   * Given a relative location, calculates the index value for the
+   * first unit that should be in the 'send' buffer. Generally,
+   * if the relative location value for a given dimension is
+   * -1 or 0, the offset in that dimension should be equal to the
+   * buffer zone width, and if it is 1, the offset should be equal
+   * to the local width (technically buffer + local - buffer)
+   * Note: Assumes RelativeLocation will only include values
+   * of -1, 0, and 1
+   */
+  int getSendPointerOffset(RelativeLocation relLoc);
+
+  /**
+   * Given a relative location, calculates the index value for the
+   * first unit that should be in the 'receive' buffer. Generally,
+   * if the relative location value for a given dimension is
+   * -1, the offset should be zero; if it is 0, the offset should
+   * be equal to the buffer width; and if it is 1, the offset
+   * should be equal to the buffer width + the local width
+   * (or, equivalently, the total width - buffer width)
+   * Note: Assumes RelativeLocation will only include values
+   * of -1, 0, and 1
+   */
+  int getReceivePointerOffset(RelativeLocation relLoc);
+
+  /**
+   * Fills a dimension of space with the given value. Used for initialization
+   * and clearing only.
+   */
+  void fillDimension(double localValue, double bufferZoneValue, bool doBufferZone, bool doLocal, double* dataSpacePointer, int dimIndex);
+
+  void grabDimensionData(double*& destinationPointer, double* startPointer, int radius, int dimIndex);
+};
+
+
+
+
+
+
 
 
 }
