@@ -528,6 +528,12 @@ double ValueLayerNDSU::setValueAt(double val, vector<int> location){
   return (*pt = val);
 }
 
+double ValueLayerNDSU::getValueAt(Point<int> location){
+  int indx = getIndex(location);
+  if(indx == -1) return nan("");
+  return currentDataSpace[indx];
+}
+
 double ValueLayerNDSU::getValueAt(vector<int> location){
   int indx = getIndex(location);
   if(indx == -1) return nan("");

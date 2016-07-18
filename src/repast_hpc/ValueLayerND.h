@@ -543,6 +543,9 @@ public:
    */
   virtual void write(string fileLocation, string filetag, bool writeSharedBoundaryAreas = false);
 
+  /**
+   * Switch from one value layer to the other.
+   */
   void switchValueLayer();
 
 private:
