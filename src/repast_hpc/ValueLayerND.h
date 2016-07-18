@@ -160,12 +160,16 @@ protected:
   int                    neighborCount;          // Count of adjacent ranks
   MPI_Request*           requests;               // Pointer to MPI requests (for wait operations)
 
+  int                    instanceID;             // Unique ID for managing MPI requests without mix-ups
+  int                    syncCount;
 
   AbstractValueLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries,int bufferSize, bool periodic);
   virtual ~AbstractValueLayerND();
 
 
 public:
+
+  static int instanceCount;
 
   /**
    * Returns true only if the coordinates given are within the local boundaries
@@ -394,7 +398,6 @@ private:
   double*                dataSpace;              // Pointer to the data space
 
 public:
-  static int syncCount;
 
   ValueLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize,
       bool periodic, double initialValue = 0, double initialBufferZoneValue = 0);
@@ -488,7 +491,6 @@ protected:
   double*                otherDataSpace;         // Temporary pointer to the inactive data space
 
 public:
-  static int syncCount;
 
   ValueLayerNDSU(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic, double initialValue = 0, double initialBufferZoneValue = 0);
   virtual ~ValueLayerNDSU();
@@ -547,6 +549,52 @@ public:
    * Switch from one value layer to the other.
    */
   void switchValueLayer();
+
+  /**
+   * Adds the specified value to the value in the non-current
+   * data bank at the given location
+   */
+  virtual double addSecondaryValueAt(double val, Point<int> location);
+
+  /**
+   * Adds the specified value to the value in the non-current
+   * data bank at the given location
+   */
+  virtual double addSecondaryValueAt(double val, vector<int> location);
+
+  /**
+   * Sets the specified value to the value in the non-current
+   * data bank at the given location
+   */
+  virtual double setSecondaryValueAt(double val, Point<int> location);
+
+  /**
+   * Sets the specified value to the value in the non-current
+   * data bank at the given location
+   */
+  virtual double setSecondaryValueAt(double val, vector<int> location);
+
+  /**
+   * Gets the specified value to the value in the non-current
+   * data bank at the given location
+   */
+  virtual double getSecondaryValueAt(Point<int> location);
+
+  /**
+   * Gets the specified value to the value in the non-current
+   * data bank at the given location
+   */
+  virtual double getSecondaryValueAt(vector<int> location);
+
+  /**
+   * Copies the data in the current value layer to the secondary layer
+   */
+  virtual void copyCurrentToSecondary();
+
+  /**
+   * Copies the data in the secondary layer to the current value layer
+   */
+  virtual void copySecondaryToCurrent();
 
 private:
 

@@ -106,8 +106,11 @@ bool DimensionDatum::isInLocalBounds(int originalCoord){
   return originalCoord >= localBoundariesMin && originalCoord < localBoundariesMax;
 }
 
+int AbstractValueLayerND::instanceCount = 0;
 
-AbstractValueLayerND::AbstractValueLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries,int bufferSize, bool periodic): globalSpaceIsPeriodic(periodic){
+AbstractValueLayerND::AbstractValueLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries,int bufferSize, bool periodic): globalSpaceIsPeriodic(periodic), syncCount(0){
+  instanceID = AbstractValueLayerND::instanceCount;
+  AbstractValueLayerND::instanceCount++;
   cartTopology = RepastProcess::instance()->getCartesianTopology(processesPerDim, periodic);
   // Calculate the size to be used for the buffers
   numDims = processesPerDim.size();
@@ -246,11 +249,6 @@ int AbstractValueLayerND::getReceivePointerOffset(RelativeLocation relLoc){
 }
 
 
-
-
-
-int ValueLayerND::syncCount = 0;
-
 ValueLayerND::ValueLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic,
     double initialValue, double initialBufferZoneValue): AbstractValueLayerND(processesPerDim, globalBoundaries, bufferSize, periodic){
 
@@ -315,6 +313,7 @@ double ValueLayerND::getValueAt(vector<int> location){
 void ValueLayerND::synchronize(){
   syncCount++;
   if(syncCount > 9) syncCount = 0;
+  int mpiTag = instanceID * 10 + syncCount;
   // Note: the syncCount and send/recv directions are used to create a unique tag value for the
   // mpi sends and receives. The tag value must be unique in two ways: first, successive calls to this
   // function must be different enough that they can't be confused. The 'syncCount' value is used to
@@ -327,9 +326,9 @@ void ValueLayerND::synchronize(){
   MPI_Status statuses[neighborCount * 2];
   for(int i = 0; i < neighborCount; i++){
     MPI_Isend(&dataSpace[neighborData[i].sendPtrOffset], 1, neighborData[i].datatype,
-        neighborData[i].rank, 10 * (neighborData[i].sendDir + 1) + syncCount, cartTopology->topologyComm, &requests[i]);
+        neighborData[i].rank, 10 * (neighborData[i].sendDir + 1) + mpiTag, cartTopology->topologyComm, &requests[i]);
     MPI_Irecv(&dataSpace[neighborData[i].receivePtrOffset], 1, neighborData[i].datatype,
-        neighborData[i].rank, 10 * (neighborData[i].recvDir + 1) + syncCount, cartTopology->topologyComm, &requests[neighborCount + i]);
+        neighborData[i].rank, 10 * (neighborData[i].recvDir + 1) + mpiTag, cartTopology->topologyComm, &requests[neighborCount + i]);
   }
   int ret = MPI_Waitall(neighborCount, requests, statuses);
 }
@@ -464,10 +463,6 @@ void ValueLayerND::writeDimension(std::ofstream& outfile, double* dataSpacePoint
 
 }
 
-
-
-int ValueLayerNDSU::syncCount = 0;
-
 ValueLayerNDSU::ValueLayerNDSU(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic,
     double initialValue, double initialBufferZoneValue): AbstractValueLayerND(processesPerDim, globalBoundaries, bufferSize, periodic){
 
@@ -545,6 +540,7 @@ double ValueLayerNDSU::getValueAt(vector<int> location){
 void ValueLayerNDSU::synchronize(){
   syncCount++;
   if(syncCount > 9) syncCount = 0;
+  int mpiTag = instanceID * 10 + syncCount;
   // Note: the syncCount and send/recv directions are used to create a unique tag value for the
   // mpi sends and receives. The tag value must be unique in two ways: first, successive calls to this
   // function must be different enough that they can't be confused. The 'syncCount' value is used to
@@ -557,9 +553,9 @@ void ValueLayerNDSU::synchronize(){
   MPI_Status statuses[neighborCount * 2];
   for(int i = 0; i < neighborCount; i++){
     MPI_Isend(&currentDataSpace[neighborData[i].sendPtrOffset], 1, neighborData[i].datatype,
-        neighborData[i].rank, 10 * (neighborData[i].sendDir + 1) + syncCount, cartTopology->topologyComm, &requests[i]);
+        neighborData[i].rank, 10 * (neighborData[i].sendDir + 1) + mpiTag, cartTopology->topologyComm, &requests[i]);
     MPI_Irecv(&currentDataSpace[neighborData[i].receivePtrOffset], 1, neighborData[i].datatype,
-        neighborData[i].rank, 10 * (neighborData[i].recvDir + 1) + syncCount, cartTopology->topologyComm, &requests[neighborCount + i]);
+        neighborData[i].rank, 10 * (neighborData[i].recvDir + 1) + mpiTag, cartTopology->topologyComm, &requests[neighborCount + i]);
   }
   int ret = MPI_Waitall(neighborCount, requests, statuses);
 }
@@ -593,6 +589,58 @@ void ValueLayerNDSU::switchValueLayer(){
   currentDataSpace      = otherDataSpace;
   otherDataSpace        = tempDataSpace;
 }
+
+
+double ValueLayerNDSU::addSecondaryValueAt(double val, Point<int> location){
+  int indx = getIndex(location);
+  if(indx == -1) return nan("");
+  double* pt = &otherDataSpace[indx];
+  return (*pt = *pt + val);
+}
+
+double ValueLayerNDSU::addSecondaryValueAt(double val, vector<int> location){
+  int indx = getIndex(location);
+  if(indx == -1) return nan("");
+  double* pt = &otherDataSpace[indx];
+  return (*pt = *pt + val);
+}
+
+double ValueLayerNDSU::setSecondaryValueAt(double val, Point<int> location){
+  int indx = getIndex(location);
+  if(indx == -1) return nan("");
+  double* pt = &otherDataSpace[indx];
+  return (*pt = val);
+}
+
+double ValueLayerNDSU::setSecondaryValueAt(double val, vector<int> location){
+  int indx = getIndex(location);
+  if(indx == -1) return nan("");
+  double* pt = &otherDataSpace[indx];
+  return (*pt = val);
+}
+
+double ValueLayerNDSU::getSecondaryValueAt(Point<int> location){
+  int indx = getIndex(location);
+  if(indx == -1) return nan("");
+  return otherDataSpace[indx];
+}
+
+double ValueLayerNDSU::getSecondaryValueAt(vector<int> location){
+  int indx = getIndex(location);
+  if(indx == -1) return nan("");
+  return otherDataSpace[indx];
+}
+
+void ValueLayerNDSU::copyCurrentToSecondary(){
+  double d = 0;
+  memcpy(otherDataSpace, currentDataSpace, length * sizeof d);
+}
+
+void ValueLayerNDSU::copySecondaryToCurrent(){
+  double d = 0;
+  memcpy(currentDataSpace, otherDataSpace, length * sizeof d);
+}
+
 
 
 void ValueLayerNDSU::fillDimension(double localValue, double bufferValue, bool doBufferZone, bool doLocal, double* dataSpace1Pointer, double* dataSpace2Pointer, int dimIndex){
