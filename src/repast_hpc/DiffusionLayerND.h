@@ -196,63 +196,63 @@ public:
   virtual ~DiffusionLayerND();
 
   /**
-   * Inherited from ValueLayerND
+   * Inherited from AbstractValueLayerND
    */
   virtual void initialize(double initialValue, bool fillBufferZone = false, bool fillLocal = true);
 
   /**
-   * Inherited from ValueLayerND
+   * Inherited from AbstractValueLayerND
    */
   virtual void initialize(double initialLocalValue, double initialBufferZoneValue);
 
 
   /**
-   * Inherited from ValueLayerND
+   * Inherited from AbstractValueLayerND
    */
   virtual bool isInLocalBounds(vector<int> coords);
 
   /**
-   * Inherited from ValueLayerND
+   * Inherited from AbstractValueLayerND
    */
   virtual bool isInLocalBounds(Point<int> location);
 
   /**
-   * Inherited from ValueLayerND
+   * Inherited from AbstractValueLayerND
    */
   virtual double addValueAt(double val, Point<int> location);
 
   /**
-   * Inherited from ValueLayerND
+   * Inherited from AbstractValueLayerND
    */
   virtual double addValueAt(double val, vector<int> location);
 
   /**
-   * Inherited from ValueLayerND
+   * Inherited from AbstractValueLayerND
    */
   virtual double setValueAt(double val, Point<int> location);
 
   /**
-   * Inherited from ValueLayerND
+   * Inherited from AbstractValueLayerND
    */
   virtual double setValueAt(double val, vector<int> location);
 
   /**
-   * Inherited from ValueLayerND
+   * Inherited from AbstractValueLayerND
    */
   virtual double getValueAt(Point<int> location);
 
   /**
-   * Inherited from ValueLayerND
+   * Inherited from AbstractValueLayerND
    */
   virtual double getValueAt(vector<int> location);
 
   /**
-   * Inherited from ValueLayerND
+   * Inherited from AbstractValueLayerND
    */
   virtual void synchronize();
 
   /**
-   * Inherited from ValueLayerND
+   * Inherited from AbstractValueLayerND
    */
   virtual void write(string fileLocation, string filetag, bool writeSharedBoundaryAreas = false);
 
