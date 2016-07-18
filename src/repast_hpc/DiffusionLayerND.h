@@ -51,6 +51,7 @@
 #include "RelativeLocation.h"
 #include "CartesianTopology.h"
 #include "RepastProcess.h"
+#include "ValueLayerND.h"
 
 using namespace std;
 
