@@ -170,12 +170,12 @@ public:
   /**
    * Returns true only if the coordinates given are within the local boundaries
    */
-  bool isInLocalBounds(vector<int> coords);
+  virtual bool isInLocalBounds(vector<int> coords);
 
   /*
    * Returns true only if the coordinates given are within the local boundaries
    */
-  bool isInLocalBounds(Point<int> location);
+  virtual bool isInLocalBounds(Point<int> location);
 
 
 protected:
@@ -476,7 +476,7 @@ private:
  * facilitates SynchronousUpdating: that is, a process can
  * use the current values in the value layer and create a set of new
  * values, then 'switch' to using the new values. It does this by using
- * two memory banks. Some of the routines (i.e. initialization
+ * two memory banks.
  */
 class ValueLayerNDSU: public AbstractValueLayerND{
 
@@ -541,7 +541,9 @@ public:
   /**
    * Write this rank's data to a CSV file
    */
-  void write(string fileLocation, string filetag, bool writeSharedBoundaryAreas = false);
+  virtual void write(string fileLocation, string filetag, bool writeSharedBoundaryAreas = false);
+
+  void switchValueLayer();
 
 private:
 
@@ -557,10 +559,6 @@ private:
   void writeDimension(std::ofstream& outfile, double* dataSpace1Pointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas = false);
 
 };
-
-
-
-
 
 
 

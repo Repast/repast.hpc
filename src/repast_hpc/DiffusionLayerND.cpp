@@ -79,10 +79,7 @@ void DiffusionLayerND::diffuse(Diffusor* diffusor, bool omitSynchronize){
 
   diffuseDimension(currentDataSpace, otherDataSpace, vals, diffusor, numDims - 1);
 
-  // Switch the data banks
-  double* tempDataSpace = currentDataSpace;
-  currentDataSpace      = otherDataSpace;
-  otherDataSpace        = tempDataSpace;
+  switchValueLayer();
 
   if(!omitSynchronize) synchronize();
 

@@ -581,6 +581,13 @@ void ValueLayerNDSU::write(string fileLocation, string fileTag, bool writeShared
 }
 
 
+void ValueLayerNDSU::switchValueLayer(){
+  // Switch the data banks
+  double* tempDataSpace = currentDataSpace;
+  currentDataSpace      = otherDataSpace;
+  otherDataSpace        = tempDataSpace;
+}
+
 
 void ValueLayerNDSU::fillDimension(double localValue, double bufferValue, bool doBufferZone, bool doLocal, double* dataSpace1Pointer, double* dataSpace2Pointer, int dimIndex){
   if(!doBufferZone && !doLocal) return;
