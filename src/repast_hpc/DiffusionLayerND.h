@@ -113,65 +113,14 @@ public:
  * the size of the buffer zone.
  *
  */
-class DiffusionLayerND: public AbstractValueLayerND{
+class DiffusionLayerND: public ValueLayerNDSU{
 
 private:
 
-  double*                dataSpace1;             // Permanent pointer to bank 1 of the data space
-  double*                dataSpace2;             // Permanent pointer to bank 2 of the data space
-  double*                currentDataSpace;       // Temporary pointer to the active data space
-  double*                otherDataSpace;         // Temporary pointer to the inactive data space
-
 public:
-  static int syncCount;
 
   DiffusionLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic, double initialValue = 0, double initialBufferZoneValue = 0);
   virtual ~DiffusionLayerND();
-
-  /**
-   * Inherited from AbstractValueLayerND
-   */
-  virtual void initialize(double initialValue, bool fillBufferZone = false, bool fillLocal = true);
-
-  /**
-   * Inherited from AbstractValueLayerND
-   */
-  virtual void initialize(double initialLocalValue, double initialBufferZoneValue);
-
-  /**
-   * Inherited from AbstractValueLayerND
-   */
-  virtual double addValueAt(double val, Point<int> location);
-
-  /**
-   * Inherited from AbstractValueLayerND
-   */
-  virtual double addValueAt(double val, vector<int> location);
-
-  /**
-   * Inherited from AbstractValueLayerND
-   */
-  virtual double setValueAt(double val, Point<int> location);
-
-  /**
-   * Inherited from AbstractValueLayerND
-   */
-  virtual double setValueAt(double val, vector<int> location);
-
-  /**
-   * Inherited from AbstractValueLayerND
-   */
-  virtual double getValueAt(Point<int> location);
-
-  /**
-   * Inherited from AbstractValueLayerND
-   */
-  virtual double getValueAt(vector<int> location);
-
-  /**
-   * Inherited from AbstractValueLayerND
-   */
-  virtual void synchronize();
 
   /**
    * Performs the diffusion operation on the entire
@@ -182,29 +131,11 @@ public:
    * is required to complete diffusion
    */
   void diffuse(Diffusor* diffusor, bool omitSynchronize = false);
-
-  /**
-   * Write this rank's data to a CSV file
-   */
-  void write(string fileLocation, string filetag, bool writeSharedBoundaryAreas = false);
-
 private:
-
-  /**
-   * Fills a dimension of space with the given value. Used for initialization
-   * and clearing only.
-   */
-  void fillDimension(double localValue, double bufferZoneValue, bool doBufferZone, bool doLocal, double* dataSpace1Pointer, double* dataSpace2Pointer, int dimIndex);
 
   void diffuseDimension(double* currentDataSpacePointer, double* otherDataSpacePointer, double* vals, Diffusor* diffusor, int dimIndex);
 
   void grabDimensionData(double*& destinationPointer, double* startPointer, int radius, int dimIndex);
-
-  /*
-   * Writes one dimension's information to the specified csv file.
-   */
-  void writeDimension(std::ofstream& outfile, double* dataSpace1Pointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas = false);
-
 };
 
 }

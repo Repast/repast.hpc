@@ -55,7 +55,7 @@ using namespace std;
 namespace repast {
 
 /**
- * The RankDatum struct stores the data that the DiffusionLayerND
+ * The RankDatum struct stores the data that the ValueLayerND
  * class will need for each of its 3^N - 1 neighboring ranks.
  * N.B.: We could use a map from rank to the rest of the data, but
  * we will rarely need to index it that way, and instead can just
@@ -73,7 +73,7 @@ struct RankDatum{
 
 /**
  * The DimensionDatum class stores all of the data that the
- * DiffusionLayerND class will need for each dimension in the
+ * ValueLayerND class will need for each dimension in the
  * N-dimensional space. This mainly includes coordinate boundaries
  * along each dimension, but these boundaries include local,
  * global, and a few other memoized variants.
@@ -467,6 +467,96 @@ private:
 
 };
 
+
+
+
+
+/**
+ * ValueLayerNDSU is a version of the ValueLayerND class that
+ * facilitates SynchronousUpdating: that is, a process can
+ * use the current values in the value layer and create a set of new
+ * values, then 'switch' to using the new values. It does this by using
+ * two memory banks. Some of the routines (i.e. initialization
+ */
+class ValueLayerNDSU: public AbstractValueLayerND{
+
+protected:
+
+  double*                dataSpace1;             // Permanent pointer to bank 1 of the data space
+  double*                dataSpace2;             // Permanent pointer to bank 2 of the data space
+  double*                currentDataSpace;       // Temporary pointer to the active data space
+  double*                otherDataSpace;         // Temporary pointer to the inactive data space
+
+public:
+  static int syncCount;
+
+  ValueLayerNDSU(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic, double initialValue = 0, double initialBufferZoneValue = 0);
+  virtual ~ValueLayerNDSU();
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual void initialize(double initialValue, bool fillBufferZone = false, bool fillLocal = true);
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual void initialize(double initialLocalValue, double initialBufferZoneValue);
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual double addValueAt(double val, Point<int> location);
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual double addValueAt(double val, vector<int> location);
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual double setValueAt(double val, Point<int> location);
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual double setValueAt(double val, vector<int> location);
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual double getValueAt(Point<int> location);
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual double getValueAt(vector<int> location);
+
+  /**
+   * Inherited from AbstractValueLayerND
+   */
+  virtual void synchronize();
+
+  /**
+   * Write this rank's data to a CSV file
+   */
+  void write(string fileLocation, string filetag, bool writeSharedBoundaryAreas = false);
+
+private:
+
+  /**
+   * Fills a dimension of space with the given value. Used for initialization
+   * and clearing only.
+   */
+  void fillDimension(double localValue, double bufferZoneValue, bool doBufferZone, bool doLocal, double* dataSpace1Pointer, double* dataSpace2Pointer, int dimIndex);
+
+  /*
+   * Writes one dimension's information to the specified csv file.
+   */
+  void writeDimension(std::ofstream& outfile, double* dataSpace1Pointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas = false);
+
+};
 
 
 

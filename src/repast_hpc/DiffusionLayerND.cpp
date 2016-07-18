@@ -63,97 +63,15 @@ int Diffusor::getRadius(){
   return 1;
 }
 
-int DiffusionLayerND::syncCount = 0;
-
 DiffusionLayerND::DiffusionLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic,
-    double initialValue, double initialBufferZoneValue): AbstractValueLayerND(processesPerDim, globalBoundaries, bufferSize, periodic){
-
-  // Create the actual arrays for the data
-  dataSpace1 = new double[length];
-  dataSpace2 = new double[length];
-  currentDataSpace = dataSpace1;
-  otherDataSpace   = dataSpace2;
-
-  // Finally, fill the data with the initial values
-  initialize(initialValue, initialBufferZoneValue);
-
-  // And synchronize
-  synchronize();
+    double initialValue, double initialBufferZoneValue): ValueLayerNDSU(processesPerDim, globalBoundaries, bufferSize, periodic,
+        initialValue, initialBufferZoneValue){
 
 }
 
 DiffusionLayerND::~DiffusionLayerND(){
-  delete[] currentDataSpace;
-  delete[] otherDataSpace;
 }
 
-
-void DiffusionLayerND::initialize(double initialValue, bool fillBufferZone, bool fillLocal){
-  fillDimension(initialValue, initialValue, fillBufferZone, fillLocal, dataSpace1, dataSpace2, numDims - 1);
-}
-
-void DiffusionLayerND::initialize(double initialLocalValue, double initialBufferZoneValue){
-  fillDimension(initialLocalValue, initialBufferZoneValue, true, true, dataSpace1, dataSpace2, numDims - 1);
-}
-
-
-double DiffusionLayerND::addValueAt(double val, Point<int> location){
-  int indx = getIndex(location);
-  if(indx == -1) return nan("");
-  double* pt = &currentDataSpace[indx];
-  return (*pt = *pt + val);
-}
-
-double DiffusionLayerND::addValueAt(double val, vector<int> location){
-  int indx = getIndex(location);
-  if(indx == -1) return nan("");
-  double* pt = &currentDataSpace[indx];
-  return (*pt = *pt + val);
-}
-
-double DiffusionLayerND::setValueAt(double val, Point<int> location){
-  int indx = getIndex(location);
-  if(indx == -1) return nan("");
-  double* pt = &currentDataSpace[indx];
-  return (*pt = val);
-}
-
-double DiffusionLayerND::setValueAt(double val, vector<int> location){
-  int indx = getIndex(location);
-  if(indx == -1) return nan("");
-  double* pt = &currentDataSpace[indx];
-  return (*pt = val);
-}
-
-double DiffusionLayerND::getValueAt(vector<int> location){
-  int indx = getIndex(location);
-  if(indx == -1) return nan("");
-  return currentDataSpace[indx];
-}
-
-
-
-void DiffusionLayerND::synchronize(){
-  syncCount++;
-  if(syncCount > 9) syncCount = 0;
-  // Note: the syncCount and send/recv directions are used to create a unique tag value for the
-  // mpi sends and receives. The tag value must be unique in two ways: first, successive calls to this
-  // function must be different enough that they can't be confused. The 'syncCount' value is used to
-  // achieve this, and it will loop from 0-9 and then repeat. The second, the tag must sometimes
-  // differentiate between sends and receives that are going to the same rank. If a dimension
-  // has only 2 processes but wrap-around borders, then one process may be sending to the other
-  // process twice (once left and once right). The 'sendDir' and 'recvDir' values trap this
-
-  // For each entry in neighbors:
-  MPI_Status statuses[neighborCount * 2];
-  for(int i = 0; i < neighborCount; i++){
-    MPI_Isend(&currentDataSpace[neighborData[i].sendPtrOffset], 1, neighborData[i].datatype,
-        neighborData[i].rank, 10 * (neighborData[i].sendDir + 1) + syncCount, cartTopology->topologyComm, &requests[i]);
-    MPI_Irecv(&currentDataSpace[neighborData[i].receivePtrOffset], 1, neighborData[i].datatype,
-        neighborData[i].rank, 10 * (neighborData[i].recvDir + 1) + syncCount, cartTopology->topologyComm, &requests[neighborCount + i]);
-  }
-  int ret = MPI_Waitall(neighborCount, requests, statuses);
-}
 
 void DiffusionLayerND::diffuse(Diffusor* diffusor, bool omitSynchronize){
   int countOfVals = (int)(pow(diffusor->getRadius() * 2 + 1, numDims));
@@ -171,84 +89,6 @@ void DiffusionLayerND::diffuse(Diffusor* diffusor, bool omitSynchronize){
   delete[] vals;
 }
 
-
-void DiffusionLayerND::write(string fileLocation, string fileTag, bool writeSharedBoundaryAreas){
-  std::ofstream outfile;
-  std::ostringstream stream;
-  int rank = repast::RepastProcess::instance()->rank();
-  stream << fileLocation << "DiffusionLayer_" << fileTag << "_" << rank << ".csv";
-  std::string filename = stream.str();
-
-  const char * c = filename.c_str();
-  outfile.open(c, std::ios_base::trunc | std::ios_base::out); // it will not delete the content of file, will add a new line
-
-  // Write headers
-  for(int i = 0; i < numDims; i++) outfile << "DIM_" << i << ",";
-  outfile << "VALUE" << endl;
-
-  int* positions = new int[numDims];
-  for(int i = 0; i < numDims; i++) positions[i] = 0;
-
-  writeDimension(outfile, currentDataSpace, positions, numDims - 1, writeSharedBoundaryAreas);
-
-  outfile.close();
-}
-
-
-
-void DiffusionLayerND::fillDimension(double localValue, double bufferValue, bool doBufferZone, bool doLocal, double* dataSpace1Pointer, double* dataSpace2Pointer, int dimIndex){
-  if(!doBufferZone && !doLocal) return;
-  int bufferEdge = dimensionData[dimIndex].leftBufferSize;
-  int localEdge  = bufferEdge + dimensionData[dimIndex].localWidth;
-  int upperBound = localEdge + dimensionData[dimIndex].rightBufferSize;
-
-  int pointerIncrement = places[dimIndex];
-
-
-  int i = 0;
-  for(; i < bufferEdge; i++){
-    if(doBufferZone){
-      if(dimIndex == 0){
-        *dataSpace1Pointer = bufferValue;
-        *dataSpace2Pointer = bufferValue;
-      }
-      else{
-        fillDimension(bufferValue, bufferValue, doBufferZone, doLocal, dataSpace1Pointer, dataSpace2Pointer, dimIndex - 1);
-      }
-    }
-    // Increment the pointers
-    dataSpace1Pointer += pointerIncrement;
-    dataSpace2Pointer += pointerIncrement;
-  }
-  for(; i < localEdge; i++){
-    if(doLocal){
-      if(dimIndex == 0){
-        *dataSpace1Pointer = localValue;
-        *dataSpace2Pointer = localValue;
-      }
-      else{
-        fillDimension(localValue, bufferValue, doBufferZone, doLocal, dataSpace1Pointer, dataSpace2Pointer, dimIndex - 1);
-      }
-    }
-    // Increment the pointers
-    dataSpace1Pointer += pointerIncrement;
-    dataSpace2Pointer += pointerIncrement;
-  }
-  if(doBufferZone){ // Note: we don't need to finish this at all if not doing buffer zone
-    for(; i < upperBound; i++){
-      if(dimIndex == 0){
-        *dataSpace1Pointer = bufferValue;
-        *dataSpace2Pointer = bufferValue;
-      }
-      else{
-        fillDimension(bufferValue, bufferValue, doBufferZone, doLocal, dataSpace1Pointer, dataSpace2Pointer, dimIndex - 1);
-      }
-    }
-    dataSpace1Pointer += pointerIncrement;
-    dataSpace2Pointer += pointerIncrement;
-  }
-
-}
 
 void DiffusionLayerND::diffuseDimension(double* currentDataSpacePointer, double* otherDataSpacePointer, double* vals, Diffusor* diffusor, int dimIndex){
   int bufferEdge = dimensionData[dimIndex].leftBufferSize;
@@ -297,68 +137,6 @@ void DiffusionLayerND::grabDimensionData(double*& destinationPointer, double* st
   }
 
 }
-
-
-void DiffusionLayerND::writeDimension(std::ofstream& outfile, double* dataSpacePointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas){
-  int bufferEdge = dimensionData[dimIndex].leftBufferSize;
-  int localEdge  = bufferEdge + dimensionData[dimIndex].localWidth;
-  int upperBound = localEdge + dimensionData[dimIndex].rightBufferSize;
-
-  int pointerIncrement = places[dimIndex];
-  int i = 0;
-  for(; i < bufferEdge; i++){
-    currentPosition[dimIndex] = i;
-    if(writeSharedBoundaryAreas){
-      if(dimIndex == 0){
-        double val = *dataSpacePointer;
-        if(val != 0){
-          for(int j = 0; j < numDims; j++) outfile << (currentPosition[j] - dimensionData[j].leftBufferSize) << ",";
-          outfile << val << endl;
-        }
-      }
-      else{
-        writeDimension(outfile, dataSpacePointer, currentPosition, dimIndex - 1, writeSharedBoundaryAreas);
-      }
-    }
-    // Increment the pointers
-    dataSpacePointer += pointerIncrement;
-  }
-  for(; i < localEdge; i++){
-    currentPosition[dimIndex] = i;
-    if(dimIndex == 0){
-        double val = *dataSpacePointer;
-        if(val != 0){
-          for(int j = 0; j < numDims; j++) outfile << (currentPosition[j] - dimensionData[j].leftBufferSize) << ",";
-          outfile << val << endl;
-        }
-    }
-    else{
-      writeDimension(outfile, dataSpacePointer, currentPosition, dimIndex - 1, writeSharedBoundaryAreas);
-    }
-    // Increment the pointers
-    dataSpacePointer += pointerIncrement;
-  }
-  if(writeSharedBoundaryAreas){ // Note: we don't need to finish this at all if not doing buffer zone
-    for(; i < upperBound; i++){
-      currentPosition[dimIndex] = i;
-      if(dimIndex == 0){
-        double val = *dataSpacePointer;
-        if(val != 0){
-          for(int j = 0; j < numDims; j++) outfile << (currentPosition[j] - dimensionData[j].leftBufferSize) << ",";
-          outfile << *dataSpacePointer << endl;
-        }
-      }
-      else{
-        writeDimension(outfile, dataSpacePointer, currentPosition, dimIndex - 1, writeSharedBoundaryAreas);
-      }
-    }
-    dataSpacePointer += pointerIncrement;
-  }
-
-}
-
-
-
 
 
 
