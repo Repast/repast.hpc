@@ -107,19 +107,13 @@ bool DimensionDatum::isInLocalBounds(int originalCoord){
 }
 
 
-
-
-
-int ValueLayerND::syncCount = 0;
-
-ValueLayerND::ValueLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic,
-    double initialValue, double initialBufferZoneValue): globalSpaceIsPeriodic(periodic){
+AbstractValueLayerND::AbstractValueLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries,int bufferSize, bool periodic): globalSpaceIsPeriodic(periodic){
   cartTopology = RepastProcess::instance()->getCartesianTopology(processesPerDim, periodic);
-  int rank = RepastProcess::instance()->rank();
-  GridDimensions localBoundaries = cartTopology->getDimensions(rank, globalBoundaries);
-
   // Calculate the size to be used for the buffers
   numDims = processesPerDim.size();
+
+  int rank = RepastProcess::instance()->rank();
+  GridDimensions localBoundaries = cartTopology->getDimensions(rank, globalBoundaries);
 
   // First create the basic coordinate data per dimension
   length = 1;
@@ -160,43 +154,36 @@ ValueLayerND::ValueLayerND(vector<int> processesPerDim, GridDimensions globalBou
     }
   }while(relLoc.increment());
 
-  // Create the actual arrays for the data
-  dataSpace = new double[length];
-
   // Create arrays for MPI requests and results (statuses)
   requests = new MPI_Request[neighborCount * 2];
-
-  // Finally, fill the data with the initial values
-  initialize(initialValue, initialBufferZoneValue);
-
-  // And synchronize
-  synchronize();
-
 }
 
-ValueLayerND::~ValueLayerND(){
-  delete[] dataSpace;
+AbstractValueLayerND::~AbstractValueLayerND(){
   delete[] neighborData; // Should Free MPI Datatypes first...
   delete[] requests;
 }
 
 
-void ValueLayerND::initialize(double initialValue, bool fillBufferZone, bool fillLocal){
-  fillDimension(initialValue, initialValue, fillBufferZone, fillLocal, dataSpace, numDims - 1);
+bool AbstractValueLayerND::isInLocalBounds(vector<int> coords){
+  for(int i = 0; i < numDims; i++){
+    DimensionDatum* datum = &dimensionData[i];
+    if(!datum->isInLocalBounds(coords[i])) return false;
+  }
+  return true;
 }
 
-void ValueLayerND::initialize(double initialLocalValue, double initialBufferZoneValue){
-  fillDimension(initialLocalValue, initialBufferZoneValue, true, true, dataSpace, numDims - 1);
+bool AbstractValueLayerND::isInLocalBounds(Point<int> location){
+  return isInLocalBounds(location.coords());
 }
 
-vector<int> ValueLayerND::getIndexes(vector<int> location, bool isSimplified){
+vector<int> AbstractValueLayerND::getIndexes(vector<int> location, bool isSimplified){
   vector<int> ret;
   ret.assign(numDims, 0); // Make the right amount of space
   for(int i = 0; i < numDims; i++) ret[i] = dimensionData[i].getIndexedCoord(location[i], isSimplified);
   return ret;
 }
 
-int ValueLayerND::getIndex(vector<int> location, bool isSimplified){
+int AbstractValueLayerND::getIndex(vector<int> location, bool isSimplified){
   vector<int> indexed = getIndexes(location, isSimplified);
   int val = 0;
   for(int i = numDims - 1; i >= 0; i--) val += indexed[i] * places[i];
@@ -204,23 +191,24 @@ int ValueLayerND::getIndex(vector<int> location, bool isSimplified){
   return val;
 }
 
-int ValueLayerND::getIndex(Point<int> location){
+int AbstractValueLayerND::getIndex(Point<int> location){
   return getIndex(location.coords());
 }
 
-void ValueLayerND::getMPIDataType(RelativeLocation relLoc, MPI_Datatype &datatype){
+
+void AbstractValueLayerND::getMPIDataType(RelativeLocation relLoc, MPI_Datatype &datatype){
   vector<int> sideLengths;
   for(int i = 0; i < numDims; i++) sideLengths.push_back(dimensionData[i].getSendReceiveSize(relLoc[i]));
   getMPIDataType(sideLengths, datatype, numDims - 1);
 }
 
-void ValueLayerND::getMPIDataType(int radius, MPI_Datatype &datatype){
+void AbstractValueLayerND::getMPIDataType(int radius, MPI_Datatype &datatype){
   vector<int> sideLengths;
   sideLengths.assign(numDims, 2 * radius + 1);
   getMPIDataType(sideLengths, datatype, numDims - 1);
 }
 
-void ValueLayerND::getMPIDataType(vector<int> sideLengths, MPI_Datatype &datatype, int dimensionIndex){
+void AbstractValueLayerND::getMPIDataType(vector<int> sideLengths, MPI_Datatype &datatype, int dimensionIndex){
   if(dimensionIndex == 0){
     MPI_Type_contiguous(sideLengths[dimensionIndex], MPI_DOUBLE, &datatype);
   }
@@ -237,30 +225,7 @@ void ValueLayerND::getMPIDataType(vector<int> sideLengths, MPI_Datatype &datatyp
   MPI_Type_commit(&datatype);
 }
 
-
-void ValueLayerND::synchronize(){
-  syncCount++;
-  if(syncCount > 9) syncCount = 0;
-  // Note: the syncCount and send/recv directions are used to create a unique tag value for the
-  // mpi sends and receives. The tag value must be unique in two ways: first, successive calls to this
-  // function must be different enough that they can't be confused. The 'syncCount' value is used to
-  // achieve this, and it will loop from 0-9 and then repeat. The second, the tag must sometimes
-  // differentiate between sends and receives that are going to the same rank. If a dimension
-  // has only 2 processes but wrap-around borders, then one process may be sending to the other
-  // process twice (once left and once right). The 'sendDir' and 'recvDir' values trap this
-
-  // For each entry in neighbors:
-  MPI_Status statuses[neighborCount * 2];
-  for(int i = 0; i < neighborCount; i++){
-    MPI_Isend(&dataSpace[neighborData[i].sendPtrOffset], 1, neighborData[i].datatype,
-        neighborData[i].rank, 10 * (neighborData[i].sendDir + 1) + syncCount, cartTopology->topologyComm, &requests[i]);
-    MPI_Irecv(&dataSpace[neighborData[i].receivePtrOffset], 1, neighborData[i].datatype,
-        neighborData[i].rank, 10 * (neighborData[i].recvDir + 1) + syncCount, cartTopology->topologyComm, &requests[neighborCount + i]);
-  }
-  int ret = MPI_Waitall(neighborCount, requests, statuses);
-}
-
-int ValueLayerND::getSendPointerOffset(RelativeLocation relLoc){
+int AbstractValueLayerND::getSendPointerOffset(RelativeLocation relLoc){
   int rank = repast::RepastProcess::instance()->rank();
   int ret = 0;
   for(int i = 0; i < numDims; i++){
@@ -270,7 +235,7 @@ int ValueLayerND::getSendPointerOffset(RelativeLocation relLoc){
   return ret;
 }
 
-int ValueLayerND::getReceivePointerOffset(RelativeLocation relLoc){
+int AbstractValueLayerND::getReceivePointerOffset(RelativeLocation relLoc){
   int rank = repast::RepastProcess::instance()->rank();
   int ret = 0;
   for(int i = 0; i < numDims; i++){
@@ -280,16 +245,37 @@ int ValueLayerND::getReceivePointerOffset(RelativeLocation relLoc){
   return ret;
 }
 
-bool ValueLayerND::isInLocalBounds(vector<int> coords){
-  for(int i = 0; i < numDims; i++){
-    DimensionDatum* datum = &dimensionData[i];
-    if(!datum->isInLocalBounds(coords[i])) return false;
-  }
-  return true;
+
+
+
+
+int ValueLayerND::syncCount = 0;
+
+ValueLayerND::ValueLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic,
+    double initialValue, double initialBufferZoneValue): AbstractValueLayerND(processesPerDim, globalBoundaries, bufferSize, periodic){
+
+  // Create the actual arrays for the data
+  dataSpace = new double[length];
+
+  // Finally, fill the data with the initial values
+  initialize(initialValue, initialBufferZoneValue);
+
+  // And synchronize
+  synchronize();
+
 }
 
-bool ValueLayerND::isInLocalBounds(Point<int> location){
-  return isInLocalBounds(location.coords());
+ValueLayerND::~ValueLayerND(){
+  delete[] dataSpace;
+}
+
+
+void ValueLayerND::initialize(double initialValue, bool fillBufferZone, bool fillLocal){
+  fillDimension(initialValue, initialValue, fillBufferZone, fillLocal, dataSpace, numDims - 1);
+}
+
+void ValueLayerND::initialize(double initialLocalValue, double initialBufferZoneValue){
+  fillDimension(initialLocalValue, initialBufferZoneValue, true, true, dataSpace, numDims - 1);
 }
 
 double ValueLayerND::addValueAt(double val, Point<int> location){
@@ -326,6 +312,29 @@ double ValueLayerND::getValueAt(vector<int> location){
   return dataSpace[indx];
 }
 
+void ValueLayerND::synchronize(){
+  syncCount++;
+  if(syncCount > 9) syncCount = 0;
+  // Note: the syncCount and send/recv directions are used to create a unique tag value for the
+  // mpi sends and receives. The tag value must be unique in two ways: first, successive calls to this
+  // function must be different enough that they can't be confused. The 'syncCount' value is used to
+  // achieve this, and it will loop from 0-9 and then repeat. The second, the tag must sometimes
+  // differentiate between sends and receives that are going to the same rank. If a dimension
+  // has only 2 processes but wrap-around borders, then one process may be sending to the other
+  // process twice (once left and once right). The 'sendDir' and 'recvDir' values trap this
+
+  // For each entry in neighbors:
+  MPI_Status statuses[neighborCount * 2];
+  for(int i = 0; i < neighborCount; i++){
+    MPI_Isend(&dataSpace[neighborData[i].sendPtrOffset], 1, neighborData[i].datatype,
+        neighborData[i].rank, 10 * (neighborData[i].sendDir + 1) + syncCount, cartTopology->topologyComm, &requests[i]);
+    MPI_Irecv(&dataSpace[neighborData[i].receivePtrOffset], 1, neighborData[i].datatype,
+        neighborData[i].rank, 10 * (neighborData[i].recvDir + 1) + syncCount, cartTopology->topologyComm, &requests[neighborCount + i]);
+  }
+  int ret = MPI_Waitall(neighborCount, requests, statuses);
+}
+
+
 void ValueLayerND::write(string fileLocation, string fileTag, bool writeSharedBoundaryAreas){
   std::ofstream outfile;
   std::ostringstream stream;
@@ -346,6 +355,55 @@ void ValueLayerND::write(string fileLocation, string fileTag, bool writeSharedBo
   writeDimension(outfile, dataSpace, positions, numDims - 1, writeSharedBoundaryAreas);
 
   outfile.close();
+}
+
+
+void ValueLayerND::fillDimension(double localValue, double bufferValue, bool doBufferZone, bool doLocal, double* dataSpacePointer, int dimIndex){
+  if(!doBufferZone && !doLocal) return;
+  int bufferEdge = dimensionData[dimIndex].leftBufferSize;
+  int localEdge  = bufferEdge + dimensionData[dimIndex].localWidth;
+  int upperBound = localEdge + dimensionData[dimIndex].rightBufferSize;
+
+  int pointerIncrement = places[dimIndex];
+
+
+  int i = 0;
+  for(; i < bufferEdge; i++){
+    if(doBufferZone){
+      if(dimIndex == 0){
+        *dataSpacePointer = bufferValue;
+      }
+      else{
+        fillDimension(bufferValue, bufferValue, doBufferZone, doLocal, dataSpacePointer, dimIndex - 1);
+      }
+    }
+    // Increment the pointers
+    dataSpacePointer += pointerIncrement;
+  }
+  for(; i < localEdge; i++){
+    if(doLocal){
+      if(dimIndex == 0){
+        *dataSpacePointer = localValue;
+      }
+      else{
+        fillDimension(localValue, bufferValue, doBufferZone, doLocal, dataSpacePointer, dimIndex - 1);
+      }
+    }
+    // Increment the pointers
+    dataSpacePointer += pointerIncrement;
+  }
+  if(doBufferZone){ // Note: we don't need to finish this at all if not doing buffer zone
+    for(; i < upperBound; i++){
+      if(dimIndex == 0){
+        *dataSpacePointer = bufferValue;
+      }
+      else{
+        fillDimension(bufferValue, bufferValue, doBufferZone, doLocal, dataSpacePointer, dimIndex - 1);
+      }
+    }
+    dataSpacePointer += pointerIncrement;
+  }
+
 }
 
 void ValueLayerND::writeDimension(std::ofstream& outfile, double* dataSpacePointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas){
@@ -402,75 +460,6 @@ void ValueLayerND::writeDimension(std::ofstream& outfile, double* dataSpacePoint
       }
     }
     dataSpacePointer += pointerIncrement;
-  }
-
-}
-
-
-void ValueLayerND::fillDimension(double localValue, double bufferValue, bool doBufferZone, bool doLocal, double* dataSpacePointer, int dimIndex){
-  if(!doBufferZone && !doLocal) return;
-  int bufferEdge = dimensionData[dimIndex].leftBufferSize;
-  int localEdge  = bufferEdge + dimensionData[dimIndex].localWidth;
-  int upperBound = localEdge + dimensionData[dimIndex].rightBufferSize;
-
-  int pointerIncrement = places[dimIndex];
-
-
-  int i = 0;
-  for(; i < bufferEdge; i++){
-    if(doBufferZone){
-      if(dimIndex == 0){
-        *dataSpacePointer = bufferValue;
-      }
-      else{
-        fillDimension(bufferValue, bufferValue, doBufferZone, doLocal, dataSpacePointer, dimIndex - 1);
-      }
-    }
-    // Increment the pointers
-    dataSpacePointer += pointerIncrement;
-  }
-  for(; i < localEdge; i++){
-    if(doLocal){
-      if(dimIndex == 0){
-        *dataSpacePointer = localValue;
-      }
-      else{
-        fillDimension(localValue, bufferValue, doBufferZone, doLocal, dataSpacePointer, dimIndex - 1);
-      }
-    }
-    // Increment the pointers
-    dataSpacePointer += pointerIncrement;
-  }
-  if(doBufferZone){ // Note: we don't need to finish this at all if not doing buffer zone
-    for(; i < upperBound; i++){
-      if(dimIndex == 0){
-        *dataSpacePointer = bufferValue;
-      }
-      else{
-        fillDimension(bufferValue, bufferValue, doBufferZone, doLocal, dataSpacePointer, dimIndex - 1);
-      }
-    }
-    dataSpacePointer += pointerIncrement;
-  }
-
-}
-
-
-void ValueLayerND::grabDimensionData(double*& destinationPointer, double* startPointer, int radius, int dimIndex){
-  int pointerIncrement = places[dimIndex];
-  startPointer -= pointerIncrement * radius; // Go back
-  int size = 2 * radius + 1;
-  for(int i = 0; i < size; i++){
-    if(dimIndex == 0){
-      *destinationPointer = 1;
-      double myVal = *startPointer;
-      *destinationPointer = myVal;
-      destinationPointer++;                 // Handle; all recursive instances share
-    }
-    else{
-      grabDimensionData(destinationPointer, startPointer, radius, dimIndex - 1);
-    }
-    startPointer += pointerIncrement;
   }
 
 }

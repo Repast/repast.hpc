@@ -147,8 +147,65 @@ public:
 class AbstractValueLayerND{
 
 protected:
-  // No constructor
-  virtual ~AbstractValueLayerND() = 0;
+  CartesianTopology*     cartTopology;
+  int                    length;                 // Total length of the entire array (one data space)
+
+  int                    numDims;                // Number of dimensions
+  bool                   globalSpaceIsPeriodic;  // True if the global space is periodic
+
+  vector<int>            places;                 // Multipliers to calculate index, for each dimension
+  vector<int>            strides;                // Sizes of each dimensions, in bytes
+  vector<DimensionDatum> dimensionData;          // List of data for each dimension
+  RankDatum*             neighborData;           // List of data for each adjacent rank
+  int                    neighborCount;          // Count of adjacent ranks
+  MPI_Request*           requests;               // Pointer to MPI requests (for wait operations)
+
+
+  AbstractValueLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries,int bufferSize, bool periodic);
+  virtual ~AbstractValueLayerND();
+
+
+public:
+
+  /**
+   * Returns true only if the coordinates given are within the local boundaries
+   */
+  bool isInLocalBounds(vector<int> coords);
+
+  /*
+   * Returns true only if the coordinates given are within the local boundaries
+   */
+  bool isInLocalBounds(Point<int> location);
+
+
+protected:
+  // Methods implemented in this class but visible only to child classes:
+  /**
+   * Gets a vector of the indexed locations. If the
+   * value passed is already simplified (transformed),
+   * does not transform.
+   */
+  vector<int> getIndexes(vector<int> location, bool isSimplified = false);
+
+  /**
+   * Given a location in global simulation coordinates,
+   * get the offset from the global base pointer to the
+   * position in the global array representing that location.
+   * The location may be simplified (transformed); if it is
+   * not, it is first simplified before the index is calculated.
+   */
+  int getIndex(vector<int> location, bool isSimplified = false);
+
+
+  /**
+   * Given a location in global simulation coordinates,
+   * get the offset from the global base pointer to the
+   * position in the global array representing that location
+   */
+  int getIndex(Point<int> location);
+
+
+  // Virtual methods (implemented by child classes
 
   /**
    * Initializes the array to the specified value
@@ -171,16 +228,6 @@ protected:
    * initialize(val1, val2); // Initializes the local space to val1 and the buffer zones to val2
    */
   virtual void initialize(double initialLocalValue, double initialBufferZoneValue) = 0;
-
-  /**
-   * Returns true only if the coordinates given are within the local boundaries
-   */
-  virtual bool isInLocalBounds(vector<int> coords) = 0;
-
-  /*
-   * Returns true only if the coordinates given are within the local boundaries
-   */
-  virtual bool isInLocalBounds(Point<int> location) = 0;
 
   /**
    * Add to the value in the grid at a specific location
@@ -216,7 +263,6 @@ protected:
    */
   virtual double getValueAt(vector<int> location) = 0;
 
-
   /**
    * Synchronize across processes. This copies
    * the values in the interior 'buffer zones' from
@@ -227,11 +273,56 @@ protected:
    */
   virtual void synchronize() = 0;
 
+private:
 
   /**
-   * Write this rank's data to a CSV file
+   * Gets an MPI data type given the RelativeLocation
+   * and an index indicating which entry in the RelativeLocation
+   * is being requested. Typical use will be recursive: if
+   * there are N dimensions, this class will be called with
+   * dimensionIndex = N - 1, which will call itself with N-2,
+   * repeating until N = 0.
    */
-  virtual void write(string fileLocation, string filetag, bool writeSharedBoundaryAreas = false) = 0;
+  void getMPIDataType(RelativeLocation relLoc, MPI_Datatype &datatype);
+
+  /**
+   * A variant of the getMPIDataType function, this
+   * one assumes that you are retrieving a block with side
+   * 2 x radius + 1 in all dimensions;
+   */
+  void getMPIDataType(int radius, MPI_Datatype &datatype);
+
+  /**
+   * Gets an MPI data type given the list of side lengths
+   */
+  void getMPIDataType(vector<int> sideLengths, MPI_Datatype &datatype, int dimensionIndex);
+
+
+  /**
+   * Given a relative location, calculates the index value for the
+   * first unit that should be in the 'send' buffer. Generally,
+   * if the relative location value for a given dimension is
+   * -1 or 0, the offset in that dimension should be equal to the
+   * buffer zone width, and if it is 1, the offset should be equal
+   * to the local width (technically buffer + local - buffer)
+   * Note: Assumes RelativeLocation will only include values
+   * of -1, 0, and 1
+   */
+  int getSendPointerOffset(RelativeLocation relLoc);
+
+  /**
+   * Given a relative location, calculates the index value for the
+   * first unit that should be in the 'receive' buffer. Generally,
+   * if the relative location value for a given dimension is
+   * -1, the offset should be zero; if it is 0, the offset should
+   * be equal to the buffer width; and if it is 1, the offset
+   * should be equal to the buffer width + the local width
+   * (or, equivalently, the total width - buffer width)
+   * Note: Assumes RelativeLocation will only include values
+   * of -1, 0, and 1
+   */
+  int getReceivePointerOffset(RelativeLocation relLoc);
+
 
 };
 
@@ -300,20 +391,7 @@ protected:
 class ValueLayerND: public AbstractValueLayerND{
 
 private:
-  CartesianTopology*     cartTopology;
   double*                dataSpace;              // Pointer to the data space
-  int                    length;                 // Total length of the entire array (one data space)
-
-  int                    numDims;                // Number of dimensions
-  bool                   globalSpaceIsPeriodic;  // True if the global space is periodic
-
-  vector<int>            places;                 // Multipliers to calculate index, for each dimension
-  vector<int>            strides;                // Sizes of each dimensions, in bytes
-  vector<DimensionDatum> dimensionData;          // List of data for each dimension
-  RankDatum*             neighborData;           // List of data for each adjacent rank
-  int                    neighborCount;          // Count of adjacent ranks
-  MPI_Request*           requests;               // Pointer to MPI requests (for wait operations)
-
 
 public:
   static int syncCount;
@@ -331,17 +409,6 @@ public:
    * Inherited from AbstractValueLayerND
    */
   virtual void initialize(double initialLocalValue, double initialBufferZoneValue);
-
-
-  /**
-   * Inherited from AbstractValueLayerND
-   */
-  virtual bool isInLocalBounds(vector<int> coords);
-
-  /**
-   * Inherited from AbstractValueLayerND
-   */
-  virtual bool isInLocalBounds(Point<int> location);
 
   /**
    * Inherited from AbstractValueLayerND
@@ -379,88 +446,13 @@ public:
   virtual void synchronize();
 
   /**
-   * Inherited from AbstractValueLayerND
+   * Write this rank's data to a CSV file
    */
-  virtual void write(string fileLocation, string filetag, bool writeSharedBoundaryAreas = false);
+  void write(string fileLocation, string filetag, bool writeSharedBoundaryAreas = false);
 
-  /*
-   * Writes one dimension's information to the specified csv file.
-   */
-  void writeDimension(std::ofstream& outfile, double* dataSpacePointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas = false);
 
 private:
 
-  /**
-   * Gets a vector of the indexed locations. If the
-   * value passed is already simplified (transformed),
-   * does not transform.
-   */
-  vector<int> getIndexes(vector<int> location, bool isSimplified = false);
-
-  /**
-   * Given a location in global simulation coordinates,
-   * get the offset from the global base pointer to the
-   * position in the global array representing that location.
-   * The location may be simplified (transformed); if it is
-   * not, it is first simplified before the index is calculated.
-   */
-  int getIndex(vector<int> location, bool isSimplified = false);
-
-
-  /**
-   * Given a location in global simulation coordinates,
-   * get the offset from the global base pointer to the
-   * position in the global array representing that location
-   */
-  int getIndex(Point<int> location);
-
-  /**
-   * Gets an MPI data type given the RelativeLocation
-   * and an index indicating which entry in the RelativeLocation
-   * is being requested. Typical use will be recursive: if
-   * there are N dimensions, this class will be called with
-   * dimensionIndex = N - 1, which will call itself with N-2,
-   * repeating until N = 0.
-
-   */
-  void getMPIDataType(RelativeLocation relLoc, MPI_Datatype &datatype);
-
-  /**
-   * A variant of the getMPIDataType function, this
-   * one assumes that you are retrieving a block with side
-   * 2 x radius + 1 in all dimensions;
-   */
-  void getMPIDataType(int radius, MPI_Datatype &datatype);
-
-  /**
-   * Gets an MPI data type given the list of side lengths
-   */
-  void getMPIDataType(vector<int> sideLengths, MPI_Datatype &datatype, int dimensionIndex);
-
-  /**
-   * Given a relative location, calculates the index value for the
-   * first unit that should be in the 'send' buffer. Generally,
-   * if the relative location value for a given dimension is
-   * -1 or 0, the offset in that dimension should be equal to the
-   * buffer zone width, and if it is 1, the offset should be equal
-   * to the local width (technically buffer + local - buffer)
-   * Note: Assumes RelativeLocation will only include values
-   * of -1, 0, and 1
-   */
-  int getSendPointerOffset(RelativeLocation relLoc);
-
-  /**
-   * Given a relative location, calculates the index value for the
-   * first unit that should be in the 'receive' buffer. Generally,
-   * if the relative location value for a given dimension is
-   * -1, the offset should be zero; if it is 0, the offset should
-   * be equal to the buffer width; and if it is 1, the offset
-   * should be equal to the buffer width + the local width
-   * (or, equivalently, the total width - buffer width)
-   * Note: Assumes RelativeLocation will only include values
-   * of -1, 0, and 1
-   */
-  int getReceivePointerOffset(RelativeLocation relLoc);
 
   /**
    * Fills a dimension of space with the given value. Used for initialization
@@ -468,7 +460,11 @@ private:
    */
   void fillDimension(double localValue, double bufferZoneValue, bool doBufferZone, bool doLocal, double* dataSpacePointer, int dimIndex);
 
-  void grabDimensionData(double*& destinationPointer, double* startPointer, int radius, int dimIndex);
+  /*
+   * Writes one dimension's information to the specified csv file.
+   */
+  void writeDimension(std::ofstream& outfile, double* dataSpacePointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas = false);
+
 };
 
 

@@ -65,61 +65,14 @@ int Diffusor::getRadius(){
 
 int DiffusionLayerND::syncCount = 0;
 
-DiffusionLayerND::DiffusionLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic, double initialValue, double initialBufferZoneValue): globalSpaceIsPeriodic(periodic){
-  cartTopology = RepastProcess::instance()->getCartesianTopology(processesPerDim, periodic);
-  int rank = RepastProcess::instance()->rank();
-  GridDimensions localBoundaries = cartTopology->getDimensions(rank, globalBoundaries);
-
-  // Calculate the size to be used for the buffers
-  numDims = processesPerDim.size();
-
-  // First create the basic coordinate data per dimension
-  length = 1;
-  int val = 1;
-  for(int i = 0; i < numDims; i++){
-    DimensionDatum datum(i, globalBoundaries, localBoundaries, bufferSize, periodic);
-    length *= datum.width;
-    dimensionData.push_back(datum);
-    places.push_back(val);
-    strides.push_back(val * sizeof(double));
-    val *= dimensionData[i].width;
-  }
-
-  // Now create the rank-based data per neighbor
-  RelativeLocation relLoc(numDims);
-  RelativeLocation relLocTrimmed = cartTopology->trim(rank, relLoc); // Initialized to minima
-
-  vector<int> myCoordinates;
-  cartTopology->getCoordinates(rank, myCoordinates);
-
-  neighborData = new RankDatum[relLoc.getMaxIndex()];
-  neighborCount = 0;
-  int i = 0;
-  do{
-    if(relLoc.validNonCenter()){ // Skip 0,0,0,0,0
-      RankDatum* datum;
-      datum = &neighborData[neighborCount];
-      // Collect the information about this rank here
-      getMPIDataType(relLoc, datum->datatype);
-      datum->sendPtrOffset    = getSendPointerOffset(relLoc);
-      datum->receivePtrOffset = getReceivePointerOffset(relLoc);
-      vector<int> current = relLoc.getCurrentValue();
-      datum->rank = cartTopology->getRank(myCoordinates, current);
-      datum->sendDir = RelativeLocation::getDirectionIndex(current);
-      datum->recvDir = RelativeLocation::getReverseDirectionIndex(current);
-
-      neighborCount++;
-    }
-  }while(relLoc.increment());
+DiffusionLayerND::DiffusionLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic,
+    double initialValue, double initialBufferZoneValue): AbstractValueLayerND(processesPerDim, globalBoundaries, bufferSize, periodic){
 
   // Create the actual arrays for the data
   dataSpace1 = new double[length];
   dataSpace2 = new double[length];
   currentDataSpace = dataSpace1;
   otherDataSpace   = dataSpace2;
-
-  // Create arrays for MPI requests and results (statuses)
-  requests = new MPI_Request[neighborCount * 2];
 
   // Finally, fill the data with the initial values
   initialize(initialValue, initialBufferZoneValue);
@@ -132,8 +85,6 @@ DiffusionLayerND::DiffusionLayerND(vector<int> processesPerDim, GridDimensions g
 DiffusionLayerND::~DiffusionLayerND(){
   delete[] currentDataSpace;
   delete[] otherDataSpace;
-  delete[] neighborData; // Should Free MPI Datatypes first...
-  delete[] requests;
 }
 
 
@@ -145,125 +96,6 @@ void DiffusionLayerND::initialize(double initialLocalValue, double initialBuffer
   fillDimension(initialLocalValue, initialBufferZoneValue, true, true, dataSpace1, dataSpace2, numDims - 1);
 }
 
-void DiffusionLayerND::diffuse(Diffusor* diffusor, bool omitSynchronize){
-  int countOfVals = (int)(pow(diffusor->getRadius() * 2 + 1, numDims));
-  double* vals = new double[countOfVals];
-
-  diffuseDimension(currentDataSpace, otherDataSpace, vals, diffusor, numDims - 1);
-
-  // Switch the data banks
-  double* tempDataSpace = currentDataSpace;
-  currentDataSpace      = otherDataSpace;
-  otherDataSpace        = tempDataSpace;
-
-  if(!omitSynchronize) synchronize();
-
-  delete[] vals;
-}
-
-
-vector<int> DiffusionLayerND::getIndexes(vector<int> location, bool isSimplified){
-  vector<int> ret;
-  ret.assign(numDims, 0); // Make the right amount of space
-  for(int i = 0; i < numDims; i++) ret[i] = dimensionData[i].getIndexedCoord(location[i], isSimplified);
-  return ret;
-}
-
-int DiffusionLayerND::getIndex(vector<int> location, bool isSimplified){
-  vector<int> indexed = getIndexes(location, isSimplified);
-  int val = 0;
-  for(int i = numDims - 1; i >= 0; i--) val += indexed[i] * places[i];
-  if(val < 0 || val > length) val = -1;
-  return val;
-}
-
-int DiffusionLayerND::getIndex(Point<int> location){
-  return getIndex(location.coords());
-}
-
-void DiffusionLayerND::getMPIDataType(RelativeLocation relLoc, MPI_Datatype &datatype){
-  vector<int> sideLengths;
-  for(int i = 0; i < numDims; i++) sideLengths.push_back(dimensionData[i].getSendReceiveSize(relLoc[i]));
-  getMPIDataType(sideLengths, datatype, numDims - 1);
-}
-
-void DiffusionLayerND::getMPIDataType(int radius, MPI_Datatype &datatype){
-  vector<int> sideLengths;
-  sideLengths.assign(numDims, 2 * radius + 1);
-  getMPIDataType(sideLengths, datatype, numDims - 1);
-}
-
-void DiffusionLayerND::getMPIDataType(vector<int> sideLengths, MPI_Datatype &datatype, int dimensionIndex){
-  if(dimensionIndex == 0){
-    MPI_Type_contiguous(sideLengths[dimensionIndex], MPI_DOUBLE, &datatype);
-  }
-  else{
-    MPI_Datatype innerType;
-    getMPIDataType(sideLengths, innerType, dimensionIndex - 1);
-    MPI_Type_hvector(sideLengths[dimensionIndex], // Count
-                     1,                                                                        // BlockLength: just one of the inner data type
-                     strides[dimensionIndex],                                                  // Stride, in bytes
-                     innerType,                                                                // Inner Datatype
-                     &datatype);
-  }
-  // Commit?
-  MPI_Type_commit(&datatype);
-}
-
-
-void DiffusionLayerND::synchronize(){
-  syncCount++;
-  if(syncCount > 9) syncCount = 0;
-  // Note: the syncCount and send/recv directions are used to create a unique tag value for the
-  // mpi sends and receives. The tag value must be unique in two ways: first, successive calls to this
-  // function must be different enough that they can't be confused. The 'syncCount' value is used to
-  // achieve this, and it will loop from 0-9 and then repeat. The second, the tag must sometimes
-  // differentiate between sends and receives that are going to the same rank. If a dimension
-  // has only 2 processes but wrap-around borders, then one process may be sending to the other
-  // process twice (once left and once right). The 'sendDir' and 'recvDir' values trap this
-
-  // For each entry in neighbors:
-  MPI_Status statuses[neighborCount * 2];
-  for(int i = 0; i < neighborCount; i++){
-    MPI_Isend(&currentDataSpace[neighborData[i].sendPtrOffset], 1, neighborData[i].datatype,
-        neighborData[i].rank, 10 * (neighborData[i].sendDir + 1) + syncCount, cartTopology->topologyComm, &requests[i]);
-    MPI_Irecv(&currentDataSpace[neighborData[i].receivePtrOffset], 1, neighborData[i].datatype,
-        neighborData[i].rank, 10 * (neighborData[i].recvDir + 1) + syncCount, cartTopology->topologyComm, &requests[neighborCount + i]);
-  }
-  int ret = MPI_Waitall(neighborCount, requests, statuses);
-}
-
-int DiffusionLayerND::getSendPointerOffset(RelativeLocation relLoc){
-  int rank = repast::RepastProcess::instance()->rank();
-  int ret = 0;
-  for(int i = 0; i < numDims; i++){
-    DimensionDatum* datum = &dimensionData[i];
-    ret += (relLoc[i] <= 0 ? datum->leftBufferSize : datum->width - (2 * datum->rightBufferSize)) * places[i];
-  }
-  return ret;
-}
-
-int DiffusionLayerND::getReceivePointerOffset(RelativeLocation relLoc){
-  int rank = repast::RepastProcess::instance()->rank();
-  int ret = 0;
-  for(int i = 0; i < numDims; i++){
-    DimensionDatum* datum = &dimensionData[i];
-    ret += (relLoc[i] < 0 ? 0 : (relLoc[i] == 0 ? datum->leftBufferSize : datum->width - datum->rightBufferSize)) * places[i];
-  }
-  return ret;
-}
-
-bool DiffusionLayerND::isInLocalBounds(vector<int> coords){
-  for(int i = 0; i < numDims; i++){
-    DimensionDatum* datum = &dimensionData[i];
-    if(!datum->isInLocalBounds(coords[i])) return false;
-  }
-  return true;
-}
-
-bool DiffusionLayerND::isInLocalBounds(Point<int> location){
-  return isInLocalBounds(location.coords());
-}
 
 double DiffusionLayerND::addValueAt(double val, Point<int> location){
   int indx = getIndex(location);
@@ -299,6 +131,47 @@ double DiffusionLayerND::getValueAt(vector<int> location){
   return currentDataSpace[indx];
 }
 
+
+
+void DiffusionLayerND::synchronize(){
+  syncCount++;
+  if(syncCount > 9) syncCount = 0;
+  // Note: the syncCount and send/recv directions are used to create a unique tag value for the
+  // mpi sends and receives. The tag value must be unique in two ways: first, successive calls to this
+  // function must be different enough that they can't be confused. The 'syncCount' value is used to
+  // achieve this, and it will loop from 0-9 and then repeat. The second, the tag must sometimes
+  // differentiate between sends and receives that are going to the same rank. If a dimension
+  // has only 2 processes but wrap-around borders, then one process may be sending to the other
+  // process twice (once left and once right). The 'sendDir' and 'recvDir' values trap this
+
+  // For each entry in neighbors:
+  MPI_Status statuses[neighborCount * 2];
+  for(int i = 0; i < neighborCount; i++){
+    MPI_Isend(&currentDataSpace[neighborData[i].sendPtrOffset], 1, neighborData[i].datatype,
+        neighborData[i].rank, 10 * (neighborData[i].sendDir + 1) + syncCount, cartTopology->topologyComm, &requests[i]);
+    MPI_Irecv(&currentDataSpace[neighborData[i].receivePtrOffset], 1, neighborData[i].datatype,
+        neighborData[i].rank, 10 * (neighborData[i].recvDir + 1) + syncCount, cartTopology->topologyComm, &requests[neighborCount + i]);
+  }
+  int ret = MPI_Waitall(neighborCount, requests, statuses);
+}
+
+void DiffusionLayerND::diffuse(Diffusor* diffusor, bool omitSynchronize){
+  int countOfVals = (int)(pow(diffusor->getRadius() * 2 + 1, numDims));
+  double* vals = new double[countOfVals];
+
+  diffuseDimension(currentDataSpace, otherDataSpace, vals, diffusor, numDims - 1);
+
+  // Switch the data banks
+  double* tempDataSpace = currentDataSpace;
+  currentDataSpace      = otherDataSpace;
+  otherDataSpace        = tempDataSpace;
+
+  if(!omitSynchronize) synchronize();
+
+  delete[] vals;
+}
+
+
 void DiffusionLayerND::write(string fileLocation, string fileTag, bool writeSharedBoundaryAreas){
   std::ofstream outfile;
   std::ostringstream stream;
@@ -320,6 +193,111 @@ void DiffusionLayerND::write(string fileLocation, string fileTag, bool writeShar
 
   outfile.close();
 }
+
+
+
+void DiffusionLayerND::fillDimension(double localValue, double bufferValue, bool doBufferZone, bool doLocal, double* dataSpace1Pointer, double* dataSpace2Pointer, int dimIndex){
+  if(!doBufferZone && !doLocal) return;
+  int bufferEdge = dimensionData[dimIndex].leftBufferSize;
+  int localEdge  = bufferEdge + dimensionData[dimIndex].localWidth;
+  int upperBound = localEdge + dimensionData[dimIndex].rightBufferSize;
+
+  int pointerIncrement = places[dimIndex];
+
+
+  int i = 0;
+  for(; i < bufferEdge; i++){
+    if(doBufferZone){
+      if(dimIndex == 0){
+        *dataSpace1Pointer = bufferValue;
+        *dataSpace2Pointer = bufferValue;
+      }
+      else{
+        fillDimension(bufferValue, bufferValue, doBufferZone, doLocal, dataSpace1Pointer, dataSpace2Pointer, dimIndex - 1);
+      }
+    }
+    // Increment the pointers
+    dataSpace1Pointer += pointerIncrement;
+    dataSpace2Pointer += pointerIncrement;
+  }
+  for(; i < localEdge; i++){
+    if(doLocal){
+      if(dimIndex == 0){
+        *dataSpace1Pointer = localValue;
+        *dataSpace2Pointer = localValue;
+      }
+      else{
+        fillDimension(localValue, bufferValue, doBufferZone, doLocal, dataSpace1Pointer, dataSpace2Pointer, dimIndex - 1);
+      }
+    }
+    // Increment the pointers
+    dataSpace1Pointer += pointerIncrement;
+    dataSpace2Pointer += pointerIncrement;
+  }
+  if(doBufferZone){ // Note: we don't need to finish this at all if not doing buffer zone
+    for(; i < upperBound; i++){
+      if(dimIndex == 0){
+        *dataSpace1Pointer = bufferValue;
+        *dataSpace2Pointer = bufferValue;
+      }
+      else{
+        fillDimension(bufferValue, bufferValue, doBufferZone, doLocal, dataSpace1Pointer, dataSpace2Pointer, dimIndex - 1);
+      }
+    }
+    dataSpace1Pointer += pointerIncrement;
+    dataSpace2Pointer += pointerIncrement;
+  }
+
+}
+
+void DiffusionLayerND::diffuseDimension(double* currentDataSpacePointer, double* otherDataSpacePointer, double* vals, Diffusor* diffusor, int dimIndex){
+  int bufferEdge = dimensionData[dimIndex].leftBufferSize;
+  int localEdge  = bufferEdge + dimensionData[dimIndex].localWidth;
+
+  int pointerIncrement = places[dimIndex];
+
+  int i = 0;
+  for(; i < bufferEdge; i++){
+    // Increment the pointers
+    currentDataSpacePointer += pointerIncrement;
+    otherDataSpacePointer   += pointerIncrement;
+  }
+  for(; i < localEdge; i++){
+    if(dimIndex == 0){
+      // Populate the vals array
+      double* destLocation = vals; // Note: This gets passed as a handle and changed
+      grabDimensionData(destLocation, currentDataSpacePointer, diffusor->getRadius(), numDims - 1);
+      *otherDataSpacePointer = diffusor->getNewValue(vals);
+    }
+    else{
+      diffuseDimension(currentDataSpacePointer, otherDataSpacePointer, vals, diffusor, dimIndex - 1);
+    }
+    // Increment the pointers
+    currentDataSpacePointer += pointerIncrement;
+    otherDataSpacePointer   += pointerIncrement;
+  }
+}
+
+
+void DiffusionLayerND::grabDimensionData(double*& destinationPointer, double* startPointer, int radius, int dimIndex){
+  int pointerIncrement = places[dimIndex];
+  startPointer -= pointerIncrement * radius; // Go back
+  int size = 2 * radius + 1;
+  for(int i = 0; i < size; i++){
+    if(dimIndex == 0){
+      *destinationPointer = 1;
+      double myVal = *startPointer;
+      *destinationPointer = myVal;
+      destinationPointer++;                 // Handle; all recursive instances share
+    }
+    else{
+      grabDimensionData(destinationPointer, startPointer, radius, dimIndex - 1);
+    }
+    startPointer += pointerIncrement;
+  }
+
+}
+
 
 void DiffusionLayerND::writeDimension(std::ofstream& outfile, double* dataSpacePointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas){
   int bufferEdge = dimensionData[dimIndex].leftBufferSize;
@@ -380,107 +358,8 @@ void DiffusionLayerND::writeDimension(std::ofstream& outfile, double* dataSpaceP
 }
 
 
-void DiffusionLayerND::fillDimension(double localValue, double bufferValue, bool doBufferZone, bool doLocal, double* dataSpace1Pointer, double* dataSpace2Pointer, int dimIndex){
-  if(!doBufferZone && !doLocal) return;
-  int bufferEdge = dimensionData[dimIndex].leftBufferSize;
-  int localEdge  = bufferEdge + dimensionData[dimIndex].localWidth;
-  int upperBound = localEdge + dimensionData[dimIndex].rightBufferSize;
-
-  int pointerIncrement = places[dimIndex];
 
 
-  int i = 0;
-  for(; i < bufferEdge; i++){
-    if(doBufferZone){
-      if(dimIndex == 0){
-        *dataSpace1Pointer = bufferValue;
-        *dataSpace2Pointer = bufferValue;
-      }
-      else{
-        fillDimension(bufferValue, bufferValue, doBufferZone, doLocal, dataSpace1Pointer, dataSpace2Pointer, dimIndex - 1);
-      }
-    }
-    // Increment the pointers
-    dataSpace1Pointer += pointerIncrement;
-    dataSpace2Pointer += pointerIncrement;
-  }
-  for(; i < localEdge; i++){
-    if(doLocal){
-      if(dimIndex == 0){
-        *dataSpace1Pointer = localValue;
-        *dataSpace2Pointer = localValue;
-      }
-      else{
-        fillDimension(localValue, bufferValue, doBufferZone, doLocal, dataSpace1Pointer, dataSpace2Pointer, dimIndex - 1);
-      }
-    }
-    // Increment the pointers
-    dataSpace1Pointer += pointerIncrement;
-    dataSpace2Pointer += pointerIncrement;
-  }
-  if(doBufferZone){ // Note: we don't need to finish this at all if not doing buffer zone
-    for(; i < upperBound; i++){
-      if(dimIndex == 0){
-        *dataSpace1Pointer = bufferValue;
-        *dataSpace2Pointer = bufferValue;
-      }
-      else{
-        fillDimension(bufferValue, bufferValue, doBufferZone, doLocal, dataSpace1Pointer, dataSpace2Pointer, dimIndex - 1);
-      }
-    }
-    dataSpace1Pointer += pointerIncrement;
-    dataSpace2Pointer += pointerIncrement;
-  }
-
-}
-
-
-void DiffusionLayerND::diffuseDimension(double* currentDataSpacePointer, double* otherDataSpacePointer, double* vals, Diffusor* diffusor, int dimIndex){
-  int bufferEdge = dimensionData[dimIndex].leftBufferSize;
-  int localEdge  = bufferEdge + dimensionData[dimIndex].localWidth;
-
-  int pointerIncrement = places[dimIndex];
-
-  int i = 0;
-  for(; i < bufferEdge; i++){
-    // Increment the pointers
-    currentDataSpacePointer += pointerIncrement;
-    otherDataSpacePointer   += pointerIncrement;
-  }
-  for(; i < localEdge; i++){
-    if(dimIndex == 0){
-      // Populate the vals array
-      double* destLocation = vals; // Note: This gets passed as a handle and changed
-      grabDimensionData(destLocation, currentDataSpacePointer, diffusor->getRadius(), numDims - 1);
-      *otherDataSpacePointer = diffusor->getNewValue(vals);
-    }
-    else{
-      diffuseDimension(currentDataSpacePointer, otherDataSpacePointer, vals, diffusor, dimIndex - 1);
-    }
-    // Increment the pointers
-    currentDataSpacePointer += pointerIncrement;
-    otherDataSpacePointer   += pointerIncrement;
-  }
-}
-
-void DiffusionLayerND::grabDimensionData(double*& destinationPointer, double* startPointer, int radius, int dimIndex){
-  int pointerIncrement = places[dimIndex];
-  startPointer -= pointerIncrement * radius; // Go back
-  int size = 2 * radius + 1;
-  for(int i = 0; i < size; i++){
-    if(dimIndex == 0){
-      *destinationPointer = 1;
-      double myVal = *startPointer;
-      *destinationPointer = myVal;
-      destinationPointer++;                 // Handle; all recursive instances share
-    }
-    else{
-      grabDimensionData(destinationPointer, startPointer, radius, dimIndex - 1);
-    }
-    startPointer += pointerIncrement;
-  }
-
-}
 
 
 /** UNIT TESTS **/
