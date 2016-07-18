@@ -47,7 +47,6 @@
 
 #include "mpi.h"
 
-#include "GridDimensions.h"
 #include "RelativeLocation.h"
 #include "CartesianTopology.h"
 #include "RepastProcess.h"
@@ -56,79 +55,6 @@
 using namespace std;
 
 namespace repast {
-
-/**
- * The DimensionDatum class stores all of the data that the
- * DiffusionLayerND class will need for each dimension in the
- * N-dimensional space. This mainly includes coordinate boundaries
- * along each dimension, but these boundaries include local,
- * global, and a few other memoized variants.
- */
-class DimensionDatum{
-public:
-  DimensionDatum(int indx, GridDimensions globalBoundaries, GridDimensions localBoundaries, int buffer, bool isPeriodic);
-  virtual ~DimensionDatum(){}
-
-  int  globalCoordinateMin, globalCoordinateMax;            // Coordinates of the global simulation boundaries
-  int  localBoundariesMin, localBoundariesMax;              // Coordinates of the local process boundaries in this layer
-  int  simplifiedBoundariesMin, simplifiedBoundariesMax;    // Coordinates of the 'simplified' coordinates (assuming local boundary origins and NO wrapping)
-  int  leftBufferSize, rightBufferSize;                     // Buffer size
-  int  matchingCoordinateMin, matchingCoordinateMax;        // Region within simplified boundaries within which coordinates match Global Simulation Coordinate system
-  bool periodic;                                            // True if the global simulation space is periodic on this dimension
-  bool atLeftBound, atRightBound;                           // True if the local boundaries abut the global boundaries (whether periodic or not)
-  bool spaceContinuesLeft, spaceContinuesRight;             // False if the local boundaries abut the (non-periodic) global boundaries
-  int  globalWidth;                                         // Global width of the simulation boundaries in simulation units
-  int  localWidth;                                          // Width of the local boundaries
-  int  width;                                               // Total width (units = double) on this dimension (local extents + buffer sizes if not against global nonperiodic bounds)
-  int  widthInBytes;
-
-  int  getSendReceiveSize(int relativeLocation);
-
-  /**
-   * Given a coordinate in global simulation coordinates,
-   * returns the value in simplified coordinates.
-   *
-   * For example, suppose the global space is from 0 to 100,
-   * and the local space is from 0 to 10, and the buffer
-   * zone value is 3. The simplified coordinates for
-   * this region of the local space will be -3 to 13.
-   * If the value passed to this function
-   * is 99, this function will return -1.
-   */
-  int getTransformedCoord(int originalCoord);
-
-  /**
-   * Given a coordinate, returns the index of that coordinate.
-   * The original coordinate may be in global simulation coordinates
-   * or in 'simplified' coordinates. If it is not in simplified
-   * coordinates, the first step is to simplify.
-   *
-   * For example, suppose the global space is from 0 to 100,
-   * and the local space is from 0 to 10, and the buffer zone
-   * value is 3. Passing 99 in global coordinates is equivalent
-   * to passing -1 in simplified coordinates. The index value
-   * in both cases is ((-1) - (-3)) or 2.
-   */
-  int getIndexedCoord(int originalCoord, bool isSimplified = false);
-
-  /**
-   * Returns true if the specified coordinate is within the local boundaries
-   * on this dimension.
-   */
-  bool isInLocalBounds(int originalCoord);
-
-
-  void report(int dimensionNumber){
-    std::cout << repast::RepastProcess::instance()->rank() << " " << dimensionNumber << " " <<
-                 "global (" << globalCoordinateMin     << ", " << globalCoordinateMax     << ") " <<
-                 "local  (" << localBoundariesMin      << ", " << localBoundariesMax      << ") " <<
-                 "simple (" << simplifiedBoundariesMin << ", " << simplifiedBoundariesMax << ") " <<
-                 "match  (" << matchingCoordinateMin   << ", " << matchingCoordinateMax   << ") " <<
-                 "globalWidth = " << globalWidth << " localWidth = " << localWidth << " width = " << width << " bytes = " << widthInBytes << std::endl;
-  }
-};
-
-
 
 /**
  * A Diffusor is a custom class that performs diffusion.

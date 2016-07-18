@@ -46,64 +46,6 @@ using namespace std;
 
 namespace repast {
 
-DimensionDatum::DimensionDatum(int indx, GridDimensions globalBoundaries, GridDimensions localBoundaries, int buffer, bool isPeriodic):
-    leftBufferSize(buffer), rightBufferSize(buffer), periodic(isPeriodic){
-  globalCoordinateMin = globalBoundaries.origin(indx);
-  globalCoordinateMax = globalBoundaries.origin(indx) + globalBoundaries.extents(indx);
-  localBoundariesMin  = localBoundaries.origin(indx);
-  localBoundariesMax  = localBoundaries.origin(indx) + localBoundaries.extents(indx);
-
-  atLeftBound  = localBoundariesMin == globalCoordinateMin;
-  atRightBound = localBoundariesMax == globalCoordinateMax;
-
-  spaceContinuesLeft  = !atLeftBound  || periodic;
-  spaceContinuesRight = !atRightBound || periodic;
-
-  simplifiedBoundariesMin  = localBoundariesMin - leftBufferSize;
-  simplifiedBoundariesMax  = localBoundariesMax + rightBufferSize;
-
-  matchingCoordinateMin    = localBoundariesMin;
-  if(spaceContinuesLeft  && !atLeftBound ) matchingCoordinateMin -= leftBufferSize;
-
-  matchingCoordinateMax    = localBoundariesMax;
-  if(spaceContinuesRight && !atRightBound) matchingCoordinateMax += rightBufferSize;
-
-  globalWidth = globalCoordinateMax - globalCoordinateMin;
-  localWidth = localBoundariesMax - localBoundariesMin;
-  width = leftBufferSize + localWidth + rightBufferSize;
-  widthInBytes = width * (sizeof(double));
-}
-
-int DimensionDatum::getSendReceiveSize(int relativeLocation){
-  switch(relativeLocation){
-    case -1:  return leftBufferSize;
-    case  1:  return rightBufferSize;
-    case  0:
-    default:
-      return localWidth;
-  }
-}
-
-int DimensionDatum::getTransformedCoord(int originalCoord){
-  if(originalCoord < matchingCoordinateMin){        // Assume (!) original is on right (!) side of periodic boundary, starting at some value
-    return matchingCoordinateMax + (originalCoord - globalCoordinateMin);
-  }
-  else if(originalCoord > matchingCoordinateMax){
-    return matchingCoordinateMin - (globalCoordinateMax - originalCoord);
-  }
-  else return originalCoord; // Within matching boundaries; no need to transform
-
-}
-
-
-int DimensionDatum::getIndexedCoord(int originalCoord, bool isSimplified){
-  return (isSimplified ? originalCoord : getTransformedCoord(originalCoord)) - simplifiedBoundariesMin;
-}
-
-bool DimensionDatum::isInLocalBounds(int originalCoord){
-  return originalCoord >= localBoundariesMin && originalCoord < localBoundariesMax;
-}
-
 /**
  * Empty constructor
  */
