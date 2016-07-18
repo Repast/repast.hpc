@@ -41,12 +41,30 @@
 #ifndef VALUELAYERND_H_
 #define VALUELAYERND_H_
 
+#include "mpi.h"
+
 #include "Point.h"
 
 using namespace std;
 
 namespace repast {
 
+/**
+ * The RankDatum struct stores the data that the DiffusionLayerND
+ * class will need for each of its 3^N - 1 neighboring ranks.
+ * N.B.: We could use a map from rank to the rest of the data, but
+ * we will rarely need to index it that way, and instead can just
+ * loop through it
+ *
+ */
+struct RankDatum{
+  int            rank;
+  MPI_Datatype   datatype;
+  int            sendPtrOffset;
+  int            receivePtrOffset;
+  int            sendDir;  // Integer representing the direction a send will be sent, in N-space
+  int            recvDir;  // Integer representing the directtion a receive will have been sent, in N-space
+};
 
 class AbstractValueLayerND{
 
