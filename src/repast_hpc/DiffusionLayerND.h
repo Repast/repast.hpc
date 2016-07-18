@@ -258,7 +258,7 @@ public:
  * the size of the buffer zone.
  *
  */
-class DiffusionLayerND{
+class DiffusionLayerND: public AbstractValueLayerND{
 
 private:
   CartesianTopology*     cartTopology;
@@ -287,26 +287,65 @@ public:
   virtual ~DiffusionLayerND();
 
   /**
-   * Initializes the array to the specified value
-   *
-   * Usage:
-   *
-   * initialize(val);               // Initializes only the local space
-   * initialize(val, true);         // Initializes the entire space
-   * initialize(val, false);        // Initializes only the local space (default)
-   * initialize(val, true, false);  // Initializes only the buffer zone
-   * initialize(val, false, true);  // Initializes only the local space (default)
-   * initialize(val, true, true);   // Initializes the entire space
-   * initialize(val, false, false); // Does nothing
+   * Inherited from ValueLayerND
    */
-  void initialize(double initialValue, bool fillBufferZone = false, bool fillLocal = true);
+  virtual void initialize(double initialValue, bool fillBufferZone = false, bool fillLocal = true);
 
   /**
-   * Initializes the array to the specified values
-   *
-   * initialize(val1, val2); // Initializes the local space to val1 and the buffer zones to val2
+   * Inherited from ValueLayerND
    */
-  void initialize(double initialLocalValue, double initialBufferZoneValue);
+  virtual void initialize(double initialLocalValue, double initialBufferZoneValue);
+
+
+  /**
+   * Inherited from ValueLayerND
+   */
+  virtual bool isInLocalBounds(vector<int> coords);
+
+  /**
+   * Inherited from ValueLayerND
+   */
+  virtual bool isInLocalBounds(Point<int> location);
+
+  /**
+   * Inherited from ValueLayerND
+   */
+  virtual double addValueAt(double val, Point<int> location);
+
+  /**
+   * Inherited from ValueLayerND
+   */
+  virtual double addValueAt(double val, vector<int> location);
+
+  /**
+   * Inherited from ValueLayerND
+   */
+  virtual double setValueAt(double val, Point<int> location);
+
+  /**
+   * Inherited from ValueLayerND
+   */
+  virtual double setValueAt(double val, vector<int> location);
+
+  /**
+   * Inherited from ValueLayerND
+   */
+  virtual double getValueAt(Point<int> location);
+
+  /**
+   * Inherited from ValueLayerND
+   */
+  virtual double getValueAt(vector<int> location);
+
+  /**
+   * Inherited from ValueLayerND
+   */
+  virtual void synchronize();
+
+  /**
+   * Inherited from ValueLayerND
+   */
+  virtual void write(string fileLocation, string filetag, bool writeSharedBoundaryAreas = false);
 
   /**
    * Performs the diffusion operation on the entire
@@ -317,68 +356,6 @@ public:
    * is required to complete diffusion
    */
   void diffuse(Diffusor* diffusor, bool omitSynchronize = false);
-
-
-  /**
-   * Returns true only if the coordinates given are within the local boundaries
-   */
-  bool isInLocalBounds(vector<int> coords);
-
-  /*
-   * Returns true only if the coordinates given are within the local boundaries
-   */
-  bool isInLocalBounds(Point<int> location);
-
-  /**
-   * Add to the value in the grid at a specific location
-   * Returns the new value.
-   */
-  double addValueAt(double val, Point<int> location);
-
-  /**
-   * Add to the value in the grid at the specific location
-   * Returns the new value.
-   */
-  double addValueAt(double val, vector<int> location);
-
-  /**
-   * Add to the value in the grid at a specific location
-   * Returns the new value.
-   */
-  double setValueAt(double val, Point<int> location);
-
-  /**
-   * Add to the value in the grid at the specific location
-   * Returns the new value.
-   */
-  double setValueAt(double val, vector<int> location);
-
-  /**
-   * Gets the value in the grid at a specific location
-   */
-  double getValueAt(Point<int> location);
-
-  /**
-   * Gets the value in the grid at a specific location
-   */
-  double getValueAt(vector<int> location);
-
-
-  /**
-   * Synchronize across processes. This copies
-   * the values in the interior 'buffer zones' from
-   * self and sends to adjacent processes, while
-   * receiving data from adjacent processes and
-   * placing it in the appropriate exterior buffer
-   * zones.
-   */
-  void synchronize();
-
-
-  /**
-   * Write this rank's data to a CSV file
-   */
-  void write(string fileLocation, string filetag, bool writeSharedBoundaryAreas = false);
 
   /*
    * Writes one dimension's information to the specified csv file.
@@ -464,7 +441,6 @@ private:
    * and clearing only.
    */
   void fillDimension(double localValue, double bufferZoneValue, bool doBufferZone, bool doLocal, double* dataSpace1Pointer, double* dataSpace2Pointer, int dimIndex);
-
 
   void diffuseDimension(double* currentDataSpacePointer, double* otherDataSpacePointer, double* vals, Diffusor* diffusor, int dimIndex);
 

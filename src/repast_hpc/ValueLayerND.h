@@ -34,29 +34,112 @@
  *
  *  ValueLayerND.h
  *
- *  Created on: July 25, 2015
+ *  Created on: July 18, 2016
  *      Author: jtm
  */
 
-#ifndef DIFFUSIONLAYERND_H_
-#define DIFFUSIONLAYERND_H_
+#ifndef VALUELAYERND_H_
+#define VALUELAYERND_H_
 
-#include <fstream>
-#include <vector>
-#include <map>
-
-#include "mpi.h"
-
-#include "GridDimensions.h"
-#include "RelativeLocation.h"
-#include "CartesianTopology.h"
-#include "RepastProcess.h"
+#include "Point.h"
 
 using namespace std;
 
 namespace repast {
 
 
+class AbstractValueLayerND{
+
+protected:
+  // No constructor
+  virtual ~AbstractValueLayerND() = 0;
+
+  /**
+   * Initializes the array to the specified value
+   *
+   * Usage:
+   *
+   * initialize(val);               // Initializes only the local space
+   * initialize(val, true);         // Initializes the entire space
+   * initialize(val, false);        // Initializes only the local space (default)
+   * initialize(val, true, false);  // Initializes only the buffer zone
+   * initialize(val, false, true);  // Initializes only the local space (default)
+   * initialize(val, true, true);   // Initializes the entire space
+   * initialize(val, false, false); // Does nothing
+   */
+  virtual void initialize(double initialValue, bool fillBufferZone = false, bool fillLocal = true) = 0;
+
+  /**
+   * Initializes the array to the specified values
+   *
+   * initialize(val1, val2); // Initializes the local space to val1 and the buffer zones to val2
+   */
+  virtual void initialize(double initialLocalValue, double initialBufferZoneValue) = 0;
+
+  /**
+   * Returns true only if the coordinates given are within the local boundaries
+   */
+  virtual bool isInLocalBounds(vector<int> coords) = 0;
+
+  /*
+   * Returns true only if the coordinates given are within the local boundaries
+   */
+  virtual bool isInLocalBounds(Point<int> location) = 0;
+
+  /**
+   * Add to the value in the grid at a specific location
+   * Returns the new value.
+   */
+  virtual double addValueAt(double val, Point<int> location) = 0;
+
+  /**
+   * Add to the value in the grid at the specific location
+   * Returns the new value.
+   */
+  virtual double addValueAt(double val, vector<int> location) = 0;
+
+  /**
+   * Add to the value in the grid at a specific location
+   * Returns the new value.
+   */
+  virtual double setValueAt(double val, Point<int> location) = 0;
+
+  /**
+   * Add to the value in the grid at the specific location
+   * Returns the new value.
+   */
+  virtual double setValueAt(double val, vector<int> location) = 0;
+
+  /**
+   * Gets the value in the grid at a specific location
+   */
+  virtual double getValueAt(Point<int> location) = 0;
+
+  /**
+   * Gets the value in the grid at a specific location
+   */
+  virtual double getValueAt(vector<int> location) = 0;
+
+
+  /**
+   * Synchronize across processes. This copies
+   * the values in the interior 'buffer zones' from
+   * self and sends to adjacent processes, while
+   * receiving data from adjacent processes and
+   * placing it in the appropriate exterior buffer
+   * zones.
+   */
+  virtual void synchronize() = 0;
+
+
+  /**
+   * Write this rank's data to a CSV file
+   */
+  virtual void write(string fileLocation, string filetag, bool writeSharedBoundaryAreas = false) = 0;
+
+};
+
+
 }
 
-#endif /* DIFFUSIONLAYERND_H_ */
+#endif /* VALUELAYERND_H_ */

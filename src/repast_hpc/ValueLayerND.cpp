@@ -34,7 +34,7 @@
  *
  *  ValueLayerND.cpp
  *
- *  Created on: July 25, 2008
+ *  Created on: July 18, 2016
  *      Author: jtm
  */
 #include "ValueLayerND.h"
@@ -46,6 +46,7 @@
 using namespace std;
 
 namespace repast {
+
 
 
 }

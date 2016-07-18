@@ -38,8 +38,7 @@
  *      Author: jtm
  */
 #include "DiffusionLayerND.h"
-#include "RepastProcess.h"
-#include "Point.h"
+
 
 #include <boost/mpi.hpp>
 
