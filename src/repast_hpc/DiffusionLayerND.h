@@ -60,6 +60,7 @@ namespace repast {
  * A Diffusor is a custom class that performs diffusion.
  *
  */
+template<typename T>
 class Diffusor{
 
 public:
@@ -83,9 +84,29 @@ public:
    * specified radius with the central cell being at
    * (0, 0, 0, ...)
    */
-  virtual double getNewValue(double* values) = 0;
+  virtual T getNewValue(T* values) = 0;
 };
 
+
+/**
+ * Empty constructor
+ */
+template<typename T>
+Diffusor<T>::Diffusor(){}
+
+/**
+ * No-Op Destructor
+ */
+template<typename T>
+Diffusor<T>::~Diffusor(){}
+
+/**
+ * Default radius is one
+ */
+template<typename T>
+int Diffusor<T>::getRadius(){
+  return 1;
+}
 
 /**
  * The DiffusionLayerND class is an N-dimensional layer of
@@ -113,13 +134,14 @@ public:
  * the size of the buffer zone.
  *
  */
-class DiffusionLayerND: public ValueLayerNDSU{
+template<typename T>
+class DiffusionLayerND: public ValueLayerNDSU<T>{
 
 private:
 
 public:
 
-  DiffusionLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic, double initialValue = 0, double initialBufferZoneValue = 0);
+  DiffusionLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic, T initialValue = 0, T initialBufferZoneValue = 0);
   virtual ~DiffusionLayerND();
 
   /**
@@ -130,13 +152,91 @@ public:
    * useful for performance testing, as a synchronization
    * is required to complete diffusion
    */
-  void diffuse(Diffusor* diffusor, bool omitSynchronize = false);
+  void diffuse(Diffusor<T>* diffusor, bool omitSynchronize = false);
+
 private:
 
-  void diffuseDimension(double* currentDataSpacePointer, double* otherDataSpacePointer, double* vals, Diffusor* diffusor, int dimIndex);
+  void diffuseDimension(T* currentDataSpacePointer, T* otherDataSpacePointer, T* vals, Diffusor<T>* diffusor, int dimIndex);
 
-  void grabDimensionData(double*& destinationPointer, double* startPointer, int radius, int dimIndex);
+  void grabDimensionData(T*& destinationPointer, T* startPointer, int radius, int dimIndex);
 };
+
+
+template<typename T>
+DiffusionLayerND<T>::DiffusionLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic,
+    T initialValue, T initialBufferZoneValue): ValueLayerNDSU<T>(processesPerDim, globalBoundaries, bufferSize, periodic,
+        initialValue, initialBufferZoneValue){
+
+}
+
+template<typename T>
+DiffusionLayerND<T>::~DiffusionLayerND(){
+}
+
+template<typename T>
+void DiffusionLayerND<T>::diffuse(Diffusor<T>* diffusor, bool omitSynchronize){
+  int countOfVals = (int)(pow(diffusor->getRadius() * 2 + 1, AbstractValueLayerND<T>::numDims));
+  T* vals = new T[countOfVals];
+
+  diffuseDimension(ValueLayerNDSU<T>::currentDataSpace, ValueLayerNDSU<T>::otherDataSpace, vals, diffusor, AbstractValueLayerND<T>::numDims - 1);
+
+  this->switchValueLayer();
+
+  if(!omitSynchronize) this->synchronize();
+
+  delete[] vals;
+}
+
+template<typename T>
+void DiffusionLayerND<T>::diffuseDimension(T* currentDataSpacePointer, T* otherDataSpacePointer, T* vals, Diffusor<T>* diffusor, int dimIndex){
+  int bufferEdge = AbstractValueLayerND<T>::dimensionData[dimIndex].leftBufferSize;
+  int localEdge  = bufferEdge + AbstractValueLayerND<T>::dimensionData[dimIndex].localWidth;
+
+  int pointerIncrement = AbstractValueLayerND<T>::places[dimIndex];
+
+  int i = 0;
+  for(; i < bufferEdge; i++){
+    // Increment the pointers
+    currentDataSpacePointer += pointerIncrement;
+    otherDataSpacePointer   += pointerIncrement;
+  }
+  for(; i < localEdge; i++){
+    if(dimIndex == 0){
+      // Populate the vals array
+      double* destLocation = vals; // Note: This gets passed as a handle and changed
+      grabDimensionData(destLocation, currentDataSpacePointer, diffusor->getRadius(), AbstractValueLayerND<T>::numDims - 1);
+      *otherDataSpacePointer = diffusor->getNewValue(vals);
+    }
+    else{
+      diffuseDimension(currentDataSpacePointer, otherDataSpacePointer, vals, diffusor, dimIndex - 1);
+    }
+    // Increment the pointers
+    currentDataSpacePointer += pointerIncrement;
+    otherDataSpacePointer   += pointerIncrement;
+  }
+}
+
+template<typename T>
+void DiffusionLayerND<T>::grabDimensionData(T*& destinationPointer, T* startPointer, int radius, int dimIndex){
+  int pointerIncrement = AbstractValueLayerND<T>::places[dimIndex];
+  startPointer -= pointerIncrement * radius; // Go back
+  int size = 2 * radius + 1;
+  for(int i = 0; i < size; i++){
+    if(dimIndex == 0){
+      *destinationPointer = 1;
+      double myVal = *startPointer;
+      *destinationPointer = myVal;
+      destinationPointer++;                 // Handle; all recursive instances share
+    }
+    else{
+      grabDimensionData(destinationPointer, startPointer, radius, dimIndex - 1);
+    }
+    startPointer += pointerIncrement;
+  }
+
+}
+
+
 
 }
 

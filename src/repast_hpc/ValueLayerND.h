@@ -78,6 +78,7 @@ struct RankDatum{
  * along each dimension, but these boundaries include local,
  * global, and a few other memoized variants.
  */
+template<typename T>
 class DimensionDatum{
 public:
   DimensionDatum(int indx, GridDimensions globalBoundaries, GridDimensions localBoundaries, int buffer, bool isPeriodic);
@@ -93,7 +94,7 @@ public:
   bool spaceContinuesLeft, spaceContinuesRight;             // False if the local boundaries abut the (non-periodic) global boundaries
   int  globalWidth;                                         // Global width of the simulation boundaries in simulation units
   int  localWidth;                                          // Width of the local boundaries
-  int  width;                                               // Total width (units = double) on this dimension (local extents + buffer sizes if not against global nonperiodic bounds)
+  int  width;                                               // Total width (units = sizeof T) on this dimension (local extents + buffer sizes if not against global nonperiodic bounds)
   int  widthInBytes;
 
   int  getSendReceiveSize(int relativeLocation);
@@ -142,26 +143,91 @@ public:
   }
 };
 
+template<typename T>
+DimensionDatum<T>::DimensionDatum(int indx, GridDimensions globalBoundaries, GridDimensions localBoundaries, int buffer, bool isPeriodic):
+    leftBufferSize(buffer), rightBufferSize(buffer), periodic(isPeriodic){
+  globalCoordinateMin = globalBoundaries.origin(indx);
+  globalCoordinateMax = globalBoundaries.origin(indx) + globalBoundaries.extents(indx);
+  localBoundariesMin  = localBoundaries.origin(indx);
+  localBoundariesMax  = localBoundaries.origin(indx) + localBoundaries.extents(indx);
+
+  atLeftBound  = localBoundariesMin == globalCoordinateMin;
+  atRightBound = localBoundariesMax == globalCoordinateMax;
+
+  spaceContinuesLeft  = !atLeftBound  || periodic;
+  spaceContinuesRight = !atRightBound || periodic;
+
+  simplifiedBoundariesMin  = localBoundariesMin - leftBufferSize;
+  simplifiedBoundariesMax  = localBoundariesMax + rightBufferSize;
+
+  matchingCoordinateMin    = localBoundariesMin;
+  if(spaceContinuesLeft  && !atLeftBound ) matchingCoordinateMin -= leftBufferSize;
+
+  matchingCoordinateMax    = localBoundariesMax;
+  if(spaceContinuesRight && !atRightBound) matchingCoordinateMax += rightBufferSize;
+
+  globalWidth = globalCoordinateMax - globalCoordinateMin;
+  localWidth = localBoundariesMax - localBoundariesMin;
+  width = leftBufferSize + localWidth + rightBufferSize;
+  widthInBytes = width * (sizeof(T));
+}
 
 
+template<typename T>
+int DimensionDatum<T>::getSendReceiveSize(int relativeLocation){
+  switch(relativeLocation){
+    case -1:  return leftBufferSize;
+    case  1:  return rightBufferSize;
+    case  0:
+    default:
+      return localWidth;
+  }
+}
+
+template<typename T>
+int DimensionDatum<T>::getTransformedCoord(int originalCoord){
+  if(originalCoord < matchingCoordinateMin){        // Assume (!) original is on right (!) side of periodic boundary, starting at some value
+    return matchingCoordinateMax + (originalCoord - globalCoordinateMin);
+  }
+  else if(originalCoord > matchingCoordinateMax){
+    return matchingCoordinateMin - (globalCoordinateMax - originalCoord);
+  }
+  else return originalCoord; // Within matching boundaries; no need to transform
+
+}
+
+template<typename T>
+int DimensionDatum<T>::getIndexedCoord(int originalCoord, bool isSimplified){
+  return (isSimplified ? originalCoord : getTransformedCoord(originalCoord)) - simplifiedBoundariesMin;
+}
+
+template<typename T>
+bool DimensionDatum<T>::isInLocalBounds(int originalCoord){
+  return originalCoord >= localBoundariesMin && originalCoord < localBoundariesMax;
+}
+
+/*******************************************************************/
+
+
+template<typename T>
 class AbstractValueLayerND{
 
 protected:
-  CartesianTopology*     cartTopology;
-  int                    length;                 // Total length of the entire array (one data space)
+  CartesianTopology*         cartTopology;
+  int                        length;                 // Total length of the entire array (one data space)
 
-  int                    numDims;                // Number of dimensions
-  bool                   globalSpaceIsPeriodic;  // True if the global space is periodic
+  int                        numDims;                // Number of dimensions
+  bool                       globalSpaceIsPeriodic;  // True if the global space is periodic
 
-  vector<int>            places;                 // Multipliers to calculate index, for each dimension
-  vector<int>            strides;                // Sizes of each dimensions, in bytes
-  vector<DimensionDatum> dimensionData;          // List of data for each dimension
-  RankDatum*             neighborData;           // List of data for each adjacent rank
-  int                    neighborCount;          // Count of adjacent ranks
-  MPI_Request*           requests;               // Pointer to MPI requests (for wait operations)
+  vector<int>                places;                 // Multipliers to calculate index, for each dimension
+  vector<int>                strides;                // Sizes of each dimensions, in bytes
+  vector<DimensionDatum<T> > dimensionData;          // List of data for each dimension
+  RankDatum*                 neighborData;           // List of data for each adjacent rank
+  int                        neighborCount;          // Count of adjacent ranks
+  MPI_Request*               requests;               // Pointer to MPI requests (for wait operations)
 
-  int                    instanceID;             // Unique ID for managing MPI requests without mix-ups
-  int                    syncCount;
+  int                        instanceID;             // Unique ID for managing MPI requests without mix-ups
+  int                        syncCount;
 
   AbstractValueLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries,int bufferSize, bool periodic);
   virtual ~AbstractValueLayerND();
@@ -224,48 +290,48 @@ protected:
    * initialize(val, true, true);   // Initializes the entire space
    * initialize(val, false, false); // Does nothing
    */
-  virtual void initialize(double initialValue, bool fillBufferZone = false, bool fillLocal = true) = 0;
+  virtual void initialize(T initialValue, bool fillBufferZone = false, bool fillLocal = true) = 0;
 
   /**
    * Initializes the array to the specified values
    *
    * initialize(val1, val2); // Initializes the local space to val1 and the buffer zones to val2
    */
-  virtual void initialize(double initialLocalValue, double initialBufferZoneValue) = 0;
+  virtual void initialize(T initialLocalValue, T initialBufferZoneValue) = 0;
 
   /**
    * Add to the value in the grid at a specific location
    * Returns the new value.
    */
-  virtual double addValueAt(double val, Point<int> location) = 0;
+  virtual T addValueAt(T val, Point<int> location) = 0;
 
   /**
    * Add to the value in the grid at the specific location
    * Returns the new value.
    */
-  virtual double addValueAt(double val, vector<int> location) = 0;
+  virtual T addValueAt(T val, vector<int> location) = 0;
 
   /**
    * Add to the value in the grid at a specific location
    * Returns the new value.
    */
-  virtual double setValueAt(double val, Point<int> location) = 0;
+  virtual T setValueAt(T val, Point<int> location) = 0;
 
   /**
    * Add to the value in the grid at the specific location
    * Returns the new value.
    */
-  virtual double setValueAt(double val, vector<int> location) = 0;
+  virtual T setValueAt(T val, vector<int> location) = 0;
 
   /**
    * Gets the value in the grid at a specific location
    */
-  virtual double getValueAt(Point<int> location) = 0;
+  virtual T getValueAt(Point<int> location) = 0;
 
   /**
    * Gets the value in the grid at a specific location
    */
-  virtual double getValueAt(vector<int> location) = 0;
+  virtual T getValueAt(vector<int> location) = 0;
 
   /**
    * Synchronize across processes. This copies
@@ -332,11 +398,186 @@ private:
 
 
 
+template<typename T>
+int AbstractValueLayerND<T>::instanceCount = 0;
+
+template<typename T>
+AbstractValueLayerND<T>::AbstractValueLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries,int bufferSize, bool periodic): globalSpaceIsPeriodic(periodic), syncCount(0){
+  instanceID = AbstractValueLayerND<T>::instanceCount;
+  AbstractValueLayerND<T>::instanceCount++;
+  cartTopology = RepastProcess::instance()->getCartesianTopology(processesPerDim, periodic);
+  // Calculate the size to be used for the buffers
+  numDims = processesPerDim.size();
+
+  int rank = RepastProcess::instance()->rank();
+  GridDimensions localBoundaries = cartTopology->getDimensions(rank, globalBoundaries);
+
+  // First create the basic coordinate data per dimension
+  length = 1;
+  int val = 1;
+  for(int i = 0; i < numDims; i++){
+    DimensionDatum<T> datum(i, globalBoundaries, localBoundaries, bufferSize, periodic);
+    length *= datum.width;
+    dimensionData.push_back(datum);
+    places.push_back(val);
+    strides.push_back(val * sizeof(T));
+    val *= dimensionData[i].width;
+  }
+
+  // Now create the rank-based data per neighbor
+  RelativeLocation relLoc(numDims);
+  RelativeLocation relLocTrimmed = cartTopology->trim(rank, relLoc); // Initialized to minima
+
+  vector<int> myCoordinates;
+  cartTopology->getCoordinates(rank, myCoordinates);
+
+  neighborData = new RankDatum[relLoc.getMaxIndex()];
+  neighborCount = 0;
+  int i = 0;
+  do{
+    if(relLoc.validNonCenter()){ // Skip 0,0,0,0,0
+      RankDatum* datum;
+      datum = &neighborData[neighborCount];
+      // Collect the information about this rank here
+      getMPIDataType(relLoc, datum->datatype);
+      datum->sendPtrOffset    = getSendPointerOffset(relLoc);
+      datum->receivePtrOffset = getReceivePointerOffset(relLoc);
+      vector<int> current = relLoc.getCurrentValue();
+      datum->rank = cartTopology->getRank(myCoordinates, current);
+      datum->sendDir = RelativeLocation::getDirectionIndex(current);
+      datum->recvDir = RelativeLocation::getReverseDirectionIndex(current);
+
+      neighborCount++;
+    }
+  }while(relLoc.increment());
+
+  // Create arrays for MPI requests and results (statuses)
+  requests = new MPI_Request[neighborCount * 2];
+}
+
+template<typename T>
+AbstractValueLayerND<T>::~AbstractValueLayerND(){
+  delete[] neighborData; // Should Free MPI Datatypes first...
+  delete[] requests;
+}
+
+template<typename T>
+bool AbstractValueLayerND<T>::isInLocalBounds(vector<int> coords){
+  for(int i = 0; i < numDims; i++){
+    DimensionDatum<T>* datum = &dimensionData[i];
+    if(!datum->isInLocalBounds(coords[i])) return false;
+  }
+  return true;
+}
+
+template<typename T>
+bool AbstractValueLayerND<T>::isInLocalBounds(Point<int> location){
+  return isInLocalBounds(location.coords());
+}
+
+template<typename T>
+vector<int> AbstractValueLayerND<T>::getIndexes(vector<int> location, bool isSimplified){
+  vector<int> ret;
+  ret.assign(numDims, 0); // Make the right amount of space
+  for(int i = 0; i < numDims; i++) ret[i] = dimensionData[i].getIndexedCoord(location[i], isSimplified);
+  return ret;
+}
+
+template<typename T>
+int AbstractValueLayerND<T>::getIndex(vector<int> location, bool isSimplified){
+  vector<int> indexed = getIndexes(location, isSimplified);
+  int val = 0;
+  for(int i = numDims - 1; i >= 0; i--) val += indexed[i] * places[i];
+  if(val < 0 || val > length) val = -1;
+  return val;
+}
+
+template<typename T>
+int AbstractValueLayerND<T>::getIndex(Point<int> location){
+  return getIndex(location.coords());
+}
+
+
+template<typename T>
+void AbstractValueLayerND<T>::getMPIDataType(RelativeLocation relLoc, MPI_Datatype &datatype){
+  vector<int> sideLengths;
+  for(int i = 0; i < numDims; i++) sideLengths.push_back(dimensionData[i].getSendReceiveSize(relLoc[i]));
+  getMPIDataType(sideLengths, datatype, numDims - 1);
+}
+
+template<typename T>
+void AbstractValueLayerND<T>::getMPIDataType(int radius, MPI_Datatype &datatype){
+  vector<int> sideLengths;
+  sideLengths.assign(numDims, 2 * radius + 1);
+  getMPIDataType(sideLengths, datatype, numDims - 1);
+}
+
+template<>
+void AbstractValueLayerND<int>::getMPIDataType(vector<int> sideLengths, MPI_Datatype &datatype, int dimensionIndex){
+  if(dimensionIndex == 0){
+    MPI_Type_contiguous(sideLengths[dimensionIndex], MPI_INT, &datatype);
+  }
+  else{
+    MPI_Datatype innerType;
+    getMPIDataType(sideLengths, innerType, dimensionIndex - 1);
+    MPI_Type_hvector(sideLengths[dimensionIndex], // Count
+                     1,                                                                        // BlockLength: just one of the inner data type
+                     strides[dimensionIndex],                                                  // Stride, in bytes
+                     innerType,                                                                // Inner Datatype
+                     &datatype);
+  }
+  // Commit?
+  MPI_Type_commit(&datatype);
+}
+
+template<>
+void AbstractValueLayerND<double>::getMPIDataType(vector<int> sideLengths, MPI_Datatype &datatype, int dimensionIndex){
+  if(dimensionIndex == 0){
+    MPI_Type_contiguous(sideLengths[dimensionIndex], MPI_DOUBLE, &datatype);
+  }
+  else{
+    MPI_Datatype innerType;
+    getMPIDataType(sideLengths, innerType, dimensionIndex - 1);
+    MPI_Type_hvector(sideLengths[dimensionIndex], // Count
+                     1,                                                                        // BlockLength: just one of the inner data type
+                     strides[dimensionIndex],                                                  // Stride, in bytes
+                     innerType,                                                                // Inner Datatype
+                     &datatype);
+  }
+  // Commit?
+  MPI_Type_commit(&datatype);
+}
+
+template<typename T>
+int AbstractValueLayerND<T>::getSendPointerOffset(RelativeLocation relLoc){
+  int rank = repast::RepastProcess::instance()->rank();
+  int ret = 0;
+  for(int i = 0; i < numDims; i++){
+    DimensionDatum<T>* datum = &dimensionData[i];
+    ret += (relLoc[i] <= 0 ? datum->leftBufferSize : datum->width - (2 * datum->rightBufferSize)) * places[i];
+  }
+  return ret;
+}
+
+template<typename T>
+int AbstractValueLayerND<T>::getReceivePointerOffset(RelativeLocation relLoc){
+  int rank = repast::RepastProcess::instance()->rank();
+  int ret = 0;
+  for(int i = 0; i < numDims; i++){
+    DimensionDatum<T>* datum = &dimensionData[i];
+    ret += (relLoc[i] < 0 ? 0 : (relLoc[i] == 0 ? datum->leftBufferSize : datum->width - datum->rightBufferSize)) * places[i];
+  }
+  return ret;
+}
+
+
+
+
 
 
 /**
  * The ValueLayerND class is an N-dimensional layer of
- * double values.
+ * values.
  *
  * The most complex part of the ValueLayerND class is the
  * interaction with MPI. Cross-process synchronization requires
@@ -392,7 +633,8 @@ private:
  * directions, even if the space is adjacent to a strict
  * boundary edge.
  */
-class ValueLayerND: public AbstractValueLayerND{
+template<typename T>
+class ValueLayerND: public AbstractValueLayerND<T>{
 
 private:
   double*                dataSpace;              // Pointer to the data space
@@ -400,48 +642,48 @@ private:
 public:
 
   ValueLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize,
-      bool periodic, double initialValue = 0, double initialBufferZoneValue = 0);
+      bool periodic, T initialValue = 0, T initialBufferZoneValue = 0);
   virtual ~ValueLayerND();
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual void initialize(double initialValue, bool fillBufferZone = false, bool fillLocal = true);
+  virtual void initialize(T initialValue, bool fillBufferZone = false, bool fillLocal = true);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual void initialize(double initialLocalValue, double initialBufferZoneValue);
+  virtual void initialize(T initialLocalValue, T initialBufferZoneValue);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual double addValueAt(double val, Point<int> location);
+  virtual T addValueAt(T val, Point<int> location);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual double addValueAt(double val, vector<int> location);
+  virtual T addValueAt(T val, vector<int> location);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual double setValueAt(double val, Point<int> location);
+  virtual T setValueAt(T val, Point<int> location);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual double setValueAt(double val, vector<int> location);
+  virtual T setValueAt(T val, vector<int> location);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual double getValueAt(Point<int> location);
+  virtual T getValueAt(Point<int> location);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual double getValueAt(vector<int> location);
+  virtual T getValueAt(vector<int> location);
 
   /**
    * Inherited from AbstractValueLayerND
@@ -461,12 +703,12 @@ private:
    * Fills a dimension of space with the given value. Used for initialization
    * and clearing only.
    */
-  void fillDimension(double localValue, double bufferZoneValue, bool doBufferZone, bool doLocal, double* dataSpacePointer, int dimIndex);
+  void fillDimension(T localValue, T bufferZoneValue, bool doBufferZone, bool doLocal, T* dataSpacePointer, int dimIndex);
 
   /*
    * Writes one dimension's information to the specified csv file.
    */
-  void writeDimension(std::ofstream& outfile, double* dataSpacePointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas = false);
+  void writeDimension(std::ofstream& outfile, T* dataSpacePointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas = false);
 
 };
 
@@ -481,59 +723,60 @@ private:
  * values, then 'switch' to using the new values. It does this by using
  * two memory banks.
  */
-class ValueLayerNDSU: public AbstractValueLayerND{
+template<typename T>
+class ValueLayerNDSU: public AbstractValueLayerND<T>{
 
 protected:
 
-  double*                dataSpace1;             // Permanent pointer to bank 1 of the data space
-  double*                dataSpace2;             // Permanent pointer to bank 2 of the data space
-  double*                currentDataSpace;       // Temporary pointer to the active data space
-  double*                otherDataSpace;         // Temporary pointer to the inactive data space
+  T*                dataSpace1;             // Permanent pointer to bank 1 of the data space
+  T*                dataSpace2;             // Permanent pointer to bank 2 of the data space
+  T*                currentDataSpace;       // Temporary pointer to the active data space
+  T*                otherDataSpace;         // Temporary pointer to the inactive data space
 
 public:
 
-  ValueLayerNDSU(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic, double initialValue = 0, double initialBufferZoneValue = 0);
+  ValueLayerNDSU(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic, T initialValue = 0, T initialBufferZoneValue = 0);
   virtual ~ValueLayerNDSU();
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual void initialize(double initialValue, bool fillBufferZone = false, bool fillLocal = true);
+  virtual void initialize(T initialValue, bool fillBufferZone = false, bool fillLocal = true);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual void initialize(double initialLocalValue, double initialBufferZoneValue);
+  virtual void initialize(T initialLocalValue, T initialBufferZoneValue);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual double addValueAt(double val, Point<int> location);
+  virtual T addValueAt(T val, Point<int> location);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual double addValueAt(double val, vector<int> location);
+  virtual T addValueAt(T val, vector<int> location);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual double setValueAt(double val, Point<int> location);
+  virtual T setValueAt(T val, Point<int> location);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual double setValueAt(double val, vector<int> location);
+  virtual T setValueAt(T val, vector<int> location);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual double getValueAt(Point<int> location);
+  virtual T getValueAt(Point<int> location);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual double getValueAt(vector<int> location);
+  virtual T getValueAt(vector<int> location);
 
   /**
    * Inherited from AbstractValueLayerND
@@ -554,37 +797,37 @@ public:
    * Adds the specified value to the value in the non-current
    * data bank at the given location
    */
-  virtual double addSecondaryValueAt(double val, Point<int> location);
+  virtual T addSecondaryValueAt(T val, Point<int> location);
 
   /**
    * Adds the specified value to the value in the non-current
    * data bank at the given location
    */
-  virtual double addSecondaryValueAt(double val, vector<int> location);
+  virtual T addSecondaryValueAt(T val, vector<int> location);
 
   /**
    * Sets the specified value to the value in the non-current
    * data bank at the given location
    */
-  virtual double setSecondaryValueAt(double val, Point<int> location);
+  virtual T setSecondaryValueAt(T val, Point<int> location);
 
   /**
    * Sets the specified value to the value in the non-current
    * data bank at the given location
    */
-  virtual double setSecondaryValueAt(double val, vector<int> location);
+  virtual T setSecondaryValueAt(T val, vector<int> location);
 
   /**
    * Gets the specified value to the value in the non-current
    * data bank at the given location
    */
-  virtual double getSecondaryValueAt(Point<int> location);
+  virtual T getSecondaryValueAt(Point<int> location);
 
   /**
    * Gets the specified value to the value in the non-current
    * data bank at the given location
    */
-  virtual double getSecondaryValueAt(vector<int> location);
+  virtual T getSecondaryValueAt(vector<int> location);
 
   /**
    * Copies the data in the current value layer to the secondary layer
@@ -602,14 +845,561 @@ private:
    * Fills a dimension of space with the given value. Used for initialization
    * and clearing only.
    */
-  void fillDimension(double localValue, double bufferZoneValue, bool doBufferZone, bool doLocal, double* dataSpace1Pointer, double* dataSpace2Pointer, int dimIndex);
+  void fillDimension(T localValue, T bufferZoneValue, bool doBufferZone, bool doLocal, T* dataSpace1Pointer, T* dataSpace2Pointer, int dimIndex);
 
   /*
    * Writes one dimension's information to the specified csv file.
    */
-  void writeDimension(std::ofstream& outfile, double* dataSpace1Pointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas = false);
+  void writeDimension(std::ofstream& outfile, T* dataSpace1Pointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas = false);
 
 };
+
+
+
+template<typename T>
+ValueLayerND<T>::ValueLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic,
+    T initialValue, T initialBufferZoneValue): AbstractValueLayerND<T>(processesPerDim, globalBoundaries, bufferSize, periodic){
+
+  // Create the actual arrays for the data
+  dataSpace = new T[AbstractValueLayerND<T>::length];
+
+  // Finally, fill the data with the initial values
+  initialize(initialValue, initialBufferZoneValue);
+
+  // And synchronize
+  synchronize();
+
+}
+
+template<typename T>
+ValueLayerND<T>::~ValueLayerND(){
+  delete[] dataSpace;
+}
+
+template<typename T>
+void ValueLayerND<T>::initialize(T initialValue, bool fillBufferZone, bool fillLocal){
+  fillDimension(initialValue, initialValue, fillBufferZone, fillLocal, dataSpace, AbstractValueLayerND<T>::numDims - 1);
+}
+
+template<typename T>
+void ValueLayerND<T>::initialize(T initialLocalValue, T initialBufferZoneValue){
+  fillDimension(initialLocalValue, initialBufferZoneValue, true, true, dataSpace, AbstractValueLayerND<T>::numDims - 1);
+}
+
+template<typename T>
+T ValueLayerND<T>::addValueAt(T val, Point<int> location){
+  int indx = this->getIndex(location);
+  if(indx == -1) return nan("");
+  T* pt = &dataSpace[indx];
+  return (*pt = *pt + val);
+}
+
+template<typename T>
+T ValueLayerND<T>::addValueAt(T val, vector<int> location){
+  int indx = this->getIndex(location);
+  if(indx == -1) return nan("");
+  T* pt = &dataSpace[indx];
+  return (*pt = *pt + val);
+}
+
+template<typename T>
+T ValueLayerND<T>::setValueAt(T val, Point<int> location){
+  int indx = this->getIndex(location);
+  if(indx == -1) return nan("");
+  T* pt = &dataSpace[indx];
+  return (*pt = val);
+}
+
+template<typename T>
+T ValueLayerND<T>::setValueAt(T val, vector<int> location){
+  int indx = this->getIndex(location);
+  if(indx == -1) return nan("");
+  T* pt = &dataSpace[indx];
+  return (*pt = val);
+}
+
+template<typename T>
+T ValueLayerND<T>::getValueAt(vector<int> location){
+  int indx = this->getIndex(location);
+  if(indx == -1) return nan("");
+  return dataSpace[indx];
+}
+
+template<typename T>
+void ValueLayerND<T>::synchronize(){
+  AbstractValueLayerND<T>::syncCount++;
+  if(AbstractValueLayerND<T>::syncCount > 9) AbstractValueLayerND<T>::syncCount = 0;
+  int mpiTag = AbstractValueLayerND<T>::instanceID * 10 + AbstractValueLayerND<T>::syncCount;
+  // Note: the syncCount and send/recv directions are used to create a unique tag value for the
+  // mpi sends and receives. The tag value must be unique in two ways: first, successive calls to this
+  // function must be different enough that they can't be confused. The 'syncCount' value is used to
+  // achieve this, and it will loop from 0-9 and then repeat. The second, the tag must sometimes
+  // differentiate between sends and receives that are going to the same rank. If a dimension
+  // has only 2 processes but wrap-around borders, then one process may be sending to the other
+  // process twice (once left and once right). The 'sendDir' and 'recvDir' values trap this
+
+  // For each entry in neighbors:
+  MPI_Status statuses[AbstractValueLayerND<T>::neighborCount * 2];
+  for(int i = 0; i < AbstractValueLayerND<T>::neighborCount; i++){
+    MPI_Isend(&dataSpace[AbstractValueLayerND<T>::neighborData[i].sendPtrOffset], 1, AbstractValueLayerND<T>::neighborData[i].datatype,
+        AbstractValueLayerND<T>::neighborData[i].rank, 10 * (AbstractValueLayerND<T>::neighborData[i].sendDir + 1) + mpiTag, AbstractValueLayerND<T>::cartTopology->topologyComm, &AbstractValueLayerND<T>::requests[i]);
+    MPI_Irecv(&dataSpace[AbstractValueLayerND<T>::neighborData[i].receivePtrOffset], 1, AbstractValueLayerND<T>::neighborData[i].datatype,
+        AbstractValueLayerND<T>::neighborData[i].rank, 10 * (AbstractValueLayerND<T>::neighborData[i].recvDir + 1) + mpiTag, AbstractValueLayerND<T>::cartTopology->topologyComm, &AbstractValueLayerND<T>::requests[AbstractValueLayerND<T>::neighborCount + i]);
+  }
+  int ret = MPI_Waitall(AbstractValueLayerND<T>::neighborCount, AbstractValueLayerND<T>::requests, AbstractValueLayerND<T>::statuses);
+}
+
+
+template<typename T>
+void ValueLayerND<T>::write(string fileLocation, string fileTag, bool writeSharedBoundaryAreas){
+  std::ofstream outfile;
+  std::ostringstream stream;
+  int rank = repast::RepastProcess::instance()->rank();
+  stream << fileLocation << "DiffusionLayer_" << fileTag << "_" << rank << ".csv";
+  std::string filename = stream.str();
+
+  const char * c = filename.c_str();
+  outfile.open(c, std::ios_base::trunc | std::ios_base::out); // it will not delete the content of file, will add a new line
+
+  // Write headers
+  for(int i = 0; i < AbstractValueLayerND<T>::numDims; i++) outfile << "DIM_" << i << ",";
+  outfile << "VALUE" << endl;
+
+  int* positions = new int[AbstractValueLayerND<T>::numDims];
+  for(int i = 0; i < AbstractValueLayerND<T>::numDims; i++) positions[i] = 0;
+
+  writeDimension(outfile, dataSpace, positions, AbstractValueLayerND<T>::numDims - 1, writeSharedBoundaryAreas);
+
+  outfile.close();
+}
+
+
+template<typename T>
+void ValueLayerND<T>::fillDimension(T localValue, T bufferValue, bool doBufferZone, bool doLocal, T* dataSpacePointer, int dimIndex){
+  if(!doBufferZone && !doLocal) return;
+  int bufferEdge = AbstractValueLayerND<T>::dimensionData[dimIndex].leftBufferSize;
+  int localEdge  = bufferEdge + AbstractValueLayerND<T>::dimensionData[dimIndex].localWidth;
+  int upperBound = localEdge + AbstractValueLayerND<T>::dimensionData[dimIndex].rightBufferSize;
+
+  int pointerIncrement = AbstractValueLayerND<T>::places[dimIndex];
+
+
+  int i = 0;
+  for(; i < bufferEdge; i++){
+    if(doBufferZone){
+      if(dimIndex == 0){
+        *dataSpacePointer = bufferValue;
+      }
+      else{
+        fillDimension(bufferValue, bufferValue, doBufferZone, doLocal, dataSpacePointer, dimIndex - 1);
+      }
+    }
+    // Increment the pointers
+    dataSpacePointer += pointerIncrement;
+  }
+  for(; i < localEdge; i++){
+    if(doLocal){
+      if(dimIndex == 0){
+        *dataSpacePointer = localValue;
+      }
+      else{
+        fillDimension(localValue, bufferValue, doBufferZone, doLocal, dataSpacePointer, dimIndex - 1);
+      }
+    }
+    // Increment the pointers
+    dataSpacePointer += pointerIncrement;
+  }
+  if(doBufferZone){ // Note: we don't need to finish this at all if not doing buffer zone
+    for(; i < upperBound; i++){
+      if(dimIndex == 0){
+        *dataSpacePointer = bufferValue;
+      }
+      else{
+        fillDimension(bufferValue, bufferValue, doBufferZone, doLocal, dataSpacePointer, dimIndex - 1);
+      }
+    }
+    dataSpacePointer += pointerIncrement;
+  }
+
+}
+
+template<typename T>
+void ValueLayerND<T>::writeDimension(std::ofstream& outfile, T* dataSpacePointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas){
+  int bufferEdge = AbstractValueLayerND<T>::dimensionData[dimIndex].leftBufferSize;
+  int localEdge  = bufferEdge + AbstractValueLayerND<T>::dimensionData[dimIndex].localWidth;
+  int upperBound = localEdge + AbstractValueLayerND<T>::dimensionData[dimIndex].rightBufferSize;
+
+  int pointerIncrement = AbstractValueLayerND<T>::places[dimIndex];
+  int i = 0;
+  for(; i < bufferEdge; i++){
+    currentPosition[dimIndex] = i;
+    if(writeSharedBoundaryAreas){
+      if(dimIndex == 0){
+        T val = *dataSpacePointer;
+        if(val != 0){
+          for(int j = 0; j < AbstractValueLayerND<T>::numDims; j++) outfile << (currentPosition[j] - AbstractValueLayerND<T>::dimensionData[j].leftBufferSize) << ",";
+          outfile << val << endl;
+        }
+      }
+      else{
+        writeDimension(outfile, dataSpacePointer, currentPosition, dimIndex - 1, writeSharedBoundaryAreas);
+      }
+    }
+    // Increment the pointers
+    dataSpacePointer += pointerIncrement;
+  }
+  for(; i < localEdge; i++){
+    currentPosition[dimIndex] = i;
+    if(dimIndex == 0){
+        T val = *dataSpacePointer;
+        if(val != 0){
+          for(int j = 0; j < AbstractValueLayerND<T>::numDims; j++) outfile << (currentPosition[j] - AbstractValueLayerND<T>::dimensionData[j].leftBufferSize) << ",";
+          outfile << val << endl;
+        }
+    }
+    else{
+      writeDimension(outfile, dataSpacePointer, currentPosition, dimIndex - 1, writeSharedBoundaryAreas);
+    }
+    // Increment the pointers
+    dataSpacePointer += pointerIncrement;
+  }
+  if(writeSharedBoundaryAreas){ // Note: we don't need to finish this at all if not doing buffer zone
+    for(; i < upperBound; i++){
+      currentPosition[dimIndex] = i;
+      if(dimIndex == 0){
+        T val = *dataSpacePointer;
+        if(val != 0){
+          for(int j = 0; j < AbstractValueLayerND<T>::numDims; j++) outfile << (currentPosition[j] - AbstractValueLayerND<T>::dimensionData[j].leftBufferSize) << ",";
+          outfile << *dataSpacePointer << endl;
+        }
+      }
+      else{
+        writeDimension(outfile, dataSpacePointer, currentPosition, dimIndex - 1, writeSharedBoundaryAreas);
+      }
+    }
+    dataSpacePointer += pointerIncrement;
+  }
+
+}
+
+
+
+
+template<typename T>
+ValueLayerNDSU<T>::ValueLayerNDSU(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic,
+    T initialValue, T initialBufferZoneValue): AbstractValueLayerND<T>(processesPerDim, globalBoundaries, bufferSize, periodic){
+
+  // Create the actual arrays for the data
+  dataSpace1 = new T[AbstractValueLayerND<T>::length];
+  dataSpace2 = new T[AbstractValueLayerND<T>::length];
+  currentDataSpace = dataSpace1;
+  otherDataSpace   = dataSpace2;
+
+  // Finally, fill the data with the initial values
+  initialize(initialValue, initialBufferZoneValue);
+
+  // And synchronize
+  synchronize();
+
+}
+
+template<typename T>
+ValueLayerNDSU<T>::~ValueLayerNDSU(){
+  delete[] currentDataSpace;
+  delete[] otherDataSpace;
+}
+
+template<typename T>
+void ValueLayerNDSU<T>::initialize(T initialValue, bool fillBufferZone, bool fillLocal){
+  fillDimension(initialValue, initialValue, fillBufferZone, fillLocal, dataSpace1, dataSpace2, AbstractValueLayerND<T>::numDims - 1);
+}
+
+template<typename T>
+void ValueLayerNDSU<T>::initialize(T initialLocalValue, T initialBufferZoneValue){
+  fillDimension(initialLocalValue, initialBufferZoneValue, true, true, dataSpace1, dataSpace2, AbstractValueLayerND<T>::numDims - 1);
+}
+
+template<typename T>
+T ValueLayerNDSU<T>::addValueAt(T val, Point<int> location){
+  int indx = this->getIndex(location);
+  if(indx == -1) return nan("");
+  T* pt = &currentDataSpace[indx];
+  return (*pt = *pt + val);
+}
+
+template<typename T>
+T ValueLayerNDSU<T>::addValueAt(T val, vector<int> location){
+  int indx = this->getIndex(location);
+  if(indx == -1) return nan("");
+  T* pt = &currentDataSpace[indx];
+  return (*pt = *pt + val);
+}
+
+template<typename T>
+T ValueLayerNDSU<T>::setValueAt(T val, Point<int> location){
+  int indx = this->getIndex(location);
+  if(indx == -1) return nan("");
+  T* pt = &currentDataSpace[indx];
+  return (*pt = val);
+}
+
+template<typename T>
+T ValueLayerNDSU<T>::setValueAt(T val, vector<int> location){
+  int indx = this->getIndex(location);
+  if(indx == -1) return nan("");
+  T* pt = &currentDataSpace[indx];
+  return (*pt = val);
+}
+
+template<typename T>
+T ValueLayerNDSU<T>::getValueAt(Point<int> location){
+  int indx = this->getIndex(location);
+  if(indx == -1) return nan("");
+  return currentDataSpace[indx];
+}
+
+template<typename T>
+T ValueLayerNDSU<T>::getValueAt(vector<int> location){
+  int indx = this->getIndex(location);
+  if(indx == -1) return nan("");
+  return currentDataSpace[indx];
+}
+
+
+template<typename T>
+void ValueLayerNDSU<T>::synchronize(){
+  AbstractValueLayerND<T>::syncCount++;
+  if(AbstractValueLayerND<T>::syncCount > 9) AbstractValueLayerND<T>::syncCount = 0;
+  int mpiTag = AbstractValueLayerND<T>::instanceID * 10 + AbstractValueLayerND<T>::syncCount;
+  // Note: the syncCount and send/recv directions are used to create a unique tag value for the
+  // mpi sends and receives. The tag value must be unique in two ways: first, successive calls to this
+  // function must be different enough that they can't be confused. The 'syncCount' value is used to
+  // achieve this, and it will loop from 0-9 and then repeat. The second, the tag must sometimes
+  // differentiate between sends and receives that are going to the same rank. If a dimension
+  // has only 2 processes but wrap-around borders, then one process may be sending to the other
+  // process twice (once left and once right). The 'sendDir' and 'recvDir' values trap this
+
+  // For each entry in neighbors:
+  MPI_Status statuses[AbstractValueLayerND<T>::neighborCount * 2];
+  for(int i = 0; i < AbstractValueLayerND<T>::neighborCount; i++){
+    MPI_Isend(&currentDataSpace[AbstractValueLayerND<T>::neighborData[i].sendPtrOffset], 1, AbstractValueLayerND<T>::neighborData[i].datatype,
+        AbstractValueLayerND<T>::neighborData[i].rank, 10 * (AbstractValueLayerND<T>::neighborData[i].sendDir + 1) + mpiTag, AbstractValueLayerND<T>::cartTopology->topologyComm, &AbstractValueLayerND<T>::requests[i]);
+    MPI_Irecv(&currentDataSpace[AbstractValueLayerND<T>::neighborData[i].receivePtrOffset], 1, AbstractValueLayerND<T>::neighborData[i].datatype,
+        AbstractValueLayerND<T>::neighborData[i].rank, 10 * (AbstractValueLayerND<T>::neighborData[i].recvDir + 1) + mpiTag, AbstractValueLayerND<T>::cartTopology->topologyComm, &AbstractValueLayerND<T>::requests[AbstractValueLayerND<T>::neighborCount + i]);
+  }
+  int ret = MPI_Waitall(AbstractValueLayerND<T>::neighborCount, AbstractValueLayerND<T>::requests, statuses);
+}
+
+template<typename T>
+void ValueLayerNDSU<T>::write(string fileLocation, string fileTag, bool writeSharedBoundaryAreas){
+  std::ofstream outfile;
+  std::ostringstream stream;
+  int rank = repast::RepastProcess::instance()->rank();
+  stream << fileLocation << "DiffusionLayer_" << fileTag << "_" << rank << ".csv";
+  std::string filename = stream.str();
+
+  const char * c = filename.c_str();
+  outfile.open(c, std::ios_base::trunc | std::ios_base::out); // it will not delete the content of file, will add a new line
+
+  // Write headers
+  for(int i = 0; i < AbstractValueLayerND<T>::numDims; i++) outfile << "DIM_" << i << ",";
+  outfile << "VALUE" << endl;
+
+  int* positions = new int[AbstractValueLayerND<T>::numDims];
+  for(int i = 0; i < AbstractValueLayerND<T>::numDims; i++) positions[i] = 0;
+
+  writeDimension(outfile, currentDataSpace, positions, AbstractValueLayerND<T>::numDims - 1, writeSharedBoundaryAreas);
+
+  outfile.close();
+}
+
+template<typename T>
+void ValueLayerNDSU<T>::switchValueLayer(){
+  // Switch the data banks
+  T* tempDataSpace = currentDataSpace;
+  currentDataSpace      = otherDataSpace;
+  otherDataSpace        = tempDataSpace;
+}
+
+template<typename T>
+T ValueLayerNDSU<T>::addSecondaryValueAt(T val, Point<int> location){
+  int indx = this->getIndex(location);
+  if(indx == -1) return nan("");
+  T* pt = &otherDataSpace[indx];
+  return (*pt = *pt + val);
+}
+
+template<typename T>
+T ValueLayerNDSU<T>::addSecondaryValueAt(T val, vector<int> location){
+  int indx = this->getIndex(location);
+  if(indx == -1) return nan("");
+  T* pt = &otherDataSpace[indx];
+  return (*pt = *pt + val);
+}
+
+template<typename T>
+T ValueLayerNDSU<T>::setSecondaryValueAt(T val, Point<int> location){
+  int indx = this->getIndex(location);
+  if(indx == -1) return nan("");
+  T* pt = &otherDataSpace[indx];
+  return (*pt = val);
+}
+
+template<typename T>
+T ValueLayerNDSU<T>::setSecondaryValueAt(T val, vector<int> location){
+  int indx = this->getIndex(location);
+  if(indx == -1) return nan("");
+  T* pt = &otherDataSpace[indx];
+  return (*pt = val);
+}
+
+template<typename T>
+T ValueLayerNDSU<T>::getSecondaryValueAt(Point<int> location){
+  int indx = this->getIndex(location);
+  if(indx == -1) return nan("");
+  return otherDataSpace[indx];
+}
+
+template<typename T>
+T ValueLayerNDSU<T>::getSecondaryValueAt(vector<int> location){
+  int indx = this->getIndex(location);
+  if(indx == -1) return nan("");
+  return otherDataSpace[indx];
+}
+
+template<typename T>
+void ValueLayerNDSU<T>::copyCurrentToSecondary(){
+  T d = 0;
+  memcpy(otherDataSpace, currentDataSpace, AbstractValueLayerND<T>::length * sizeof d);
+}
+
+template<typename T>
+void ValueLayerNDSU<T>::copySecondaryToCurrent(){
+  T d = 0;
+  memcpy(currentDataSpace, otherDataSpace, AbstractValueLayerND<T>::length * sizeof d);
+}
+
+
+template<typename T>
+void ValueLayerNDSU<T>::fillDimension(T localValue, T bufferValue, bool doBufferZone, bool doLocal, T* dataSpace1Pointer, T* dataSpace2Pointer, int dimIndex){
+  if(!doBufferZone && !doLocal) return;
+  int bufferEdge = AbstractValueLayerND<T>::dimensionData[dimIndex].leftBufferSize;
+  int localEdge  = bufferEdge + AbstractValueLayerND<T>::dimensionData[dimIndex].localWidth;
+  int upperBound = localEdge + AbstractValueLayerND<T>::dimensionData[dimIndex].rightBufferSize;
+
+  int pointerIncrement = AbstractValueLayerND<T>::places[dimIndex];
+
+
+  int i = 0;
+  for(; i < bufferEdge; i++){
+    if(doBufferZone){
+      if(dimIndex == 0){
+        *dataSpace1Pointer = bufferValue;
+        *dataSpace2Pointer = bufferValue;
+      }
+      else{
+        fillDimension(bufferValue, bufferValue, doBufferZone, doLocal, dataSpace1Pointer, dataSpace2Pointer, dimIndex - 1);
+      }
+    }
+    // Increment the pointers
+    dataSpace1Pointer += pointerIncrement;
+    dataSpace2Pointer += pointerIncrement;
+  }
+  for(; i < localEdge; i++){
+    if(doLocal){
+      if(dimIndex == 0){
+        *dataSpace1Pointer = localValue;
+        *dataSpace2Pointer = localValue;
+      }
+      else{
+        fillDimension(localValue, bufferValue, doBufferZone, doLocal, dataSpace1Pointer, dataSpace2Pointer, dimIndex - 1);
+      }
+    }
+    // Increment the pointers
+    dataSpace1Pointer += pointerIncrement;
+    dataSpace2Pointer += pointerIncrement;
+  }
+  if(doBufferZone){ // Note: we don't need to finish this at all if not doing buffer zone
+    for(; i < upperBound; i++){
+      if(dimIndex == 0){
+        *dataSpace1Pointer = bufferValue;
+        *dataSpace2Pointer = bufferValue;
+      }
+      else{
+        fillDimension(bufferValue, bufferValue, doBufferZone, doLocal, dataSpace1Pointer, dataSpace2Pointer, dimIndex - 1);
+      }
+    }
+    dataSpace1Pointer += pointerIncrement;
+    dataSpace2Pointer += pointerIncrement;
+  }
+
+}
+
+template<typename T>
+void ValueLayerNDSU<T>::writeDimension(std::ofstream& outfile, T* dataSpacePointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas){
+  int bufferEdge = AbstractValueLayerND<T>::dimensionData[dimIndex].leftBufferSize;
+  int localEdge  = bufferEdge + AbstractValueLayerND<T>::dimensionData[dimIndex].localWidth;
+  int upperBound = localEdge + AbstractValueLayerND<T>::dimensionData[dimIndex].rightBufferSize;
+
+  int pointerIncrement = AbstractValueLayerND<T>::places[dimIndex];
+  int i = 0;
+  for(; i < bufferEdge; i++){
+    currentPosition[dimIndex] = i;
+    if(writeSharedBoundaryAreas){
+      if(dimIndex == 0){
+        T val = *dataSpacePointer;
+        if(val != 0){
+          for(int j = 0; j < AbstractValueLayerND<T>::numDims; j++) outfile << (currentPosition[j] - AbstractValueLayerND<T>::dimensionData[j].leftBufferSize) << ",";
+          outfile << val << endl;
+        }
+      }
+      else{
+        writeDimension(outfile, dataSpacePointer, currentPosition, dimIndex - 1, writeSharedBoundaryAreas);
+      }
+    }
+    // Increment the pointers
+    dataSpacePointer += pointerIncrement;
+  }
+  for(; i < localEdge; i++){
+    currentPosition[dimIndex] = i;
+    if(dimIndex == 0){
+        T val = *dataSpacePointer;
+        if(val != 0){
+          for(int j = 0; j < AbstractValueLayerND<T>::numDims; j++) outfile << (currentPosition[j] - AbstractValueLayerND<T>::dimensionData[j].leftBufferSize) << ",";
+          outfile << val << endl;
+        }
+    }
+    else{
+      writeDimension(outfile, dataSpacePointer, currentPosition, dimIndex - 1, writeSharedBoundaryAreas);
+    }
+    // Increment the pointers
+    dataSpacePointer += pointerIncrement;
+  }
+  if(writeSharedBoundaryAreas){ // Note: we don't need to finish this at all if not doing buffer zone
+    for(; i < upperBound; i++){
+      currentPosition[dimIndex] = i;
+      if(dimIndex == 0){
+        T val = *dataSpacePointer;
+        if(val != 0){
+          for(int j = 0; j < AbstractValueLayerND<T>::numDims; j++) outfile << (currentPosition[j] - AbstractValueLayerND<T>::dimensionData[j].leftBufferSize) << ",";
+          outfile << *dataSpacePointer << endl;
+        }
+      }
+      else{
+        writeDimension(outfile, dataSpacePointer, currentPosition, dimIndex - 1, writeSharedBoundaryAreas);
+      }
+    }
+    dataSpacePointer += pointerIncrement;
+  }
+
+}
+
+
+
+
+
+
+
 
 
 
