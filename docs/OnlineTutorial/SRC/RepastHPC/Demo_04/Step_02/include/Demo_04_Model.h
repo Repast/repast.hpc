@@ -12,6 +12,7 @@
 #include "repast_hpc/SVDataSet.h"
 #include "repast_hpc/SharedDiscreteSpace.h"
 #include "repast_hpc/GridComponents.h"
+#include "repast_hpc/ValueLayerND.h"
 
 #include "Demo_04_Agent.h"
 
@@ -79,6 +80,7 @@ class RepastHPCDemoModel{
 
 	repast::SVDataSet* agentValues;
     repast::SharedDiscreteSpace<RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder<RepastHPCDemoAgent> >* discreteSpace;
+    repast::ValueLayerND<double>* valueLayer;
 	
 public:
 	RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm);

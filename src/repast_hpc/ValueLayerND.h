@@ -214,6 +214,7 @@ class AbstractValueLayerND{
 
 protected:
   CartesianTopology*         cartTopology;
+  GridDimensions             localBoundaries;
   int                        length;                 // Total length of the entire array (one data space)
 
   int                        numDims;                // Number of dimensions
@@ -247,6 +248,9 @@ public:
    */
   virtual bool isInLocalBounds(Point<int> location);
 
+  const GridDimensions& getLocalBoundaries(){
+    return localBoundaries;
+  }
 
 protected:
   // Methods implemented in this class but visible only to child classes:
@@ -301,37 +305,50 @@ protected:
 
   /**
    * Add to the value in the grid at a specific location
-   * Returns the new value.
+   * Returns the new value. If the location is not within the local
+   * boundaries, sets the error flag to 'true', otherwise it will be
+   * set to 'false'
    */
-  virtual T addValueAt(T val, Point<int> location) = 0;
+  virtual T addValueAt(T val, Point<int> location, bool& errFlag = false) = 0;
 
   /**
    * Add to the value in the grid at the specific location
-   * Returns the new value.
+   * Returns the new value. If the location is not within the local
+   * boundaries, sets the error flag to 'true', otherwise it will be
+   * set to 'false'
    */
-  virtual T addValueAt(T val, vector<int> location) = 0;
+  virtual T addValueAt(T val, vector<int> location, bool& errFlag = false) = 0;
 
   /**
    * Add to the value in the grid at a specific location
-   * Returns the new value.
+   * Returns the new value. If the location is not within the local
+   * boundaries, sets the error flag to 'true', otherwise it will be
+   * set to 'false'
    */
-  virtual T setValueAt(T val, Point<int> location) = 0;
+  virtual T setValueAt(T val, Point<int> location, bool& errFlag = false) = 0;
 
   /**
    * Add to the value in the grid at the specific location
-   * Returns the new value.
+   * Returns the new value. If the location is not within the local
+   * boundaries, sets the error flag to 'true', otherwise it will be
+   * set to 'false'
    */
-  virtual T setValueAt(T val, vector<int> location) = 0;
+  virtual T setValueAt(T val, vector<int> location, bool& errFlag = false) = 0;
 
   /**
-   * Gets the value in the grid at a specific location
+   * Gets the value in the grid at a specific location.  If the location is not within the
+   * boundaries, sets the error flag to 'true', otherwise it will be
+   * set to 'false'
+   *
    */
-  virtual T getValueAt(Point<int> location) = 0;
+  virtual T getValueAt(Point<int> location, bool& errFlag = false) = 0;
 
   /**
-   * Gets the value in the grid at a specific location
+   * Gets the value in the grid at a specific location.  If the location is not within the
+   * boundaries, sets the error flag to 'true', otherwise it will be
+   * set to 'false'
    */
-  virtual T getValueAt(vector<int> location) = 0;
+  virtual T getValueAt(vector<int> location, bool& errFlag = false) = 0;
 
   /**
    * Synchronize across processes. This copies
@@ -364,8 +381,14 @@ private:
 
   /**
    * Gets an MPI data type given the list of side lengths
+   *
    */
   void getMPIDataType(vector<int> sideLengths, MPI_Datatype &datatype, int dimensionIndex);
+
+  /**
+   * Gets the raw MPI datatype from which all others are built
+   */
+  MPI_Datatype getRawMPIDataType();
 
 
   /**
@@ -410,7 +433,7 @@ AbstractValueLayerND<T>::AbstractValueLayerND(vector<int> processesPerDim, GridD
   numDims = processesPerDim.size();
 
   int rank = RepastProcess::instance()->rank();
-  GridDimensions localBoundaries = cartTopology->getDimensions(rank, globalBoundaries);
+  localBoundaries = cartTopology->getDimensions(rank, globalBoundaries);
 
   // First create the basic coordinate data per dimension
   length = 1;
@@ -512,10 +535,10 @@ void AbstractValueLayerND<T>::getMPIDataType(int radius, MPI_Datatype &datatype)
   getMPIDataType(sideLengths, datatype, numDims - 1);
 }
 
-template<>
-void AbstractValueLayerND<int>::getMPIDataType(vector<int> sideLengths, MPI_Datatype &datatype, int dimensionIndex){
+template<typename T>
+void AbstractValueLayerND<T>::getMPIDataType(vector<int> sideLengths, MPI_Datatype &datatype, int dimensionIndex){
   if(dimensionIndex == 0){
-    MPI_Type_contiguous(sideLengths[dimensionIndex], MPI_INT, &datatype);
+    MPI_Type_contiguous(sideLengths[dimensionIndex], getRawMPIDataType(), &datatype);
   }
   else{
     MPI_Datatype innerType;
@@ -530,23 +553,6 @@ void AbstractValueLayerND<int>::getMPIDataType(vector<int> sideLengths, MPI_Data
   MPI_Type_commit(&datatype);
 }
 
-template<>
-void AbstractValueLayerND<double>::getMPIDataType(vector<int> sideLengths, MPI_Datatype &datatype, int dimensionIndex){
-  if(dimensionIndex == 0){
-    MPI_Type_contiguous(sideLengths[dimensionIndex], MPI_DOUBLE, &datatype);
-  }
-  else{
-    MPI_Datatype innerType;
-    getMPIDataType(sideLengths, innerType, dimensionIndex - 1);
-    MPI_Type_hvector(sideLengths[dimensionIndex], // Count
-                     1,                                                                        // BlockLength: just one of the inner data type
-                     strides[dimensionIndex],                                                  // Stride, in bytes
-                     innerType,                                                                // Inner Datatype
-                     &datatype);
-  }
-  // Commit?
-  MPI_Type_commit(&datatype);
-}
 
 template<typename T>
 int AbstractValueLayerND<T>::getSendPointerOffset(RelativeLocation relLoc){
@@ -569,10 +575,6 @@ int AbstractValueLayerND<T>::getReceivePointerOffset(RelativeLocation relLoc){
   }
   return ret;
 }
-
-
-
-
 
 
 /**
@@ -637,7 +639,7 @@ template<typename T>
 class ValueLayerND: public AbstractValueLayerND<T>{
 
 private:
-  double*                dataSpace;              // Pointer to the data space
+  T* dataSpace;              // Pointer to the data space
 
 public:
 
@@ -658,32 +660,32 @@ public:
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T addValueAt(T val, Point<int> location);
+  virtual T addValueAt(T val, Point<int> location, bool& errFlag = false);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T addValueAt(T val, vector<int> location);
+  virtual T addValueAt(T val, vector<int> location, bool& errFlag = false);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T setValueAt(T val, Point<int> location);
+  virtual T setValueAt(T val, Point<int> location, bool& errFlag = false);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T setValueAt(T val, vector<int> location);
+  virtual T setValueAt(T val, vector<int> location, bool& errFlag = false);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T getValueAt(Point<int> location);
+  virtual T getValueAt(Point<int> location, bool& errFlag = false);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T getValueAt(vector<int> location);
+  virtual T getValueAt(vector<int> location, bool& errFlag = false);
 
   /**
    * Inherited from AbstractValueLayerND
@@ -751,32 +753,32 @@ public:
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T addValueAt(T val, Point<int> location);
+  virtual T addValueAt(T val, Point<int> location, bool& errFlag = false);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T addValueAt(T val, vector<int> location);
+  virtual T addValueAt(T val, vector<int> location, bool& errFlag = false);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T setValueAt(T val, Point<int> location);
+  virtual T setValueAt(T val, Point<int> location, bool& errFlag = false);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T setValueAt(T val, vector<int> location);
+  virtual T setValueAt(T val, vector<int> location, bool& errFlag = false);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T getValueAt(Point<int> location);
+  virtual T getValueAt(Point<int> location, bool& errFlag = false);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T getValueAt(vector<int> location);
+  virtual T getValueAt(vector<int> location, bool& errFlag = false);
 
   /**
    * Inherited from AbstractValueLayerND
@@ -797,37 +799,37 @@ public:
    * Adds the specified value to the value in the non-current
    * data bank at the given location
    */
-  virtual T addSecondaryValueAt(T val, Point<int> location);
+  virtual T addSecondaryValueAt(T val, Point<int> location, bool& errFlag = false);
 
   /**
    * Adds the specified value to the value in the non-current
    * data bank at the given location
    */
-  virtual T addSecondaryValueAt(T val, vector<int> location);
+  virtual T addSecondaryValueAt(T val, vector<int> location, bool& errFlag = false);
 
   /**
    * Sets the specified value to the value in the non-current
    * data bank at the given location
    */
-  virtual T setSecondaryValueAt(T val, Point<int> location);
+  virtual T setSecondaryValueAt(T val, Point<int> location, bool& errFlag = false);
 
   /**
    * Sets the specified value to the value in the non-current
    * data bank at the given location
    */
-  virtual T setSecondaryValueAt(T val, vector<int> location);
+  virtual T setSecondaryValueAt(T val, vector<int> location, bool& errFlag = false);
 
   /**
    * Gets the specified value to the value in the non-current
    * data bank at the given location
    */
-  virtual T getSecondaryValueAt(Point<int> location);
+  virtual T getSecondaryValueAt(Point<int> location, bool& errFlag = false);
 
   /**
    * Gets the specified value to the value in the non-current
    * data bank at the given location
    */
-  virtual T getSecondaryValueAt(vector<int> location);
+  virtual T getSecondaryValueAt(vector<int> location, bool& errFlag = false);
 
   /**
    * Copies the data in the current value layer to the secondary layer
@@ -887,41 +889,73 @@ void ValueLayerND<T>::initialize(T initialLocalValue, T initialBufferZoneValue){
 }
 
 template<typename T>
-T ValueLayerND<T>::addValueAt(T val, Point<int> location){
+T ValueLayerND<T>::addValueAt(T val, Point<int> location, bool& errFlag){
+  errFlag = false;
   int indx = this->getIndex(location);
-  if(indx == -1) return nan("");
+  if(indx == -1){
+    errFlag = true;
+    return val;
+  }
   T* pt = &dataSpace[indx];
   return (*pt = *pt + val);
 }
 
 template<typename T>
-T ValueLayerND<T>::addValueAt(T val, vector<int> location){
+T ValueLayerND<T>::addValueAt(T val, vector<int> location, bool& errFlag){
+  errFlag = false;
   int indx = this->getIndex(location);
-  if(indx == -1) return nan("");
+  if(indx == -1){
+    errFlag = true;
+    return val;
+  }
+
   T* pt = &dataSpace[indx];
   return (*pt = *pt + val);
 }
 
 template<typename T>
-T ValueLayerND<T>::setValueAt(T val, Point<int> location){
+T ValueLayerND<T>::setValueAt(T val, Point<int> location, bool& errFlag){
+  errFlag = false;
   int indx = this->getIndex(location);
-  if(indx == -1) return nan("");
+  if(indx == -1){
+    errFlag = true;
+    return val;
+  }
   T* pt = &dataSpace[indx];
   return (*pt = val);
 }
 
 template<typename T>
-T ValueLayerND<T>::setValueAt(T val, vector<int> location){
+T ValueLayerND<T>::setValueAt(T val, vector<int> location, bool& errFlag){
+  errFlag = false;
   int indx = this->getIndex(location);
-  if(indx == -1) return nan("");
+  if(indx == -1){
+    errFlag = true;
+    return val;
+  }
   T* pt = &dataSpace[indx];
   return (*pt = val);
 }
 
 template<typename T>
-T ValueLayerND<T>::getValueAt(vector<int> location){
+T ValueLayerND<T>::getValueAt(vector<int> location, bool& errFlag){
+  errFlag = false;
   int indx = this->getIndex(location);
-  if(indx == -1) return nan("");
+  if(indx == -1){
+    errFlag = true;
+    return 0;
+  }
+  return dataSpace[indx];
+}
+
+template<typename T>
+T ValueLayerND<T>::getValueAt(Point<int> location, bool& errFlag){
+  errFlag = false;
+  int indx = this->getIndex(location);
+  if(indx == -1){
+    errFlag = true;
+    return 0;
+  }
   return dataSpace[indx];
 }
 
@@ -946,7 +980,7 @@ void ValueLayerND<T>::synchronize(){
     MPI_Irecv(&dataSpace[AbstractValueLayerND<T>::neighborData[i].receivePtrOffset], 1, AbstractValueLayerND<T>::neighborData[i].datatype,
         AbstractValueLayerND<T>::neighborData[i].rank, 10 * (AbstractValueLayerND<T>::neighborData[i].recvDir + 1) + mpiTag, AbstractValueLayerND<T>::cartTopology->topologyComm, &AbstractValueLayerND<T>::requests[AbstractValueLayerND<T>::neighborCount + i]);
   }
-  int ret = MPI_Waitall(AbstractValueLayerND<T>::neighborCount, AbstractValueLayerND<T>::requests, AbstractValueLayerND<T>::statuses);
+  int ret = MPI_Waitall(AbstractValueLayerND<T>::neighborCount, AbstractValueLayerND<T>::requests, statuses);
 }
 
 
@@ -1120,7 +1154,7 @@ void ValueLayerNDSU<T>::initialize(T initialLocalValue, T initialBufferZoneValue
 }
 
 template<typename T>
-T ValueLayerNDSU<T>::addValueAt(T val, Point<int> location){
+T ValueLayerNDSU<T>::addValueAt(T val, Point<int> location, bool& errFlag){
   int indx = this->getIndex(location);
   if(indx == -1) return nan("");
   T* pt = &currentDataSpace[indx];
@@ -1128,7 +1162,7 @@ T ValueLayerNDSU<T>::addValueAt(T val, Point<int> location){
 }
 
 template<typename T>
-T ValueLayerNDSU<T>::addValueAt(T val, vector<int> location){
+T ValueLayerNDSU<T>::addValueAt(T val, vector<int> location, bool& errFlag){
   int indx = this->getIndex(location);
   if(indx == -1) return nan("");
   T* pt = &currentDataSpace[indx];
@@ -1136,7 +1170,7 @@ T ValueLayerNDSU<T>::addValueAt(T val, vector<int> location){
 }
 
 template<typename T>
-T ValueLayerNDSU<T>::setValueAt(T val, Point<int> location){
+T ValueLayerNDSU<T>::setValueAt(T val, Point<int> location, bool& errFlag){
   int indx = this->getIndex(location);
   if(indx == -1) return nan("");
   T* pt = &currentDataSpace[indx];
@@ -1144,7 +1178,7 @@ T ValueLayerNDSU<T>::setValueAt(T val, Point<int> location){
 }
 
 template<typename T>
-T ValueLayerNDSU<T>::setValueAt(T val, vector<int> location){
+T ValueLayerNDSU<T>::setValueAt(T val, vector<int> location, bool& errFlag){
   int indx = this->getIndex(location);
   if(indx == -1) return nan("");
   T* pt = &currentDataSpace[indx];
@@ -1152,14 +1186,14 @@ T ValueLayerNDSU<T>::setValueAt(T val, vector<int> location){
 }
 
 template<typename T>
-T ValueLayerNDSU<T>::getValueAt(Point<int> location){
+T ValueLayerNDSU<T>::getValueAt(Point<int> location, bool& errFlag){
   int indx = this->getIndex(location);
   if(indx == -1) return nan("");
   return currentDataSpace[indx];
 }
 
 template<typename T>
-T ValueLayerNDSU<T>::getValueAt(vector<int> location){
+T ValueLayerNDSU<T>::getValueAt(vector<int> location, bool& errFlag){
   int indx = this->getIndex(location);
   if(indx == -1) return nan("");
   return currentDataSpace[indx];
@@ -1222,48 +1256,72 @@ void ValueLayerNDSU<T>::switchValueLayer(){
 }
 
 template<typename T>
-T ValueLayerNDSU<T>::addSecondaryValueAt(T val, Point<int> location){
+T ValueLayerNDSU<T>::addSecondaryValueAt(T val, Point<int> location, bool& errFlag){
+  errFlag = false;
   int indx = this->getIndex(location);
-  if(indx == -1) return nan("");
+  if(indx == -1){
+    errFlag = true;
+    return val;
+  }
   T* pt = &otherDataSpace[indx];
   return (*pt = *pt + val);
 }
 
 template<typename T>
-T ValueLayerNDSU<T>::addSecondaryValueAt(T val, vector<int> location){
+T ValueLayerNDSU<T>::addSecondaryValueAt(T val, vector<int> location, bool& errFlag){
+  errFlag = false;
   int indx = this->getIndex(location);
-  if(indx == -1) return nan("");
+  if(indx == -1){
+    errFlag = true;
+    return val;
+  }
   T* pt = &otherDataSpace[indx];
   return (*pt = *pt + val);
 }
 
 template<typename T>
-T ValueLayerNDSU<T>::setSecondaryValueAt(T val, Point<int> location){
+T ValueLayerNDSU<T>::setSecondaryValueAt(T val, Point<int> location, bool& errFlag){
+  errFlag = false;
   int indx = this->getIndex(location);
-  if(indx == -1) return nan("");
+  if(indx == -1){
+    errFlag = true;
+    return val;
+  }
   T* pt = &otherDataSpace[indx];
   return (*pt = val);
 }
 
 template<typename T>
-T ValueLayerNDSU<T>::setSecondaryValueAt(T val, vector<int> location){
+T ValueLayerNDSU<T>::setSecondaryValueAt(T val, vector<int> location, bool& errFlag){
+  errFlag = false;
   int indx = this->getIndex(location);
-  if(indx == -1) return nan("");
+  if(indx == -1){
+    errFlag = true;
+    return val;
+  }
   T* pt = &otherDataSpace[indx];
   return (*pt = val);
 }
 
 template<typename T>
-T ValueLayerNDSU<T>::getSecondaryValueAt(Point<int> location){
+T ValueLayerNDSU<T>::getSecondaryValueAt(Point<int> location, bool& errFlag){
+  errFlag = false;
   int indx = this->getIndex(location);
-  if(indx == -1) return nan("");
+  if(indx == -1){
+    errFlag = true;
+    return 0;
+  }
   return otherDataSpace[indx];
 }
 
 template<typename T>
-T ValueLayerNDSU<T>::getSecondaryValueAt(vector<int> location){
+T ValueLayerNDSU<T>::getSecondaryValueAt(vector<int> location, bool& errFlag){
+  errFlag = false;
   int indx = this->getIndex(location);
-  if(indx == -1) return nan("");
+  if(indx == -1){
+    errFlag = true;
+    return 0;
+  }
   return otherDataSpace[indx];
 }
 

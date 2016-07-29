@@ -14,7 +14,111 @@
 
 <p>To deal with such cases, Repast HPC provides the ValueLayerND. This is essentially an N-Dimensional array of values that agents can access and change but that are not synchronized along with agents. However, it is more convenient than a simple array because it is structured like an N-Dimensional Space: it has the same origin, extents, and buffer zones. Agents that are using a particular coordinate system in their spaces can use the same coordinates in the ValueLayer. It additionally includes the ability to be synchronized across processes, and these can be called separately from the other synchronize routines and are (potentially, depending on the MPI implementation) optimized to go much faster than the packaging and sending of agents.</p>
 
+<p>The first step to using a ValueLayerND is to include it in the model class's header file:</p>
 
+<div class="code"><code><pre>
+/* Demo_04_Model.cpp */
+
+#include &lt;stdio.h&gt;
+#include &lt;vector&gt;
+#include &lt;boost/mpi.hpp&gt;
+#include "repast_hpc/AgentId.h"
+#include "repast_hpc/RepastProcess.h"
+#include "repast_hpc/Utilities.h"
+#include "repast_hpc/Properties.h"
+#include "repast_hpc/initialize_random.h"
+#include "repast_hpc/SVDataSetBuilder.h"
+#include "repast_hpc/Point.h"
+<b class="code">#include "repast_hpc/ValueLayerND.h"</b>
+</pre></code></div>
+
+<p>And provide a pointer for it:</p>
+<div class="code"><code><pre>
+class RepastHPCDemoModel{
+	int stopAt;
+	int countOfAgents;
+	repast::Properties* props;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt; context;
+	
+	RepastHPCDemoAgentPackageProvider* provider;
+	RepastHPCDemoAgentPackageReceiver* receiver;
+
+	repast::SVDataSet* agentValues;
+    repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* discreteSpace;
+    <b class="code">repast::ValueLayerND&lt;double&gt;* valueLayer;</b>
+</pre></code></div>
+
+<p>Create the instance in the model constructor:</p>
+<div class="code"><code><pre>
+RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm): context(comm){
+	props = new repast::Properties(propsFile, argc, argv, comm);
+	stopAt = repast::strToInt(props-&gt;getProperty("stop.at"));
+	countOfAgents = repast::strToInt(props-&gt;getProperty("count.of.agents"));
+	initializeRandom(*props, comm);
+	if(repast::RepastProcess::instance()-&gt;rank() == 0) props-&gt;writeToSVFile("./output/record.csv");
+	provider = new RepastHPCDemoAgentPackageProvider(&context);
+	receiver = new RepastHPCDemoAgentPackageReceiver(&context);
+	
+    repast::Point&lt;double&gt; origin(-100,-100,-100);
+    repast::Point&lt;double&gt; extent(200, 200, 200);
+    
+    repast::GridDimensions gd(origin, extent);
+    
+    std::vector&lt;int&gt; processDims;
+    processDims.push_back(2);
+    processDims.push_back(2);
+    processDims.push_back(2);
+
+    <b class="code">valueLayer = new repast::ValueLayerND&lt;double&gt;(processDims, gd, 2, true, 0, 1);</b>
+    
+    discreteSpace = new repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;("AgentDiscreteSpace", gd, processDims, 2, comm);
+	
+    std::cout &lt;&lt; "RANK " &lt;&lt; repast::RepastProcess::instance()-&gt;rank() &lt;&lt; " BOUNDS: " &lt;&lt; discreteSpace-&gt;bounds().origin() &lt;&lt; " " &lt;&lt; discreteSpace-&gt;bounds().extents() &lt;&lt; std::endl;
+    
+    context.addProjection(discreteSpace);
+</pre></code></div>
+
+
+
+<p>And delete when done:</p>
+<div class="code"><code><pre>
+RepastHPCDemoModel::~RepastHPCDemoModel(){
+	delete props;
+	delete provider;
+	delete receiver;
+	
+	delete agentValues;
+	<b class="code">delete valueLayer;</b>
+
+}
+</pre></code></div>
+
+<h2>Templatized Value Layers</h2>
+<p>The declaration of the ValueLayerND pointer looks like this:</p>
+
+<div class="code"><code><pre>
+    repast::ValueLayerND&lt;<b class="code">double</b>&gt;* valueLayer;
+</pre></code></div>
+
+<p>The use of 'double' as the data type is by choice; other kinds of data can be stored in a value layer. Other common values are float, long, and int. Repast HPC can use: </p>
+<ul>
+  <li>int</li>
+  <li>double</li>
+  <li>float</li>
+  <li>long</li>
+  <li>short</li>
+</ul>
+
+<p>In fact, it is possible to customize Repast HPC to store any data type in a ValueLayerND. To do this you must provide within a .cpp file a template specialization of the AbstractValueLayerND class by providing a method that returns an MPI_Datatype for the base value you want to use:
+
+<div class="code"><code><pre>
+template<>
+MPI_Datatype AbstractValueLayerND&lt;<b class="code">YOUR_DATA_TYPE_HERE</b>&gt;::getRawMPIDataType(){
+  return <b class="code">YOUR_MPI_DATA_TYPE_HERE</b>;
+}
+</pre></code></div>
+
+That is, specify your data type as the template parameter, and the MPI data type that will match it as the return value.
 
     <script type="text/javascript">footer("RepastHPC_Demo_04_Step_02");</script>
   </body>

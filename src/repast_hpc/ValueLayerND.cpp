@@ -47,13 +47,30 @@ using namespace std;
 
 namespace repast {
 
+template<>
+MPI_Datatype AbstractValueLayerND<int>::getRawMPIDataType(){
+  return MPI_INT;
+}
 
+template<>
+MPI_Datatype AbstractValueLayerND<double>::getRawMPIDataType(){
+  return MPI_DOUBLE;
+}
 
+template<>
+MPI_Datatype AbstractValueLayerND<long>::getRawMPIDataType(){
+  return MPI_LONG;
+}
 
+template<>
+MPI_Datatype AbstractValueLayerND<short>::getRawMPIDataType(){
+  return MPI_SHORT;
+}
 
-
-
-
+template<>
+MPI_Datatype AbstractValueLayerND<float>::getRawMPIDataType(){
+  return MPI_FLOAT;
+}
 
 
 

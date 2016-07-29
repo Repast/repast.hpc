@@ -92,9 +92,18 @@ RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** a
     processDims.push_back(2);
     processDims.push_back(2);
     
+    valueLayer = new repast::ValueLayerND<double>(processDims, gd, 2, true, 0, 1);
+
     discreteSpace = new repast::SharedDiscreteSpace<RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder<RepastHPCDemoAgent> >("AgentDiscreteSpace", gd, processDims, 2, comm);
 	
     std::cout << "RANK " << repast::RepastProcess::instance()->rank() << " BOUNDS: " << discreteSpace->bounds().origin() << " " << discreteSpace->bounds().extents() << std::endl;
+
+    std::cout << "RANK " << repast::RepastProcess::instance()->rank() << " DIMENSIONS: " << discreteSpace->dimensions() << std::endl;
+
+    const repast::GridDimensions& valueLayerDims = valueLayer->getLocalBoundaries();
+    std::cout << "RANK " << repast::RepastProcess::instance()->rank() << " VALUE LAYER BOUNDS: " << valueLayerDims << std::endl;
+
+
     
    	context.addProjection(discreteSpace);
     
@@ -121,6 +130,7 @@ RepastHPCDemoModel::~RepastHPCDemoModel(){
 	delete receiver;
 	
 	delete agentValues;
+	delete valueLayer;
 
 }
 
