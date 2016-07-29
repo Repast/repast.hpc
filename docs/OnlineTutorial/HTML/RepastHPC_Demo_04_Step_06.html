@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_04_Step_06");</script>
+<p>A single value layer can hold one set of values, and it is easy to imagine that agents move around in a space and get and set values in the value layers as they go. But there are many cases in which something slightly different is needed: <i>synchronous updates</i>. In this case, the current state of all the values in the value layers must be maintained even as the next state is being calculated, for all cells. Two common cases are cellular automata and diffusion. In both of these cases, we imagine that there is a value stored in a given cell at a specific time in the simulation, and we wish to calculate what the value will be at the next time tick, and this value depends on the values of the cells around it. However, simultaneously, those cells are also calculating what there states should be at the next time tick. All such calculations occur based on the states of the cells at time <i>t</i>, and then, simultaneously (or 'synchronously') all the cells update their states to the next value.</p>
+
+<p>The strategy for doing this is, essentially, to maintain two separate value layers; one is always 'current' and one is 'next'. Note that this immediately doubles the memory required. (Other approaches could be used, such as maintaining a list of changes to be executed, and this might be appropriate if there were few expected changes with each tick. However, this kind of special case is rare, and the approach in which there are two versions of the value layer is much more common.)</p>
+<p>It would be possible to do this manually- that is, you could create two separate value layers and 'juggle' them in the model code, but Repast HPC provides a class that makes it easier. This is the <i>ValueLayerNDSU</i> class (the 'SU' stands for 'Synchronous Update'). This class provides a set of additional methods that allow agents to access and update either the current or the alternate ('Secondary') Value Layer. These methods parallel the methods for the value layer:</p>
+<center>
+<table>
+  <tr>
+    <th>ValueLayerND:</th>
+    <th>ValueLayerNDSU:</th>
+  <tr>
+    <td>
+<ul>
+  <li>getValueAt</li>
+  <li>setValueAt</li>
+  <li>addValueAt</li>
+</ul>
+</td>
+<td>
+<ul>
+  <li>getSecondaryValueAt</li>
+  <li>setSecondaryValueAt</li>
+  <li>addSecondaryValueAt</li>
+</ul>
+</td>
+  </tr>
+</table>
+</center>
+<p>In all cases, the second version gets, or sets, the value in the secondary value layer, leaving the value in the primary value layer unchanged.</p>
+<p>Once all of the changes have been made to the secondary value layer, calling the '<i>switchValueLayer</i>' method causes the current layer and the secondary layer to be exchanged. Note that this does not involve any actual copying; instead, pointers inside the class are simply switched from one data bank to the other. All of the original values in the 'current' layer are still available; they are <b>not</b> reset.<p>
+<p>There is one very important caveat to using the synchronous update value layer: <b>When synchronization is called, it only applies to the current value layer</b>. The secondary value layer is not synchronized. To synchronize the secondary value layer, call the 'switch' method, and then call synchronize.</p>
+
+
+
+    <script type="text/javascript">footer("RepastHPC_Demo_04_Step_06");</script>
+  </body>
+</html>

@@ -1,0 +1,109 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_04_Step_01");</script>
+<p>While it is perhaps challenging to work through all of the details of N-Dimensional spaces and their buffer zones, it is simple to create and use N-Dimensional Spaces.</p>
+
+<p>The main changes that have to be made are in the model class:</p>
+
+<div class="code"><code><pre>
+RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** argv, boost::mpi::communicator* comm): context(comm){
+	props = new repast::Properties(propsFile, argc, argv, comm);
+	stopAt = repast::strToInt(props-&gt;getProperty("stop.at"));
+	countOfAgents = repast::strToInt(props-&gt;getProperty("count.of.agents"));
+	initializeRandom(*props, comm);
+	if(repast::RepastProcess::instance()-&gt;rank() == 0) props-&gt;writeToSVFile("./output/record.csv");
+	provider = new RepastHPCDemoAgentPackageProvider(&context);
+	receiver = new RepastHPCDemoAgentPackageReceiver(&context);
+	
+    repast::Point&lt;double&gt; origin(-100,-100<b class="code">,-100</b>);
+    repast::Point&lt;double&gt; extent(200, 200<b class="code">, 200</b>);
+    
+    repast::GridDimensions gd(origin, extent);
+    
+    std::vector&lt;int&gt; processDims;
+    processDims.push_back(2);
+    processDims.push_back(2);
+    <b class="code">processDims.push_back(2);</b>
+    
+    discreteSpace = new repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;("AgentDiscreteSpace", gd, processDims, 2, comm);
+	
+    std::cout &lt;&lt; "RANK " &lt;&lt; repast::RepastProcess::instance()-&gt;rank() &lt;&lt; " BOUNDS: " &lt;&lt; discreteSpace-&gt;bounds().origin() &lt;&lt; " " &lt;&lt; discreteSpace-&gt;bounds().extents() &lt;&lt; std::endl;
+    
+    context.addProjection(discreteSpace);
+</pre></code></div>
+
+<p>There is very little change to this code. All that has been changed is that the space's origin and extent values now have three dimensions instead of two. The second change goes along with this: it is now necessary to indicate that just as there will be 2 processes in the x and y dimensions, there will also be 2 in the z dimension.</p>
+
+<p>This change requires an additional change: when agents are placed initially, they must be given positions in 3 dimensions, not just two:</p>
+
+<div class="code"><code><pre>
+void RepastHPCDemoModel::init(){
+	int rank = repast::RepastProcess::instance()-&gt;rank();
+	for(int i = 0; i &lt; countOfAgents; i++){
+        repast::Point&lt;int&gt; initialLocation((int)discreteSpace-&gt;bounds().origin().getX() + i,(int)discreteSpace-&gt;bounds().origin().getY() + i<b class="code">, (int)discreteSpace-&gt;bounds().origin().getZ() + i</b>);
+		repast::AgentId id(i, rank, 0);
+		id.currentRank(rank);
+		RepastHPCDemoAgent* agent = new RepastHPCDemoAgent(id);
+		context.addAgent(agent);
+        discreteSpace-&gt;moveTo(id, initialLocation);
+	}
+}
+</pre></code></div>
+
+<p>There is one other additional change: the agents' move method must move them in three dimensions, not just two. The change is in Agent.cpp:</p>
+
+
+<div class="code"><code><pre>
+void RepastHPCDemoAgent::move(repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* space){
+
+    std::vector&lt;int&gt; agentLoc;
+    space-&gt;getLocation(id_, agentLoc);
+    std::vector&lt;int&gt; agentNewLoc;
+    agentNewLoc.push_back(agentLoc[0] + (id_.id() &lt; 7 ? -1 : 1));
+    agentNewLoc.push_back(agentLoc[1] + (id_.id() &gt; 3 ? -1 : 1));
+    <b class="code">agentNewLoc.push_back(agentLoc[2] + (id_.id() &gt; 5 ? -1 : 1));</b>
+    space-&gt;moveTo(id_,agentNewLoc);
+    
+}
+</pre></code></div>
+
+<p>After this there is only one other important detail: when invoking the code, you must provide 8 processes, instead of 4:</p>
+
+<div class="code"><code><pre>
+$ /usr/local/bin/mpirun -n 8 ./bin/Demo_04.exe ./props/config.props ./props/model.props stop.at=10
+</pre></code></div>
+
+<p>The output from this should look almost identical to before, except that the agents' positions will now have three values:</p>
+
+<div class="code"><code><pre>
+LOCAL AGENTS:
+AgentId(6, 0, 0, 0) 100 200 AT Point[-96, -96, -96]
+AgentId(7, 0, 0, 0) 100 200 AT Point[-89, -97, -97]
+AgentId(9, 0, 0, 0) 100 200 AT Point[-86, -96, -96]
+AgentId(3, 1, 0, 0) 100 200 AT Point[-100, -94, -94]
+AgentId(4, 1, 0, 0) 100 200 AT Point[-100, -100, -92]
+AgentId(7, 1, 0, 0) 100 200 AT Point[-90, -96, -96]
+AgentId(8, 1, 0, 0) 100 200 AT Point[-86, -98, -98]
+AgentId(9, 1, 0, 0) 100 200 AT Point[-84, -98, -98]
+AgentId(6, 2, 0, 0) 100 200 AT Point[-97, -97, -97]
+AgentId(7, 2, 0, 0) 100 200 AT Point[-88, -98, -98]
+AgentId(8, 2, 0, 0) 100 200 AT Point[-85, -99, -99]
+AgentId(9, 2, 0, 0) 100 200 AT Point[-84, -98, -98]
+AgentId(8, 3, 0, 0) 100 200 AT Point[-86, -98, -98]
+AgentId(9, 3, 0, 0) 100 200 AT Point[-89, -93, -93]
+NON LOCAL AGENTS:
+AgentId(5, 0, 0, 6) 100 200 AT Point[98, 98, -88]
+AgentId(5, 1, 0, 6) 100 200 AT Point[99, 99, -89]
+AgentId(7, 3, 0, 3) 100 200 AT Point[-84, 98, 98]
+</pre></code></div>
+
+<p>Notice also that some of the agents now have a 'process' and 'current process' of values higher than 3 (e.g. 6).</p>
+
+    <script type="text/javascript">footer("RepastHPC_Demo_04_Step_01");</script>
+  </body>
+</html>

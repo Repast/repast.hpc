@@ -7,8 +7,8 @@
 
 MPICXX=/usr/local/bin/mpicxx -std=c++11 
 
-BOOST_INCLUDE=-I/Users/murphy/ext/boost_1.56/include/
-BOOST_LIB_DIR=-L/Users/murphy/ext/boost_1.56/lib/
+BOOST_INCLUDE=-I/Users/murphy/ext/boost_1.61/include/
+BOOST_LIB_DIR=-L/Users/murphy/ext/boost_1.61/lib/
 BOOST_LIBS=-lboost_mpi-mt-s -lboost_serialization-mt-s -lboost_system-mt-s -lboost_filesystem-mt-s
 
 REPAST_HPC_INCLUDE=-I/Users/murphy/work/HWM/REPAST_HPC/

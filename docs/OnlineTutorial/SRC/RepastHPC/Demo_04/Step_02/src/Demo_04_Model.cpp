@@ -82,12 +82,13 @@ RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** a
 	provider = new RepastHPCDemoAgentPackageProvider(&context);
 	receiver = new RepastHPCDemoAgentPackageReceiver(&context);
 	
-    repast::Point<double> origin(-100,-100);
-    repast::Point<double> extent(200, 200);
+    repast::Point<double> origin(-100,-100,-100);
+    repast::Point<double> extent(200, 200, 200);
     
     repast::GridDimensions gd(origin, extent);
     
     std::vector<int> processDims;
+    processDims.push_back(2);
     processDims.push_back(2);
     processDims.push_back(2);
     
@@ -126,7 +127,7 @@ RepastHPCDemoModel::~RepastHPCDemoModel(){
 void RepastHPCDemoModel::init(){
 	int rank = repast::RepastProcess::instance()->rank();
 	for(int i = 0; i < countOfAgents; i++){
-        repast::Point<int> initialLocation((int)discreteSpace->bounds().origin().getX() + i,(int)discreteSpace->bounds().origin().getY() + i);
+        repast::Point<int> initialLocation((int)discreteSpace->bounds().origin().getX() + i,(int)discreteSpace->bounds().origin().getY() + i, (int)discreteSpace->bounds().origin().getZ() + i);
 		repast::AgentId id(i, rank, 0);
 		id.currentRank(rank);
 		RepastHPCDemoAgent* agent = new RepastHPCDemoAgent(id);

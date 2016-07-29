@@ -50,6 +50,7 @@ void RepastHPCDemoAgent::move(repast::SharedDiscreteSpace<RepastHPCDemoAgent, re
     std::vector<int> agentNewLoc;
     agentNewLoc.push_back(agentLoc[0] + (id_.id() < 7 ? -1 : 1));
     agentNewLoc.push_back(agentLoc[1] + (id_.id() > 3 ? -1 : 1));
+    agentNewLoc.push_back(agentLoc[2] + (id_.id() > 5 ? -1 : 1));
     space->moveTo(id_,agentNewLoc);
     
 }

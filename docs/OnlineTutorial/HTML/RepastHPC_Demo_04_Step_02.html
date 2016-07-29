@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_04_Step_02");</script>
+<p>A common need in agent-based models is for the agents to exist in an environment where there is some kind of value that exists at every point in space. A good example is temperature: every agent should be able to detect what the current temperature is at the point it occupies in space. This can apply in any dimension, but temperature is a nice example because we can think about both the temperature being different at different places on the landscape and about the temperature decreasing as one goes upward into the atmosphere.<p>
+
+<p>One way to implement this would be to create agents at every point in space, and endow the agent with a 'temperature' attribute. Another way is to implement what is termed a 'patch' (as is done in the ReLogo language. In fact, of course, patches are just another kind of agent.</p>
+
+<p>There are advantages to staying with this paradigm; in Repast HPC one clear advantage is that such patches, being agents, are synchronized simultaneously with the 'synchronize' routines we have been discussing. However, there are cases where this is a disadvantage. For example, suppose that the number of agents is small and the patch values never change; if they were agents, every call to synchronize would package, send, and unpack a large number of agents that really needn't be sent.</p>
+
+<p>To deal with such cases, Repast HPC provides the ValueLayerND. This is essentially an N-Dimensional array of values that agents can access and change but that are not synchronized along with agents. However, it is more convenient than a simple array because it is structured like an N-Dimensional Space: it has the same origin, extents, and buffer zones. Agents that are using a particular coordinate system in their spaces can use the same coordinates in the ValueLayer. It additionally includes the ability to be synchronized across processes, and these can be called separately from the other synchronize routines and are (potentially, depending on the MPI implementation) optimized to go much faster than the packaging and sending of agents.</p>
+
+
+
+    <script type="text/javascript">footer("RepastHPC_Demo_04_Step_02");</script>
+  </body>
+</html>
