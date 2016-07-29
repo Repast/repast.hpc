@@ -1,0 +1,16 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/script.js"></script>
+    <title>Repast HPC Tutorial: Repast HPC Demos</title>
+  </head>
+  <body>
+    <script type="text/javascript">header("RepastHPC_Demo_04_Step_03");</script>
+<p>In general, space in a Repast HPC agent-based model is populated by Agents. In the ReLogo implementation of Repast HPC, one kind of agent is a 'patch', and a typical use for 'patches' is to store single values, but in their implementation patches are, fundamentally, agents. This is nicely in keeping with the agentbased paradigm.</p>
+<p>However, it is sometimes helpful to have a kind of environment for the agents to exist within, an environment that consists includes not patches or agents- or, perhaps, in addition to patches or agents- but simple, single values. For example, suppose that the motions of the agents were driven by temperature that varied across space; it would seem simple, then, to be able to store a value per each grid cell.</p>
+<p>In addition to simplicity, storing simple values carries a performance benefit over populating each grid cell with agents. This is particularly true when the other agents are few in number: adding the additional overhead of moving an agent per each grid cell would be significantly more cumbersome.</p>
+<p>To accommodate these cases, Repast HPC includes a ValueLayerND class. This creates a grid exactly as a spatial grid, but stores only single values. The Values can be boolean, ints, doubles, or floats.</p>
+<p>It is important to note that although value layers are similar to spaces, there is an important difference: <b>Values Layers are <u>not</u> projections.</b> They are not like spaces and networks; they do not get added to the context, nor do they store agents. Most importantly, they are <b>not synchronized when the standard 'synchronization' routines (e.g. <i>synchronizeProjectionInfo</i>) are called.</b> Value Layers must be synchronized separately by explicitly calling their 'synchronize' methods.</p>
+    <script type="text/javascript">footer("RepastHPC_Demo_04_Step_03");</script>
+  </body>
+</html>
