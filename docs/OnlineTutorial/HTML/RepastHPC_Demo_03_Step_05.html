@@ -85,7 +85,7 @@ RepastHPCDemoModel::RepastHPCDemoModel(std::string propsFile, int argc, char** a
 void RepastHPCDemoModel::init(){
 	int rank = repast::RepastProcess::instance()-&gt;rank();
 	for(int i = 0; i &lt; countOfAgents; i++){
-        repast::Point&lt;<b class="code">double</b><&gt; initialLocation((<b class="code">double</b>)<b class="code">continuousSpace</b>-&gt;bounds().origin().getX() + i,(<b class="code">double</b>)<b class="code">continuousSpace</b>-&gt;bounds().origin().getY() + i);
+        repast::Point&lt;<b class="code">double</b><&gt; initialLocation((<b class="code">double</b>)<b class="code">continuousSpace</b>-&gt;dimensions().origin().getX() + i,(<b class="code">double</b>)<b class="code">continuousSpace</b>-&gt;dimensions().origin().getY() + i);
 		repast::AgentId id(i, rank, 0);
 		id.currentRank(rank);
 		RepastHPCDemoAgent* agent = new RepastHPCDemoAgent(id);

@@ -6,11 +6,191 @@
   </head>
   <body>
     <script type="text/javascript">header("RepastHPC_Demo_04_Step_03");</script>
-<p>In general, space in a Repast HPC agent-based model is populated by Agents. In the ReLogo implementation of Repast HPC, one kind of agent is a 'patch', and a typical use for 'patches' is to store single values, but in their implementation patches are, fundamentally, agents. This is nicely in keeping with the agentbased paradigm.</p>
-<p>However, it is sometimes helpful to have a kind of environment for the agents to exist within, an environment that consists includes not patches or agents- or, perhaps, in addition to patches or agents- but simple, single values. For example, suppose that the motions of the agents were driven by temperature that varied across space; it would seem simple, then, to be able to store a value per each grid cell.</p>
-<p>In addition to simplicity, storing simple values carries a performance benefit over populating each grid cell with agents. This is particularly true when the other agents are few in number: adding the additional overhead of moving an agent per each grid cell would be significantly more cumbersome.</p>
-<p>To accommodate these cases, Repast HPC includes a ValueLayerND class. This creates a grid exactly as a spatial grid, but stores only single values. The Values can be boolean, ints, doubles, or floats.</p>
-<p>It is important to note that although value layers are similar to spaces, there is an important difference: <b>Values Layers are <u>not</u> projections.</b> They are not like spaces and networks; they do not get added to the context, nor do they store agents. Most importantly, they are <b>not synchronized when the standard 'synchronization' routines (e.g. <i>synchronizeProjectionInfo</i>) are called.</b> Value Layers must be synchronized separately by explicitly calling their 'synchronize' methods.</p>
+<p>To be useful, there must be a way to get and set values in the value layer, and, typically, for agents to use them. To demonstrate this, we will add a simple method to our agents that allows them to look in a value layer and make changes to it.</p>
+<p>Agents will be able to inspect the value layer at points within the local boundaries of the space, but also within the 'buffer zones' exactly as with spatial projections. Importantly, the values in the boundary areas are considered <b>non-local</b> and should be treated just like non-local agents- that is, changes made to the non-local areas of the value layer are transitory. (Note that the Repast HPC code could prevent such changes, but in rare cases <i>if handled very carefully</i> such changes might be reasonably used, so the possibility of making them was left open.)</p>
+
+<p>First we add the method signature in the Agent.h file (along with the appropriate include directive):</p>
+
+<div class="code"><code><pre>
+/* Demo_04_Agent.h */
+
+#ifndef DEMO_04_AGENT
+#define DEMO_04_AGENT
+
+#include "repast_hpc/AgentId.h"
+#include "repast_hpc/SharedContext.h"
+#include "repast_hpc/SharedDiscreteSpace.h"
+<b class="code">#include "repast_hpc/ValueLayerND.h"</b>
+</pre></code></div>
+
+<div class="code"><code><pre>
+    /* Actions */
+    bool cooperate();                                                 // Will indicate whether the agent cooperates or not; probability determined by = c / total
+    void play(repast::SharedContext&lt;RepastHPCDemoAgent&gt;* context);    // Choose three other agents from the given context and see if they cooperate or not
+    void move(repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* space);
+    <b class="code">void processValues(repast::ValueLayerND&lt;double&gt;* valueLayer, 
+               repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* space););</b></code>
+</pre></code></div>
+
+<p>Note that we need the space pointer because we need to get the agent's location in that space.</p>
+
+<p>The content of the new method is:</p>
+
+
+<div class="code"><code><pre>
+<b class="code">void RepastHPCDemoAgent::processValues(repast::ValueLayerND&lt;double&gt;* valueLayer, 
+       repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* space){
+    std::vector&lt;int&gt; agentLoc;
+    space-&gt;getLocation(id_, agentLoc);
+    std::vector&lt;int&gt; agentNewLoc;
+    agentNewLoc.push_back(agentLoc[0] + (id_.id() &lt; 7 ? -1 : 1));
+    agentNewLoc.push_back(agentLoc[1] + (id_.id() &gt; 3 ? -1 : 1));
+    agentNewLoc.push_back(agentLoc[2] + (id_.id() &gt; 5 ? -1 : 1));
+
+    bool errorFlag1 = false;
+    bool errorFlag2 = false;
+    double originalValue = valueLayer-&gt;getValueAt(agentLoc, errorFlag1);
+    double nextValue = valueLayer-&gt;getValueAt(agentNewLoc, errorFlag2);
+    if(errorFlag1 || errorFlag2){
+      std::cout &lt;&lt; "An error occurred for Agent " &lt;&lt; id_ &lt;&lt; " in RepastHPCDemoAgent::processValues()" &lt;&lt; std::endl;
+      return;
+    }
+    if(originalValue &lt; nextValue && total &gt; 0){                // If the likely next value is better
+      valueLayer-&gt;addValueAt(total-c, agentLoc, errorFlag1);   // Drop part of what you're carrying
+      std::cout &lt;&lt; "Agent " &lt;&lt; id_ &lt;&lt; " dropping " &lt;&lt; (total - c) &lt;&lt; " at " &lt;&lt; 
+          agentLoc[0] &lt;&lt; "," &lt;&lt; agentLoc[1] &lt;&lt; "," &lt;&lt; agentLoc[2] &lt;&lt; " for new value " &lt;&lt; valueLayer->getValueAt(agentLoc, errorFlag1) << std::endl;
+      total = c;
+    }
+    else{                                                // Otherwise
+      total += originalValue;                            // Pick up whatever was in the value layer
+      valueLayer-&gt;setValueAt(0, agentLoc, errorFlag2);  // Value Layer is now at zero
+      std::cout &lt;&lt; "Agent " &lt;&lt; id_ &lt;&lt; " picking up " &lt;&lt; originalValue &lt;&lt; " at " &lt;&lt; 
+          agentLoc[0] &lt;&lt; "," &lt;&lt; agentLoc[1] &lt;&lt; "," &lt;&lt; agentLoc[2] &lt;&lt; " for new value " &lt;&lt; valueLayer->getValueAt(agentLoc, errorFlag2) << std::endl;
+    }
+}</b>
+</pre></code></div>
+
+<p>The first part of this code looks exactly like the code from the 'move' method, and does the same thing: it establishes the agent's current location and then finds another, new location.</p>
+
+<p>The variables <i>originalValue</i> and <i>nextValue</i> are then set based on what is in the ValueLayerND at those two locations. The use of the 'errorFlag' variables should be noted: if the attempt to get a value out of the ValueLayerND encounters an error, the return value will be invalid. However, this return value could be anything, so there is no way to test whether the return value is 'invalid' or not simply by looking at the return value itself. Instead, a flag is set: if there is an error after the first call, the value of <i>errorFlag1</i> will be set to 'true', and similarly for <i>errorFlag2</i> in the second call. The most common error is that the coordinates passed will be out of the boundaries of the ValueLayer object (local boundaries plus buffer zones).</p>
+
+<p>The three calls made are the three things that you can do with a ValueLayer:</p>
+
+<ul>
+  <li><b>getValueAt</b> - Gets the value at the specified location</li>
+  <li><b>setValueAt</b> - Sets the value at the specified location</li>
+  <li><b>addValueAt</b> - Adds the value given to the value already present at the specified location</li>
+</ul>
+
+<p>Note that here we have used a vector&lt;int&gt; to specify location, but one can also use a Point&lt;int&gt;.</p>
+
+<p>Finally, the most important point: the example given above inspects the cell that the agent is on and another, adjacent cell. We will only call this routine on local agents, so we know that the agent will be on a local cell, but the adjacent cell might not be. Therefore we do not make changes to the adjacent cell; doing so might violate the basic rule of making changes to non-local data in Repast HPC.</p>
+
+<p>Next we have to schedule the method so that it occurs for all of the agents. In the Model.cpp code, we add:</p>
+
+<div class="code"><code><pre>
+	std::vector&lt;RepastHPCDemoAgent*&gt; agents;
+	context.selectAgents(repast::SharedContext&lt;RepastHPCDemoAgent&gt;::LOCAL, countOfAgents, agents);
+	std::vector&lt;RepastHPCDemoAgent*&gt;::iterator it = agents.begin();
+	while(it != agents.end()){
+        (*it)-&gt;play(&context);
+		it++;
+    }
+
+    <b class="code">
+    it = agents.begin();
+    while(it != agents.end()){
+		(*it)-&gt;processValues(valueLayer, discreteSpace);
+		it++;
+    }
+    
+    valueLayer-&gt;synchronize();</b>
+
+
+    it = agents.begin();
+    while(it != agents.end()){
+		(*it)-&gt;move(discreteSpace);
+		it++;
+    }
+
+    discreteSpace-&gt;balance();
+    repast::RepastProcess::instance()-&gt;synchronizeAgentStatus&lt;RepastHPCDemoAgent, RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(context, *provider, *receiver, *receiver);
+    
+    repast::RepastProcess::instance()-&gt;synchronizeProjectionInfo&lt;RepastHPCDemoAgent, RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(context, *provider, *receiver, *receiver);
+
+    repast::RepastProcess::instance()-&gt;synchronizeAgentStates&lt;RepastHPCDemoAgentPackage, RepastHPCDemoAgentPackageProvider, RepastHPCDemoAgentPackageReceiver&gt;(*provider, *receiver);
+</pre></code></div> 
+<p>The last line in this is significant: <b>Value Layers are <u>not</u> synchronized with projection information or agent information</b>. They must be synchronized via explicit calls to the 'synchronize()' method.</p> 
+
+<p>To test this, we will add some temporary outputting code. In the model constructor, we add:</p>
+
+<div class="code"><code><pre>
+    valueLayer = new repast::ValueLayerND&lt;double&gt;(processDims, gd, 2, true, <b class="temp">repast::RepastProcess::instance()-&gt;rank()</b>, 1);
+    <b class="temp">valueLayer-&gt;write("./","AFTER_INIT",true);</b>
+
+</pre></code></div>
+
+<p>And around the synchronize method that we just added, we place:</p>
+
+<div class="code"><code><pre>
+    <b class="temp">bool doWrite =(repast::RepastProcess::instance()-&gt;getScheduleRunner().currentTick() == <b class="code">2</b>.0);
+    if(doWrite)  valueLayer-&gt;write("./","TEST_BEFORE",true);</b>
+    
+    std::cout &lt;&lt; " VALUE LAYER SYNCHRONIZING " &lt;&lt; std::endl;
+    valueLayer->synchronize();
+    std::cout &lt;&lt; " VALUE LAYER DONE SYNCHRONIZING " &lt;&lt; std::endl;
+    <b class="temp">if(doWrite)  valueLayer-&gt;write("./","TEST_AFTER",true);</b>
+    </b>
+</pre></code></div>    
+
+<p>The result of this will be three sets of files, one from just after the Value Layer is created and two from just before and after the synchronization routine is called. You can inspect any specific location within the grid within these files, at any of the three points in simulation time. There is one file per process, and one line per cell, with the first N columns representing the coordinates of that cell. Note that the files will not include cells that have values of 'zero'. You can edit the time tick to output at different points in the simulation. (The files are a bit large to output with every tick.)</p>
+<p>Some notes about this. First, because we are initializing the values in the ValueLayer to the current rank, rank zero has lots of cells with a value of zero and that therefore are omitted in the array. The cells that are written in the first file for rank zero (the files have a suffix that indicates which rank they include) are only those in the buffer areas from the adjacent processes.</p>
+<p>Second, you can inspect specific cells with 'grep', making sure to use the '^' symbol to indicate that you want to match a pattern with the start of the line. Some cells will show up in all output files because they are on the corners of the wrap-around space:</p>
+
+<div class="code"><code><pre>
+$ grep "^0,0,0," ValueLayer_AFTER_INIT_0.csv 
+0,0,0,7
+$ grep "^0,0,0," ValueLayer_AFTER_INIT_1.csv 
+0,0,0,7
+$ grep "^0,0,0," ValueLayer_AFTER_INIT_2.csv 
+0,0,0,7
+$ grep "^0,0,0," ValueLayer_AFTER_INIT_3.csv 
+0,0,0,7
+$ grep "^0,0,0," ValueLayer_AFTER_INIT_4.csv 
+0,0,0,7
+$ grep "^0,0,0," ValueLayer_AFTER_INIT_5.csv 
+0,0,0,7
+$ grep "^0,0,0," ValueLayer_AFTER_INIT_6.csv 
+0,0,0,7
+$ grep "^0,0,0," ValueLayer_AFTER_INIT_7.csv 
+0,0,0,7
+$ grep "^0,0,0," ValueLayer_TEST_BEFORE_0.csv 
+0,0,0,7
+$ grep "^0,0,0," ValueLayer_TEST_BEFORE_1.csv 
+0,0,0,7
+$ grep "^0,0,0," ValueLayer_TEST_BEFORE_2.csv 
+0,0,0,7
+$ grep "^0,0,0," ValueLayer_TEST_BEFORE_3.csv 
+0,0,0,7
+$ grep "^0,0,0," ValueLayer_TEST_BEFORE_4.csv 
+0,0,0,7
+$ grep "^0,0,0," ValueLayer_TEST_BEFORE_5.csv 
+0,0,0,7
+$ grep "^0,0,0," ValueLayer_TEST_BEFORE_6.csv 
+0,0,0,7
+$ grep "^0,0,0," ValueLayer_TEST_BEFORE_7.csv 
+$ grep "^0,0,0," ValueLayer_TEST_AFTER_0.csv 
+$ grep "^0,0,0," ValueLayer_TEST_AFTER_1.csv 
+$ grep "^0,0,0," ValueLayer_TEST_AFTER_2.csv 
+$ grep "^0,0,0," ValueLayer_TEST_AFTER_3.csv 
+$ grep "^0,0,0," ValueLayer_TEST_AFTER_4.csv 
+$ grep "^0,0,0," ValueLayer_TEST_AFTER_5.csv 
+$ grep "^0,0,0," ValueLayer_TEST_AFTER_6.csv 
+$ grep "^0,0,0," ValueLayer_TEST_AFTER_7.csv 
+</pre></code></div>
+
+<p>In this example, the value at point '0,0,0'. which is visible to all eight processes but is local only on process 7, is initialized to '7'. The initialization includes synchronization, so the value of '7' is seen on all processes in the 'AFTER_INIT' files. At tick 2, process 7 has changed the value to zero (because there was an agent there that 'processed' it). In the 'TEST_BEFORE' files, the value is still '7' on all other processes except 7 (where the search through the file finds nothing because the value is zero and the cell is not recorded). After synchronization, in the 'TEST_AFTER' files, none of the processes have an entry (meaning that they all are now aware that the value is zero.</p>
+
     <script type="text/javascript">footer("RepastHPC_Demo_04_Step_03");</script>
   </body>
 </html>

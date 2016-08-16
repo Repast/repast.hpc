@@ -126,7 +126,7 @@ RepastHPCDemoModel::~RepastHPCDemoModel(){
 void RepastHPCDemoModel::init(){
 	int rank = repast::RepastProcess::instance()->rank();
 	for(int i = 0; i < countOfAgents; i++){
-        repast::Point<int> initialLocation((int)discreteSpace->bounds().origin().getX() + i,(int)discreteSpace->bounds().origin().getY() + i);
+        repast::Point<int> initialLocation((int)discreteSpace->dimensions().origin().getX() + i,(int)discreteSpace->dimensions().origin().getY() + i);
 		repast::AgentId id(i, rank, 0);
 		id.currentRank(rank);
 		RepastHPCDemoAgent* agent = new RepastHPCDemoAgent(id);

@@ -1,4 +1,4 @@
-/* Demo_03_Model.cpp */
+false/* Demo_03_Model.cpp */
 
 #include <stdio.h>
 #include <vector>
@@ -134,8 +134,8 @@ RepastHPCDemoModel::~RepastHPCDemoModel(){
 void RepastHPCDemoModel::init(){
 	int rank = repast::RepastProcess::instance()->rank();
 	for(int i = 0; i < countOfAgents; i++){
-        repast::Point<int> initialLocationDiscrete((int)discreteSpace->bounds().origin().getX() + i,(int)discreteSpace->bounds().origin().getY() + i);
-        repast::Point<double> initialLocationContinuous((double)continuousSpace->bounds().origin().getX() + i,(double)continuousSpace->bounds().origin().getY() + i);
+        repast::Point<int> initialLocationDiscrete((int)discreteSpace->dimensions().origin().getX() + i,(int)discreteSpace->dimensions().origin().getY() + i);
+        repast::Point<double> initialLocationContinuous((double)continuousSpace->dimensions().origin().getX() + i,(double)continuousSpace->dimensions().origin().getY() + i);
         repast::Point<double> initialLocationOpinion((-1) + (repast::Random::instance()->nextDouble() * 2), (-1) + (repast::Random::instance()->nextDouble() * 2));
         
 		repast::AgentId id(i, rank, 0);

@@ -66,6 +66,7 @@ void RepastHPCDemoAgent::move(repast::SharedDiscreteSpace<RepastHPCDemoAgent, re
         double yRand = repast::Random::instance()->nextDouble();
         agentNewLoc.push_back(agentLoc[0] + (xRand < .33 ? -1 : (xRand < .66 ? 0 : 1)));
         agentNewLoc.push_back(agentLoc[1] + (yRand < .33 ? -1 : (yRand < .66 ? 0 : 1)));
+        // Note: checking to see if agent would move outside GLOBAL bounds; exceeding local bounds is OK
         if(!space->bounds().contains(agentNewLoc)) std::cout << " INVALID: " << agentNewLoc[0] << "," << agentNewLoc[1] << std::endl;
         
     }while(!space->bounds().contains(agentNewLoc));

@@ -81,7 +81,21 @@ struct RankDatum{
 template<typename T>
 class DimensionDatum{
 public:
+
+  /**
+   * Constructor
+   *
+   * @param indx
+   * @param globalBoundaries global simulation space boundaries
+   * @param localBoundaries local boundaries of this process's space
+   * @param buffer the size of the buffer zone
+   * @param isPeriodic true if the space is periodic, false if not
+   */
   DimensionDatum(int indx, GridDimensions globalBoundaries, GridDimensions localBoundaries, int buffer, bool isPeriodic);
+
+  /**
+   * Destructor
+   */
   virtual ~DimensionDatum(){}
 
   int  globalCoordinateMin, globalCoordinateMax;            // Coordinates of the global simulation boundaries
@@ -97,6 +111,11 @@ public:
   int  width;                                               // Total width (units = sizeof T) on this dimension (local extents + buffer sizes if not against global nonperiodic bounds)
   int  widthInBytes;
 
+  /**
+   * Gets the size of the data to be sent during synchronization
+   *
+   * @return the size of the data to be sent for this dimension.
+   */
   int  getSendReceiveSize(int relativeLocation);
 
   /**
@@ -109,6 +128,10 @@ public:
    * this region of the local space will be -3 to 13.
    * If the value passed to this function
    * is 99, this function will return -1.
+   *
+   * @param originalCoord the original coordinate
+   *
+   * @return the coordinate adjusted for local boundaries system
    */
   int getTransformedCoord(int originalCoord);
 
@@ -123,16 +146,30 @@ public:
    * value is 3. Passing 99 in global coordinates is equivalent
    * to passing -1 in simplified coordinates. The index value
    * in both cases is ((-1) - (-3)) or 2.
+   *
+   * @param originalCoord the original coordinate to be transformed
+   * @param isSimplified true if the original coordinate is already in
+   * simplified coordinates
    */
   int getIndexedCoord(int originalCoord, bool isSimplified = false);
 
   /**
    * Returns true if the specified coordinate is within the local boundaries
    * on this dimension.
+   *
+   * @param originalCoordinate the coordinate to be tested
+   *
+   * @return true if the coordinate is within the local boundaries
    */
   bool isInLocalBounds(int originalCoord);
 
 
+  /**
+   * Writes a report to the std out file
+   *
+   * @param dimensionNumber passed to the written report, identifying which
+   * dimension this is
+   */
   void report(int dimensionNumber){
     std::cout << repast::RepastProcess::instance()->rank() << " " << dimensionNumber << " " <<
                  "global (" << globalCoordinateMin     << ", " << globalCoordinateMax     << ") " <<
@@ -208,9 +245,15 @@ bool DimensionDatum<T>::isInLocalBounds(int originalCoord){
 
 /*******************************************************************/
 
-
+/**
+ * An AbstractValueLayerND is the abstract parent class for N-dimensional value
+ * layers
+ */
 template<typename T>
 class AbstractValueLayerND{
+
+private:
+  bool dummy; // Used for cases when error flag is not requested
 
 protected:
   CartesianTopology*         cartTopology;
@@ -230,7 +273,15 @@ protected:
   int                        instanceID;             // Unique ID for managing MPI requests without mix-ups
   int                        syncCount;
 
-  AbstractValueLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries,int bufferSize, bool periodic);
+  /**
+   * Constructor
+   *
+   * @param processesPerDim number of processes in each dimension
+   * @param globalBoundaries global boundaries for the simulation
+   * @param bufferSize size of the buffer zone
+   * @param periodic true if the space is periodic, false otherwise
+   */
+  AbstractValueLayerND(vector<int> processesPerDim, GridDimensions globalBoundaries, int bufferSize, bool periodic);
   virtual ~AbstractValueLayerND();
 
 
@@ -240,24 +291,42 @@ public:
 
   /**
    * Returns true only if the coordinates given are within the local boundaries
+   *
+   * @param coords Coordinates to be tested
+   * @return true if the coordinates are within the local boundaries
    */
   virtual bool isInLocalBounds(vector<int> coords);
 
   /*
    * Returns true only if the coordinates given are within the local boundaries
+   *
+   * @param coords Coordinates to be tested
+   * @return true if the coordinates are within the local boundaries
    */
   virtual bool isInLocalBounds(Point<int> location);
 
+  /**
+   * Gets the local boundaries for this process's part of the
+   * value layer
+   *
+   * @return the local boundaries
+   */
   const GridDimensions& getLocalBoundaries(){
     return localBoundaries;
   }
 
 protected:
   // Methods implemented in this class but visible only to child classes:
+
   /**
    * Gets a vector of the indexed locations. If the
    * value passed is already simplified (transformed),
    * does not transform.
+   *
+   * @param location the location to be transformed
+   * @param isSimplified true if the coordinates are already in simplified
+   * form
+   * @return the transformed coordinates
    */
   vector<int> getIndexes(vector<int> location, bool isSimplified = false);
 
@@ -267,6 +336,12 @@ protected:
    * position in the global array representing that location.
    * The location may be simplified (transformed); if it is
    * not, it is first simplified before the index is calculated.
+   *
+   * @param location the location to be transformed
+   * @param isSimplified true if the coordinates are already in simplified
+   * form
+   * @return the index from the global base pointer to the position
+   * in the array in memory
    */
   int getIndex(vector<int> location, bool isSimplified = false);
 
@@ -274,7 +349,13 @@ protected:
   /**
    * Given a location in global simulation coordinates,
    * get the offset from the global base pointer to the
-   * position in the global array representing that location
+   * position in the global array representing that location.
+   * The location may be simplified (transformed); if it is
+   * not, it is first simplified before the index is calculated.
+   *
+   * @param location the location to be transformed
+   * @return the index from the global base pointer to the position
+   * in the array in memory
    */
   int getIndex(Point<int> location);
 
@@ -293,6 +374,10 @@ protected:
    * initialize(val, false, true);  // Initializes only the local space (default)
    * initialize(val, true, true);   // Initializes the entire space
    * initialize(val, false, false); // Does nothing
+   *
+   * @param initialValue Value to be placed in the array
+   * @param fillBufferZone true if the value should be placed in all local cells
+   * @param fillLocal true if the value should be placed in all non-local cells
    */
   virtual void initialize(T initialValue, bool fillBufferZone = false, bool fillLocal = true) = 0;
 
@@ -300,58 +385,87 @@ protected:
    * Initializes the array to the specified values
    *
    * initialize(val1, val2); // Initializes the local space to val1 and the buffer zones to val2
+   * @param initialLocalValue value to be placed in local cells
+   * @param initialBufferZoneValue value to be placed in non-local cells
    */
   virtual void initialize(T initialLocalValue, T initialBufferZoneValue) = 0;
 
   /**
-   * Add to the value in the grid at a specific location
+   * Adds to the value in the grid at a specific location
    * Returns the new value. If the location is not within the local
    * boundaries, sets the error flag to 'true', otherwise it will be
    * set to 'false'
+   *
+   * @param val Value to be placed
+   * @param location location where value is to be placed
+   * @errFlag a flag that will be set to 'false' if an error occurs
+   * @return the new value in the cell
    */
-  virtual T addValueAt(T val, Point<int> location, bool& errFlag = false) = 0;
+  virtual T addValueAt(T val, Point<int> location, bool& errFlag) = 0;
 
   /**
-   * Add to the value in the grid at the specific location
+   * Adds to the value in the grid at the specific location
    * Returns the new value. If the location is not within the local
    * boundaries, sets the error flag to 'true', otherwise it will be
    * set to 'false'
+   *
+   * @param val Value to be added
+   * @param location location where value is to be placed
+   * @errFlag a flag that will be set to 'false' if an error occurs
+   * @return the new value in the cell
    */
-  virtual T addValueAt(T val, vector<int> location, bool& errFlag = false) = 0;
+  virtual T addValueAt(T val, vector<int> location, bool& errFlag) = 0;
 
   /**
-   * Add to the value in the grid at a specific location
+   * Sets the value in the grid at a specific location
    * Returns the new value. If the location is not within the local
    * boundaries, sets the error flag to 'true', otherwise it will be
    * set to 'false'
+   *
+   * @param val Value to be added
+   * @param location location where value is to be placed
+   * @errFlag a flag that will be set to 'false' if an error occurs
+   * @return the new value in the cell
    */
-  virtual T setValueAt(T val, Point<int> location, bool& errFlag = false) = 0;
+  virtual T setValueAt(T val, Point<int> location, bool& errFlag) = 0;
 
   /**
-   * Add to the value in the grid at the specific location
+   * Sets the value in the grid at the specific location
    * Returns the new value. If the location is not within the local
    * boundaries, sets the error flag to 'true', otherwise it will be
    * set to 'false'
+   *
+   * @param val Value to be added
+   * @param location location where value is to be placed
+   * @errFlag a flag that will be set to 'false' if an error occurs
+   * @return the new value in the cell
    */
-  virtual T setValueAt(T val, vector<int> location, bool& errFlag = false) = 0;
+  virtual T setValueAt(T val, vector<int> location, bool& errFlag) = 0;
 
   /**
    * Gets the value in the grid at a specific location.  If the location is not within the
    * boundaries, sets the error flag to 'true', otherwise it will be
    * set to 'false'
    *
+   * @param location location where value is to be placed
+   * @errFlag a flag that will be set to 'false' if an error occurs
+   * @return the value in the cell
    */
-  virtual T getValueAt(Point<int> location, bool& errFlag = false) = 0;
+  virtual T getValueAt(Point<int> location, bool& errFlag) = 0;
 
   /**
    * Gets the value in the grid at a specific location.  If the location is not within the
    * boundaries, sets the error flag to 'true', otherwise it will be
    * set to 'false'
+   *
+   * @param location location where value is to be placed
+   * @errFlag a flag that will be set to 'false' if an error occurs
+   * @return the value in the cell
    */
-  virtual T getValueAt(vector<int> location, bool& errFlag = false) = 0;
+  virtual T getValueAt(vector<int> location, bool& errFlag) = 0;
 
   /**
-   * Synchronize across processes. This copies
+   * Synchronizes across processes. This copies
    * the values in the interior 'buffer zones' from
    * self and sends to adjacent processes, while
    * receiving data from adjacent processes and
@@ -369,6 +483,10 @@ private:
    * there are N dimensions, this class will be called with
    * dimensionIndex = N - 1, which will call itself with N-2,
    * repeating until N = 0.
+   *
+   * @param relLoc a RelativeLocation object that describes the
+   * shape of the requested MPI data type.
+   * @datatype prototype for the datatype requested
    */
   void getMPIDataType(RelativeLocation relLoc, MPI_Datatype &datatype);
 
@@ -376,17 +494,25 @@ private:
    * A variant of the getMPIDataType function, this
    * one assumes that you are retrieving a block with side
    * 2 x radius + 1 in all dimensions;
+   *
+   * @param radius size of the data type to retrieve
+   * @prototype for the datatype requested
    */
   void getMPIDataType(int radius, MPI_Datatype &datatype);
 
   /**
    * Gets an MPI data type given the list of side lengths
    *
+   *@param sideLengths lengths of each side of the datatype to be returned
+   *@param datatype prototype for the datatype
+   *@param dimensionIndex index number of the dimension (for
+   *@param recursive calling from high dimensions down to 1
    */
   void getMPIDataType(vector<int> sideLengths, MPI_Datatype &datatype, int dimensionIndex);
 
   /**
    * Gets the raw MPI datatype from which all others are built
+   * @return the raw MPI datatype for 'T' for this class
    */
   MPI_Datatype getRawMPIDataType();
 
@@ -400,6 +526,10 @@ private:
    * to the local width (technically buffer + local - buffer)
    * Note: Assumes RelativeLocation will only include values
    * of -1, 0, and 1
+   *
+   * @relLoc the RelativeLocation requested
+   *
+   * @return index of the cell at the specified relative location
    */
   int getSendPointerOffset(RelativeLocation relLoc);
 
@@ -413,6 +543,10 @@ private:
    * (or, equivalently, the total width - buffer width)
    * Note: Assumes RelativeLocation will only include values
    * of -1, 0, and 1
+   *
+   * @relLoc the RelativeLocation requested
+   *
+   * @return index of the cell at the specified relative location
    */
   int getReceivePointerOffset(RelativeLocation relLoc);
 
@@ -660,32 +794,32 @@ public:
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T addValueAt(T val, Point<int> location, bool& errFlag = false);
+  virtual T addValueAt(T val, Point<int> location, bool& errFlag);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T addValueAt(T val, vector<int> location, bool& errFlag = false);
+  virtual T addValueAt(T val, vector<int> location, bool& errFlag);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T setValueAt(T val, Point<int> location, bool& errFlag = false);
+  virtual T setValueAt(T val, Point<int> location, bool& errFlag);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T setValueAt(T val, vector<int> location, bool& errFlag = false);
+  virtual T setValueAt(T val, vector<int> location, bool& errFlag);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T getValueAt(Point<int> location, bool& errFlag = false);
+  virtual T getValueAt(Point<int> location, bool& errFlag);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T getValueAt(vector<int> location, bool& errFlag = false);
+  virtual T getValueAt(vector<int> location, bool& errFlag);
 
   /**
    * Inherited from AbstractValueLayerND
@@ -693,7 +827,26 @@ public:
   virtual void synchronize();
 
   /**
-   * Write this rank's data to a CSV file
+   * Write the values in this ValueLayer to a .csv file.
+   *
+   * The file format is:
+   *
+   * Dim_0,Dim_1,Dim_2,VAL
+   * 0,0,0,100
+   * 0,0,1,200
+   *
+   * The column header indicates the dimensionl the value in the 'VAL'
+   * column is the value in the ValueLayer at the coordinates specified
+   * by the values in the first N columns.
+   *
+   * In many common situations, many cells will contain zero; to
+   * keep file sizes small, zeros are not written.
+   *
+   * @param fileLocation path to the file location for output
+   * @param filetag infix for the file name
+   * @writeSharedBoundaryAreas if true, the data output will include
+   * the adjacent processes' buffer zones as they exist in this
+   * array; if false, these will be omitted
    */
   void write(string fileLocation, string filetag, bool writeSharedBoundaryAreas = false);
 
@@ -704,11 +857,24 @@ private:
   /**
    * Fills a dimension of space with the given value. Used for initialization
    * and clearing only.
+   *
+   * @param localValue the value to be placed in local cells
+   * @param bufferZoneValue the value to be placed in non-local cells
+   * @param doBufferZone if true, places values in the buffer zone
+   * @param doLocal if true, places values in the local cells
+   * @param dataSpacePointer pointer to the first cell in the data array
+   * @param dimIndex index number of this dimension, for recursive calls
    */
   void fillDimension(T localValue, T bufferZoneValue, bool doBufferZone, bool doLocal, T* dataSpacePointer, int dimIndex);
 
   /*
    * Writes one dimension's information to the specified csv file.
+   *
+   * @param outfile output file
+   * @param dataSpacePointer pointer to the data space to be written
+   * @param currentPosition position currently being written (for recursive calls)
+   * @param dimIndex dimension currently being written (for recursive calls)
+   * @param writeSharedBoundaryAreas if true, write the areas that are non-local to this process
    */
   void writeDimension(std::ofstream& outfile, T* dataSpacePointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas = false);
 
@@ -753,32 +919,32 @@ public:
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T addValueAt(T val, Point<int> location, bool& errFlag = false);
+  virtual T addValueAt(T val, Point<int> location, bool& errFlag);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T addValueAt(T val, vector<int> location, bool& errFlag = false);
+  virtual T addValueAt(T val, vector<int> location, bool& errFlag);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T setValueAt(T val, Point<int> location, bool& errFlag = false);
+  virtual T setValueAt(T val, Point<int> location, bool& errFlag);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T setValueAt(T val, vector<int> location, bool& errFlag = false);
+  virtual T setValueAt(T val, vector<int> location, bool& errFlag);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T getValueAt(Point<int> location, bool& errFlag = false);
+  virtual T getValueAt(Point<int> location, bool& errFlag);
 
   /**
    * Inherited from AbstractValueLayerND
    */
-  virtual T getValueAt(vector<int> location, bool& errFlag = false);
+  virtual T getValueAt(vector<int> location, bool& errFlag);
 
   /**
    * Inherited from AbstractValueLayerND
@@ -798,38 +964,66 @@ public:
   /**
    * Adds the specified value to the value in the non-current
    * data bank at the given location
+   *
+   * @param val Value to be added
+   * @param location location where value is to be placed
+   * @errFlag a flag that will be set to 'false' if an error occurs
+   * @return the new value in the cell
    */
-  virtual T addSecondaryValueAt(T val, Point<int> location, bool& errFlag = false);
+  virtual T addSecondaryValueAt(T val, Point<int> location, bool& errFlag);
 
   /**
    * Adds the specified value to the value in the non-current
    * data bank at the given location
+   *
+   * @param val Value to be added
+   * @param location location where value is to be placed
+   * @errFlag a flag that will be set to 'false' if an error occurs
+   * @return the new value in the cell
    */
-  virtual T addSecondaryValueAt(T val, vector<int> location, bool& errFlag = false);
+  virtual T addSecondaryValueAt(T val, vector<int> location, bool& errFlag);
 
   /**
    * Sets the specified value to the value in the non-current
    * data bank at the given location
+   *
+   * @param val Value to be added
+   * @param location location where value is to be placed
+   * @errFlag a flag that will be set to 'false' if an error occurs
+   * @return the new value in the cell
    */
-  virtual T setSecondaryValueAt(T val, Point<int> location, bool& errFlag = false);
+  virtual T setSecondaryValueAt(T val, Point<int> location, bool& errFlag);
 
   /**
    * Sets the specified value to the value in the non-current
    * data bank at the given location
+   *
+   * @param val Value to be added
+   * @param location location where value is to be placed
+   * @errFlag a flag that will be set to 'false' if an error occurs
+   * @return the new value in the cell
    */
-  virtual T setSecondaryValueAt(T val, vector<int> location, bool& errFlag = false);
+  virtual T setSecondaryValueAt(T val, vector<int> location, bool& errFlag);
 
   /**
    * Gets the specified value to the value in the non-current
    * data bank at the given location
+   *
+   * @param location location where value is to be placed
+   * @errFlag a flag that will be set to 'false' if an error occurs
+   * @return the value in the cell
    */
-  virtual T getSecondaryValueAt(Point<int> location, bool& errFlag = false);
+  virtual T getSecondaryValueAt(Point<int> location, bool& errFlag);
 
   /**
    * Gets the specified value to the value in the non-current
    * data bank at the given location
+   *
+   * @param location location where value is to be placed
+   * @errFlag a flag that will be set to 'false' if an error occurs
+   * @return the new value in the cell
    */
-  virtual T getSecondaryValueAt(vector<int> location, bool& errFlag = false);
+  virtual T getSecondaryValueAt(vector<int> location, bool& errFlag);
 
   /**
    * Copies the data in the current value layer to the secondary layer
@@ -846,13 +1040,27 @@ private:
   /**
    * Fills a dimension of space with the given value. Used for initialization
    * and clearing only.
+   *
+   * @param localValue the value to be placed in local cells
+   * @param bufferZoneValue the value to be placed in non-local cells
+   * @param doBufferZone if true, places values in the buffer zone
+   * @param doLocal if true, places values in the local cells
+   * @param dataSpace1Pointer pointer to the first cell in the #1 data array
+   * @param dataSpace2Pointer pointer to the first cell in the #2 data array
+   * @param dimIndex index number of this dimension, for recursive calls
    */
   void fillDimension(T localValue, T bufferZoneValue, bool doBufferZone, bool doLocal, T* dataSpace1Pointer, T* dataSpace2Pointer, int dimIndex);
 
   /*
    * Writes one dimension's information to the specified csv file.
+   *
+   * @param outfile output file
+   * @param dataSpacePointer pointer to the data space to be written
+   * @param currentPosition position currently being written (for recursive calls)
+   * @param dimIndex dimension currently being written (for recursive calls)
+   * @param writeSharedBoundaryAreas if true, write the areas that are non-local to this process
    */
-  void writeDimension(std::ofstream& outfile, T* dataSpace1Pointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas = false);
+  void writeDimension(std::ofstream& outfile, T* dataSpacePointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas = false);
 
 };
 
@@ -980,7 +1188,7 @@ void ValueLayerND<T>::synchronize(){
     MPI_Irecv(&dataSpace[AbstractValueLayerND<T>::neighborData[i].receivePtrOffset], 1, AbstractValueLayerND<T>::neighborData[i].datatype,
         AbstractValueLayerND<T>::neighborData[i].rank, 10 * (AbstractValueLayerND<T>::neighborData[i].recvDir + 1) + mpiTag, AbstractValueLayerND<T>::cartTopology->topologyComm, &AbstractValueLayerND<T>::requests[AbstractValueLayerND<T>::neighborCount + i]);
   }
-  int ret = MPI_Waitall(AbstractValueLayerND<T>::neighborCount, AbstractValueLayerND<T>::requests, statuses);
+  int ret = MPI_Waitall(AbstractValueLayerND<T>::neighborCount * 2, AbstractValueLayerND<T>::requests, statuses);
 }
 
 
@@ -989,7 +1197,7 @@ void ValueLayerND<T>::write(string fileLocation, string fileTag, bool writeShare
   std::ofstream outfile;
   std::ostringstream stream;
   int rank = repast::RepastProcess::instance()->rank();
-  stream << fileLocation << "DiffusionLayer_" << fileTag << "_" << rank << ".csv";
+  stream << fileLocation << "ValueLayer_" << fileTag << "_" << rank << ".csv";
   std::string filename = stream.str();
 
   const char * c = filename.c_str();
@@ -1071,7 +1279,7 @@ void ValueLayerND<T>::writeDimension(std::ofstream& outfile, T* dataSpacePointer
       if(dimIndex == 0){
         T val = *dataSpacePointer;
         if(val != 0){
-          for(int j = 0; j < AbstractValueLayerND<T>::numDims; j++) outfile << (currentPosition[j] - AbstractValueLayerND<T>::dimensionData[j].leftBufferSize) << ",";
+          for(int j = 0; j < AbstractValueLayerND<T>::numDims; j++) outfile << (currentPosition[j] - AbstractValueLayerND<T>::dimensionData[j].leftBufferSize + AbstractValueLayerND<T>::dimensionData[j].localBoundariesMin) << ",";
           outfile << val << endl;
         }
       }
@@ -1087,7 +1295,7 @@ void ValueLayerND<T>::writeDimension(std::ofstream& outfile, T* dataSpacePointer
     if(dimIndex == 0){
         T val = *dataSpacePointer;
         if(val != 0){
-          for(int j = 0; j < AbstractValueLayerND<T>::numDims; j++) outfile << (currentPosition[j] - AbstractValueLayerND<T>::dimensionData[j].leftBufferSize) << ",";
+          for(int j = 0; j < AbstractValueLayerND<T>::numDims; j++) outfile << (currentPosition[j] - AbstractValueLayerND<T>::dimensionData[j].leftBufferSize + AbstractValueLayerND<T>::dimensionData[j].localBoundariesMin) << ",";
           outfile << val << endl;
         }
     }
@@ -1103,7 +1311,7 @@ void ValueLayerND<T>::writeDimension(std::ofstream& outfile, T* dataSpacePointer
       if(dimIndex == 0){
         T val = *dataSpacePointer;
         if(val != 0){
-          for(int j = 0; j < AbstractValueLayerND<T>::numDims; j++) outfile << (currentPosition[j] - AbstractValueLayerND<T>::dimensionData[j].leftBufferSize) << ",";
+          for(int j = 0; j < AbstractValueLayerND<T>::numDims; j++) outfile << (currentPosition[j] - AbstractValueLayerND<T>::dimensionData[j].leftBufferSize + AbstractValueLayerND<T>::dimensionData[j].localBoundariesMin) << ",";
           outfile << *dataSpacePointer << endl;
         }
       }
@@ -1221,7 +1429,7 @@ void ValueLayerNDSU<T>::synchronize(){
     MPI_Irecv(&currentDataSpace[AbstractValueLayerND<T>::neighborData[i].receivePtrOffset], 1, AbstractValueLayerND<T>::neighborData[i].datatype,
         AbstractValueLayerND<T>::neighborData[i].rank, 10 * (AbstractValueLayerND<T>::neighborData[i].recvDir + 1) + mpiTag, AbstractValueLayerND<T>::cartTopology->topologyComm, &AbstractValueLayerND<T>::requests[AbstractValueLayerND<T>::neighborCount + i]);
   }
-  int ret = MPI_Waitall(AbstractValueLayerND<T>::neighborCount, AbstractValueLayerND<T>::requests, statuses);
+  int ret = MPI_Waitall(AbstractValueLayerND<T>::neighborCount * 2, AbstractValueLayerND<T>::requests, statuses);
 }
 
 template<typename T>
@@ -1229,7 +1437,7 @@ void ValueLayerNDSU<T>::write(string fileLocation, string fileTag, bool writeSha
   std::ofstream outfile;
   std::ostringstream stream;
   int rank = repast::RepastProcess::instance()->rank();
-  stream << fileLocation << "DiffusionLayer_" << fileTag << "_" << rank << ".csv";
+  stream << fileLocation << "ValueLayer_" << fileTag << "_" << rank << ".csv";
   std::string filename = stream.str();
 
   const char * c = filename.c_str();
@@ -1407,7 +1615,7 @@ void ValueLayerNDSU<T>::writeDimension(std::ofstream& outfile, T* dataSpacePoint
       if(dimIndex == 0){
         T val = *dataSpacePointer;
         if(val != 0){
-          for(int j = 0; j < AbstractValueLayerND<T>::numDims; j++) outfile << (currentPosition[j] - AbstractValueLayerND<T>::dimensionData[j].leftBufferSize) << ",";
+          for(int j = 0; j < AbstractValueLayerND<T>::numDims; j++) outfile << (currentPosition[j] - AbstractValueLayerND<T>::dimensionData[j].leftBufferSize + AbstractValueLayerND<T>::dimensionData[j].localBoundariesMin) << ",";
           outfile << val << endl;
         }
       }
@@ -1423,7 +1631,7 @@ void ValueLayerNDSU<T>::writeDimension(std::ofstream& outfile, T* dataSpacePoint
     if(dimIndex == 0){
         T val = *dataSpacePointer;
         if(val != 0){
-          for(int j = 0; j < AbstractValueLayerND<T>::numDims; j++) outfile << (currentPosition[j] - AbstractValueLayerND<T>::dimensionData[j].leftBufferSize) << ",";
+          for(int j = 0; j < AbstractValueLayerND<T>::numDims; j++) outfile << (currentPosition[j] - AbstractValueLayerND<T>::dimensionData[j].leftBufferSize + AbstractValueLayerND<T>::dimensionData[j].localBoundariesMin) << ",";
           outfile << val << endl;
         }
     }
@@ -1439,7 +1647,7 @@ void ValueLayerNDSU<T>::writeDimension(std::ofstream& outfile, T* dataSpacePoint
       if(dimIndex == 0){
         T val = *dataSpacePointer;
         if(val != 0){
-          for(int j = 0; j < AbstractValueLayerND<T>::numDims; j++) outfile << (currentPosition[j] - AbstractValueLayerND<T>::dimensionData[j].leftBufferSize) << ",";
+          for(int j = 0; j < AbstractValueLayerND<T>::numDims; j++) outfile << (currentPosition[j] - AbstractValueLayerND<T>::dimensionData[j].leftBufferSize + AbstractValueLayerND<T>::dimensionData[j].localBoundariesMin) << ",";
           outfile << *dataSpacePointer << endl;
         }
       }

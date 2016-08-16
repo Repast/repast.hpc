@@ -73,6 +73,9 @@ public:
    * number of concentric layers that are used in diffusion
    * calculations. Typically this will be 1, meaning that
    * only immediately adjacent grid cells are considered.
+   *
+   * @return the radius of the (rectilinear) volume that encompasses
+   * all cells that will diffuse into the central cell
    */
   virtual int getRadius();
 
@@ -83,6 +86,12 @@ public:
    * the order defined by a RelativeLocation object of the
    * specified radius with the central cell being at
    * (0, 0, 0, ...)
+   *
+   * @param values An array of values found in the adjacent
+   * cells from which the diffusion into this cell can be calculated
+   *
+   * @return the value that should be placed in the central cell
+   * based on diffusion from adjacent cells
    */
   virtual T getNewValue(T* values) = 0;
 };
@@ -101,7 +110,7 @@ template<typename T>
 Diffusor<T>::~Diffusor(){}
 
 /**
- * Default radius is one
+ * Tefault radius is one
  */
 template<typename T>
 int Diffusor<T>::getRadius(){
@@ -151,13 +160,27 @@ public:
    * a synchronization after diffusion- this is mainly
    * useful for performance testing, as a synchronization
    * is required to complete diffusion
+   *
+   * @param diffusor A pointer to an instance of a diffusor class
+   * that will contain the simulation-specific diffusion code
+   * @param omitSynchronize If true, diffusion will be done but
+   * not synchronized across processes; this is mainly useful
+   * for debugging. By default synchronization is performed
+   * after diffusion.
    */
   void diffuse(Diffusor<T>* diffusor, bool omitSynchronize = false);
 
 private:
 
+  /**
+   * Diffuse across one of the dimensions. Note that this is called
+   * recursively.
+   */
   void diffuseDimension(T* currentDataSpacePointer, T* otherDataSpacePointer, T* vals, Diffusor<T>* diffusor, int dimIndex);
 
+  /**
+   * Gets the data found in the relevant dimension
+   */
   void grabDimensionData(T*& destinationPointer, T* startPointer, int radius, int dimIndex);
 };
 

@@ -6,6 +6,151 @@
   </head>
   <body>
     <script type="text/javascript">header("RepastHPC_Demo_04_Step_05");</script>
+<p>Diffusion across a region or volume is a commonly needed operation in agent-based models, and Repast HPC provides a framework for specifying diffusion. The class that is used is called a DiffusionLayerND; under the hood the framework extends on the ValueLayerNDSU class, which contains the values that are diffusing. The distinction is that the DiffusionLayerND includes an additional method, <i>diffuse(Diffusor&lt;T&gt;*)</i>, which undertakes the actual diffusion.</p>
+<p>Diffusion can be carried out by a number of different formulas, depending on the action of diffusion being modeled. Hence the <i>Diffusor</i> class is used to specify the math to be used to calculate the diffused values. The calculations are performed on the current values and then the value layer is updated synchronously (see <script type="text/javascript">getLinkToPage("RepastHPC_Demo_04_Step_04")</script>). At the end of the diffusion process, the secondary layer becomes the primary layer and includes all the updated values from the diffusion process.<p>
+<p>It is often simple to think of diffusion as acting from a center cell outward: a single cell, for example, that contains a concentration of a chemical, spreads a portion of that chemical to the adjacent cells. However, in Repast HPC, the calculation is done in the reverse direction: each cell calculates the value that it will have at the next time step based on the values of the cells around it. One reason for this is that this approach allows the calculation to be performed on local cells only, using any adjacent non-local cells as sources but leaving them unmodified.</p>
+<p>Repast HPC additionally allows the range of influence for diffusion to be specified arbitrarily. Typically a cell calculates its next value based only on the (3^N)-1 neighbor cells that it has in N-dimensional space. However, it is possible to create a diffusion algorithm that considers a larger radius; this may depend on the relationship of the radius to the simulation time step or to the specifics of the diffusion being modeled.</p>
+<p>The structure that is used for this is a <i>Diffusor&lt;T&gt;</i> class; as the method signature indicates, a pointer to an instance of this class must be passed to the <i>DiffusionLayerND&lt;T&gt;::diffuse(Diffusor&lt;T&gt;)</i> method.</p>
+<p>A <i>Diffusor&lt;T&gt;</i> class must implement two methods:<p>
+<ul>
+<li><b>int getRadius()</b>: This is the radius to be considered; the radius is the number of cells outward from the central cell that will be considered for the diffusion calculations. The value is the number of cells along the dimensional axes (and not the linear distance to the corner cells); in a case where the diffusion is biased and values from one axis are considered further than others, the largest value should be provided.</li>
+<li><b>T getNewValue(T* values)</b>: This method takes an array of values of type T and returns the new value to be placed in a given cell.</li>
+</ul>
+<p>It is easiest to discuss this in two dimensions. Consider:</p>
+<center><img src="img/Diffusion1.png"></img></center>
+<p>In this case, we are asking the Diffusor class to calculate the new value for the cell indicated in orange. Our diffusion algorithm is biased; the values in the blue cells (and the orange one) will be used to calculate the next value for the orange cell. To achieve this, we create a Diffusor class that uses a radius of <b>2</b>. When Repast HPC executes the <i>diffuse(Diffusor&lt;T&gt;*)</i>, it will loop through all local cells and create an array of cells around each local cell; this array will be based on the radius, and hence when the algorithm is considering the orange cell, the radius will include all of the cells indicated by the red square.</p>
+<p>The key to writing a Diffusor class is to understand how the cells in this array will be passed to it. They will be indexed in order starting with the first dimension and looping through any additional dimenions. In our 2D example, the cells would be indexed as:</p>
+<center><img src="img/Diffusion2.png"></img></center>
+<p>The diffusion algorithm would then need to concern itself only with cells {6, 7, 8, 11, 12, 13, 16, 17, 18, 21, 22, 23}.</p>
+<p>To facilitate these calculations, RepastHPC includes a class called a <i>Relative Location</i>. A <i>RelativeLocation</i> class is a class that can be created to represent a collection of cells in N dimensions, and can return the array index of a cell at any position relative to the center cell. <i>Note that although RelativeLocation classes can be created such that they have different extents in each dimension, use in a Diffusor class should assume that there is one radius used along all axes, as described above.</i> A 3-D example might look like:</p>
+<center><img src="img/RelativeLocation.png"></img></center>
+<p>Assume in this image that left-to-right is the 'X' axis, up-and-down is the 'Y' axis, and the remaining axis (toward and away from the viewer) is the 'Z' axis. The red cell is the central cell. The Relative Location class would assume that the red cell is (0, 0, 0), and it would be possible to interrogate the class using relative locations, so that the blue cell would be at (1, 1, 0) relative to the red cell. The Relative Location class would also give the index value of all cells, assuming they were resolved into an array according to the convention just given. The bottom left cell at the front of the image would be at index position 0; the red cell would be at position 22, and the blue cell would be at position 26.</p>
+
+<p>To modify our example demo to include diffusion we must make the following changes to the Model.h and Model.cpp files. In Model.h:</p>
+
+<div class="code"><code><pre>
+#include &lt;boost/mpi.hpp&gt;
+#include "repast_hpc/Schedule.h"
+#include "repast_hpc/Properties.h"
+#include "repast_hpc/SharedContext.h"
+#include "repast_hpc/AgentRequest.h"
+#include "repast_hpc/TDataSource.h"
+#include "repast_hpc/SVDataSet.h"
+#include "repast_hpc/SharedDiscreteSpace.h"
+#include "repast_hpc/GridComponents.h"
+#include "repast_hpc/ValueLayerND.h"
+<b class="code">#include "repast_hpc/DiffusionLayerND.h"</b>
+
+</pre></code></div>
+
+<p>And:</p>
+
+<div class="code"><code><pre>
+class RepastHPCDemoModel{
+	int stopAt;
+	int countOfAgents;
+	repast::Properties* props;
+	repast::SharedContext&lt;RepastHPCDemoAgent&gt; context;
+	
+	RepastHPCDemoAgentPackageProvider* provider;
+	RepastHPCDemoAgentPackageReceiver* receiver;
+
+	repast::SVDataSet* agentValues;
+        repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;* discreteSpace;
+        <b class="code">repast::DiffusionLayerND&lt;double&gt;*</b> valueLayer;
+</pre></code></div>
+
+<p>In the Model.cpp file, the constructor for the object must be changed, but, as before, the change is minor- just the name of the class. We initialize it to zero for this demo. We then place some values strategically in the space so that the agents will run into them after a few time steps:</p>
+
+<div class="code"><code><pre>
+    valueLayer = new <b class="code">repast::DiffusionLayerND<double></b>(processDims, gd, 2, true, <b class="code">0</b>, 1);
+
+    discreteSpace = new repast::SharedDiscreteSpace&lt;RepastHPCDemoAgent, repast::WrapAroundBorders, repast::SimpleAdder&lt;RepastHPCDemoAgent&gt; &gt;("AgentDiscreteSpace", gd, processDims, 2, comm);
+	
+    std::cout &lt;&lt; "RANK " &lt;&lt; repast::RepastProcess::instance()-&gt;rank() &lt;&lt; " BOUNDS: " &lt;&lt; discreteSpace-&gt;bounds().origin() &lt;&lt; " " &lt;&lt; discreteSpace-&gt;bounds().extents() &lt;&lt; std::endl;
+
+    std::cout &lt;&lt; "RANK " &lt;&lt; repast::RepastProcess::instance()-&gt;rank() &lt;&lt; " DIMENSIONS: " &lt;&lt; discreteSpace-&gt;dimensions() &lt;&lt; std::endl;
+
+    const repast::GridDimensions& valueLayerDims = valueLayer-&gt;getLocalBoundaries();
+    std::cout &lt;&lt; "RANK " &lt;&lt; repast::RepastProcess::instance()-&gt;rank() &lt;&lt; " VALUE LAYER BOUNDS: " &lt;&lt; valueLayerDims &lt;&lt; std::endl;
+
+    <b class="code">repast::Point&lt;int&gt; placeAt(discreteSpace-&gt;dimensions().origin().getX() + 32, discreteSpace-&gt;dimensions().origin().getY() + 32, discreteSpace-&gt;dimensions().origin().getZ() + 32);
+    bool errFlag = false;
+    valueLayer-&gt;setValueAt(100, placeAt, errFlag);
+    valueLayer-&gt;write("./","TEST_AFTER_INIT",true);</b>
+</pre></code></div>
+
+<p>At this point the code is now using a DiffusionLayerND instead of a ValueLayerNDSU. However, to make use of the diffusion functionality, we need to create a Diffusor class. We define the structure for this in Model.h:</p>
+
+<div class="code"><code><pre>
+<b class="code">/* Diffusor */
+class DemoDiffusor: public repast::Diffusor{
+public:
+    DemoDiffusor();
+    virtual ~DemoDiffusor();
+    virtual double getNewValue(double* values);</b>
+};
+</pre></code></div>
+
+<p>The diffusor class implementation looks like this:</p>
+
+<div class="code"><code><pre>
+<b class="code">DemoDiffusor::DemoDiffusor(){ }
+
+DemoDiffusor::~DemoDiffusor(){ }
+
+double DemoDiffusor::getNewValue(double* values){
+    repast::RelativeLocation relLoc(3); // Radius is 1, in 3-D; initialized to -1, -1, -1
+    int countOfNeighbors = 0;
+    double increase = 0;
+    do{
+        int index = relLoc.getIndex();
+        if(!isnan(values[index])){
+            countOfNeighbors++;
+            increase += values[index] * .002;
+        }
+    }while(relLoc.increment(true)); // Loop until it's gone through all neighbors, skipping the center cell
+           
+
+    int indexOfCenter = relLoc.getIndexOfCenter();
+    double originalValue = isnan(values[indexOfCenter]) ? 0 : values[indexOfCenter]; // Shouldn't happen
+    double decrease = ((double)countOfNeighbors) * (originalValue * .002); // Lose 2 percent to each neighbor
+    return (originalValue - decrease + increase);
+
+}</b>
+</pre></code></div>
+
+<p>Here we are simply using the RelativeLocation object to loop through the 26 neighbor cells. In our demo, all of these will be valid; however, if the space were not toroidal, this would not be true: cells that were outside the boundaries of the global space would be invalid, and would have values of NaN in the array of values passed. Our algorithm counts the number of valid neighbors and calculates how much the cell should receive from all of them, as well as how much it will lose to them, and determines the net. We assume a 0.2% loss per neighbor. Much more complicated algorithms could be implemented, of course.</p>
+
+<p>We modify the doSomething method in the Model class to include calling the diffusion algorithm:</p>
+
+<div class="code"><code><pre>
+    <b class="temp">bool doWrite =(repast::RepastProcess::instance()-&gt;getScheduleRunner().currentTick() == 3.0);
+    if(doWrite)  valueLayer-&gt;write("./","TEST_BEFORE_DIFFUSE",true);</b>
+    
+    <b class="code">DemoDiffusor diffusor; // Create a diffusor object
+    std::cout &lt;&lt; "DIFFUSING..." &lt;&lt; std::endl;
+    valueLayer-&gt;diffuse(&diffusor);  // Note: overwrites secondary layer, switches, and synchronizes
+    std::cout &lt;&lt; "DONE DIFFUSING..." &lt;&lt; std::endl;
+    if(doWrite)  valueLayer-&gt;write("./","TEST_AFTER_DIFFUSE",true);</b>
+    
+    valueLayer-&gt;copyCurrentToSecondary();  // Destroy the old values in the old layer and replace with the new values
+    
+    
+    it = agents.begin();
+    while(it != agents.end()){
+		(*it)-&gt;processValues(valueLayer, discreteSpace);
+		it++;
+    }
+
+    valueLayer-&gt;switchValueLayer();        // Begin using the new values
+    
+    std::cout &lt;&lt; " VALUE LAYER SYNCHRONIZING " &lt;&lt; std::endl;
+    valueLayer-&gt;synchronize();
+    std::cout &lt;&lt; " VALUE LAYER DONE SYNCHRONIZING " &lt;&lt; std::endl;
+</pre></code></div>    
+
+<p>As before, you can modify the time step at which the value layers are written and see the way that the values are diffusing and interacting with the agents.</p>
 
     <script type="text/javascript">footer("RepastHPC_Demo_04_Step_05");</script>
   </body>

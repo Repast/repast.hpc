@@ -1,0 +1,41 @@
+Changes since Repast HPC 2.1 (8 May 2015):
+
+New features include:
+
+N-Dimensional Spaces
+	Shared discrete and continuous spaces can now be created in N-Dimensions. This allows 3-D simulations (and higher). All synchronization routines operate as in previous releases.
+
+N-Dimensional Value Layers
+	Value layers that store basic data (not agents) can now be created; indexing is identical to spatial coordinate systems. Synchronization uses fundamental MPI. A special version allows synchronous updating by providing two data banks.
+
+Diffusion
+	A new DiffusionLayerND class allows simple implementation of diffusion algoriths through N-Dimensional Value Layers. Users provide custom diffusion algorithms, while Repast HPC classes manage processing cells and synchronization across processes of results
+
+Properties Writing
+	Simulation can now write properties in a format that can be read as a properties file; useful for re-running runs.
+
+
+
+Other Changes:
+
+Bug Fix: Config Lexer omits rank when called during RepastProcess::init. Fixes a problem with error reporting during init.
+
+Removed Swap X/Y from CartTopology: Removed unneeded swap of x and y dimensions
+
+Bug Fix: Logger delete should have been delete[] (logger.cpp)
+
+Bug Fix: Properties File Builder delete should have been delete[] (Properties.cpp)
+
+Bug Fix: RepastProcess.cpp synchronization routines, delete should have been delete[] (RepastProcess.cpp)
+
+Bug Fix: Logger in repast namespace (Logger.h, Logger.cpp)
+
+
+
+
+
+
+
+
+
+
