@@ -13,11 +13,11 @@
 /missing
 /stamp-h1
 
+/Makefile
 /aclocal.m4
 /autom4te.cache/
 /config.*
 /configure
-/m4/
 /stamp-h?
 .deps/
 .dirstamp

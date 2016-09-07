@@ -134,7 +134,7 @@ DIRECTORIES = $(INSTALL_PREFIX) $(INSTALL_LIB) $(INSTALL_INCLUDE) $(INSTALL_BIN)
        $(REPAST_HPC_INSTALL_INCLUDE) $(RELOGO_INSTALL_INCLUDE) $(RUMOR_INSTALL_DIR) \
        $(ZOMBIE_INSTALL_DIR)
 
-install: install_rhpc install_relogo install_rumor
+install: install_rhpc install_relogo install_rumor install_zombie
 
 install_relogo: relogo
 	$(Q) "  INSTALL RELOGO $(INSTALL_PREFIX)/lib"
@@ -181,7 +181,8 @@ zombie_model: relogo $(ZOMBIE_OBJECTS)
 
 
 %.o : %.cpp
-	$(CXX) $(CXXFLAGS) -Wno-deprecated-declarations $(LIB_CXX_FLAGS) -c $< -o $@
+	$(Q) "  CC		$(@)"
+	$(E) $(CXX) $(CXXFLAGS) -Wno-deprecated-declarations $(LIB_CXX_FLAGS) -c $< -o $@
 
 clean::
 	@echo
