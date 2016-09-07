@@ -18,6 +18,10 @@ NETCDF_LIB_DIR = @USE_NETCDF_LIB_DIR@
 NETCDF_CXX_LIB_DIR = @USE_NETCDF_CXX_LIB_DIR@
 BOOST_LIB_DIR = @USE_BOOST_LIB_DIR@
 
+AR      = @AR@
+ARFLAGS = cr
+RANLIB  = @RANLIB@
+
 RPATHS :=
 ifneq ($(NETCDF_LIB_DIR),)
   RPATHS += -Wl,-rpath -Wl,$(NETCDF_LIB_DIR)
@@ -75,11 +79,13 @@ INSTALL_LIB = $(INSTALL_PREFIX)/lib
 
 REPAST_HPC_LIB := repast_hpc
 REPAST_HPC_SO = lib/lib$(REPAST_HPC_LIB)-$(REPAST_HPC_VERSION).$(SO_SUFFIX)
+REPAST_HPC_A = lib/lib$(REPAST_HPC_LIB)-$(REPAST_HPC_VERSION).a
 REPAST_HPC_HEADERS = src/repast_hpc/*.h
 REPAST_HPC_DEPS = src/repast_hpc/*.d
 
 RELOGO_LIB := relogo
 RELOGO_SO = lib/lib$(RELOGO_LIB)-$(REPAST_HPC_VERSION).$(SO_SUFFIX)
+RELOGO_A = lib/lib$(RELOGO_LIB)-$(REPAST_HPC_VERSION).a
 RELOGO_HEADERS = src/relogo/*.h
 RELOGO_DEPS = src/relogo/*.d
 
@@ -101,10 +107,6 @@ ZOMBIE_PROPS = src/zombie/model.props
 ZOMBIE_CONFIG = src/zombie/config.props
 ZOMBIE_DEPS = src/zombie/*.d
 ZOMBIE_LIBS = $(RELOGO_LIBS) -lrelogo-$(REPAST_HPC_VERSION)
-
-
-# Static library
-REPAST_HPC_A = lib/lib$(REPAST_HPC_LIB).a
 
 REPAST_HPC_SRC :=
 RELOGO_SRC :=
@@ -162,12 +164,29 @@ install_zombie: zombie_model
 	$(E) cp $(CP_ARGS) $(ZOMBIE_PROPS) $(ZOMBIE_INSTALL_DIR)
 	$(E) cp $(CP_ARGS) $(ZOMBIE_CONFIG) $(ZOMBIE_INSTALL_DIR)
 
-relogo: repast_hpc $(RELOGO_OBJECTS)
+relogo: $(RELOGO_SO) $(RELOGO_A)
+
+$(RELOGO_SO): $(REPAST_HPC_SO) $(RELOGO_OBJECTS)
 	$(CXXLD) $(RELOGO_LD_FLAGS)  $(RELOGO_OBJECTS) -o $(RELOGO_SO) $(RELOGO_LIBS) $(RELOGO_RPATHS)
 
-repast_hpc: $(REPAST_HPC_OBJECTS)
+$(RELOGO_A): $(RELOGO_OBJECTS)
+	@-mkdir -p lib
+	$(Q) "  AR		$(@)"
+	$(E) $(AR) $(ARFLAGS) $(@) $(RELOGO_OBJECTS)
+	$(E) $(RANLIB) $(@)	
+
+repast_hpc: $(REPAST_HPC_SO) $(REPAST_HPC_A)
+
+$(REPAST_HPC_SO): $(REPAST_HPC_OBJECTS)
 	@-mkdir -p lib
 	$(CXXLD) $(LIB_LD_FLAGS) $(REPAST_HPC_OBJECTS) -o $(REPAST_HPC_SO) $(LIBS)  $(RPATHS)
+
+$(REPAST_HPC_A): $(REPAST_HPC_OBJECTS)
+	@-mkdir -p lib
+	$(Q) "  AR		$(@)"
+	$(E) $(AR) $(ARFLAGS) $(@) $(REPAST_HPC_OBJECTS)
+	$(E) $(RANLIB) $(@)
+
 
 # rumor has the same set of lib dependencies as the relogo lib,
 # so we re-use those here.
@@ -199,5 +218,3 @@ clean::
 	@rm -fv $(ZOMBIE_OBJECTS)
 	@rm -fv $(ZOMBIE_EXE)
 	@rm -fv $(ZOMBIE_DEPS)
-
-

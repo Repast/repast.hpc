@@ -15,9 +15,12 @@ AC_CONFIG_SRCDIR([src/repast_hpc/AgentId.cpp])
 AC_CONFIG_HEADER([config.h])
 
 REPAST_HPC_VERSION=repast_hpc_version()
-AC_MSG_RESULT([RepastHPC version: ${REPAST_HPC_VERSION}])
 AC_SUBST(REPAST_HPC_VERSION)
 AC_SUBST(REPAST_HPC_VERSION_UNDERSCORE)
+
+# Need ar and ranlib to build static libraries
+AC_CHECK_PROG(AR, ar, ar, AC_MSG_ERROR(Cannot find ar))
+AC_PROG_RANLIB
 
 if [[ ${prefix} == "NONE" ]]
 then
