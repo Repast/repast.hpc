@@ -125,7 +125,7 @@ public:
 	 */
 	Neighbor* findNeighbor(const std::vector<double>& pt);
 
-  void getNeighborRanks(std::set<int>& ranks){
+  void getNeighborRanks(std::set<int>& ranks) {
     for(std::vector<Neighbor*>::iterator iter = nghs.begin(), iterEnd=nghs.end(); iter != iterEnd; ++iter) {
     	Neighbor* ngh = *iter;
     	if (ngh != 0) {
