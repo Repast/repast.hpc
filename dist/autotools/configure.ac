@@ -259,6 +259,5 @@ AC_FUNC_ERROR_AT_LINE
 AC_HEADER_STDC
 AC_CHECK_FUNCS([floor rint sqrt])
 
-AC_CONFIG_FILES(Makefile
-  src/repast_hpc/module.mk)
+AC_CONFIG_FILES(Makefile)
 AC_OUTPUT

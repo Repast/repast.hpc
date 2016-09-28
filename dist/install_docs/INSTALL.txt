@@ -1,0 +1,405 @@
+==============================================================================
+Repast HPC 2.2 Installation
+
+Release Date: 30 Sept. 2016
+==============================================================================
+
+
+There are multiple, alternative ways to install Repast HPC. You will
+find in the text below:
+
+	1) An overview of 'What is installed' with Repast HPC
+	2) A list of requirements for a Repast HPC installation
+	3) An overview of the 3 methods of installing Repast HPC
+	4) Step-by-step instructions for the three methods
+  5) Instructions for compiling RepastHPC as static libraries when
+	using the Makefile based install.
+
+Read each section carefully to choose the method that is right for your
+situation.
+
+----------------------------------------------------------------------------
+What is installed:
+
+A complete installation of Repast HPC consists of:
+
+	1) A collection of 'include' files, and
+	2) Two 'library' files: one for RepastHPC and one for the ReLogo extensions
+
+The 'include' files are header files (with a '.h' extenstion) that
+must be 'included' in applications that wish to use Repast HPC. The library
+files contain the executable functions that a RepastHPC application will use.
+
+The RepastHPC package also includes some demonstration applications.
+These are not needed to use RepastHPC, but are built as part of the
+automated installation. They are intended to serve as examples for
+how a RepastHPC simulation can be written, compiled, and run.
+
+
+----------------------------------------------------------------------------
+RepastHPC Dependencies and Requirements:
+
+RepastHPC relies on a collection of tools and libraries. Note that some
+of the installation procedures discussed here will install (or will give
+you the option to install) some or all of these required tools and libraries,
+if they are not already found on your system.
+
+The requirements include:
+
+	1) A C++ compiler
+	2) A 'make' utility
+	3) An MPI implementation
+	4) The NetCDF library (C and C++ versions)
+	5) The CURL library
+	6) Four of the Boost libraries (serialization, system, filesystem, and mpi),
+              plus header-only libraries
+
+
+----------------------------------------------------------------------------
+Methods of installation:
+
+There are two methods of installation provided:
+
+	1) Unix/Linux/Mac OSX standard installation
+	2) Experimental support for Windows Linux Subsystem for Windows 10
+
+Note that Windows users must use option #2. U
+
+Unix/Linux/MacOSX standard installation:
+The most typical OS for high-performance computing systems is a Unix or
+Linux-like system; the Mac OSX system is very similar. Installation on these
+systems means compiling the RepastHPC libraries, and installing the libraries
+and associated header files to a specific location.
+
+For installation via this method, the existence of a C++ compiler is assumed.
+The installation provided here includes means to build the other required
+elements.
+
+ Windows Linux Subsystem for Windows 10:
+ The Windows Linux subsystem (WLS) provides an integrated linux install
+ on Windows 10. We have had some success compiling and using Repast HPC
+ in this environment. Please follow the Unix/Linux/OSX instructions
+ and use the WLS environment.
+
+----------------------------------------------------------------------------
+Unix/Linux/MacOSX standard installation:
+
+General notes:
+Installing and using Repast HPC requires the existence on your system
+of several prerequisite components, including both tools and libraries.
+The instructions and tools below show how you can determine whether these
+tools and libraries exist on your system, and install them if they are not
+present. One important caveat: standard installation places the tools and
+libraries in common directories where they can be used by other applications;
+the instructions and tools below will show you how to determine if these have
+been installed in the standard places. Your system may be arranged
+differently, and the libraries and tools may be in non-standard places.
+Note, the automated tools below will install the required libraries etc. in
+your directory. Advanced users may wish to customize the installation
+to place these tools at the standard (or other) locations.
+
+Requirement #1: A C++ Compiler
+To install in a Unix/Linx/MacOSX environment you must first have a C++
+compiler installed. If you do not have a C++ compiler, consult your system's
+documentation or your system administrator.
+
+(A common C++ compiler is g++; you can determine if you have gcc installed by
+typing:
+
+g++ -v
+
+If g++ is installed and is on the execution path, this will give you version
+information.)
+
+RHPC uses some C++ features introduced with c++11. Consequently, the
+C++ compiler must be C++ 11 compliant. The clang and gcc based compilers
+shipping with OSX and Linux distributions are C++ 11 compliant.
+
+
+Requirement #2: A 'make' utility
+
+"make" is a utility that manages dependencies. Often compiling code depends
+on compiled versions of other code; make can detect when versions change and
+re-compile only the elements that need to be changed in order for the whole
+collection to be current. It can also be used to automate a wide array of other
+operations (copying files, etc.).
+
+To confirm that make is installed on your system and is on the execute path,
+navigate to an EMPTY directory and type:
+
+make
+
+If a message like 'make: *** No targets specified and no makefile found.  Stop.'
+is the response, then make is installed.
+
+If no 'make' is installed, you must install it; consult your system's
+documentation, http://www.gnu.org/software/make/, and/or your system
+administrator.
+
+
+Requirement #3: The curl library
+
+"curl" is a library that is required for Repast HPC to compile correctly. You
+can install curl using a variety of methods. The install script included with
+Repast HPC can also be used. To do this, navigate the MANUAL_INSTALL directory
+in a command shell and type:
+
+./install.sh curl
+
+This will place the curl library in a ~/sfw/CURL directory where ~ is your
+home directory. To change the location, edit the BASE_DIR variable at the
+beginning of the install.sh script.
+
+Requirement #4: An MPI implementation
+
+Repast HPC requires an MPI implementation. In high-performance systems
+this will be central to the system and will be managed by the system
+administrator. On personal systems it may be available. Commonly the command:
+
+mpicxx
+
+will invoke the MPI compiler, if MPI has been fully installed. You can determine
+more about your MPI installation by using the command:
+
+which mpicxx
+
+If you do not have an MPI implementation installed, you can choose among
+several available options (e.g., openMPI, LAM/MPI, or MPICH).
+
+If MPI is not already installed on your system and you wish to use MPICH
+from the Repast HPC distribution, you can open a command prompt and:
+
+1) Navigate to the 'MANUAL_INSTALL' directory of the Repast HPC download.
+2) Use:
+
+./install.sh mpich
+
+This will execute the 'install' shell script and will install MPICH 3 on your
+system in a ~/sfw/MPICH directory where ~ is your home directory. To change
+the location, edit the BASE_DIR variable at the beginning of the install.sh
+script.
+
+A useful thing to do after this installation is to add the current mpich installation
+to the execution path. The command:
+
+  export PATH=$HOME/sfw/MPICH/bin/:$PATH
+
+is executed. This will probably not permanently change the path variable; each time you
+log out and back in to your command shell the variable will be re-set. To address this
+you can add a command like:
+
+PATH=$HOME/sfw/MPICH/bin/:$PATH
+
+to your ~/.profile file, so that it will be executed each time you log in.
+
+
+Requirement #5: NetCDF
+
+Repast HPC requires NetCDF 4.2.1 and NetCDF C++ 4.2. If these are installed in your
+system you should find the corresponding lib and include files in the standard locations.
+The libraries are typically named some variation of libnetcdf.so,
+libnetcdf.dylib, libnetcdf.a and libnetcdf_c++.a, libnetcdf_c++.so, and
+libnetcdf_c++.dylib
+
+If you do not have these installed, you can:
+
+1) Navigate to the MANUAL_INSTALL directory of the Repast HPC download.
+2) Use:
+
+./install.sh netcdf
+
+This will install both the netcdf and netcdf cpp libraries to
+~/sfw/NetCDF and ~/sfw/NetCDF-cxx, respectively, where ~ is your home directory.
+ Note that these are not current versions of the netcdf libraries; netcdf has
+undergone an upgrade not supported by RepastHPC.
+
+Requirement #6: Boost
+
+Repast HPC requires the Boost library, a set of extensions to C++ available from
+www.boost.org. Boost's libraries come in two varieties: some are 'header-only',
+and can be used simply by including them. The others are compiled. Repast HPC
+requires fourof the compiled libraries: serialization, system, filesystem, and
+mpi. (The boost 'mpi'library is not to be confused with an MPI implementation
+like MPICH.)
+
+The recommended version of Boost to be used is 1.58 or later.
+
+If you do not have a version of Boost installed, you can:
+
+1) Navigate to the MANUAL_INSTALL directory of the Repast HPC download
+2) Edit the 'install.sh' script to make the "MPI_COMPILER_INVOCATION' variable
+	(line 13) to correctly invoke your MPI implementation. Generally this will be
+	'mpicxx' (possibly including a full path)
+3) Use:
+
+./install.sh boost
+
+This will install the boost libraries (version 1.61) in a ~/sfw/Boost directory
+where ~ is your home directory. To change the location, edit the BASE_DIR
+variable at the beginning of the install.sh script.
+
+Note that if you are installing on OSX, the install.sh script attempts to
+workaround some short comings in boost's library installation specific to
+OSX. In particular, it attempts to set the install name and id of the
+boost libraries correctly. If you encounter errors when running this part
+of the install.sh script, comment out lines 128 - 150. Howeverm you will then
+have to specify the boost library location in the DYLD_LIBRARY_PATH environment
+variable when running repast hpc executables.
+
+Installing Repast HPC:
+
+You can install Repast HPC in 3 ways: 1) using the install.sh script; 2) using
+the GNU autools build system; and 3) using the Makefile
+
+1) Installing with install.sh
+
+If you have installed everything to the default locations using the install.sh
+script, you can also use the install.sh scrip to build Repast HPC. To do this,
+use:
+
+./install.sh rhpc
+
+This will compile static and dynamic libraries for repast_hpc and the relogo
+extensions and install them and the headers in ~/sfw/repast_hpc-2.2.0/lib and
+~/sfw/repast_hpc-2.2.0/include respectively.
+
+Note that the ./install.sh script uses the autotools build system, automatically
+calling ./configure with the correct flags. By default the autools build
+doesn't display all the compiler output. To see the entirety of the output
+(e.g. to help in debugging a failed compile), see the instructions on line
+134 of install.sh
+
+You can also force the install.sh script to use the Makefile, rather running
+the autotools build. See line 138 of install.sh for instructions.
+
+2) Installing with the autotools build system.
+
+To install with RepastHPC using autools, run the following 3 commands in a
+terminal shell.
+
+./configure [options]
+make
+make install
+
+The relevant options to configure are:
+
+--prefix=PREFIX         install architecture-independent files in PREFIX
+                        (e.g. $HOME/sfw/repast_hpc-2.2.0)
+--with-necdf            root netcdf directory that contains include and lib
+--with-netcdf-include   directory containing netcdf headers (netcdf.h).
+--with-netcdf-lib-dir   directory containing netcdf libraries.
+--with-necdf-cxx        root netcdf-cxx directory that contains include and
+                        lib
+--with-netcdf-cxx-include
+                        directory containing netcdf-cxx headers
+                        (netcdfcpp.h).
+--with-netcdf-cxx-lib-dir
+                        directory containing netcdf-cxx libraries.
+--with-curl-include     directory containing curl headers (curl.h).
+--with-curl-lib-dir     directory containing curl libraries.
+--with-boost-include    directory containing boost headers (boost/*.hpp).
+--with-boost-lib-dir    directory containing boost libraries.
+--with-boost-lib-suffix suffix in boost library names (e.g -mt in
+                        libboost_serialization-mt).
+
+You can use these options to specify the locations of netcdf, netcdf-cxx, boost
+and curl. Note that if you use the --with-netcdf and --with-netcdf-cxx options
+then the -include and -lib-dir variations are not necessary. However, in that
+case lib and include directories must exist under the specified netcdf and
+netcdf-cxx directories.
+
+A ./configure example, using the install.sh defaults:
+
+./configure --prefix=/home/nick/sfw/repast_hpc-2.2.0
+	--with-boost-include=/home/nick/sfw/Boost/Boost_1.61/include
+	--with-boost-lib-dir=/home/nick/sfw/Boost/Boost_1.61/lib
+	--with-boost-lib-suffix=-mt
+	--with-netcdf-cxx=/home/nick/sfw/NetCDF-cxx
+	--with-netcdf=/home/nick/sfw/NetCDF
+	--with-curl-include=/home/nick/sfw/CURL/include
+	--with-curl-lib-dir=/home/nick/sfw/CURL/lib
+
+Additional options are described in the configure help: ./configure -h
+
+3) Installing with the Makefile
+
+To install Repast HPC without using the install script or the autotools build,
+you must manually edit the 'Makefile' under the MANUAL_INSTALL directory. The
+first lines of this file should specifiy the locations of the required libraries
+described above. You should modify these lines so that the values used are
+correct. What is provided below is an example only.
+
+
+# VARIABLES (Supply values for these; for definitions and examples, see INSTALL)
+CXX=/usr/local/bin/mpicxx
+CXXLD=/usr/local/bin/mpicxx
+BOOST_INCLUDE_DIR=/home/nick/sfw/Boost/Boost_1.61/include
+BOOST_LIB_DIR=/home/nick/sfw/Boost/Boost_1.61/lib
+BOOST_INFIX=-mt
+NETCDF_INCLUDE_DIR=/usr/local/include/
+NETCDF_LIB_DIR=/usr/local/lib/
+CURL_INCLUDE_DIR=/usr/local/include/
+CURL_LIB_DIR=/usr/local/lib/
+
+INSTALL_DIR=$HOME/sfw/repast_hpc-2.2.0
+
+
+Note that the 'BOOST_INFIX' value should represent any characters that boost's
+installation has placed in the names of the files it created, between the
+library name and the extension. For example, if the boost serialization
+library is named libboost_serialization-mt.so, then the value for the 'infix'
+ would be '-mt'.
+
+For all 'include' and 'lib' directories, simply specify the appropriate path.
+
+Make sure that the CXX and CXXLD variables are correctly set. These should
+point to your mpi compiler (generally both will be 'mpicxx', but the full
+path to the MPI wrapper compiler can be used if needed).
+
+When this is done, navigate in a shell to the Repast HPC 'MANUAL_INSTALL'
+directory and type
+
+make -f Makefile all
+
+This will build the libraries for Repast HPC and Relogo, and place these in a
+lib directory within the directory specified by the INSTALL_DIR variable. This
+will also copy the relevant include files to an include directory. It will
+then build the 'Zombies' and 'Rumor Model' demos, and place these in bin/zombie
+and bin/rumor repsectively.
+
+-----------------------------------------------------------------------------
+
+You can run the Zombies and Rumor models demos by cd'ing to the relevant
+location (e.g. INSTALL_DIR/bin/zombie), and
+
+Zombies:
+	mpirun -n 4 ./zombie_model config.props model.props
+
+Rumor:
+	mpirun -n 4 ./rumor_model config.props model.props
+
+Note that the libraries and the executables are compiled with RPATH and
+install names flags on Linux and OSX respectively. These flags define where
+the library or executable expects to find its dependencies. If you move the
+libraries from their installed locations, then the library or executable that
+depends on the moved library will no longer work.
+
+-----------------------------------------------------------------------------
+Compiling as static libraries
+
+The autotools build whether called directly or via install.sh will build both
+static and dynamic libraries. However, the installation using the Makefile
+whether run directly or called from install.sh will compile the repast hpc
+libraries as dynamic shared libraries. If you need compile them as static
+libraries, for example, if your cluster or HPC setup expects static libraries,
+you will need to do the following:
+
+1) Use the MPI that is installed on your cluster / HPC machine, and NOT
+the one bundled with this distribution and mentioned above.
+
+2) Set the STATIC variable in the Makefile (line 18) to true:
+	STATIC = true
+3) make all
+
+Depending on your system configuration, the executables may fail to compile,
+but the static libraries should compile correctly. Check the output.

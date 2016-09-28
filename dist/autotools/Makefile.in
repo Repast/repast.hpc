@@ -8,7 +8,7 @@ CPPFLAGS := @CPPFLAGS@
 
 CXX = @CXX@
 CXXLD = @CXX@
-CXXFLAGS = -g0 -Wall -O2 -std=c++11 -MMD -MP $(CPPFLAGS) -I./src
+CXXFLAGS = -g0 -Wall -O2 -std=c++11 -MMD -MP $(CPPFLAGS) -Wno-reorder -Wno-unused-variable -Wno-sign-compare -I./src
 
 LIB_LD_FLAGS = $(LDFLAGS)
 LIBS = @BOOST_MPI_LIBS@ @BOOST_SERIALIZATION_LIBS@ @BOOST_FILESYSTEM_LIBS@ @BOOST_SYSTEM_LIBS@
@@ -36,13 +36,11 @@ ifneq ($(BOOST_LIB_DIR),)
 endif
 
 USE_MAC = @USE_MAC@
-
 SO_SUFFIX=so
 ifeq ($(USE_MAC),no)
 	LIB_CXX_FLAGS += -fPIC
  	LIB_LD_FLAGS += -shared
 else
-# todo install name stuff
 	LIB_LD_FLAGS += -dynamiclib
 	SO_SUFFIX=dylib
 endif
@@ -93,6 +91,15 @@ RELOGO_LD_FLAGS = $(LIB_LD_FLAGS) -L./lib
 RELOGO_LIBS = $(LIBS) -lrepast_hpc-$(REPAST_HPC_VERSION)
 RELOGO_RPATHS = $(RPATHS) -Wl,-rpath -Wl,$(INSTALL_LIB)
 
+
+REPAST_HPC_MAC_NAME=
+RELOGO_MAC_NAME=
+ifeq ($(USE_MAC),yes)
+	REPAST_HPC_MAC_NAME= -install_name "$(INSTALL_PREFIX)/$(REPAST_HPC_SO)"
+	RELOGO_MAC_NAME=-install_name "$(INSTALL_PREFIX)/$(RELOGO_SO)"
+endif
+
+
 RUMOR_EXE = bin/rumor_model
 RUMOR_LD_FLAGS = $(LDFLAGS) -L./lib
 RUMOR_INSTALL_DIR = $(INSTALL_BIN)/rumor
@@ -130,7 +137,7 @@ ZOMBIE_OBJECTS=$(patsubst %.cpp,%.o,$(ZOMBIE_SRC))
 -include $(ZOMBIE_OBJECTS:.o=.d)
 
 .PHONY: all clean
-all: repast_hpc relogo rumor_model zombies_model
+all: repast_hpc relogo rumor_model zombie_model
 
 DIRECTORIES = $(INSTALL_PREFIX) $(INSTALL_LIB) $(INSTALL_INCLUDE) $(INSTALL_BIN) \
        $(REPAST_HPC_INSTALL_INCLUDE) $(RELOGO_INSTALL_INCLUDE) $(RUMOR_INSTALL_DIR) \
@@ -142,12 +149,14 @@ install_relogo: relogo
 	$(Q) "  INSTALL RELOGO $(INSTALL_PREFIX)/lib"
 	$(E) mkdir -pv $(DIRECTORIES)
 	$(E) cp $(CP_ARGS) $(RELOGO_SO) $(INSTALL_LIB)
+	$(E) cp $(CP_ARGS) $(RELOGO_A) $(INSTALL_LIB)
 	$(E) cp $(CP_ARGS) $(RELOGO_HEADERS) $(RELOGO_INSTALL_INCLUDE)
 
 install_rhpc: repast_hpc
 	$(Q) "  INSTALL REPAST HPC $(INSTALL_PREFIX)/lib"
 	$(E) mkdir -pv $(DIRECTORIES)
 	$(E) cp $(CP_ARGS) $(REPAST_HPC_SO) $(INSTALL_LIB)
+	$(E) cp $(CP_ARGS) $(REPAST_HPC_A) $(INSTALL_LIB)
 	$(E) cp $(CP_ARGS) $(REPAST_HPC_HEADERS) $(REPAST_HPC_INSTALL_INCLUDE)
 
 install_rumor: rumor_model
@@ -167,19 +176,19 @@ install_zombie: zombie_model
 relogo: $(RELOGO_SO) $(RELOGO_A)
 
 $(RELOGO_SO): $(REPAST_HPC_SO) $(RELOGO_OBJECTS)
-	$(CXXLD) $(RELOGO_LD_FLAGS)  $(RELOGO_OBJECTS) -o $(RELOGO_SO) $(RELOGO_LIBS) $(RELOGO_RPATHS)
+	$(CXXLD) $(RELOGO_MAC_NAME) $(RELOGO_LD_FLAGS)  $(RELOGO_OBJECTS) -o $(RELOGO_SO) $(RELOGO_LIBS) $(RELOGO_RPATHS)
 
 $(RELOGO_A): $(RELOGO_OBJECTS)
 	@-mkdir -p lib
 	$(Q) "  AR		$(@)"
 	$(E) $(AR) $(ARFLAGS) $(@) $(RELOGO_OBJECTS)
-	$(E) $(RANLIB) $(@)	
+	$(E) $(RANLIB) $(@)
 
 repast_hpc: $(REPAST_HPC_SO) $(REPAST_HPC_A)
 
 $(REPAST_HPC_SO): $(REPAST_HPC_OBJECTS)
 	@-mkdir -p lib
-	$(CXXLD) $(LIB_LD_FLAGS) $(REPAST_HPC_OBJECTS) -o $(REPAST_HPC_SO) $(LIBS)  $(RPATHS)
+	$(CXXLD) $(REPAST_HPC_MAC_NAME) $(LIB_LD_FLAGS) $(REPAST_HPC_OBJECTS) -o $(REPAST_HPC_SO) $(LIBS)  $(RPATHS)
 
 $(REPAST_HPC_A): $(REPAST_HPC_OBJECTS)
 	@-mkdir -p lib

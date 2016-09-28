@@ -1,0 +1,9 @@
+Distribution is a tarball with the following directory structure
+
+repast_hpc-VERSION/
+  docs/
+  MANUAL_INSTALL/
+  src/
+  INSTALL.txt
+  README
+  CHANGELOG

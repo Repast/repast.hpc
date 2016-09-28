@@ -1,7 +1,52 @@
 ===================================================================================
+
 Repast HPC Development- Change Log
 
-Begun 7 March 2012 (JTM)
+Changes since Repast HPC 2.1 (8 May 2015):
+
+New features include:
+
+N-Dimensional Spaces
+	Shared discrete and continuous spaces can now be created in N-Dimensions.
+  This allows 3-D simulations (and higher). All synchronization routines
+	operate as in previous releases.
+
+N-Dimensional Value Layers
+	Value layers that store basic data (not agents) can now be created; indexing
+  is identical to spatial coordinate systems. Synchronization uses fundamental
+   MPI. A special version allows synchronous updating by providing two data
+	 banks.
+
+Diffusion
+	A new DiffusionLayerND class allows simple implementation of diffusion
+  algoriths through N-Dimensional Value Layers. Users provide custom diffusion
+  algorithms, while Repast HPC classes manage processing cells and
+  synchronization across processes of results
+
+Properties Writing
+	Simulation can now write properties in a format that can be read as a
+  properties file; useful for re-running runs.
+
+
+
+Other Changes:
+
+Bug Fix: Config Lexer omits rank when called during RepastProcess::init.
+Fixes a problem with error reporting during init.
+
+Removed Swap X/Y from CartTopology: Removed unneeded swap of x and y dimensions
+
+Bug Fix: Logger delete should have been delete[] (logger.cpp)
+
+Bug Fix: Properties File Builder delete should have been delete[]
+(Properties.cpp)
+
+Bug Fix: RepastProcess.cpp synchronization routines, delete should have
+ been delete[] (RepastProcess.cpp)
+
+Bug Fix: Logger in repast namespace (Logger.h, Logger.cpp)
+
+================================================================
 
 7 March 2012: RemoveMeaninglessConsts
 
@@ -19,7 +64,7 @@ The implementation of random number seed initialization in release 1.0.1 was
 counterintuitive. This revision changes the way that the options of
 global.random.seed, random.seed, and the presence or absence of a communicator
 in the initializeRandom function call are translated into a random number
-seed. 
+seed.
 
 The framework provides for two basic use cases: in one, all processes use the
 identical random number seed; in the other, a single seed is given and used
@@ -55,7 +100,7 @@ No Communicator:
 Using Communicator:
    global.random.seed = NUMERIC: Each process uses this seed**
    global.random.seed = AUTO: A seed is generated from system time on
-                                 process 0 and broadcast to all other 
+                                 process 0 and broadcast to all other
                                  processes
 
    global.random.seed = omitted:
@@ -82,7 +127,7 @@ by the assumption that all processes work from identical properties collections.
 
 Note that the effective default cases are:
 
-If no communicator is used, and no value is specified for global.random.seed 
+If no communicator is used, and no value is specified for global.random.seed
 nor for random.seed, each process will use system time.
 
 If a communicator is used, and no value is specified for global.random.seed
@@ -98,7 +143,7 @@ each processor; records should be kept accordingly if runs are to be reproduced.
 
 12 March 2012: Shared Pointer Edges
 
-This feature addresses a known memory leak in code related to networks. 
+This feature addresses a known memory leak in code related to networks.
 The leak occurs when an edge is added to a network that already contains
 an edge linking the same two vertices, and no other pointer to the original
 edge exists other than that stored by the network.
@@ -125,36 +170,36 @@ irrelevant to the Repast HPC code.
 12 March 2012: Added 'delete rumorModel' to Rumor Model run code.
 
 Earlier released version failed to delete the instance of the rumor model object
-from the heap, leading to a potential memory leak. 
+from the heap, leading to a potential memory leak.
 
 12 March 2012: Refactor 'RelogoAgent' to avoid hiding 'heading' function
 
 Refactor RelogoAgent; omit 'heading()' because patches don't have headings.
-    
+
 A proposed alternative to eliminate the 'virtual override' error that
 was occurring on the Intel compiler. The function:
-    
+
      RelogoAgent::heading(){ return 0; }
-    
+
 is, clearly, meaningless. RelogoAgent is a parent class for AbstractRelogoAgent,
 which is parent to both Patch and Turtle classes. Patches do not have
 headings, so the heading() function could be pushed down the hierarchy
 to the 'Turtle' class. This not only makes sense, but would eliminate the
 error that the Intel compiler was giving (in which the Turtle's version
 of the function was hiding the parent class's).
-    
+
 The obstacle was the 'hatch' method of the Observer class. The Observer class
 is aware of RelogoAgent, but not of Turtle. The 'hatch' method must make
 a copy of the object being hatched. In the original implementation, this
 included a call to heading() (which did exist for RelogoAgent), and also
 a call to heading(float) (which does not exist for RelogoAgent). The presumption
 is that only Turtles are actually hatched.
-    
+
 The solution proposed here is to replace the explicit calls to heading() and
 heading(float) in the Observer::hatch method with a single call to a new method:
-    
+
     virtual void RelogoAgent::hatchCopy(){}
-    
+
 This does nothing at the RelogoAgent level, but can be extended in child classes
 as needed. The Turtle class is modified to include this, and it currently sets
 only the heading, but custom child classes could omit this or do more.
@@ -273,24 +318,24 @@ following syntax:
 
 Where:
 
-   count: the number of agents to be selected. 
+   count: the number of agents to be selected.
    (set | vector): either a set or a vector must be passed; this will be a
-        std::set<Agent*> or a std::vector<Agent*>. If a vector is passed, 
-        the results will be shuffled before being returned. Whichever 
-        collection is used, if it is not empty then any agents already in the 
-        collection will not be selected from the population. 
-   type: an integer representing agent type (as per its AgentId); if included, 
+        std::set<Agent*> or a std::vector<Agent*>. If a vector is passed,
+        the results will be shuffled before being returned. Whichever
+        collection is used, if it is not empty then any agents already in the
+        collection will not be selected from the population.
+   type: an integer representing agent type (as per its AgentId); if included,
         only agents of this type will be selected
-   filter: a user-defined struct that takes a boost pointer to an agent and 
-        returns 'true' or 'false' based on some criteria (see 'IsLocalAgent' 
+   filter: a user-defined struct that takes a boost pointer to an agent and
+        returns 'true' or 'false' based on some criteria (see 'IsLocalAgent'
         for an example).
-   remove: if this is set to 'true', the agents present in the set or vector 
-        passed will be removed from the set or vector that is returned. If false 
-        (the default), the set returned will contain all of the agents 
+   remove: if this is set to 'true', the agents present in the set or vector
+        passed will be removed from the set or vector that is returned. If false
+        (the default), the set returned will contain all of the agents
         selected plus all of the agents that were originally in the set
-   popSize: If a value is given, the routine assumes that the number of agents 
-        in the source population is known and need not be calculated again. 
-        Counting the number of agents in a given iterator is slow and should be 
+   popSize: If a value is given, the routine assumes that the number of agents
+        in the source population is known and need not be calculated again.
+        Counting the number of agents in a given iterator is slow and should be
         avoided if possible.
 
 For SharedContext, an additional parameter can be provided that indicates whether
@@ -299,7 +344,7 @@ only local or only non-local agents should be selected
 ===================================================================================
 * Cancellation of Agent Requests
 
-In previous releases, once an agent was requested, its information would be 
+In previous releases, once an agent was requested, its information would be
 exported to the requesting process until the end of the simulation. Now agent
 requests can be cancelled, which will stop the agent's information being sent.
 
@@ -337,17 +382,17 @@ implementation uses MPI Alltoall, with a significant performance increase.
 Users can optionally configure their models so that both the model 'Properties'
 and 'Configuration' files are read only on process 0 and broadcast to the other
 ranks. This avoids collisions among N processes trying to read a single file
-simultaneously. This is optional because it occurs during initialization, often 
+simultaneously. This is optional because it occurs during initialization, often
 before processes are synchronized, and so may not carry a performance benefit in
 all contexts. However, at large scales, it is probably preferable.
 
 ===================================================================================
 * AgentRequests and Shared Network Functions now use MPI AllToAll
 
-Agent Requests and some functions of Shared Networks were previously processed 
-by sending all request through process 0, which then collated and 
-redistributed them. The new implementation executes the initial sort in parallel 
-on all origin processes, then uses MPI Alltoall to exchange the requests. This 
+Agent Requests and some functions of Shared Networks were previously processed
+by sending all request through process 0, which then collated and
+redistributed them. The new implementation executes the initial sort in parallel
+on all origin processes, then uses MPI Alltoall to exchange the requests. This
 carries a significant performance improvement.
 
 ===================================================================================
@@ -423,7 +468,7 @@ been fixed in the current release.
 ===================================================================================
 * Non-Toroidal Space no longer causes null pointer exception
 
-A search by one process for pointers to space elements representing spaces 
+A search by one process for pointers to space elements representing spaces
 manageed by neighboring processes caused a null pointer
 exception when a process did not have neighbors in all directions; this was
 never the case for toroidal spaces, but for non-toroidal spaces processes at the
@@ -467,7 +512,7 @@ Functions affected by the correction to BaseGrid::GetDisplacement include:
 * Selection from agent sets by values chooses randomly from identical values
 
 Relogo's minNOf and maxXOf functions are intended to allow a user to specify
-a way to retrieve a specific property from each of a set of agents and a way to 
+a way to retrieve a specific property from each of a set of agents and a way to
 retrieve the N agents with the lowest or highest values of that property. The
 original implementation performed a simple sort and returned the first N values
 from the resulting list. However, in cases where 'ties' can occur, selection
@@ -475,7 +520,7 @@ from the valid candidates should be randomized (and integrated with the native
  random engine). An example would be a case in which N = 5 and the smallest
 values retrieved are:  0, 0, 1, 2, 2, 2, 2, 2, 3 …; in this case, the two agents
 with '0' and the one with '1' should be returned, but the choice among the
-5 possible agents with '2' should be mathematically random. This is now 
+5 possible agents with '2' should be mathematically random. This is now
 implemented.
 
 ===================================================================================
@@ -510,4 +555,3 @@ correct signature is: void ZombieObserver::setup(Properties& props), using
 a reference for the properties object instead of an instance. Note that on many
 systems this compiled and ran successfully; however, on the Intel compiler
 it did not.
-
