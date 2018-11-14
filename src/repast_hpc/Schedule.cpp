@@ -89,6 +89,10 @@ bool RepeatingEvent::reschedule(
 	return true;
 }
 
+Schedule::Schedule() : queue(), currentTick(0) {
+
+}
+
 Schedule::~Schedule() {
 	while (!queue.empty()) {
 		ScheduledEvent *evt = queue.top();
@@ -192,4 +196,3 @@ void ScheduleRunner::run() {
 }
 
 }
-

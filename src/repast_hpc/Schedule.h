@@ -182,6 +182,7 @@ public:
 	 */
 	typedef boost::shared_ptr<Functor> FunctorPtr;
 	virtual ~Schedule();
+	Schedule();
 
 	/**
 	 * Schedule the specified functor to execute once at the specified tick.
