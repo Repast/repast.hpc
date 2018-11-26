@@ -696,7 +696,6 @@ void Graph<V, E, Ec, EcM>::getAgentsToPush(std::set<AgentId>& agentsToTest, std:
           int destRank = otherAgentId.currentRank();
           if(destRank != localRank){
             agentsToPush[destRank].insert(*iter);
-            break; // Out of 'for' loop
           }
         }
       }

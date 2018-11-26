@@ -68,7 +68,7 @@ struct RankDatum{
   int            sendPtrOffset;
   int            receivePtrOffset;
   int            sendDir;  // Integer representing the direction a send will be sent, in N-space
-  int            recvDir;  // Integer representing the directtion a receive will have been sent, in N-space
+  int            recvDir;  // Integer representing the direction a receive will have been sent, in N-space
 };
 
 /**
@@ -590,7 +590,6 @@ AbstractValueLayerND<T>::AbstractValueLayerND(vector<int> processesPerDim, GridD
 
   neighborData = new RankDatum[relLoc.getMaxIndex()];
   neighborCount = 0;
-  int i = 0;
   do{
     if(relLoc.validNonCenter()){ // Skip 0,0,0,0,0
       RankDatum* datum;
@@ -690,7 +689,6 @@ void AbstractValueLayerND<T>::getMPIDataType(vector<int> sideLengths, MPI_Dataty
 
 template<typename T>
 int AbstractValueLayerND<T>::getSendPointerOffset(RelativeLocation relLoc){
-  int rank = repast::RepastProcess::instance()->rank();
   int ret = 0;
   for(int i = 0; i < numDims; i++){
     DimensionDatum<T>* datum = &dimensionData[i];
@@ -701,7 +699,6 @@ int AbstractValueLayerND<T>::getSendPointerOffset(RelativeLocation relLoc){
 
 template<typename T>
 int AbstractValueLayerND<T>::getReceivePointerOffset(RelativeLocation relLoc){
-  int rank = repast::RepastProcess::instance()->rank();
   int ret = 0;
   for(int i = 0; i < numDims; i++){
     DimensionDatum<T>* datum = &dimensionData[i];
@@ -1035,6 +1032,43 @@ public:
    */
   virtual void copySecondaryToCurrent();
 
+  /**
+   * ValueLayerNDSU can do something that no other value layer- or, in
+   * fact, any other object in Repast HPC- can do: it can take information
+   * from non-local processes and allow it to flow back to the local process.
+   *
+   * This is strictly forbidden in every other context in Repast HPC. Consider
+   * a local process 0 with an Agent 'A' in one corner of its space. Because
+   * 'A' is in the buffer zone, copies of 'A' are made on the other processes
+   * adjacent to process 0; in a normal 2-D space this could include three
+   * other processes, p1, p2, and p3. Now suppose that p1, p2, and p3 are all
+   * allowed to modify their copies of Agent 'A', and then, further, that we
+   * wish to migrate these changes back to process 0. How do we reconcile
+   * the changes? In general there is no answer.
+   *
+   * ValueLayerNDSU, however, makes one special provision for allowing non-
+   * local information to flow back to the local process. Assume that as in
+   * the agent example, there is a corner of the value layer on p0 that is
+   * adjacent to p1, p2, and p3. Copies of the space are made to the other
+   * processes. Now assume that these other processes add values to these
+   * regions of space. The simulation is responsible for assuring that these
+   * additive operations are independent of the simulation synchronization:
+   * that in the specific simulation being undertaken, the additions
+   * that are occurring without synchronization are semantically acceptable.
+   *
+   * The 'flowback' method takes these values and performs what is akin to an
+   * MPI 'gather' operation: taking the values from processes p1, p2, and p3 and
+   * adding them to the values on p0. The result of the operation is that
+   * the values on each process reflect the original values plus the values that
+   * were found in the non-local processes, with all values summed.
+   *
+   * N.B.: All values in the secondary layer are set to zeros. Values on the original
+   * process inside and outside the buffer zones are unchanged. To update
+   * the values outside the buffer zones to their new values, perform a 'synchronize'
+   * operation after the 'flowback' operation is completed.
+   */
+  void flowback();
+
 private:
 
   /**
@@ -1061,6 +1095,13 @@ private:
    * @param writeSharedBoundaryAreas if true, write the areas that are non-local to this process
    */
   void writeDimension(std::ofstream& outfile, T* dataSpacePointer, int* currentPosition, int dimIndex, bool writeSharedBoundaryAreas = false);
+
+  /**
+   * This is based on the 'fillDimension', but it takes values from the
+   * LOCAL portion of the otherDataSpace and sums them into the LOCAL portion
+   * of the current data space.
+   */
+  void sumInto(T* dataSpace1Pointer, T* dataSpace2Pointer, int dimIndex);
 
 };
 
@@ -1188,7 +1229,7 @@ void ValueLayerND<T>::synchronize(){
     MPI_Irecv(&dataSpace[AbstractValueLayerND<T>::neighborData[i].receivePtrOffset], 1, AbstractValueLayerND<T>::neighborData[i].datatype,
         AbstractValueLayerND<T>::neighborData[i].rank, 10 * (AbstractValueLayerND<T>::neighborData[i].recvDir + 1) + mpiTag, AbstractValueLayerND<T>::cartTopology->topologyComm, &AbstractValueLayerND<T>::requests[AbstractValueLayerND<T>::neighborCount + i]);
   }
-  int ret = MPI_Waitall(AbstractValueLayerND<T>::neighborCount * 2, AbstractValueLayerND<T>::requests, statuses);
+  MPI_Waitall(AbstractValueLayerND<T>::neighborCount * 2, AbstractValueLayerND<T>::requests, statuses);
 }
 
 
@@ -1429,7 +1470,7 @@ void ValueLayerNDSU<T>::synchronize(){
     MPI_Irecv(&currentDataSpace[AbstractValueLayerND<T>::neighborData[i].receivePtrOffset], 1, AbstractValueLayerND<T>::neighborData[i].datatype,
         AbstractValueLayerND<T>::neighborData[i].rank, 10 * (AbstractValueLayerND<T>::neighborData[i].recvDir + 1) + mpiTag, AbstractValueLayerND<T>::cartTopology->topologyComm, &AbstractValueLayerND<T>::requests[AbstractValueLayerND<T>::neighborCount + i]);
   }
-  int ret = MPI_Waitall(AbstractValueLayerND<T>::neighborCount * 2, AbstractValueLayerND<T>::requests, statuses);
+  MPI_Waitall(AbstractValueLayerND<T>::neighborCount * 2, AbstractValueLayerND<T>::requests, statuses);
 }
 
 template<typename T>
@@ -1545,6 +1586,73 @@ void ValueLayerNDSU<T>::copySecondaryToCurrent(){
   memcpy(currentDataSpace, otherDataSpace, AbstractValueLayerND<T>::length * sizeof d);
 }
 
+template<typename T>
+void ValueLayerNDSU<T>::flowback(){
+  std::cout << " valueLayer is executing flowback on rank " << repast::RepastProcess::instance()->rank() << std::endl;
+  // Fill the other data space with zeros
+  T d = 0;
+  memset(otherDataSpace, 0, AbstractValueLayerND<T>::length * sizeof d);
+
+  // Loop through the (3^N - 1)/2 directions
+
+  // Note: TODO: Do all the sends as 'waitall', then process all the receives, with the final
+  // sends waitall being the block before returning to simulation operation
+
+  // For each direction:
+  RelativeLocation relLoc(AbstractValueLayerND<T>::numDims);
+  int listSize = AbstractValueLayerND<T>::neighborCount;
+  std::cout << " valueLayer is executing flowback on rank " << repast::RepastProcess::instance()->rank() << " LIST SIZE = " << listSize << std::endl;
+  MPI_Request* flowbackRequests = new MPI_Request[4]; // No more than four at a time (may be only 2)
+  do{
+    int LDir = relLoc.getIndex();
+    int RDir = RelativeLocation::getReverseDirectionIndex(relLoc.getCurrentValue());
+    // Need to create a send to the L and a send to the R, then matching receives
+    // We create these in pairs because we can take a small advantage of non-blocking
+    // sends but be assured that the L and R data are not going to interfere
+    RankDatum* datum;
+
+
+    int countOfRequests = 0;
+    for(int i = 0; i < listSize; i++){ // To do: Shouldn't loop through this, but instead should index once
+      datum = & AbstractValueLayerND<T>::neighborData[i];
+      // Note: (!!!) Yes, we are using the 'send' pointer for the _receive_ and the 'receive' pointer for the send...
+      if(datum->sendDir == LDir){
+        MPI_Isend(&currentDataSpace[datum->receivePtrOffset], 1, datum->datatype,
+                  datum->rank, 1001, AbstractValueLayerND<T>::cartTopology->topologyComm, &flowbackRequests[countOfRequests]);
+        countOfRequests++;
+      }
+      else if(datum->sendDir == RDir){
+        MPI_Isend(&currentDataSpace[datum->receivePtrOffset], 1, datum->datatype,
+                  datum->rank, 2002, AbstractValueLayerND<T>::cartTopology->topologyComm, &flowbackRequests[countOfRequests]);
+        countOfRequests++;
+      }
+      if(datum->recvDir == LDir){
+        MPI_Irecv(&otherDataSpace[datum->sendPtrOffset], 1, datum->datatype,
+                          datum->rank, 1001, AbstractValueLayerND<T>::cartTopology->topologyComm, &flowbackRequests[countOfRequests]);
+        countOfRequests++;
+      }
+      else if(datum->recvDir == RDir){
+        MPI_Irecv(&otherDataSpace[datum->sendPtrOffset], 1, datum->datatype,
+                          datum->rank, 2002, AbstractValueLayerND<T>::cartTopology->topologyComm, &flowbackRequests[countOfRequests]);
+        countOfRequests++;
+      }
+    }
+    MPI_Status statuses[countOfRequests];
+    // Perform the sends and receives
+    std::cout << " valueLayer is executing flowback on rank " << repast::RepastProcess::instance()->rank() << " DOING WAITALL WITH LDIRECTION " << LDir << std::endl;
+    MPI_Waitall(countOfRequests, flowbackRequests, statuses);
+    std::cout << " valueLayer is executing flowback on rank " << repast::RepastProcess::instance()->rank() << " DONE WITH WAITALL... " << std::endl;
+    // Copy the received data from the other data space into
+    // the current data space, summing the values and clearing
+    // the other data space to zeros
+    sumInto(currentDataSpace, otherDataSpace, AbstractValueLayerND<T>::numDims - 1);
+
+    relLoc.increment();
+  }while(relLoc.validNonCenter()); // Note: STOP at 0,0,0,0...: because each location creates a send and a receive in both L and R, only need to do half
+
+  delete[] flowbackRequests; // Cleanup
+
+}
 
 template<typename T>
 void ValueLayerNDSU<T>::fillDimension(T localValue, T bufferValue, bool doBufferZone, bool doLocal, T* dataSpace1Pointer, T* dataSpace2Pointer, int dimIndex){
@@ -1661,7 +1769,34 @@ void ValueLayerNDSU<T>::writeDimension(std::ofstream& outfile, T* dataSpacePoint
 }
 
 
+template<typename T>
+void ValueLayerNDSU<T>::sumInto(T* dataSpace1Pointer, T* dataSpace2Pointer, int dimIndex){
+  //std::cout << " ON RANK " << repast::RepastProcess::instance()->rank() << " SUMINTO RUNNING WITH DIM INDEX OF " << dimIndex << std::endl;
+  int bufferEdge = AbstractValueLayerND<T>::dimensionData[dimIndex].leftBufferSize;
+  int localEdge  = bufferEdge + AbstractValueLayerND<T>::dimensionData[dimIndex].localWidth;
+  //int upperBound = localEdge + AbstractValueLayerND<T>::dimensionData[dimIndex].rightBufferSize;
 
+  int pointerIncrement = AbstractValueLayerND<T>::places[dimIndex];
+  int leftPointerSkip  = pointerIncrement * AbstractValueLayerND<T>::dimensionData[dimIndex].leftBufferSize;
+  //int rightPointerSkip = pointerIncrement * AbstractValueLayerND<T>::dimensionData[dimIndex].rightBufferSize;
+
+  // Skip the left buffer zone
+  dataSpace1Pointer += leftPointerSkip;
+  dataSpace2Pointer += leftPointerSkip;
+
+  // Loop local edge to local edge
+  for(int i = bufferEdge; i < localEdge; i++){
+    if(dimIndex == 0){
+      //if(*dataSpace2Pointer > 0) std::cout << " ON RANK " << repast::RepastProcess::instance()->rank() << " SUMINTO FOUND VALUE OF " << *dataSpace2Pointer << " ADDING TO " << *dataSpace1Pointer << " at " << i << " dimIndex " << dimIndex << std::endl;
+      *dataSpace1Pointer += *dataSpace2Pointer; // Add space 2's value into space 1
+      *dataSpace2Pointer = 0;                   // Zero out space 2
+    }
+    else sumInto(dataSpace1Pointer, dataSpace2Pointer, dimIndex - 1); // Recursive call
+    dataSpace1Pointer += pointerIncrement;
+    dataSpace2Pointer += pointerIncrement;
+  }
+
+}
 
 
 

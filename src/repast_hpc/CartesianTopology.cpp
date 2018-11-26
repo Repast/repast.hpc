@@ -105,7 +105,6 @@ GridDimensions CartesianTopology::getDimensions(vector<int>& pCoordinates, GridD
 RelativeLocation CartesianTopology::trim(int rank, RelativeLocation volume){
   if( periodic ||
       volume.getCountOfDimensions() != procsPerDim.size()) return RelativeLocation(volume);
-  int numDims = volume.getCountOfDimensions();
   vector<int> loc;
   loc.assign(procsPerDim.size(), 0);
   getCoordinates(rank, loc);

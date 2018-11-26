@@ -456,7 +456,7 @@ void SharedBaseGrid<T, GPTransformer, Adder, GPType>::getAgentsToPush(std::set<A
       Point<GPType> loc(locationVector);
       if(!unbuffered.contains(loc)){
         for(int i = 0; i < numOutgoing; i++){
-          if((outgoing[i] > 0) && (outgoing[i]->contains(loc))){
+          if ((outgoing[i] != NULL) && (outgoing[i]->contains(loc))) {
             agentsToPush[outRanks[i]].insert(id);
             found = true;
           }
