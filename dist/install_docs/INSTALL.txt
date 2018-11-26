@@ -1,7 +1,7 @@
 ==============================================================================
-Repast HPC 2.2 Installation
+Repast HPC 2.3.0 Installation
 
-Release Date: 30 Sept. 2016
+Release Date: 26 November 2018
 ==============================================================================
 
 
@@ -260,8 +260,8 @@ use:
 ./install.sh rhpc
 
 This will compile static and dynamic libraries for repast_hpc and the relogo
-extensions and install them and the headers in ~/sfw/repast_hpc-2.2.0/lib and
-~/sfw/repast_hpc-2.2.0/include respectively.
+extensions and install them and the headers in ~/sfw/repast_hpc-2.3.0/lib and
+~/sfw/repast_hpc-2.3.0/include respectively.
 
 Note that the ./install.sh script uses the autotools build system, automatically
 calling ./configure with the correct flags. By default the autools build
@@ -284,7 +284,7 @@ make install
 The relevant options to configure are:
 
 --prefix=PREFIX         install architecture-independent files in PREFIX
-                        (e.g. $HOME/sfw/repast_hpc-2.2.0)
+                        (e.g. $HOME/sfw/repast_hpc-2.3.0)
 --with-necdf            root netcdf directory that contains include and lib
 --with-netcdf-include   directory containing netcdf headers (netcdf.h).
 --with-netcdf-lib-dir   directory containing netcdf libraries.
@@ -310,7 +310,7 @@ netcdf-cxx directories.
 
 A ./configure example, using the install.sh defaults:
 
-./configure --prefix=/home/nick/sfw/repast_hpc-2.2.0
+./configure --prefix=/home/nick/sfw/repast_hpc-2.3.0
 	--with-boost-include=/home/nick/sfw/Boost/Boost_1.61/include
 	--with-boost-lib-dir=/home/nick/sfw/Boost/Boost_1.61/lib
 	--with-boost-lib-suffix=-mt
@@ -341,7 +341,7 @@ NETCDF_LIB_DIR=/usr/local/lib/
 CURL_INCLUDE_DIR=/usr/local/include/
 CURL_LIB_DIR=/usr/local/lib/
 
-INSTALL_DIR=$HOME/sfw/repast_hpc-2.2.0
+INSTALL_DIR=$HOME/sfw/repast_hpc-2.3.0
 
 
 Note that the 'BOOST_INFIX' value should represent any characters that boost's

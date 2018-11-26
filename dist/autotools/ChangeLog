@@ -2,6 +2,36 @@
 
 Repast HPC Development- Change Log
 
+Changes sinces Repast HPC 2.2.0 (30 September 2016)
+
+New features include:
+
+ValueLayerNDSU: N-Dimensional Value Layer that performs summation across processes, akin to
+an MPI 'gather' operation. Agents on local processes can add values to the value layer 
+even outside the local process boundaries. The 'flowback' method pulls all the added values 
+from the adjacent processes and sums them on the local process. This represents an exception to the 
+general Repast HPC rule that changes made to non-local entities are not propagated to local processes. 
+However, the change is made to the non-local region of a value layer, not a non-local agent. 
+Care should be exercised to ensure that these non-local regions are not assumed to be current until 
+the flowback method is called and the results synchronized.
+
+WeightedRandomSelector.h: Helper class for creating random selection by weighted lists of options.
+
+Other Changes:
+
+* Remove variables declared but never used in ValueLayerND.h; revise order of initialization in 
+RelativeLocation.cpp
+
+* BUG FIX: Some compilers cause an error for a comparison of a pointer with "> 0"; a line in SharedBaseGrid.h 
+was changed to adjust for this.
+
+* BUG FIX: Removed 'break' from loop in Graph.h that caused agents to be missed during cross-process exchanges.
+
+* Update module.mk for makefile compilation
+
+* Misc. other bug fixes.
+
+
 Changes since Repast HPC 2.1 (8 May 2015):
 
 New features include:

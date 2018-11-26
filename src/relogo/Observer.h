@@ -62,7 +62,7 @@
 /**
  * \mainpage Repast HPC- ReLogo Logo-Like Semantics for Repast HPC
  *
- * By Argonne National Laboratory, 2009-2013
+ * By Argonne National Laboratory, 2009-2018
  *
  * \section intro_sec What is ReLogo
  *

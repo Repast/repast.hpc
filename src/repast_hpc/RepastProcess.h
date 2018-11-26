@@ -73,7 +73,7 @@
 /**
  * \mainpage Repast HPC: A High-Performance Agent-Based Modeling Platform
  *
- * By Argonne National Laboratory, 2009-2013
+ * By Argonne National Laboratory, 2009-2018
  *
  * \section intro_sec What is Repast HPC?
  *
