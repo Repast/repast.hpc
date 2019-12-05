@@ -32,6 +32,7 @@
 *   EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <fstream>
 #include <gtest/gtest.h>
 
 #include "repast_hpc/Random.h"
@@ -45,108 +46,164 @@ using namespace repast;
 TEST(Random, Uniform)
 {
 
-	repast::Random* random = repast::Random::instance();
-	double val = random->nextDouble();
-	ASSERT_TRUE(val >= 0 && val < 1);
+    repast::Random* random = repast::Random::instance();
+    double val = random->nextDouble();
+    ASSERT_TRUE(val >= 0 && val < 1);
 
-	repast::DoubleUniformGenerator gen = random->createUniDoubleGenerator(10, 30);
-	for (int i = 0; i < 1000; i++) {
-		val = gen.next();
-		ASSERT_TRUE(val >= 10 && val < 30);
-	}
+    repast::DoubleUniformGenerator gen = random->createUniDoubleGenerator(10, 30);
+    for (int i = 0; i < 1000; i++) {
+        val = gen.next();
+        ASSERT_TRUE(val >= 10 && val < 30);
+    }
 
-	repast::IntUniformGenerator iGen = random->createUniIntGenerator(20, 40);
-	for (int i = 0; i < 1000; i++) {
-		val = iGen.next();
-		ASSERT_TRUE(val >= 20 && val <= 40);
-	}
+    repast::IntUniformGenerator iGen = random->createUniIntGenerator(20, 40);
+    for (int i = 0; i < 1000; i++) {
+        val = iGen.next();
+        ASSERT_TRUE(val >= 20 && val <= 40);
+    }
 }
 
 // not testing correctness of the random distributions per-se
 // but if our adapter generators are working.
 TEST(Random, Others)
 {
-	repast::Random* random = repast::Random::instance();
-	repast::TriangleGenerator tGen = random->createTriangleGenerator(1, 3, 10);
-	for (int i = 0; i < 1000; i++) {
-		double val = tGen.next();
-		ASSERT_TRUE(val >= 1 && val <= 10);
-	}
+    repast::Random* random = repast::Random::instance();
+    repast::TriangleGenerator tGen = random->createTriangleGenerator(1, 3, 10);
+    for (int i = 0; i < 1000; i++) {
+        double val = tGen.next();
+        ASSERT_TRUE(val >= 1 && val <= 10);
+    }
 
-	repast::ExponentialGenerator eGen = random->createExponentialGenerator(2);
-	for (int i = 0; i < 1000; i++) {
-		double val = eGen.next();
-		ASSERT_TRUE(val > 0);
-	}
+    repast::ExponentialGenerator eGen = random->createExponentialGenerator(2);
+    for (int i = 0; i < 1000; i++) {
+        double val = eGen.next();
+        ASSERT_TRUE(val > 0);
+    }
 
-	double val = random->createCauchyGenerator(1, 2).next();
-	val = random->createNormalGenerator(0, 1).next();
-	val = random->createLogNormalGenerator(1, 1).next();
+    
+    random->createCauchyGenerator(1, 2).next();
+    random->createNormalGenerator(0, 1).next();
+    random->createLogNormalGenerator(1, 1).next();
 }
 
 TEST(Random, StoredDist)
 {
 
-	Random* random = repast::Random::instance();
-	_IntUniformGenerator gen(random->engine(), boost::uniform_int<>(10, 20));
-	IntUniformGenerator* iGen = new repast::IntUniformGenerator(gen);
-	random->putGenerator("int gen", iGen);
+    Random* random = repast::Random::instance();
+    _IntUniformGenerator gen(random->engine(), boost::uniform_int<>(10, 20));
+    IntUniformGenerator* iGen = new repast::IntUniformGenerator(gen);
+    random->putGenerator("int gen", iGen);
 
-	NumberGenerator* nGen = random->getGenerator("int gen");
-	for (int i = 0; i < 1000; i++) {
-		double val = nGen->next();
-		ASSERT_TRUE(val >= 10 && val <= 20);
-	}
+    NumberGenerator* nGen = random->getGenerator("int gen");
+    for (int i = 0; i < 1000; i++) {
+        double val = nGen->next();
+        ASSERT_TRUE(val >= 10 && val <= 20);
+    }
+}
+
+TEST(Random, InitWithEng) {
+    // test nextDouble()
+    repast::Random::initialize(42);
+    Random* random = repast::Random::instance();
+    for (int i = 0; i < 50; ++i) {
+        random->nextDouble();
+    }
+
+    std::ofstream ofs("../test_data/random_engine.sav");
+    ofs << random->engine();
+    ofs.close();
+
+    std::vector<double> expected;
+    for (int i = 0; i < 50; ++i) {
+        expected.push_back(random->nextDouble());
+    }
+
+    boost::mt19937 eng;
+    std::ifstream ifs("../test_data/random_engine.sav");
+    ifs >> eng;
+    ifs.close();
+    repast::Random::initialize(eng);
+
+    for (int i = 0; i < 50; ++i) {
+        ASSERT_EQ(expected[i], Random::instance()->nextDouble());
+    }
+
+    // test generator creation
+    repast::Random::initialize(42);
+    random = repast::Random::instance();
+    repast::DoubleUniformGenerator gen = random->createUniDoubleGenerator(10, 20);
+    for (int i = 0; i < 50; ++i) {
+        gen.next();
+    }
+
+    std::ofstream ofs1("../test_data/random_engine.sav");
+    ofs1 << random->engine();
+    ofs1.close();
+
+    expected.clear();
+    for (int i = 0; i < 50; ++i) {
+        expected.push_back(gen.next());
+    }
+
+    boost::mt19937 eng1;
+    std::ifstream ifs1("../test_data/random_engine.sav");
+    ifs1 >> eng1;
+    ifs1.close();
+    repast::Random::initialize(eng1);
+
+    repast::DoubleUniformGenerator gen2 = random->createUniDoubleGenerator(10, 20);
+    for (int i = 0; i < 50; ++i) {
+        ASSERT_EQ(expected[i], gen2.next());
+    }
 }
 
 TEST(Random, DistFromProps)
 {
-	Properties props = Properties();
-	props.putProperty("random.seed", "123");
-	props.putProperty("distribution.double_uni", "double_uniform, 10.3, 20.6");
-	props.putProperty("distribution.int_uni", "int_uniform, 3, 10");
-	props.putProperty("distribution.aTriangle", "triangle, 3, 4, 10");
-	props.putProperty("distribution.aCauchy", "cauchy, 3, 10");
-	props.putProperty("distribution.aExponential", "exponential, 2");
-	props.putProperty("distribution.aNormal", "normal, .5, 1");
-	props.putProperty("distribution.aLogNormal", "lognormal, 1, 1");
+    Properties props = Properties();
+    props.putProperty("random.seed", "123");
+    props.putProperty("distribution.double_uni", "double_uniform, 10.3, 20.6");
+    props.putProperty("distribution.int_uni", "int_uniform, 3, 10");
+    props.putProperty("distribution.aTriangle", "triangle, 3, 4, 10");
+    props.putProperty("distribution.aCauchy", "cauchy, 3, 10");
+    props.putProperty("distribution.aExponential", "exponential, 2");
+    props.putProperty("distribution.aNormal", "normal, .5, 1");
+    props.putProperty("distribution.aLogNormal", "lognormal, 1, 1");
 
-	initializeRandom(props);
-	ASSERT_EQ(123, Random::instance()->seed());
+    initializeRandom(props);
 
-	Random* random = Random::instance();
-	NumberGenerator* nGen = random->getGenerator("double_uni");
-	ASSERT_TRUE(typeid(*nGen) == typeid(DoubleUniformGenerator));
-	for (int i = 0; i < 1000; i++) {
-		double val = nGen->next();
-		ASSERT_TRUE(val >= 10.3 && val < 20.6);
-	}
+    Random* random = Random::instance();
+    NumberGenerator* nGen = random->getGenerator("double_uni");
+    ASSERT_TRUE(typeid(*nGen) == typeid(DoubleUniformGenerator));
+    for (int i = 0; i < 1000; i++) {
+        double val = nGen->next();
+        ASSERT_TRUE(val >= 10.3 && val < 20.6);
+    }
 
-	nGen = random->getGenerator("int_uni");
-	ASSERT_TRUE(typeid(*nGen) == typeid(IntUniformGenerator));
-	for (int i = 0; i < 1000; i++) {
-		double val = nGen->next();
-		ASSERT_TRUE(val >= 3 && val <= 10);
-	}
+    nGen = random->getGenerator("int_uni");
+    ASSERT_TRUE(typeid(*nGen) == typeid(IntUniformGenerator));
+    for (int i = 0; i < 1000; i++) {
+        double val = nGen->next();
+        ASSERT_TRUE(val >= 3 && val <= 10);
+    }
 
-	nGen = random->getGenerator("aTriangle");
-	ASSERT_TRUE(typeid(*nGen) == typeid(TriangleGenerator));
-	double val = nGen->next();
+    nGen = random->getGenerator("aTriangle");
+    ASSERT_TRUE(typeid(*nGen) == typeid(TriangleGenerator));
+    nGen->next();
 
-	nGen = random->getGenerator("aCauchy");
-	ASSERT_TRUE(typeid(*nGen) == typeid(CauchyGenerator));
-	val = nGen->next();
+    nGen = random->getGenerator("aCauchy");
+    ASSERT_TRUE(typeid(*nGen) == typeid(CauchyGenerator));
+    nGen->next();
 
-	nGen = random->getGenerator("aExponential");
-	ASSERT_TRUE(typeid(*nGen) == typeid(ExponentialGenerator));
-	val = nGen->next();
+    nGen = random->getGenerator("aExponential");
+    ASSERT_TRUE(typeid(*nGen) == typeid(ExponentialGenerator));
+    nGen->next();
 
-	nGen = random->getGenerator("aNormal");
-	ASSERT_TRUE(typeid(*nGen) == typeid(NormalGenerator));
-	val = nGen->next();
+    nGen = random->getGenerator("aNormal");
+    ASSERT_TRUE(typeid(*nGen) == typeid(NormalGenerator));
+    nGen->next();
 
-	nGen = random->getGenerator("aLogNormal");
-	ASSERT_TRUE(typeid(*nGen) == typeid(LogNormalGenerator));
-	val = nGen->next();
+    nGen = random->getGenerator("aLogNormal");
+    ASSERT_TRUE(typeid(*nGen) == typeid(LogNormalGenerator));
+    nGen->next();
 
 }

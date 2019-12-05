@@ -47,64 +47,78 @@ namespace repast {
 using namespace std;
 using namespace boost;
 
-Random* Random::instance_ = 0;
+Random* Random::instance_ = nullptr;
 
-Random::Random(uint32_t seed) : _seed(seed), rng(seed), uni10(0, 1), uniGen(_RealUniformGenerator(rng, boost::uniform_real<>(0, 1))) {
+Random::Random(uint32_t seed) : rng(seed), uniGen(_RealUniformGenerator(rng, boost::uniform_real<>(0, 1))) {
+
+}
+
+Random::Random(boost::mt19937 generator) : rng(generator), uniGen(_RealUniformGenerator(rng, boost::uniform_real<>(0, 1))) {
 
 }
 
 Random::~Random() {
-	for (map<string, NumberGenerator*>::iterator iter = generators.begin(); iter != generators.end(); iter++) {
-		delete iter->second;
-	}
+    for (map<string, NumberGenerator*>::iterator iter = generators.begin(); iter != generators.end(); iter++) {
+        delete iter->second;
+    }
 }
 
 void Random::initialize(uint32_t seed) {
-	instance_ = new Random(seed);
+    if (instance_) {
+        delete instance_;
+    }
+    instance_ = new Random(seed);
+}
+
+void Random::initialize(boost::mt19937 generator) {
+    if (instance_) {
+        delete instance_;
+    }
+    instance_ = new Random(generator);
 }
 
 Random* Random::instance() {
-	if (instance_ == 0) {
-		Random::initialize(std::time(0));
-	}
-	return instance_;
+    if (instance_ == 0) {
+        Random::initialize(std::time(0));
+    }
+    return instance_;
 }
 
 /**
  * inclusive of from, exclusive of to.
  */
 DoubleUniformGenerator Random::createUniDoubleGenerator(double from, double to) {
-	_RealUniformGenerator gen(rng, boost::uniform_real<>(from, to));
-	return DefaultNumberGenerator<_RealUniformGenerator> (gen);
-	//return DoubleUniformGenerator(from, to);
+    _RealUniformGenerator gen(rng, boost::uniform_real<>(from, to));
+    return DefaultNumberGenerator<_RealUniformGenerator> (gen);
+    //return DoubleUniformGenerator(from, to);
 }
 
 double Random::nextDouble() {
-	return uniGen();
+    return uniGen();
 }
 
 IntUniformGenerator Random::createUniIntGenerator(int from, int to) {
-	_IntUniformGenerator gen(rng, boost::uniform_int<>(from, to));
-	return DefaultNumberGenerator<_IntUniformGenerator> (gen);
-	//return IntUniformGenerator(from, to);
+    _IntUniformGenerator gen(rng, boost::uniform_int<>(from, to));
+    return DefaultNumberGenerator<_IntUniformGenerator> (gen);
+    //return IntUniformGenerator(from, to);
 }
 
 TriangleGenerator Random::createTriangleGenerator(double lowerBound, double mostLikely, double upperBound) {
-	boost::triangle_distribution<> dist(lowerBound, mostLikely, upperBound);
-	_TriangleGenerator gen(rng, dist);
-	return DefaultNumberGenerator<_TriangleGenerator> (gen);
+    boost::triangle_distribution<> dist(lowerBound, mostLikely, upperBound);
+    _TriangleGenerator gen(rng, dist);
+    return DefaultNumberGenerator<_TriangleGenerator> (gen);
 }
 
 CauchyGenerator Random::createCauchyGenerator(double median, double sigma) {
-	boost::cauchy_distribution<> dist(median, sigma);
-	_CauchyGenerator gen(rng, dist);
-	return DefaultNumberGenerator<_CauchyGenerator> (gen);
+    boost::cauchy_distribution<> dist(median, sigma);
+    _CauchyGenerator gen(rng, dist);
+    return DefaultNumberGenerator<_CauchyGenerator> (gen);
 }
 
 ExponentialGenerator Random::createExponentialGenerator(double lambda) {
-	boost::exponential_distribution<> dist(lambda);
-	_ExponentialGenerator gen(rng, dist);
-	return DefaultNumberGenerator<_ExponentialGenerator> (gen);
+    boost::exponential_distribution<> dist(lambda);
+    _ExponentialGenerator gen(rng, dist);
+    return DefaultNumberGenerator<_ExponentialGenerator> (gen);
 }
 
 /*
@@ -116,15 +130,15 @@ ExponentialGenerator Random::createExponentialGenerator(double lambda) {
  */
 
 NormalGenerator Random::createNormalGenerator(double mean, double sigma) {
-	boost::normal_distribution<> dist(mean, sigma);
-	_NormalGenerator gen(rng, dist);
-	return DefaultNumberGenerator<_NormalGenerator> (gen);
+    boost::normal_distribution<> dist(mean, sigma);
+    _NormalGenerator gen(rng, dist);
+    return DefaultNumberGenerator<_NormalGenerator> (gen);
 }
 
 LogNormalGenerator Random::createLogNormalGenerator(double mean, double sigma) {
-	boost::lognormal_distribution<> dist(mean, sigma);
-	_LogNormalGenerator gen(rng, dist);
-	return DefaultNumberGenerator<_LogNormalGenerator> (gen);
+    boost::lognormal_distribution<> dist(mean, sigma);
+    _LogNormalGenerator gen(rng, dist);
+    return DefaultNumberGenerator<_LogNormalGenerator> (gen);
 }
 
 /*
@@ -136,18 +150,18 @@ LogNormalGenerator Random::createLogNormalGenerator(double mean, double sigma) {
  */
 
 void Random::putGenerator(const string& id, NumberGenerator* generator) {
-	generators.insert( make_pair(id, generator));
+    generators.insert( make_pair(id, generator));
 }
 
 NumberGenerator* Random::getGenerator(const string& id) {
-	map<string, NumberGenerator*>::iterator iter = generators.find(id);
-	if (iter == generators.end()) return 0;
-	return iter->second;
+    map<string, NumberGenerator*>::iterator iter = generators.find(id);
+    if (iter == generators.end()) return 0;
+    return iter->second;
 }
 
 ptrdiff_t uni_random(ptrdiff_t i) {
-	IntUniformGenerator gen = Random::instance()->createUniIntGenerator(0, i - 1);
-	return (ptrdiff_t)gen.next();
+    IntUniformGenerator gen = Random::instance()->createUniIntGenerator(0, i - 1);
+    return (ptrdiff_t)gen.next();
 }
 
 }

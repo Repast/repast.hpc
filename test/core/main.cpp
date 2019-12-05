@@ -46,6 +46,8 @@
 
 int main(int argc, char **argv) {
 	boost::mpi::environment env(argc, argv);
+	boost::mpi::communicator world;
+	repast::RepastProcess::init("../test_data/config.props", &world);
 
 	::testing::InitGoogleTest(&argc, argv);
 	int r = RUN_ALL_TESTS();

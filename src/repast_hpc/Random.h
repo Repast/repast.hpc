@@ -69,7 +69,7 @@ typedef boost::variate_generator<boost::mt19937&, boost::triangle_distribution<>
 typedef boost::variate_generator<boost::mt19937&, boost::cauchy_distribution<> > _CauchyGenerator;
 typedef boost::variate_generator<boost::mt19937&, boost::exponential_distribution<> > _ExponentialGenerator;
 typedef boost::variate_generator<boost::mt19937&, boost::geometric_distribution<boost::uniform_real<> > >
-		_GeometricGenerator;
+        _GeometricGenerator;
 typedef boost::variate_generator<boost::mt19937&, boost::normal_distribution<> > _NormalGenerator;
 typedef boost::variate_generator<boost::mt19937&, boost::lognormal_distribution<> > _LogNormalGenerator;
 
@@ -79,14 +79,14 @@ typedef boost::variate_generator<boost::mt19937&, boost::lognormal_distribution<
 class NumberGenerator {
 
 public:
-	virtual ~NumberGenerator() {
-	}
+    virtual ~NumberGenerator() {
+    }
 
-	/**
-	 * Gets the "next" number from this
-	 * Number Generator.
-	 */
-	virtual double next() = 0;
+    /**
+     * Gets the "next" number from this
+     * Number Generator.
+     */
+    virtual double next() = 0;
 };
 
 /**
@@ -97,21 +97,21 @@ template<typename T>
 class DefaultNumberGenerator: public NumberGenerator {
 
 private:
-	T gen;
+    T gen;
 
 public:
-	DefaultNumberGenerator(T generator);
-	double next();
+    DefaultNumberGenerator(T generator);
+    double next();
 };
 
 template<typename T>
 DefaultNumberGenerator<T>::DefaultNumberGenerator(T generator) :
-	gen(generator) {
+    gen(generator) {
 }
 
 template<typename T>
 double DefaultNumberGenerator<T>::next() {
-	return gen();
+    return gen();
 }
 
 typedef DefaultNumberGenerator<_IntUniformGenerator> IntUniformGenerator;
@@ -128,141 +128,148 @@ typedef DefaultNumberGenerator<_LogNormalGenerator> LogNormalGenerator;
 class Random {
 
 private:
-	static Random* instance_;
+    static Random* instance_;
 
-	boost::uint32_t _seed;
-	boost::mt19937 rng;
-	boost::uniform_real<> uni10;
-	_RealUniformGenerator uniGen;
+    boost::mt19937 rng;
+    _RealUniformGenerator uniGen;
 
-	std::map<std::string, NumberGenerator*> generators;
+    std::map<std::string, NumberGenerator*> generators;
 
 protected:
-	Random(boost::uint32_t seed);
+    Random(boost::uint32_t seed);
+    Random(boost::mt19937 generator);
 
 public:
 
-	/**
-	 * Initialize the Random singleton with the specified seed.
-	 *
-	 * @param the seed to initialize the random number generator with.
-	 */
-	static void initialize(boost::uint32_t seed);
+    /**
+     * Initialize the Random singleton with the specified seed.
+     *
+     * @param seed the seed to initialize the random number generator with.
+     */
+    static void initialize(boost::uint32_t seed);
 
-	/**
-	 * Gets the singleton instance of this Random.
-	 */
-	static Random* instance();
-	virtual ~Random();
+    /**
+     * Initialize the Random singleton with random number generator.
+     *
+     * @param generator the random number generator
+     */
+    static void initialize(boost::mt19937 generator);
 
-	/**
-	 * Puts the named generator into this Random. Added
-	 * generators will be deleted by Random when it is destroyed.
-	 *
-	 * @param the id of the generator
-	 * @param generator the generator to add
-	 */
-	void putGenerator(const std::string& id, NumberGenerator* generator);
+    /**
+     * Gets the singleton instance of this Random.
+     */
+    static Random* instance();
+    virtual ~Random();
 
-	/**
-	 * Gets the named generator or 0 if the name
-	 * is not found.
-	 *
-	 * @param id the name of the generator to get
-	 */
-	NumberGenerator* getGenerator(const std::string& id);
+    /**
+     * Puts the named generator into this Random. Added
+     * generators will be deleted by Random when it is destroyed.
+     *
+     * @param the id of the generator
+     * @param generator the generator to add
+     */
+    void putGenerator(const std::string& id, NumberGenerator* generator);
 
-	/**
-	 * Gets the random number engine from which the distributions are created.
-	 *
-	 * @return he random number engine from which the distributions are created.
-	 */
-	boost::mt19937& engine() {
-		return rng;
-	}
+    /**
+     * Gets the named generator or 0 if the name
+     * is not found.
+     *
+     * @param id the name of the generator to get
+     */
+    NumberGenerator* getGenerator(const std::string& id);
 
-	/**
-	 * Gets the current seed.
-	 *
-	 * @return the current seed.
-	 */
-	boost::uint32_t seed() {
-		return _seed;
-	}
+    /**
+     * Gets the random number engine from which the distributions are created.
+     *
+     * @return he random number engine from which the distributions are created.
+     */
+    boost::mt19937& engine() {
+        return rng;
+    }
 
-	/**
-	 * Gets the next double in the range [0, 1).
-	 *
-	 * @return the next double in the range [0, 1).
-	 */
-	double nextDouble();
+    /**
+     * Gets the current seed.
+     *
+     * @return the current seed.
+     *
+    boost::uint32_t seed() {
+        return seed;
+    }
+    */
 
-	/**
-	 * Creates a generator that produces doubles in the range [from, to).
-	 *
-	 * @param from the range start (inclusive)
-	 * @param to the range end (exclusive)
-	 *
-	 * @return a generator that produces doubles in the range [from, to).
-	 */
-	DoubleUniformGenerator createUniDoubleGenerator(double from, double to);
+    /**
+     * Gets the next double in the range [0, 1).
+     *
+     * @return the next double in the range [0, 1).
+     */
+    double nextDouble();
 
-	/**
-	 * Creates a generator that produces ints in the range [from, to].
-	 *
-	 *  @param from the range start (inclusive)
-	 * @param to the range end (inclusive)
-	 *
-	 * @return a generator that produces ints in the range [from, to].
-	 */
-	IntUniformGenerator createUniIntGenerator(int from, int to);
+    /**
+     * Creates a generator that produces doubles in the range [from, to).
+     *
+     * @param from the range start (inclusive)
+     * @param to the range end (exclusive)
+     *
+     * @return a generator that produces doubles in the range [from, to).
+     */
+    DoubleUniformGenerator createUniDoubleGenerator(double from, double to);
 
-	/**
-	 * Creates a triangle generator with the specified properties. A TriangleGenerator produces a
-	 * floating point value x where lowerbound <= x <= upperBound and mostLikely is the most
-	 * probable value for x.
-	 *
-	 * @param lowerBound the lower bound of the values produced by the generator
-	 * @param mostLikely the most likely value produced by the generator
-	 * @param upperBound the upper bound of the values produced by the generator
-	 *
-	 * @return a triangle generator.
-	 */
-	TriangleGenerator createTriangleGenerator(double lowerBound, double mostLikely, double upperBound);
+    /**
+     * Creates a generator that produces ints in the range [from, to].
+     *
+     *  @param from the range start (inclusive)
+     * @param to the range end (inclusive)
+     *
+     * @return a generator that produces ints in the range [from, to].
+     */
+    IntUniformGenerator createUniIntGenerator(int from, int to);
 
-	/**
-	 * pdf: p(x) = sigma/(pi*(sigma**2 + (x-median)**2))
-	 *
-	 * @param median
-	 * @param sigma
-	 *
-	 * @return a Cauchy generator.
-	 */
-	CauchyGenerator createCauchyGenerator(double median, double sigma);
+    /**
+     * Creates a triangle generator with the specified properties. A TriangleGenerator produces a
+     * floating point value x where lowerbound <= x <= upperBound and mostLikely is the most
+     * probable value for x.
+     *
+     * @param lowerBound the lower bound of the values produced by the generator
+     * @param mostLikely the most likely value produced by the generator
+     * @param upperBound the upper bound of the values produced by the generator
+     *
+     * @return a triangle generator.
+     */
+    TriangleGenerator createTriangleGenerator(double lowerBound, double mostLikely, double upperBound);
 
-	/**
-	 * pdf: p(x) = lambda * exp(-lambda * x)
-	 *
-	 * @param lambda must be > 0
-	 *
-	 * @return an exponential generator.
-	 */
-	ExponentialGenerator createExponentialGenerator(double lambda);
+    /**
+     * pdf: p(x) = sigma/(pi*(sigma**2 + (x-median)**2))
+     *
+     * @param median
+     * @param sigma
+     *
+     * @return a Cauchy generator.
+     */
+    CauchyGenerator createCauchyGenerator(double median, double sigma);
 
-	/**
-	 * Creates a normal generator.
-	 *
-	 * pdf: p(x) = 1/sqrt(2*pi*sigma) * exp(- (x-mean)2 / (2*sigma2) )
-	 *
-	 *
-	 */
-	NormalGenerator createNormalGenerator(double mean, double sigma);
+    /**
+     * pdf: p(x) = lambda * exp(-lambda * x)
+     *
+     * @param lambda must be > 0
+     *
+     * @return an exponential generator.
+     */
+    ExponentialGenerator createExponentialGenerator(double lambda);
 
-	/**
-	 * Produces random numbers with p(x) = 1/(x * normal_sigma * sqrt(2*pi)) * exp( -(log(x)-normal_mean)2 / (2*normal_sigma2) )
-	 * for x > 0, where normal_mean = log(mean2/sqrt(sigma2 + mean2)) and normal_sigma = sqrt(log(1 + sigma2/mean2))
-	 */
-	LogNormalGenerator createLogNormalGenerator(double mean, double sigma);
+    /**
+     * Creates a normal generator.
+     *
+     * pdf: p(x) = 1/sqrt(2*pi*sigma) * exp(- (x-mean)2 / (2*sigma2) )
+     *
+     *
+     */
+    NormalGenerator createNormalGenerator(double mean, double sigma);
+
+    /**
+     * Produces random numbers with p(x) = 1/(x * normal_sigma * sqrt(2*pi)) * exp( -(log(x)-normal_mean)2 / (2*normal_sigma2) )
+     * for x > 0, where normal_mean = log(mean2/sqrt(sigma2 + mean2)) and normal_sigma = sqrt(log(1 + sigma2/mean2))
+     */
+    LogNormalGenerator createLogNormalGenerator(double mean, double sigma);
 };
 
 /**

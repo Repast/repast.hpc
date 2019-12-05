@@ -28,6 +28,10 @@ Release
 Debug
 Profiling
 
+.vscode/
+
+test_data/random_engine.sav
+
 # Built components of the tutorial
 docs/OnlineTutorial/SRC/work/*
 

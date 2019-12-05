@@ -3,30 +3,59 @@ relogo_src :=
 rumor_src :=
 zombie_src :=
 
+core_test_src :=
 
-CXX=/usr/local/bin/mpicxx
-CXXLD=/usr/local/bin/mpicxx
-BOOST_INCLUDE_DIR=/usr/local/include/boost-1_54
-BOOST_LIB_DIR=/usr/local/lib
-BOOST_INFIX=-mt
-NETCDF_INCLUDE_DIR=/usr/local/include
-NETCDF_LIB_DIR=/usr/local/lib
-CURL_INCLUDE_DIR=/usr/local/include
-CURL_LIB_DIR=/usr/local/lib
+CXX = mpicxx
+CXXLD = mpicxx
 
-# DERIVED VARIABLES (Do not modify)
-I_REPAST=-I$../src
-I_BOOST=-I$(BOOST_INCLUDE_DIR)
-L_BOOST=-L$(BOOST_LIB_DIR)
-l_BOOST=-lboost_mpi$(BOOST_INFIX) -lboost_serialization$(BOOST_INFIX) -lboost_system$(BOOST_INFIX) -lboost_filesystem$(BOOST_INFIX)
-I_NETCDF=-I$(NETCDF_INCLUDE_DIR)
-L_NETCDF=-L$(NETCDF_LIB_DIR)
-l_NETCDF=-lnetcdf_c++ -lnetcdf
-I_CURL=-I$(CURL_INCLUDE_DIR)
-L_CURL=-L$(CURL_LIB_DIR)
-l_CURL=-lcurl
+CXX_FLAGS = $(CXX_RELEASE_FLAGS) -fopenmp
 
-INCLUDES = $(I_REPAST) $(I_BOOST) $(I_NETCDF) $(I_CURL)
+INCLUDES :=
+LIBS :=
+
+REPAST_LIB_DIR = $(HOME)/sfw/repast_hpc-2.2.0/lib
+REPAST_LIB = repast_hpc-2.2.0
+REPAST_INCLUDE = $(HOME)/sfw/repast_hpc-2.2.0/include
+
+BOOST_INCLUDE =  $(HOME)/sfw/Boost/Boost_1.61/include
+BOOST_LIB_DIR =  $(HOME)/sfw/Boost/Boost_1.61/lib
+BOOST_LIBS = -lboost_system-mt  -lboost_filesystem-mt  -lboost_serialization-mt -lboost_mpi-mt 
+
+NETCDF_HOME=$(HOME)/sfw/NetCDF
+NETCDF_INCLUDE_DIR=$(NETCDF_HOME)/include
+NETCDF_LIB_DIR=$(NETCDF_HOME)/lib
+
+NETCDF_CXX_HOME=$(HOME)/sfw/NetCDF-cxx
+NETCDF_CXX_INCLUDE_DIR=$(NETCDF_CXX_HOME)/include
+NETCDF_CXX_LIB_DIR=$(NETCDF_CXX_HOME)/lib
+
+CURL_HOME = $(HOME)/sfw/CURL
+CURL_INCLUDE_DIR= $(CURL_HOME)/include
+CURL_LIB_DIR= $(CURL_HOME)/lib
+
+INCLUDES += -I $(BOOST_INCLUDE)
+INCLUDES += -I ../src
+INCLUDES += -I $(NETCDF_INCLUDE_DIR)
+INCLUDES += -I $(NETCDF_CXX_INCLUDE_DIR)
+INCLUDES += -I $(CURL_INCLUDE_DIR)
+
+GTEST_HOME = $(HOME)/sfw/googletest
+GTEST_LIB = $(GTEST_HOME)/lib/libgtest.a
+TEST_INCLUDES = -I $(GTEST_HOME)/include
+
+LIBS += -L $(BOOST_LIB_DIR) $(BOOST_LIBS)
+LIBS += -L $(NETCDF_LIB_DIR) -lnetcdf
+LIBS += -L $(NETCDF_CXX_LIB_DIR) -lnetcdf_c++
+LIBS += -L $(CURL_LIB_DIR) -lcurl
+
+RPATHS += -Wl,-rpath -Wl,$(NETCDF_LIB_DIR)
+RPATHS += -Wl,-rpath -Wl,$(NETCDF_CXX_LIB_DIR) 
+RPATHS += -Wl,-rpath -Wl,$(CURL_LIB_DIR) 
+RPATHS += -Wl,-rpath -Wl,$(BOOST_LIB_DIR)
+
+TEST_RPATHS = $(RPATHS)
+TEST_RPATHS += -Wl,-rpath -Wl,./bin
+
 
 # src, build directories
 SRC_DIR=../src
@@ -60,15 +89,20 @@ ZOMBIE_OBJS = $(addprefix $(BUILD_DIR)/, $(zombie_src))
 ZOMBIE_OBJECTS = $(subst .cpp,.o,$(ZOMBIE_OBJS))
 ZOMBIE_DEPS = $(subst .o,.d,$(ZOMBIE_OBJECTS))
 
-VPATH = ../src
+VPATH = ../src ../test
 
-RELEASE_FLAGS = -Wall -O3 -g0 -std=c++11
-DEBUG_FLAGS = -O0 -g3  
+include ../test/core/module.mk
+TEST_OBJECTS := $(subst .cpp,.o, $(addprefix $(BUILD_DIR)/, $(core_test_src)))
+TEST_DEPS :=  $(subst .o,.d,$(TEST_OBJECTS))
 
-CPPFLAGS = $(RELEASE_FLAGS)
-LIB_CPPFLAGS = $(CPPFLAGS)
 
-LDFLAGS =
+CXX_RELEASE_FLAGS = -Wall -O2 -g0 -std=c++11 -MMD -MP
+CXX_DEBUG_FLAGS = -Wall -O0 -g3 -std=c++11 -MMD -MP
+CXX_FLAGS = $(CXX_RELEASE_FLAGS) -fopenmp
+
+LIB_CXX_FLAGS = $(CXX_FLAGS)
+
+LDFLAGS = -fopenmp
 LIB_LDFLAGS = $(LDFLAGS)
 LIB_EXT =
 
@@ -79,13 +113,13 @@ ifeq ($(OS),Darwin)
  LIB_EXT = dylib
 else
  # linux
- LIB_CPPFLAGS += -fPIC
+ LIB_CXX_FLAGS += -fPIC
  LIB_LDFLAGS += -shared
  LIB_EXT = so
 endif
 
 # targets
-REPAST_VERSION=2.1-dev
+REPAST_VERSION=2.3.1
 REPAST_HPC_NAME=repast_hpc-$(REPAST_VERSION)
 REPAST_HPC_LIB=lib$(REPAST_HPC_NAME).$(LIB_EXT)
 
@@ -94,9 +128,19 @@ RELOGO_LIB=lib$(RELOGO_NAME).$(LIB_EXT)
 
 RUMOR_EXE=rumor_model
 ZOMBIE_EXE=zombie_model
+
+INSTALL_DIR = $(HOME)/sfw/$(REPAST_HPC_NAME)
+REPAST_HPC_INSTALL_INCLUDE = $(INSTALL_DIR)/include/repast_hpc
+RELOGO_INSTALL_INCLUDE = $(INSTALL_DIR)/include/relogo
+INSTALL_LIB = $(INSTALL_DIR)/lib
+
+TEST_NAME = unit_tests
+
 	
 SED := sed
 MV := mv -f
+MKDIR := mkdir -p
+CP := cp
 
 ifeq "$(MAKECMDGOALS)" "repast_hpc"
 	-include $(REPAST_HPC_DEPS)
@@ -123,6 +167,13 @@ ifeq "$(MAKECMDGOALS)" "all"
 	-include $(RELOGO_DEPS)
 endif
 
+
+ifeq "$(MAKECMDGOALS)" "tests"
+	-include $(REPAST_HPC_DEPS)
+	-include $(RELOGO_DEPS)
+	-include $(TEST_DEPS)
+endif
+
 ifeq "$(MAKECMDGOALS)" ""
 	-include $(REPAST_HPC_DEPS)
 	-include $(RELOGO_DEPS)
@@ -135,38 +186,43 @@ endif
 
 all : repast_hpc relogo rumor zombies
 
+install : repast_hpc relogo
+	$(MKDIR) $(REPAST_HPC_INSTALL_INCLUDE)
+	$(MKDIR) $(RELOGO_INSTALL_INCLUDE)
+	$(MKDIR) $(INSTALL_LIB)
+	$(CP) $(REPAST_HPC_DIR)/*.h $(REPAST_HPC_INSTALL_INCLUDE)
+	$(CP) $(RELOGO_DIR)/*.h $(RELOGO_INSTALL_INCLUDE)
+	$(CP) ./bin/$(REPAST_HPC_LIB) $(INSTALL_LIB)
+	$(CP) ./bin/$(RELOGO_LIB) $(INSTALL_LIB)
+
 repast_hpc: $(REPAST_HPC_OBJECTS)
 	-mkdir -p bin
-	$(CXXLD) $^ $(LIB_LDFLAGS) $(l_BOOST) $(l_NETCDF) $(l_CURL) -o bin/$(REPAST_HPC_LIB) $(L_BOOST) $(L_NETCDF) $(L_CURL)
+	$(CXXLD) $^ $(LIB_LDFLAGS) $(RPATHS) -o bin/$(REPAST_HPC_LIB) $(LIBS)
 	
 relogo: $(RELOGO_OBJECTS)
 	-mkdir -p bin
-	$(CXXLD) $^ $(LIB_LDFLAGS) -l$(REPAST_HPC_NAME) $(l_BOOST) $(l_NETCDF) $(l_CURL) -o bin/$(RELOGO_LIB) $(L_BOOST) $(L_NETCDF) $(L_CURL) -L./bin
+	$(CXXLD) $^ $(LIB_LDFLAGS) $(RPATHS) $(l_CURL) -o bin/$(RELOGO_LIB) $(LIBS) -L./bin
 	
+tests : repast_hpc $(TEST_OBJECTS) 
+	$(CXXLD) $(filter-out %.d, $(TEST_OBJECTS)) -lpthread -o $(TEST_NAME) -L./bin -l$(REPAST_HPC_NAME) $(LIBS) $(TEST_RPATHS) $(GTEST_LIB) 
+
 rumor:  $(RUMOR_OBJECTS)
 	mkdir -p ./bin
 	cp $(RUMOR_DIR)/config.props ./bin/rumor_config.props
 	cp $(RUMOR_DIR)/model.props ./bin/rumor_model.props
-	$(CXXLD) $(RUMOR_OBJECTS) $(LDFLAGS) -L./bin $(L_BOOST) $(L_NETCDF) -l$(REPAST_HPC_NAME) $(l_NETCDF) $(l_BOOST) -o ./bin/$(RUMOR_EXE)
+	$(CXXLD) $(RUMOR_OBJECTS) $(LDFLAGS) -L./bin $(LIBS) -l$(REPAST_HPC_NAME) -o ./bin/$(RUMOR_EXE)
 
 zombies: $(ZOMBIE_OBJECTS)
 	mkdir -p ./bin
 	cp $(ZOMBIE_DIR)/config.props ./bin/zombie_config.props
 	cp $(ZOMBIE_DIR)/model.props ./bin/zombie_model.props
-	$(CXXLD) $(ZOMBIE_OBJECTS) $(LDFLAGS) -L./bin $(L_BOOST) $(L_NETCDF) $(L_CURL) $(l_NETCDF) $(l_CURL) -l$(REPAST_HPC_NAME) -l$(RELOGO_NAME) $(l_BOOST) -o ./bin/$(ZOMBIE_EXE)
+	$(CXXLD) $(ZOMBIE_OBJECTS) $(LDFLAGS) -L./bin $(LIBS) -l$(REPAST_HPC_NAME) -l$(RELOGO_NAME) -o ./bin/$(ZOMBIE_EXE)
+
 
 $(BUILD_DIR)/%.o : %.cpp
-	$(CXX) $(LIB_CPPFLAGS) $(INCLUDES) -c $< -o $@
-	
-	
-$(BUILD_DIR)/%.d: %.cpp
 	@-mkdir -p $(dir $@)
-	@echo Calculating dependencies for $<
-	@$(CXX) $(CPPFLAGS) $(INCLUDES) -M $< | \
-	$(SED) 's,\($(notdir $*)\.o\) *:,$(dir $@)\1 $@: ,' > $@.tmp
-	@$(MV) $@.tmp $@
+	$(CXX) $(CXX_FLAGS) -Wno-deprecated-declarations $(LIB_CXX_FLAGS) $(INCLUDES) $(TEST_INCLUDES) -c $< -o $@
 
-	
 clean :
 	rm -rf $(BUILD_DIR)
 	rm -f bin/*
