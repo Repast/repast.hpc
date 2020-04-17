@@ -1,3 +1,6 @@
+
+all : repast_hpc relogo rumor zombies
+
 repast_hpc_src :=
 relogo_src :=
 rumor_src :=
@@ -178,8 +181,6 @@ endif
 
 
 .PHONY: all repast_hpc relogo clean zombies rumor
-
-all : repast_hpc relogo rumor zombies
 
 install : repast_hpc relogo
 	$(MKDIR) $(REPAST_HPC_INSTALL_INCLUDE)
