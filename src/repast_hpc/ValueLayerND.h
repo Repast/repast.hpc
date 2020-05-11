@@ -676,7 +676,7 @@ void AbstractValueLayerND<T>::getMPIDataType(vector<int> sideLengths, MPI_Dataty
   else{
     MPI_Datatype innerType;
     getMPIDataType(sideLengths, innerType, dimensionIndex - 1);
-    MPI_Type_hvector(sideLengths[dimensionIndex], // Count
+    MPI_Type_create_hvector(sideLengths[dimensionIndex], // Count
                      1,                                                                        // BlockLength: just one of the inner data type
                      strides[dimensionIndex],                                                  // Stride, in bytes
                      innerType,                                                                // Inner Datatype
