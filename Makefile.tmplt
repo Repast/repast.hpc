@@ -1,3 +1,6 @@
+
+all : repast_hpc relogo rumor zombies
+
 repast_hpc_src :=
 relogo_src :=
 rumor_src :=
@@ -5,14 +8,20 @@ zombie_src :=
 
 core_test_src :=
 
+<<<<<<< HEAD
 CXX = mpicxx
 CXXLD = mpicxx
+=======
+CXX = CC
+CXXLD = CC
+>>>>>>> 62ac539bc3c9dfdddda8536c121e5fc1d544f315
 
 CXX_FLAGS = $(CXX_RELEASE_FLAGS) -fopenmp
 
 INCLUDES :=
 LIBS :=
 
+<<<<<<< HEAD
 REPAST_LIB_DIR = $(HOME)/sfw/repast_hpc-2.2.0/lib
 REPAST_LIB = repast_hpc-2.2.0
 REPAST_INCLUDE = $(HOME)/sfw/repast_hpc-2.2.0/include
@@ -30,6 +39,21 @@ NETCDF_CXX_INCLUDE_DIR=$(NETCDF_CXX_HOME)/include
 NETCDF_CXX_LIB_DIR=$(NETCDF_CXX_HOME)/lib
 
 CURL_HOME = $(HOME)/sfw/CURL
+=======
+BOOST_INCLUDE = /soft/libraries/boost/1.64.0/gnu/include
+BOOST_LIB_DIR = /soft/libraries/boost/1.64.0/gnu/lib
+BOOST_LIBS = -lboost_system-mt  -lboost_filesystem-mt  -lboost_serialization-mt -lboost_mpi-mt 
+
+NETCDF_HOME=$(HOME)/theta/sfw/netcdf-4.2.1.1
+NETCDF_INCLUDE_DIR=$(NETCDF_HOME)/include
+NETCDF_LIB_DIR=$(NETCDF_HOME)/lib
+
+NETCDF_CXX_HOME=$(HOME)/theta/sfw/netcdf-cxx-4.2
+NETCDF_CXX_INCLUDE_DIR=$(NETCDF_CXX_HOME)/include
+NETCDF_CXX_LIB_DIR=$(NETCDF_CXX_HOME)/lib
+
+CURL_HOME = $(HOME)/theta/sfw/curl-7.42.1
+>>>>>>> 62ac539bc3c9dfdddda8536c121e5fc1d544f315
 CURL_INCLUDE_DIR= $(CURL_HOME)/include
 CURL_LIB_DIR= $(CURL_HOME)/lib
 
@@ -90,6 +114,7 @@ ZOMBIE_OBJECTS = $(subst .cpp,.o,$(ZOMBIE_OBJS))
 ZOMBIE_DEPS = $(subst .o,.d,$(ZOMBIE_OBJECTS))
 
 VPATH = ../src ../test
+<<<<<<< HEAD
 
 include ../test/core/module.mk
 TEST_OBJECTS := $(subst .cpp,.o, $(addprefix $(BUILD_DIR)/, $(core_test_src)))
@@ -102,6 +127,20 @@ CXX_FLAGS = $(CXX_RELEASE_FLAGS) -fopenmp
 
 LIB_CXX_FLAGS = $(CXX_FLAGS)
 
+=======
+
+include ../test/core/module.mk
+TEST_OBJECTS := $(subst .cpp,.o, $(addprefix $(BUILD_DIR)/, $(core_test_src)))
+TEST_DEPS :=  $(subst .o,.d,$(TEST_OBJECTS))
+
+
+CXX_RELEASE_FLAGS = -Wall -O2 -g0 -std=c++11 -MMD -MP
+CXX_DEBUG_FLAGS = -Wall -O0 -g3 -std=c++11 -MMD -MP
+CXX_FLAGS = $(CXX_RELEASE_FLAGS) -fopenmp
+
+LIB_CXX_FLAGS = $(CXX_FLAGS)
+
+>>>>>>> 62ac539bc3c9dfdddda8536c121e5fc1d544f315
 LDFLAGS = -fopenmp
 LIB_LDFLAGS = $(LDFLAGS)
 LIB_EXT =
@@ -129,42 +168,58 @@ RELOGO_LIB=lib$(RELOGO_NAME).$(LIB_EXT)
 RUMOR_EXE=rumor_model
 ZOMBIE_EXE=zombie_model
 
+<<<<<<< HEAD
 INSTALL_DIR = $(HOME)/sfw/$(REPAST_HPC_NAME)
+=======
+INSTALL_DIR = $(HOME)/theta/sfw/$(REPAST_HPC_NAME)
+>>>>>>> 62ac539bc3c9dfdddda8536c121e5fc1d544f315
 REPAST_HPC_INSTALL_INCLUDE = $(INSTALL_DIR)/include/repast_hpc
 RELOGO_INSTALL_INCLUDE = $(INSTALL_DIR)/include/relogo
 INSTALL_LIB = $(INSTALL_DIR)/lib
 
+<<<<<<< HEAD
 TEST_NAME = unit_tests
 
 	
+=======
+TEST_NAME = unit_test
+
+>>>>>>> 62ac539bc3c9dfdddda8536c121e5fc1d544f315
 SED := sed
 MV := mv -f
 MKDIR := mkdir -p
 CP := cp
 
 ifeq "$(MAKECMDGOALS)" "repast_hpc"
-	-include $(REPAST_HPC_DEPS)
+     -include $(REPAST_HPC_DEPS)
 endif
 
 ifeq "$(MAKECMDGOALS)" "relogo"
-	-include $(REPAST_HPC_DEPS)
-	-include $(RELOGO_DEPS)
+     -include $(REPAST_HPC_DEPS)
+     -include $(RELOGO_DEPS)
 endif
 
 ifeq "$(MAKECMDGOALS)" "rumor"
-	-include $(REPAST_HPC_DEPS)
-	-include $(RUMOR_DEPS)
+     -include $(REPAST_HPC_DEPS)
+     -include $(RUMOR_DEPS)
 endif
 
 ifeq "$(MAKECMDGOALS)" "zombies"
-	-include $(REPAST_HPC_DEPS)
-	-include $(RELOGO_DEPS)
-	-include $(ZOMBIE_DEPS)
+     -include $(REPAST_HPC_DEPS)
+     -include $(RELOGO_DEPS)
+     -include $(ZOMBIE_DEPS)
 endif
 
 ifeq "$(MAKECMDGOALS)" "all"
-	-include $(REPAST_HPC_DEPS)
-	-include $(RELOGO_DEPS)
+     -include $(REPAST_HPC_DEPS)
+     -include $(RELOGO_DEPS)
+endif
+
+
+ifeq "$(MAKECMDGOALS)" "tests"
+     -include $(REPAST_HPC_DEPS)
+     -include $(RELOGO_DEPS)
+     -include $(TEST_DEPS)
 endif
 
 
@@ -175,16 +230,23 @@ ifeq "$(MAKECMDGOALS)" "tests"
 endif
 
 ifeq "$(MAKECMDGOALS)" ""
-	-include $(REPAST_HPC_DEPS)
-	-include $(RELOGO_DEPS)
-	-include $(RUMOR_DEPS)
-	-include $(ZOMBIE_DEPS)
+     -include $(REPAST_HPC_DEPS)
+     -include $(RELOGO_DEPS)
+     -include $(RUMOR_DEPS)
+     -include $(ZOMBIE_DEPS)
 endif
 
 
 .PHONY: all repast_hpc relogo clean zombies rumor
 
-all : repast_hpc relogo rumor zombies
+install : repast_hpc relogo
+	$(MKDIR) $(REPAST_HPC_INSTALL_INCLUDE)
+	$(MKDIR) $(RELOGO_INSTALL_INCLUDE)
+	$(MKDIR) $(INSTALL_LIB)
+	$(CP) $(REPAST_HPC_DIR)/*.h $(REPAST_HPC_INSTALL_INCLUDE)
+	$(CP) $(RELOGO_DIR)/*.h $(RELOGO_INSTALL_INCLUDE)
+	$(CP) ./bin/$(REPAST_HPC_LIB) $(INSTALL_LIB)
+	$(CP) ./bin/$(RELOGO_LIB) $(INSTALL_LIB)
 
 install : repast_hpc relogo
 	$(MKDIR) $(REPAST_HPC_INSTALL_INCLUDE)
@@ -198,6 +260,7 @@ install : repast_hpc relogo
 repast_hpc: $(REPAST_HPC_OBJECTS)
 	-mkdir -p bin
 	$(CXXLD) $^ $(LIB_LDFLAGS) $(RPATHS) -o bin/$(REPAST_HPC_LIB) $(LIBS)
+<<<<<<< HEAD
 	
 relogo: $(RELOGO_OBJECTS)
 	-mkdir -p bin
@@ -206,6 +269,17 @@ relogo: $(RELOGO_OBJECTS)
 tests : repast_hpc $(TEST_OBJECTS) 
 	$(CXXLD) $(filter-out %.d, $(TEST_OBJECTS)) -lpthread -o $(TEST_NAME) -L./bin -l$(REPAST_HPC_NAME) $(LIBS) $(TEST_RPATHS) $(GTEST_LIB) 
 
+=======
+
+relogo: $(RELOGO_OBJECTS)
+	-mkdir -p bin
+	$(CXXLD) $^ $(LIB_LDFLAGS) $(RPATHS) $(l_CURL) -o bin/$(RELOGO_LIB) $(LIBS) -L./bin
+
+tests : repast_hpc $(TEST_OBJECTS) 
+	$(CXXLD) $(filter-out %.d, $(TEST_OBJECTS)) -lpthread -o $(TEST_NAME) -L./bin -l$(REPAST_HPC_NAME) $(LIBS) $(TEST_RPATHS) $(GTEST_LIB) 
+
+
+>>>>>>> 62ac539bc3c9dfdddda8536c121e5fc1d544f315
 rumor:  $(RUMOR_OBJECTS)
 	mkdir -p ./bin
 	cp $(RUMOR_DIR)/config.props ./bin/rumor_config.props
@@ -220,7 +294,11 @@ zombies: $(ZOMBIE_OBJECTS)
 
 
 $(BUILD_DIR)/%.o : %.cpp
+<<<<<<< HEAD
 	@-mkdir -p $(dir $@)
+=======
+	 @-mkdir -p $(dir $@)
+>>>>>>> 62ac539bc3c9dfdddda8536c121e5fc1d544f315
 	$(CXX) $(CXX_FLAGS) -Wno-deprecated-declarations $(LIB_CXX_FLAGS) $(INCLUDES) $(TEST_INCLUDES) -c $< -o $@
 
 clean :
