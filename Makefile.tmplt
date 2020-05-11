@@ -22,10 +22,13 @@ INCLUDES :=
 LIBS :=
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 REPAST_LIB_DIR = $(HOME)/sfw/repast_hpc-2.2.0/lib
 REPAST_LIB = repast_hpc-2.2.0
 REPAST_INCLUDE = $(HOME)/sfw/repast_hpc-2.2.0/include
 
+=======
+>>>>>>> 9443ca4a8288d0c61990f8275a79ed5cff1b7f98
 BOOST_INCLUDE =  $(HOME)/sfw/Boost/Boost_1.61/include
 BOOST_LIB_DIR =  $(HOME)/sfw/Boost/Boost_1.61/lib
 BOOST_LIBS = -lboost_system-mt  -lboost_filesystem-mt  -lboost_serialization-mt -lboost_mpi-mt 
