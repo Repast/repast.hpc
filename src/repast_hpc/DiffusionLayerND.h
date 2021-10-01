@@ -226,7 +226,7 @@ void DiffusionLayerND<T>::diffuseDimension(T* currentDataSpacePointer, T* otherD
   for(; i < localEdge; i++){
     if(dimIndex == 0){
       // Populate the vals array
-      double* destLocation = vals; // Note: This gets passed as a handle and changed
+      T* destLocation = vals; // Note: This gets passed as a handle and changed
       grabDimensionData(destLocation, currentDataSpacePointer, diffusor->getRadius(), AbstractValueLayerND<T>::numDims - 1);
       *otherDataSpacePointer = diffusor->getNewValue(vals);
     }
