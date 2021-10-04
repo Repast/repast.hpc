@@ -16,23 +16,24 @@ CXX_FLAGS = $(CXX_RELEASE_FLAGS) -fopenmp
 INCLUDES :=
 LIBS :=
 
-REPAST_LIB_DIR = $(HOME)/sfw/repast_hpc-2.3.1/lib
-REPAST_LIB = repast_hpc-2.3.1
-REPAST_INCLUDE = $(HOME)/sfw/repast_hpc-2.3.1/include
+REPAST_HPC_VERSION=2.3.1
+REPAST_LIB_DIR = $(HOME)/sfw/repast_hpc-${REPAST_HPC_VERSION}/lib
+REPAST_LIB = repast_hpc-${REPAST_HPC_VERSION}
+REPAST_INCLUDE = $(HOME)/sfw/repast_hpc-${REPAST_HPC_VERSION}/include
 
-BOOST_INCLUDE =  $(HOME)/sfw/Boost/Boost_1.61/include
-BOOST_LIB_DIR =  $(HOME)/sfw/Boost/Boost_1.61/lib
+BOOST_INCLUDE =  $(HOME)/sfw/boost-1_61_0/include
+BOOST_LIB_DIR =  $(HOME)/sfw/boost-1_61_0/lib
 BOOST_LIBS = -lboost_system-mt  -lboost_filesystem-mt  -lboost_serialization-mt -lboost_mpi-mt 
 
-NETCDF_HOME=$(HOME)/sfw/NetCDF
+NETCDF_HOME=$(HOME)/sfw/netcdf-4.2.1.1
 NETCDF_INCLUDE_DIR=$(NETCDF_HOME)/include
 NETCDF_LIB_DIR=$(NETCDF_HOME)/lib
 
-NETCDF_CXX_HOME=$(HOME)/sfw/NetCDF-cxx
+NETCDF_CXX_HOME=$(HOME)/sfw/netcdf-cxx-4.2
 NETCDF_CXX_INCLUDE_DIR=$(NETCDF_CXX_HOME)/include
 NETCDF_CXX_LIB_DIR=$(NETCDF_CXX_HOME)/lib
 
-CURL_HOME = $(HOME)/sfw/CURL
+CURL_HOME = $(HOME)/sfw/curl-7.42.1
 CURL_INCLUDE_DIR= $(CURL_HOME)/include
 CURL_LIB_DIR= $(CURL_HOME)/lib
 
@@ -42,7 +43,7 @@ INCLUDES += -I $(NETCDF_INCLUDE_DIR)
 INCLUDES += -I $(NETCDF_CXX_INCLUDE_DIR)
 INCLUDES += -I $(CURL_INCLUDE_DIR)
 
-GTEST_HOME = $(HOME)/sfw/googletest
+GTEST_HOME = $(HOME)/sfw/googletest-1.10.0
 GTEST_LIB = $(GTEST_HOME)/lib/libgtest.a
 TEST_INCLUDES = -I $(GTEST_HOME)/include
 
@@ -98,6 +99,11 @@ include ../test/core/module.mk
 TEST_OBJECTS := $(subst .cpp,.o, $(addprefix $(BUILD_DIR)/, $(core_test_src)))
 TEST_DEPS :=  $(subst .o,.d,$(TEST_OBJECTS))
 
+# include ../test/mpi/module.mk
+# TEST_OBJECTS := $(subst .cpp,.o, $(addprefix $(BUILD_DIR)/, $(mpi_test_src)))
+# TEST_DEPS :=  $(subst .o,.d,$(TEST_OBJECTS))
+TEST_NAME = unit_tests
+
 
 CXX_RELEASE_FLAGS = -Wall -O2 -g0 -std=c++11 -MMD -MP
 CXX_DEBUG_FLAGS = -Wall -O0 -g3 -std=c++11 -MMD -MP
@@ -122,11 +128,10 @@ else
 endif
 
 # targets
-REPAST_VERSION=2.3.1
-REPAST_HPC_NAME=repast_hpc-$(REPAST_VERSION)
+REPAST_HPC_NAME=repast_hpc-$(REPAST_HPC_VERSION)
 REPAST_HPC_LIB=lib$(REPAST_HPC_NAME).$(LIB_EXT)
 
-RELOGO_NAME=relogo-$(REPAST_VERSION)
+RELOGO_NAME=relogo-$(REPAST_HPC_VERSION)
 RELOGO_LIB=lib$(RELOGO_NAME).$(LIB_EXT)
 
 RUMOR_EXE=rumor_model
@@ -137,8 +142,6 @@ INSTALL_DIR = $(HOME)/sfw/$(REPAST_HPC_NAME)
 REPAST_HPC_INSTALL_INCLUDE = $(INSTALL_DIR)/include/repast_hpc
 RELOGO_INSTALL_INCLUDE = $(INSTALL_DIR)/include/relogo
 INSTALL_LIB = $(INSTALL_DIR)/lib
-
-TEST_NAME = unit_test
 
 SED := sed
 MV := mv -f
@@ -203,19 +206,9 @@ install : repast_hpc relogo
 	$(CP) ./bin/$(REPAST_HPC_LIB) $(INSTALL_LIB)
 	$(CP) ./bin/$(RELOGO_LIB) $(INSTALL_LIB)
 
-install : repast_hpc relogo
-	$(MKDIR) $(REPAST_HPC_INSTALL_INCLUDE)
-	$(MKDIR) $(RELOGO_INSTALL_INCLUDE)
-	$(MKDIR) $(INSTALL_LIB)
-	$(CP) $(REPAST_HPC_DIR)/*.h $(REPAST_HPC_INSTALL_INCLUDE)
-	$(CP) $(RELOGO_DIR)/*.h $(RELOGO_INSTALL_INCLUDE)
-	$(CP) ./bin/$(REPAST_HPC_LIB) $(INSTALL_LIB)
-	$(CP) ./bin/$(RELOGO_LIB) $(INSTALL_LIB)
-
 repast_hpc: $(REPAST_HPC_OBJECTS)
 	-mkdir -p bin
 	$(CXXLD) $^ $(LIB_LDFLAGS) $(RPATHS) -o bin/$(REPAST_HPC_LIB) $(LIBS)
-
 
 relogo: $(RELOGO_OBJECTS)
 	-mkdir -p bin
