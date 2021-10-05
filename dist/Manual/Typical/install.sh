@@ -173,13 +173,19 @@ fi
 # Repast HPC
 if [[ $1 == *rhpc* ]]
 then
-  #cd ..
-  #CXX="$MPI_COMPILER_INVOCATION" CXXLD="$MPI_COMPILER_INVOCATION" ./configure --prefix=$REPAST_DIR --#with-boost-include=$BASE_DIR/$BOOST_DIR/include --with-boost-lib-dir=$BASE_DIR/$BOOST_DIR/lib --with-#boost-lib-suffix=-mt --with-netcdf-cxx=$BASE_DIR/$NETCDFCXX_DIR --with-netcdf=$BASE_DIR/$NETCDF_DIR --#with-curl-include=$BASE_DIR/$CURL_DIR/include --with-curl-lib-dir=$BASE_DIR/$CURL_DIR/lib
+  cd ..
+  CXX="$MPI_COMPILER_INVOCATION" CXXLD="$MPI_COMPILER_INVOCATION" ./configure --prefix=$REPAST_DIR \
+    --with-boost-include=$BASE_DIR/$BOOST_DIR/include \
+    --with-boost-lib-dir=$BASE_DIR/$BOOST_DIR/lib \
+    --with-boost-lib-suffix=-mt \
+    --with-netcdf-cxx=$BASE_DIR/$NETCDFCXX_DIR \
+    --with-netcdf=$BASE_DIR/$NETCDF_DIR
+    # --with-curl-include=$BASE_DIR/$CURL_DIR/include --with-curl-lib-dir=$BASE_DIR/$CURL_DIR/lib
   # Add V=1 after "make" to see verbose compiler output
   make
   make install
   cd MANUAL_INSTALL
   # comment out "cd .." through "cd MANUAL_INSTALL" above and uncomment
-  # the the line below to compile using the Makefile
-  make -f Makefile CXX=$MPI_COMPILER_INVOCATION CXXLD="$MPI_COMPILER_INVOCATION" INSTALL_DIR=$REPAST_DIR BOOST_INCLUDE_DIR=$BASE_DIR/$BOOST_DIR/include BOOST_LIB_DIR=$BASE_DIR/$BOOST_DIR/lib BOOST_INFIX=-mt NETCDF_INCLUDE_DIR=$BASE_DIR/$NETCDF_DIR/include NETCDF_LIB_DIR=$BASE_DIR/$NETCDF_DIR/lib NETCDF_CXX_INCLUDE_DIR=$BASE_DIR/$NETCDFCXX_DIR/include NETCDF_CXX_LIB_DIR=$BASE_DIR/$NETCDFCXX_DIR/lib CURL_INCLUDE_DIR=$BASE_DIR/$CURL_DIR/include CURL_LIB_DIR=$BASE_DIR/$CURL_DIR/lib
+  # the the line below to compile using the Makefile in Manual Install rather than with configure
+  # make -f Makefile CXX=$MPI_COMPILER_INVOCATION CXXLD="$MPI_COMPILER_INVOCATION" INSTALL_DIR=$REPAST_DIR BOOST_INCLUDE_DIR=$BASE_DIR/$BOOST_DIR/include BOOST_LIB_DIR=$BASE_DIR/$BOOST_DIR/lib BOOST_INFIX=-mt NETCDF_INCLUDE_DIR=$BASE_DIR/$NETCDF_DIR/include NETCDF_LIB_DIR=$BASE_DIR/$NETCDF_DIR/lib NETCDF_CXX_INCLUDE_DIR=$BASE_DIR/$NETCDFCXX_DIR/include NETCDF_CXX_LIB_DIR=$BASE_DIR/$NETCDFCXX_DIR/lib CURL_INCLUDE_DIR=$BASE_DIR/$CURL_DIR/include CURL_LIB_DIR=$BASE_DIR/$CURL_DIR/lib
 fi

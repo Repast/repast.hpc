@@ -24,7 +24,7 @@ mkdir -p $DOCS/api
 cp -r $ROOT/doxygen/html $DOCS/api/
 cp $ROOT/../docs/repast_hpc.pdf $DOCS
 
-#src
+# SRC
 rm -rf $SRC/*
 mkdir -p $SRC/repast_hpc $SRC/relogo $SRC/zombie $SRC/rumor
 
@@ -69,8 +69,7 @@ cp $AT_DIR/src/relogo/module.mk $SRC/relogo
 cp $AT_DIR/src/zombie/module.mk $SRC/zombie
 cp $AT_DIR/src/rumor/module.mk $SRC/rumor
 
-REQ_FILES=("config.guess" "config.sub" "configure" "install-sh" "Makefile.in"
-  "version.txt" "config.h.in")
+REQ_FILES=("configure" "config.sub" "config.guess" "version.txt" "config.h.in" "install-sh" "Makefile.in")
 for f in "${REQ_FILES[@]}"
 do
   cp $AT_DIR/$f $ROOT_DIST

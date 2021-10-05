@@ -8,7 +8,7 @@ CPPFLAGS := @CPPFLAGS@
 
 CXX = @CXX@
 CXXLD = @CXX@
-CXXFLAGS = -g0 -Wall -O2 -std=c++11 -MMD -MP $(CPPFLAGS) -Wno-reorder -Wno-unused-variable -Wno-sign-compare -I./src
+CXXFLAGS = -g0 -Wall -O2 -std=c++11 -MMD -MP $(CPPFLAGS) -Wno-reorder -Wno-unused-variable -Wno-sign-compare -Wno-parentheses -I./src
 
 LIB_LD_FLAGS = $(LDFLAGS)
 LIBS = @BOOST_MPI_LIBS@ @BOOST_SERIALIZATION_LIBS@ @BOOST_FILESYSTEM_LIBS@ @BOOST_SYSTEM_LIBS@
