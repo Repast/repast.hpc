@@ -306,7 +306,13 @@ void Projection<T>::getProjectionInfo(std::vector<AgentId>& agents, std::vector<
     bool secondaryInfo, std::set<AgentId>* secondaryIds, int destProc){
   for(std::vector<AgentId>::const_iterator iter = agents.begin(), iterEnd = agents.end(); iter != iterEnd; iter++){
     ProjectionInfoPacket* packet = getProjectionInfo((*iter), secondaryInfo, secondaryIds, destProc);
-    if((packet != 0) && (!packet->isEmpty())) packets.push_back(packet);
+    if(packet != 0){
+      if (packet->isEmpty()){
+        delete packet;
+      } else{
+        packets.push_back(packet);
+      }
+    }
   }
 }
 
