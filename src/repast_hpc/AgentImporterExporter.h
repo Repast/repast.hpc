@@ -437,6 +437,12 @@ public:
 
   virtual void clear(){
     AbstractImporter::clear();
+
+    std::map<int, std::list<AgentId>* >::iterator itr = sources.begin();
+    while(itr != sources.end()){
+      delete itr->second;
+      itr++;
+    }
     sources.clear();
   }
 };
@@ -488,6 +494,12 @@ public:
   virtual void getSetOfAgentsBeingImported(std::set<AgentId>& set);
   virtual void clear(){
     AbstractImporter::clear();
+
+    std::map<int, std::set<AgentId>* >::iterator iter = sources.begin();
+    while(iter != sources.end()){
+      delete iter->second;
+      iter++;
+    }
     sources.clear();
   }
 };
@@ -551,6 +563,12 @@ public:
 
   virtual void clear(){
     AbstractImporter::clear();
+
+    std::map<int, std::map<AgentId, int>* >::iterator iter = sources.begin();
+    while(iter != sources.end()){
+      delete iter->second;
+      iter++;
+    }
     sources.clear();
   }
 };
